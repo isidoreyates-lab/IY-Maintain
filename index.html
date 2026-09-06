@@ -2527,7 +2527,7 @@ async function handleAuthSubmit(event){
   } else if(mode==="signup") {
    const name=document.getElementById("auth_name").value.trim(), company=document.getElementById("auth_company").value.trim(), password=document.getElementById("auth_password").value, confirm=document.getElementById("auth_confirm").value;
    if(password!==confirm)throw new Error("Passwords do not match.");
-   const {data,error}=await iySupabase.auth.signUp({email,password,options:{data:{full_name:name,company_name:company}}});
+   const {data,error}=await iySupabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.href,data:{full_name:name,company_name:company}}});
    if(error)throw error;
    if(data.session){await completeAuthenticatedSession(data.user);}
    else authMessage("success","Account created. Please check your email to confirm the account, then sign in.");
