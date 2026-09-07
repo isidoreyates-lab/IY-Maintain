@@ -520,7 +520,7 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:1000px){.machine-overview-grid-v19{grid-template-columns:1fr}.machine-kpis-v19{grid-template-columns:repeat(2,minmax(0,1fr))}.machine-filters-v19{grid-template-columns:1fr 1fr}.machine-filters-v19 .input{grid-column:1/-1}}
 @media(max-width:650px){.machine-hero-v19{align-items:flex-start;flex-direction:column;padding:20px}.machine-kpis-v19{grid-template-columns:1fr}.machine-status-list-v19{grid-template-columns:1fr}.machine-filters-v19{grid-template-columns:1fr}.machine-editor-grid-v19{grid-template-columns:1fr}.machine-editor-head-v19{padding:18px}.machine-editor-body-v19{padding:14px}.machine-editor-actions-v19{padding:0 14px 14px}.machine-editor-section-head-v19 span{display:none}}
 
-/* v20.1 Machine Profile — professional, simple, user-friendly */
+/* v20.1 Machine Profile — professional, simple, user friendly */
 .modal.machine-profile-modal-v18{width:min(1180px,96vw)!important;max-height:94vh!important;border-radius:20px!important;background:#f6f9fc!important;overflow:hidden!important;border:1px solid #d7e3ef!important;box-shadow:0 30px 90px rgba(7,36,72,.28)!important}
 .machine-profile-shell-v18{background:#f6f9fc!important;color:#13263d!important}
 .machine-profile-hero-v18{padding:22px 26px 20px!important;background:linear-gradient(120deg,#082d67 0%,#075fff 64%,#19a4df 100%)!important}
@@ -934,6 +934,15 @@ button,input,select,textarea{font-family:inherit}
 .maintenance-log-wrap{overflow:auto}
 .maintenance-log-table{min-width:1250px}
 .maintenance-log-table .long-cell{min-width:180px;max-width:300px;white-space:normal;line-height:1.45}
+
+.maintenance-log-page{display:flex;flex-direction:column;gap:14px}
+.maintenance-log-page .page-hero-v23{background:linear-gradient(120deg,#073f57 0%,#087c96 52%,#0b9ab3 100%)}
+.maintenance-log-hero-btn{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:700;letter-spacing:-.01em;display:flex!important;align-items:center;gap:9px}
+.hero-btn-icon{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#075fff;color:#fff;font-size:17px;line-height:1}
+.maintenance-log-filters{display:grid;grid-template-columns:minmax(260px,1.55fr) minmax(150px,1fr) minmax(140px,.9fr) minmax(170px,1fr) minmax(270px,1.45fr) auto;gap:12px;align-items:end;padding:18px;border:1px solid #dfe7ef;border-radius:14px;background:#fff;box-shadow:0 2px 8px rgba(15,43,70,.035)}
+.ml-filter{min-width:0}.ml-filter label{display:block;margin:0 0 7px 1px;font-size:10px;font-weight:750;letter-spacing:.02em;color:#22364d}.ml-filter .input,.ml-filter .select{width:100%;height:40px;box-sizing:border-box}.ml-search-wrap{position:relative}.ml-search-wrap>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#7890a7;font-size:16px;z-index:1}.ml-search-wrap .input{padding-left:36px}.ml-date-range{display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center}.ml-date-range span{font-size:11px;color:#7b8da2}.ml-date-range .input{min-width:0}.ml-reset-btn{height:40px;padding:0 16px;border:1px solid #cfdbe7;border-radius:9px;background:#f7fafd;color:#31506d;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}.ml-reset-btn:hover{border-color:#9eb4c9;background:#eef5fb;color:#075fff}.maintenance-records-panel{padding:0;overflow:hidden}.maintenance-records-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px}.maintenance-records-title{display:flex;align-items:center;gap:12px}.maintenance-records-title h3{margin:0;font-size:17px;letter-spacing:-.02em}.maintenance-records-title p{margin:4px 0 0;font-size:11px;color:#73869b}.maintenance-records-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#eaf4ff;color:#075fff;font-size:18px}.maintenance-records-panel .maintenance-log-wrap{border-top:1px solid #e7edf3}.maintenance-log-empty{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:#718399;text-align:center}.maintenance-log-empty-icon{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#eef3f7;color:#8aa0b6;font-size:28px;margin-bottom:10px}.maintenance-log-empty b{font-size:17px;color:#122b45}.maintenance-log-empty span{font-size:13px}.maintenance-empty-btn{margin-top:16px}.maintenance-log-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 16px;font-size:11px;color:#7890a7}.ml-pagination{display:flex;gap:6px}.ml-pagination button{width:34px;height:34px;border:1px solid #dce5ed;background:#fff;border-radius:9px;color:#8192a5;font-weight:700}.ml-pagination button.active{background:#eaf3ff;color:#075fff;border-color:#d4e5ff}.ml-pagination button:disabled{opacity:.65}.maintenance-log-table th{font-size:10px;letter-spacing:.04em;color:#536a82;background:#f5f8fb}.maintenance-log-table td{font-size:11px}.maintenance-log-table tr:hover td{background:#fbfdff}
+@media(max-width:1200px){.maintenance-log-filters{grid-template-columns:1.4fr 1fr 1fr;}.ml-date-filter{grid-column:span 2}.ml-reset-btn{justify-self:start}}
+@media(max-width:760px){.maintenance-log-filters{grid-template-columns:1fr;padding:14px}.ml-date-filter{grid-column:auto}.ml-reset-btn{width:100%}.maintenance-records-head{align-items:flex-start;gap:12px}.maintenance-records-head .v24-pill{margin-top:4px}.maintenance-log-footer{gap:10px;align-items:flex-start;flex-direction:column}.maintenance-log-page .page-hero-v23{padding:18px}.maintenance-log-page .page-hero-v23 .hero-action{width:auto}.maintenance-log-page .page-hero-v23 .hero-btn-v23{width:auto}.ml-date-range{grid-template-columns:1fr}.ml-date-range span{display:none}}
 .report-section{margin-top:0}
 .report-section-heading{display:flex;align-items:center;justify-content:space-between;padding:14px 4px 10px}
 .report-section-heading h3{margin:0;font-size:16px}
@@ -1196,6 +1205,54 @@ button,input,select,textarea{font-family:inherit}
 }
 @media(min-width:701px){.mobile-bottom-nav,.mobile-nav-backdrop,.mobile-nav-sheet{display:none!important}}
 </style>
+
+<style id="iy-dashboard-identity-polish">
+/* IY Maintain dashboard visual identities */
+.v24-dashboard .v24-hero{
+  background:linear-gradient(120deg,#062b67 0%,#0b57c9 55%,#0a8de8 100%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 14px 30px rgba(8,55,120,.18);
+}
+.v24-dashboard .v24-hero:after{content:"";position:absolute;inset:-45% -8% auto 58%;height:260px;border:1px solid rgba(255,255,255,.11);border-radius:50%;box-shadow:0 0 0 22px rgba(255,255,255,.025),0 0 0 46px rgba(255,255,255,.02);pointer-events:none}
+.v24-dashboard .v24-kpi{border-top:3px solid #2581dc;box-shadow:0 4px 12px rgba(20,55,95,.05);transition:transform .18s ease,box-shadow .18s ease}
+.v24-dashboard .v24-kpi:nth-child(2){border-top-color:#1686d9}
+.v24-dashboard .v24-kpi:nth-child(3){border-top-color:#e2a21b}
+.v24-dashboard .v24-kpi:nth-child(4){border-top-color:#df4b58}
+.v24-dashboard .v24-kpi:nth-child(5){border-top-color:#536f8e}
+.v24-dashboard .v24-kpi:nth-child(6){border-top-color:#18a66b}
+.v24-dashboard .v24-kpi:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(20,55,95,.09)}
+.v24-dashboard .v24-panel{box-shadow:0 3px 10px rgba(20,55,95,.035);border-color:#dce5ee}
+.v24-dashboard .v24-panel-head{padding-bottom:11px;border-bottom:1px solid #edf2f6}
+.v24-dashboard .v24-title-row{align-items:center}
+.v24-dashboard .v24-head-icon{background:linear-gradient(145deg,#eaf3ff,#dcecff);border-color:#cfe1f5;color:#0b63c9}
+.v24-dashboard .v24-panel:nth-child(2) .v24-head-icon{background:linear-gradient(145deg,#e9f8f2,#d8f0e5);border-color:#c8e7d9;color:#13865b}
+.v24-dashboard .v24-pill{font-weight:800;box-shadow:inset 0 0 0 1px rgba(35,104,157,.04)}
+.v24-dashboard .v24-attention-row{padding:14px 4px}
+.v24-dashboard .v24-attention-row:last-child{border-bottom:0}
+.v24-dashboard .v24-attention-row:hover{background:#f8fbfe}
+
+/* Maintenance gets a separate service-focused identity */
+.maintenance-page>.hero{
+  background:linear-gradient(120deg,#075c50 0%,#0b8a73 58%,#18aa86 100%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 14px 30px rgba(7,92,80,.16);
+  position:relative;overflow:hidden;
+}
+.maintenance-page>.hero:after{content:"";position:absolute;inset:-55% -10% auto 62%;height:280px;border:1px solid rgba(255,255,255,.12);border-radius:50%;box-shadow:0 0 0 24px rgba(255,255,255,.025),0 0 0 50px rgba(255,255,255,.018);pointer-events:none}
+.maintenance-page .metric{border-top:3px solid #2389d6;box-shadow:0 4px 12px rgba(20,55,95,.05);transition:transform .18s ease,box-shadow .18s ease}
+.maintenance-page .metric:nth-child(2){border-top-color:#18a66b}
+.maintenance-page .metric:nth-child(3){border-top-color:#159b75}
+.maintenance-page .metric:nth-child(4){border-top-color:#df4b58}
+.maintenance-page .metric:nth-child(5){border-top-color:#e2a21b}
+.maintenance-page .metric:nth-child(6){border-top-color:#5b7898}
+.maintenance-page .metric:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(20,55,95,.09)}
+.maintenance-page>.panel,.maintenance-page>.grid2>.panel,.maintenance-page>.grid2>.panel{box-shadow:0 3px 10px rgba(20,55,95,.035);border-color:#dce5ee}
+.maintenance-page .panel>h3{color:#102d49}
+@media(max-width:700px){
+  .v24-dashboard .v24-hero{border-radius:14px}
+  .v24-dashboard .v24-kpi:hover,.maintenance-page .metric:hover{transform:none}
+}
+</style>
 </head>
 <body>
 <div id="app"></div>
@@ -1255,7 +1312,7 @@ function logActivity(action,details=""){
 }
 function initials(name){return String(name||"A").trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"A"}
 function nav(page){if(!canAccess(page)){toast("You do not have permission to open this section.");return}currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()}
-function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mentry:"Maintenance Entry",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data"};return t[page]||"Dashboard"}
+function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data"};return t[page]||"Dashboard"}
 function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`}
 function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${icon}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
 function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=false;profileOpen=false;notificationOpen=false;render()}
@@ -1267,7 +1324,7 @@ function renderMobileNavigation(){
   <div class="mobile-nav-group">PARTS</div>
   ${mobileNavLink('issue','Search & Issue Parts','▣')}${mobileNavLink('receive','Receive Parts','+')}${mobileNavLink('inventory','Inventory','▤')}${mobileNavLink('updates','Parts Updates','↻')}
   <div class="mobile-nav-group">MAINTENANCE</div>
-  ${mobileNavLink('mdashboard','Maintenance Dashboard','◇')}${mobileNavLink('mentry','Maintenance Entry','+')}${mobileNavLink('mlog','Maintenance Log','▤')}${mobileNavLink('machines','Machines','⚙')}
+  ${mobileNavLink('mdashboard','Maintenance Dashboard','◇')}${mobileNavLink('mlog','Maintenance Log','▤')}${mobileNavLink('machines','Machines','⚙')}
   <div class="mobile-nav-group">REPORTS</div>
   ${mobileNavLink('preports','Parts Reports','▥')}${mobileNavLink('mreports','Maintenance Reports','▥')}
   <div class="mobile-nav-group">SYSTEM</div>
@@ -1323,9 +1380,9 @@ function globalSearchResults(q){
 function quickActionButton(page,label,icon){return canAccess(page)?`<button class="quick-action" onclick="nav('${page}')"><span class="qa-icon">${icon}</span>${label}</button>`:''}
 function renderGlobalSearch(){
  const q=globalSearchQuery.trim(),results=globalSearchResults(q);
- return `<div class="global-search-wrap" onclick="event.stopPropagation()"><span class="global-search-icon">⌕</span><input id="globalSearchInput" class="global-search" value="${esc(globalSearchQuery)}" placeholder="Search parts, machines, maintenance..." autocomplete="off" onfocus="globalSearchOpen=true;renderGlobalSearchPanel()" oninput="globalSearchQuery=this.value;globalSearchOpen=true;renderGlobalSearchPanel()" onkeydown="if(event.key==='Escape'){globalSearchOpen=false;this.blur();renderGlobalSearchPanel()}"/><div id="globalSearchPanel" class="global-search-panel" style="display:${globalSearchOpen?'block':'none'}">${q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0;border-bottom:1px solid #edf1f5">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('mentry','Add Maintenance','◇')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`}</div></div>`;
+ return `<div class="global-search-wrap" onclick="event.stopPropagation()"><span class="global-search-icon">⌕</span><input id="globalSearchInput" class="global-search" value="${esc(globalSearchQuery)}" placeholder="Search parts, machines, maintenance..." autocomplete="off" onfocus="globalSearchOpen=true;renderGlobalSearchPanel()" oninput="globalSearchQuery=this.value;globalSearchOpen=true;renderGlobalSearchPanel()" onkeydown="if(event.key==='Escape'){globalSearchOpen=false;this.blur();renderGlobalSearchPanel()}"/><div id="globalSearchPanel" class="global-search-panel" style="display:${globalSearchOpen?'block':'none'}">${q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0;border-bottom:1px solid #edf1f5">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`}</div></div>`;
 }
-function renderGlobalSearchPanel(){const p=document.getElementById('globalSearchPanel');if(p){const q=globalSearchQuery.trim(),results=globalSearchResults(q);p.style.display=globalSearchOpen?'block':'none';p.innerHTML=q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('mentry','Add Maintenance','◇')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`;}}
+function renderGlobalSearchPanel(){const p=document.getElementById('globalSearchPanel');if(p){const q=globalSearchQuery.trim(),results=globalSearchResults(q);p.style.display=globalSearchOpen?'block':'none';p.innerHTML=q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`;}}
 function render(){
  const s=db.settings;
  if(iyCloudReady&&!document.getElementById("iyCloudBanner")){const b=document.createElement("div");b.id="iyCloudBanner";b.className="iy-cloud-banner";b.textContent="☁ Connected • "+(iyCompany?.name||"Company");document.body.appendChild(b);setTimeout(()=>b.remove(),2600)}
@@ -1341,7 +1398,6 @@ function render(){
    ${navButton("updates","Parts Updates","↻")}
    <div class="group">MAINTENANCE</div>
    ${navButton("mdashboard","Maintenance Dashboard","◇")}
-   ${navButton("mentry","Maintenance Entry","+")}
    ${navButton("mlog","Maintenance Log","▤")}
    ${navButton("machines","Machines","⚙")}
    <div class="group">REPORTS</div>
@@ -1390,7 +1446,7 @@ function render(){
  initMachinePage();}
 
 function pageTitle(){
- const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mentry:"Maintenance Entry",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings"};
+ const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings"};
  return pageTitleFor(currentPage);
 }
 function invMetrics(){
@@ -1406,7 +1462,6 @@ function pageHeroV23(page){
   inventory:["PARTS MANAGEMENT","Inventory","Monitor current stock, minimum levels, locations and inventory status."],
   updates:["PARTS MANAGEMENT","Parts Updates","Track replenishment, purchase references, suppliers and delivery status."],
   mdashboard:["MAINTENANCE","Maintenance Dashboard","Live maintenance performance, machine service status and recent activity."],
-  mentry:["MAINTENANCE","Maintenance Entry","Record new maintenance work and securely save it to your company workspace."],
   mlog:["MAINTENANCE","Maintenance Log","Search, review and audit the complete maintenance history."],
   machines:["FLEET MANAGEMENT","Machines","Manage your fleet, operating status, service schedule and machine history."],
   preports:["REPORTING","Parts Reports","Generate professional parts issue and receipt reports for your selected filters."],
@@ -1419,7 +1474,7 @@ function pageHeroV23(page){
  if(!cfg || page==="dashboard")return "";
  let action="";
  if(page==="receive" && canEdit("receive"))action='<button class="hero-btn-v23" onclick="receiveModal()">+ Receive Part</button>';
- if(page==="mentry" && canEdit("maintenance"))action='<button class="hero-btn-v23" onclick="maintenanceModal()">+ New Maintenance Entry</button>';
+ if(page==="mlog" && canEdit("maintenance"))action='<button class="hero-btn-v23 maintenance-log-hero-btn" onclick="maintenanceModal()"><span class="hero-btn-icon">+</span> New Maintenance Entry</button>';
  if(page==="machines" && canEdit("machines"))action='<button class="hero-btn-v23" onclick="machineModal()">+ Add Machine</button>';
  if(page==="updates" && canEdit("updates"))action='<button class="hero-btn-v23" onclick="updateModal()">+ New Update</button>';
  if(page==="preports")action='<button class="hero-btn-v23" onclick="openPartsReportPreview()">Preview / Export PDF</button>';
@@ -1436,7 +1491,6 @@ function pageContent(){
  if(currentPage==="inventory")return hero+inventoryPage();
  if(currentPage==="updates")return hero+updatesPage();
  if(currentPage==="mdashboard")return maintenanceDashboard();
- if(currentPage==="mentry")return hero+maintenanceEntryPage();
  if(currentPage==="mlog")return hero+maintenanceLogPage();
  if(currentPage==="machines")return hero+machinesPage();
  if(currentPage==="preports")return hero+partsReportsPage();
@@ -1530,7 +1584,7 @@ function dashboard(){
        <p>Live operational intelligence across your fleet, inventory and maintenance activity.</p>
        <div class="v24-hero-meta"><span class="v24-dot"></span><span>${esc(iyCompany?.name||db.settings.companyName||"Company workspace")} · Live workspace</span></div>
      </div>
-     <div class="v24-hero-side"><div class="v24-live"><b>Workspace status</b><span>Cloud-connected operational data is being used for this dashboard.</span></div></div>
+     <div class="v24-hero-side"><div class="v24-live"><b>Workspace status</b><span>Cloud connected operational data is being used for this dashboard.</span></div></div>
    </div>
 
    <div class="v24-kpis">
@@ -1544,12 +1598,12 @@ function dashboard(){
 
    <div class="v24-grid">
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Operational Activity</h3><p>Parts movement and maintenance activity over the last six months.</p></div><span class="v24-pill">6 MONTHS</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">↗</span><h3>Operational Activity</h3></div><p>Parts movement and maintenance activity over the last six months.</p></div><span class="v24-pill">6 MONTHS</span></div>
        <div class="v24-chart">${trendBars}</div>
        <div class="v24-legend"><span><i class="v24-swatch"></i>Parts received</span><span><i class="v24-swatch alt"></i>Parts issued</span></div>
      </section>
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Maintenance Mix</h3><p>Distribution of recorded maintenance work.</p></div><span class="v24-pill">${allMaint.length} JOBS</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">◔</span><h3>Maintenance Mix</h3></div><p>Distribution of recorded maintenance work.</p></div><span class="v24-pill">${allMaint.length} JOBS</span></div>
        <div class="v24-mix">
          <div class="v24-donut" style="--pm:${donutPm}%;--repair:${donutRepair}%"><div class="v24-donut-center"><b>${allMaint.length}</b><span>JOBS</span></div></div>
          <div class="v24-legend-list">
@@ -1563,16 +1617,16 @@ function dashboard(){
 
    <div class="v24-grid equal">
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Fleet Health</h3><p>Current machine status and latest service position.</p></div><span class="v24-pill">${running}/${machines.length||0} RUNNING</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">◉</span><h3>Fleet Health</h3></div><p>Current machine status and latest service position.</p></div><span class="v24-pill">${running}/${machines.length||0} RUNNING</span></div>
        ${machineHealth.length?`<div class="v24-health-list">${machineHealth.slice(0,6).map(r=>`<div class="v24-health-row"><div class="v24-health-name"><b>${esc(r.m[0])} · ${esc(r.m[2]||r.m[1])}</b><span>${esc(r.status)}${r.remaining!==null?' · '+(r.remaining>0?r.remaining+' hrs remaining':'service due'):""}</span><div class="v24-progress"><span class="${r.cls}" style="width:${r.pct}%"></span></div></div><div class="v24-health-status">${esc(r.pct)}%</div></div>`).join("")}</div>`:empty()}
      </section>
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Management Attention</h3><p>Items that may require action from the team.</p></div><span class="v24-pill">LIVE</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">!</span><h3>Management Attention</h3></div><p>Items that may require action from the team.</p></div><span class="v24-pill">LIVE</span></div>
        <div class="v24-attention">
-         <div class="v24-attention-row"><div><b>Out-of-stock parts</b><span>Stock has reached zero.</span></div><strong class="v24-attention-count bad">${outCount}</strong></div>
-         <div class="v24-attention-row"><div><b>Low-stock parts</b><span>Below or at minimum level.</span></div><strong class="v24-attention-count">${inv.low}</strong></div>
+         <div class="v24-attention-row"><div><b>Out of stock parts</b><span>Stock has reached zero.</span></div><strong class="v24-attention-count bad">${outCount}</strong></div>
+         <div class="v24-attention-row"><div><b>Low stock parts</b><span>Below or at minimum level.</span></div><strong class="v24-attention-count">${inv.low}</strong></div>
          <div class="v24-attention-row"><div><b>Machines needing attention</b><span>Breakdown or maintenance status.</span></div><strong class="v24-attention-count ${attentionMachines?'bad':'ok'}">${attentionMachines}</strong></div>
-         <div class="v24-attention-row"><div><b>Ongoing maintenance</b><span>Open or in-progress jobs.</span></div><strong class="v24-attention-count ${ongoing?'bad':'ok'}">${ongoing}</strong></div>
+         <div class="v24-attention-row"><div><b>Ongoing maintenance</b><span>Open or in progress jobs.</span></div><strong class="v24-attention-count ${ongoing?'bad':'ok'}">${ongoing}</strong></div>
          <div class="v24-attention-row"><div><b>Jobs requiring parts</b><span>Maintenance records with parts noted.</span></div><strong class="v24-attention-count">${partsRequired}</strong></div>
        </div>
      </section>
@@ -1580,26 +1634,25 @@ function dashboard(){
 
    <div class="v24-grid equal">
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Stock Attention</h3><p>Highest-priority inventory items.</p></div><span class="v24-pill">TOP ${lowRows.length}</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">▣</span><h3>Stock Attention</h3></div><p>Highest priority inventory items.</p></div><span class="v24-pill">TOP ${lowRows.length}</span></div>
        ${lowRows.length?`<div class="v24-attention">${lowRows.map(x=>`<div class="v24-attention-row"><div><b>${esc(x[0])}</b><span>${esc(x[1])}${x[2]?' · '+esc(x[2]):''}</span></div><strong class="v24-attention-count ${num(x[3])===0?'bad':''}">${x[3]}<small style="font-size:9px;color:var(--muted);font-weight:400"> / ${x[6]}</small></strong></div>`).join("")}</div>`:empty()}
      </section>
      <section class="v24-panel">
-       <div class="v24-panel-head"><div><h3>Recent Activity</h3><p>Latest stock and maintenance events.</p></div><span class="v24-pill">LATEST</span></div>
+       <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">↻</span><h3>Recent Activity</h3></div><p>Latest stock and maintenance events.</p></div><span class="v24-pill">LATEST</span></div>
        ${recentActivity.length?`<div class="v24-activity">${recentActivity.map(a=>`<div class="v24-activity-row"><div class="v24-activity-time">${fmtDate(a.date)}</div><div class="v24-activity-main"><b>${esc(a.title)}</b><span>${esc(a.detail)}${a.amount!==""?' · Qty '+a.amount:''}</span></div><span class="v24-activity-tag">${esc(a.tag)}</span></div>`).join("")}</div>`:empty()}
      </section>
    </div>
 
    <section class="v24-panel" style="margin-bottom:18px">
-     <div class="v24-panel-head"><div><h3>Recent Maintenance</h3><p>Latest recorded maintenance activity across the fleet.</p></div><span class="v24-pill">${maintRows.length} SHOWN</span></div>
+     <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">🔧</span><h3>Recent Maintenance</h3></div><p>Latest recorded maintenance activity across the fleet.</p></div><span class="v24-pill">${maintRows.length} SHOWN</span></div>
      ${recentMaint}
    </section>
 
    <section class="v24-panel">
-     <div class="v24-panel-head"><div><h3>Quick Actions</h3><p>Jump directly to the most common operational tasks.</p></div></div>
+     <div class="v24-panel-head"><div><div class="v24-title-row"><span class="v24-head-icon">⚡</span><h3>Quick Actions</h3></div><p>Jump directly to the most common operational tasks.</p></div></div>
      <div class="v24-quick">
        <button onclick="nav('issue')"><b>Issue Parts</b><span>Record a parts issue</span></button>
        <button onclick="nav('receive')"><b>Receive Stock</b><span>Record incoming parts</span></button>
-       <button onclick="nav('mentry')"><b>Maintenance Entry</b><span>Record maintenance work</span></button>
        <button onclick="nav('machines')"><b>Fleet Management</b><span>Review your machines</span></button>
      </div>
    </section>
@@ -1611,15 +1664,43 @@ function simpleReceiptTable(rows){return `<div class="tablewrap"><table class="t
 function simpleIssueTable(rows){return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td></tr>`).join("")}</table></div>`}
 
 function issuePage(){
- return `<div class="panel"><div class="toolbar"><input id="issueSearch" class="input search" placeholder="Search part number, description or machine..." oninput="renderIssueResults()"></div><div id="issueResults">${issueResults("")}</div></div>`;
+ const machines=[...new Set(db.inventory.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const locations=[...new Set(db.inventory.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ return `<div class="panel issue-page-panel">
+   <div class="issue-filter-head">
+     <div><div class="issue-filter-title">Find parts</div><div class="issue-filter-sub">Search inventory and narrow results before issuing stock.</div></div>
+     <span class="issue-filter-badge">${db.inventory.length} INVENTORY ITEMS</span>
+   </div>
+   <div class="issue-filters">
+     <div class="issue-filter-field issue-search-field"><label>Search</label><div class="issue-search-wrap"><span>⌕</span><input id="issueSearch" class="input" placeholder="Search part number, description or machine..." oninput="renderIssueResults()"></div></div>
+     <div class="issue-filter-field"><label>Machine</label><select id="issueMachineFilter" class="input" onchange="renderIssueResults()"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>
+     <div class="issue-filter-field"><label>Stock status</label><select id="issueStockFilter" class="input" onchange="renderIssueResults()"><option value="">All stock statuses</option><option value="available">Available</option><option value="low">Low stock</option><option value="out">Out of stock</option></select></div>
+     <div class="issue-filter-field"><label>Location</label><select id="issueLocationFilter" class="input" onchange="renderIssueResults()"><option value="">All locations</option>${locations.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>
+     <button class="issue-reset-btn" type="button" onclick="resetIssueFilters()">↻ <span>Reset</span></button>
+   </div>
+   <div id="issueResults">${issueResults("")}</div>
+ </div>`;
 }
 function issueResults(q){
- q=(q||"").toLowerCase();
- const rows=db.inventory.filter(x=>[x[0],x[1],x[2]].join(" ").toLowerCase().includes(q)).slice(0,100);
- if(!rows.length)return empty();
- return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Stock</th><th>Min</th><th>Location</th><th>Action</th></tr>${rows.map((x,i)=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${canEdit("issue")?`<button class="btn primary small" onclick="issueModal('${encodeURIComponent(x[0])}')">Issue</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
+ q=(q||"").toLowerCase().trim();
+ const machine=(document.getElementById("issueMachineFilter")?.value||"").toLowerCase();
+ const stock=document.getElementById("issueStockFilter")?.value||"";
+ const location=(document.getElementById("issueLocationFilter")?.value||"").toLowerCase();
+ const rows=db.inventory.filter(x=>{
+   const text=[x[0],x[1],x[2]].join(" ").toLowerCase();
+   const stockQty=num(x[3]);
+   const minQty=num(x[6]);
+   const status=stockQty===0?"out":stockQty<=minQty?"low":"available";
+   return (!q||text.includes(q)) && (!machine||String(x[2]||"").trim().toLowerCase()===machine) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
+ }).slice(0,100);
+ if(!rows.length)return `<div class="issue-empty"><div class="issue-empty-icon">⌕</div><b>No parts match your filters</b><span>Try changing the search or clearing one of the filters.</span><button class="btn secondary small" onclick="resetIssueFilters()">Clear filters</button></div>`;
+ return `<div class="issue-results-meta"><span>Showing <b>${rows.length}</b>${rows.length>=100?' of 100+':''} matching items</span></div><div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Stock</th><th>Min</th><th>Location</th><th>Action</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td><span class="issue-stock-number ${num(x[3])===0?'bad':num(x[3])<=num(x[6])?'warn':'ok'}">${x[3]}</span></td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${canEdit("issue")?`<button class="btn primary small" onclick="issueModal('${encodeURIComponent(x[0])}')">Issue</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
 }
-function renderIssueResults(){document.getElementById("issueResults").innerHTML=issueResults(document.getElementById("issueSearch").value)}
+function renderIssueResults(){const el=document.getElementById("issueResults");if(el)el.innerHTML=issueResults(document.getElementById("issueSearch")?.value||"")}
+function resetIssueFilters(){
+ ["issueSearch","issueMachineFilter","issueStockFilter","issueLocationFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+ renderIssueResults();
+}
 function issueModal(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
  const part=db.inventory.find(x=>x[0]===decodeURIComponent(p)); if(!part)return;
  openModal(`<div class="modalhead"><h2>Issue Part</h2><button class="close" onclick="closeModal()">×</button></div>
@@ -1643,7 +1724,7 @@ function ensureZeroStockUpdate(part){
  const qty=Math.max(num(part[6])||0,1);
  const machine=String(part[2]||"").trim();
  db.updates.push([new Date().toISOString(),part[0],part[1],machine,qty,"",supplier,"","TO ORDER","","AUTO - ZERO STOCK"]);
- logActivity("Auto-created parts update","Zero-stock replenishment created for "+part[0]);
+ logActivity("Auto-created parts update","Zero stock replenishment created for "+part[0]);
  return true;
 }
 function reconcileZeroStockUpdates(){
@@ -1689,7 +1770,7 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
          const id=await cloudSaveUpdate(created,null);
          created[11]=id;
        }catch(updateError){
-         console.warn("Zero-stock update could not be synced:",updateError);
+         console.warn("Zero stock update could not be synced:",updateError);
        }
      }
    }
@@ -1895,7 +1976,7 @@ function maintenanceDashboard(){
  const upcomingPanel=upcoming.length?`<div class="panel"><h3>Upcoming Services</h3><div class="hint">Machines within the next 100 operating hours</div><div class="service-list">${upcoming.slice(0,8).map(r=>`<div class="service-row"><div><b>${esc(r.m[2])}</b><span>${esc(r.m[0])} · ${esc(r.m[1])}</span></div><strong>${r.remaining} hrs</strong></div>`).join("")}</div></div>`:`<div class="panel"><h3>Upcoming Services</h3><div class="hint">Machines within the next 100 operating hours</div>${empty()}</div>`;
 
  return `<div class="maintenance-page"><div class="hero"><div><h2>Maintenance Dashboard</h2><p>Live maintenance performance, machine service status and recent activity.</p></div></div>
- <div class="cards maintenance-kpis">${metric("TOTAL JOBS",all.length,"All maintenance records")}${metric("COMPLETED",completed,"Completed jobs")}${metric("PREVENTIVE MAINTENANCE",preventive,"Preventive / inspection jobs")}${metric("REPAIRS",repairs,"Repair jobs")}${metric("ONGOING",ongoing,"Open / in-progress jobs")}${metric("PARTS REQUIRED",partsRequired,"Jobs requiring parts")}</div>
+ <div class="cards maintenance-kpis">${metric("TOTAL JOBS",all.length,"All maintenance records")}${metric("COMPLETED",completed,"Completed jobs")}${metric("PREVENTIVE MAINTENANCE",preventive,"Preventive / inspection jobs")}${metric("REPAIRS",repairs,"Repair jobs")}${metric("ONGOING",ongoing,"Open / in progress jobs")}${metric("PARTS REQUIRED",partsRequired,"Jobs requiring parts")}</div>
  ${alertPanel}
  <div class="grid2"><div class="panel"><h3>Service Attention</h3><div class="hint">Machines requiring the closest attention</div><div class="attention-grid"><div class="attention-card danger"><span>OVERDUE</span><b>${overdue.length}</b><small>Service hours reached</small></div><div class="attention-card warn"><span>DUE SOON</span><b>${upcoming.length}</b><small>Within 100 hours</small></div><div class="attention-card ok"><span>ACTIVE MACHINES</span><b>${db.machines.filter(m=>norm(m[7])==="running").length}</b><small>Currently running</small></div></div></div>${upcomingPanel}</div>
  <div class="panel"><h3>Machine Activity & Service Status</h3><div class="hint">Latest maintenance information for each machine</div>${machineTable}</div>
@@ -1990,13 +2071,50 @@ async function saveMaintenance(){if(!canEdit("maintenance"))return alert("You do
  toast("Maintenance entry saved to the cloud.");
 }
 function maintenanceLogTable(rows){
- if(!rows.length)return empty();
+ if(!rows.length)return `<div class="maintenance-log-empty"><div class="maintenance-log-empty-icon">▤</div><b>No maintenance records found</b><span>Create your first maintenance entry to get started.</span><button class="btn primary maintenance-empty-btn" onclick="maintenanceModal()">+ New Maintenance Entry</button></div>`;
  return `<div class="tablewrap maintenance-log-wrap"><table class="table maintenance-log-table"><tr>
- <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th>
+ <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th>
  </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td></tr>`).join("")}</table></div>`;
 }
-function maintenanceLogPage(){return `<div class="panel"><div class="toolbar"><input id="mlSearch" class="input search" placeholder="Search by reference, machine, technician, fault..." oninput="renderMaintenanceLog()"></div><div id="mlTable">${maintenanceLogTable(db.maintenance.slice().reverse())}</div></div>`}
-function renderMaintenanceLog(){const q=document.getElementById("mlSearch").value.toLowerCase();document.getElementById("mlTable").innerHTML=maintenanceLogTable(db.maintenance.slice().reverse().filter(x=>x.join(" ").toLowerCase().includes(q)))}
+function maintenanceLogPage(){
+ const rows=db.maintenance||[];
+ const machines=[...new Set(rows.map(x=>String(x[2]||'').trim()).filter(Boolean))].sort();
+ const statuses=[...new Set(rows.map(x=>String(x[10]||'').trim()).filter(Boolean))].sort();
+ const types=[...new Set(rows.map(x=>String(x[7]||'').trim()).filter(Boolean))].sort();
+ return `<div class="maintenance-log-page">
+   <div class="maintenance-log-filters">
+     <div class="ml-filter search-filter"><label>Search</label><div class="ml-search-wrap"><span>⌕</span><input id="mlSearch" class="input" placeholder="Search by machine, problem, work performed..." oninput="renderMaintenanceLog()"></div></div>
+     <div class="ml-filter"><label>Machine</label><select id="mlMachine" class="select" onchange="renderMaintenanceLog()"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
+     <div class="ml-filter"><label>Status</label><select id="mlStatus" class="select" onchange="renderMaintenanceLog()"><option value="">All statuses</option>${statuses.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
+     <div class="ml-filter"><label>Maintenance Type</label><select id="mlType" class="select" onchange="renderMaintenanceLog()"><option value="">All types</option>${types.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
+     <div class="ml-filter ml-date-filter"><label>Date Range</label><div class="ml-date-range"><input id="mlDateFrom" class="input" type="date" aria-label="Start date" onchange="renderMaintenanceLog()"><span>to</span><input id="mlDateTo" class="input" type="date" aria-label="End date" onchange="renderMaintenanceLog()"></div></div>
+     <button class="ml-reset-btn" onclick="resetMaintenanceLogFilters()"><span>↻</span> Reset</button>
+   </div>
+   <section class="panel maintenance-records-panel">
+     <div class="maintenance-records-head"><div><div class="maintenance-records-title"><span class="maintenance-records-icon">▤</span><div><h3>Maintenance Records</h3><p>Complete history of maintenance work across all machines.</p></div></div></div><span id="mlCount" class="v24-pill">${rows.length} RECORDS</span></div>
+     <div id="mlTable">${maintenanceLogTable(rows.slice().reverse())}</div>
+     <div class="maintenance-log-footer"><span id="mlShowing">Showing ${rows.length?1:0} to ${Math.min(rows.length,rows.length)} of ${rows.length} records</span><div class="ml-pagination"><button disabled>‹</button><button class="active">1</button><button disabled>›</button></div></div>
+   </section>
+ </div>`;
+}
+function renderMaintenanceLog(){
+ const search=(document.getElementById('mlSearch')?.value||'').trim().toLowerCase();
+ const machine=document.getElementById('mlMachine')?.value||'';
+ const status=document.getElementById('mlStatus')?.value||'';
+ const type=document.getElementById('mlType')?.value||'';
+ const from=document.getElementById('mlDateFrom')?.value||'';
+ const to=document.getElementById('mlDateTo')?.value||'';
+ let rows=(db.maintenance||[]).slice().reverse();
+ rows=rows.filter(x=>{
+   const hay=x.map(v=>String(v??'')).join(' ').toLowerCase();
+   const rowDate=String(x[1]||'').slice(0,10);
+   return (!search||hay.includes(search)) && (!machine||String(x[2]||'')===machine) && (!status||String(x[10]||'')===status) && (!type||String(x[7]||'')===type) && (!from||rowDate>=from) && (!to||rowDate<=to);
+ });
+ const table=document.getElementById('mlTable'); if(table)table.innerHTML=maintenanceLogTable(rows);
+ const count=document.getElementById('mlCount'); if(count)count.textContent=`${rows.length} RECORD${rows.length===1?'':'S'}`;
+ const showing=document.getElementById('mlShowing'); if(showing)showing.textContent=`Showing ${rows.length?1:0} to ${rows.length} of ${rows.length} records`;
+}
+function resetMaintenanceLogFilters(){['mlSearch','mlMachine','mlStatus','mlType','mlDateFrom','mlDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});renderMaintenanceLog()}
 
 function machineStatusClass(status){
  const s=String(status||"").toLowerCase();
@@ -2073,7 +2191,7 @@ function machinesPage(){
  const running=db.machines.filter(x=>["running","active"].includes(norm(x[7]))).length;
  const attention=db.machines.filter(x=>{const s=norm(x[7]);return s.includes("maintenance")||s.includes("breakdown")||s.includes("repair")||s.includes("down")||s.includes("out of service")||s.includes("inactive")}).length;
  const maintenanceReady=db.machines.length?db.machines.filter(x=>!attention || !["breakdown","out of service"].some(v=>norm(x[7]).includes(v))).length:0;
- const alert=attention?`<div class="machine-attention-v19"><div class="machine-attention-icon-v19">!</div><div><b>${attention} machine${attention===1?'':'s'} require attention</b><span>Review machines under maintenance, breakdown, repair or out-of-service status.</span></div></div>`:`<div class="machine-attention-v19 ok"><div class="machine-attention-icon-v19">✓</div><div><b>Fleet status looks healthy</b><span>No machines are currently flagged for maintenance, breakdown or out-of-service attention.</span></div></div>`;
+ const alert=attention?`<div class="machine-attention-v19"><div class="machine-attention-icon-v19">!</div><div><b>${attention} machine${attention===1?'':'s'} require attention</b><span>Review machines under maintenance, breakdown, repair or out of service status.</span></div></div>`:`<div class="machine-attention-v19 ok"><div class="machine-attention-icon-v19">✓</div><div><b>Fleet status looks healthy</b><span>No machines are currently flagged for maintenance, breakdown or out of service attention.</span></div></div>`;
  return `<div class="machine-page-v19">
 
   <div class="machine-kpis-v19">
@@ -2176,7 +2294,7 @@ function runMaintenanceReport(){const type=document.getElementById("mr_type").va
  const partsUpdates=db.updates.filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
  window.__maintenanceReportParts=partsUpdates;
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length,ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length,preventive=rows.filter(x=>["preventive maintenance","preventive","pm"].includes(String(x[7]).toLowerCase())).length,repairs=rows.filter(x=>["repair","repairs"].includes(String(x[7]).toLowerCase())).length,parts=rows.filter(x=>String(x[11]||"").trim()!=="").length;
- document.getElementById("mrout").innerHTML=`<div class="cards">${metric("TOTAL JOBS",rows.length,type)}${metric("COMPLETED",completed,"Completed")}${metric("ONGOING",ongoing,"Open/in progress")}${metric("PARTS REQUIRED",parts,"Jobs with parts listed")}</div><div class="notice"><b>${type}</b> period: ${fmtDate(start)} to ${fmtDate(end)} &nbsp; | &nbsp; Preventive: ${preventive} &nbsp; | &nbsp; Repairs: ${repairs}</div><section class="report-section maintenance-report-section"><div class="report-section-heading"><h3>Maintenance Records</h3><span>${rows.length} job(s)</span></div>${maintenanceTable(rows)}</section><section class="report-section parts-report-section"><div class="report-section-heading"><h3>Parts Updates</h3><span>${partsUpdates.length} update(s)</span></div>${reportPartsUpdateTable(partsUpdates)}</section>`}
+ document.getElementById("mrout").innerHTML=`<div class="cards">${metric("TOTAL JOBS",rows.length,type)}${metric("COMPLETED",completed,"Completed")}${metric("ONGOING",ongoing,"Open / in progress")}${metric("PARTS REQUIRED",parts,"Jobs with parts listed")}</div><div class="notice"><b>${type}</b> period: ${fmtDate(start)} to ${fmtDate(end)} &nbsp; | &nbsp; Preventive: ${preventive} &nbsp; | &nbsp; Repairs: ${repairs}</div><section class="report-section maintenance-report-section"><div class="report-section-heading"><h3>Maintenance Records</h3><span>${rows.length} job(s)</span></div>${maintenanceTable(rows)}</section><section class="report-section parts-report-section"><div class="report-section-heading"><h3>Parts Updates</h3><span>${partsUpdates.length} update(s)</span></div>${reportPartsUpdateTable(partsUpdates)}</section>`}
 
 
 let iyUsersCache=[];
@@ -2186,7 +2304,7 @@ function isCompanyAdmin(){
  return role==="company_admin"||role==="super_admin";
 }
 
-// IY Maintain role-based access control. UI permissions mirror the database RLS model.
+// IY Maintain role based access control. UI permissions mirror the database RLS model.
 function currentRole(){return String(iyMembership?.role||"").toLowerCase();}
 function canAccess(page){
  const role=currentRole();
@@ -2198,8 +2316,7 @@ function canAccess(page){
    inventory:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
    updates:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
    mdashboard:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   mentry:["supervisor","technician","maintenance"],
-   mlog:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
+      mlog:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
    machines:["supervisor","technician","viewer","maintenance","employee"],
    preports:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
    mreports:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
@@ -2598,7 +2715,7 @@ function renderLogin(mode="signin"){
   <section class="iy-auth-brand">
    <div class="iy-auth-brand-inner">
     <img class="iy-auth-logo-wide" src="${IY_BRAND_LOGO}" alt="${IY_BRAND_COMPANY}">
-    <div class="iy-auth-eyebrow">IY MAINTAIN • ROLE-BASED CLOUD WORKSPACE</div>
+    <div class="iy-auth-eyebrow">IY MAINTAIN • ROLE BASED CLOUD WORKSPACE</div>
     <h1>Maintenance and parts, in one secure workspace.</h1>
     <p class="iy-auth-brand-copy">Manage parts inventory, receipts, issues, machines, maintenance records and reports with secure company-level data isolation.</p>
     <div class="iy-auth-points">
@@ -3071,4 +3188,171 @@ initiyAuth();
 .machine-photo-actions-v18 .btn{flex:1!important;min-width:0!important;padding:7px 8px!important;font-size:10px!important;line-height:1.2!important}
 .machine-photo-actions-v18 .btn.danger{background:#fff1f2!important;color:#c9364d!important;border:1px solid #f2c9d0!important}
 .machine-photo-actions-v18 .btn.danger:hover{background:#fde5e8!important}
+
+/* =========================================================
+   DASHBOARD CARD POLISH — IY Maintain
+   Consistent enterprise card language across both dashboards.
+   ========================================================= */
+.v24-panel{
+  border:1px solid #dfe7f0;
+  border-radius:16px;
+  padding:20px 20px 18px;
+  box-shadow:0 3px 12px rgba(18,45,75,.045);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.v24-panel:hover{
+  border-color:#d4e1ee;
+  box-shadow:0 8px 24px rgba(18,45,75,.07);
+}
+.v24-panel-head{
+  align-items:center;
+  min-height:34px;
+  margin-bottom:15px;
+}
+.v24-title-row{display:flex;align-items:center;gap:10px;min-width:0}
+.v24-title-row h3{margin:0 0 3px!important;font-size:15px!important;letter-spacing:-.015em;color:#102b49}
+.v24-head-icon{
+  width:32px;height:32px;flex:0 0 32px;border-radius:10px;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#eef5ff,#e7f0fb);
+  border:1px solid #d8e6f4;
+  color:#1263c9;font-size:14px;font-weight:800;
+  box-shadow:0 2px 5px rgba(20,67,110,.06);
+}
+.v24-panel-head p{margin:0 0 0 42px!important;font-size:10px!important;line-height:1.45}
+.v24-pill{font-size:9px;padding:5px 9px;background:#f1f6fb;color:#23689d;border:1px solid #dfebf5;letter-spacing:.04em}
+.v24-attention-row{padding:13px 2px;border-bottom:1px solid #e9eef4}
+.v24-attention-row b{font-size:12px;color:#183451}
+.v24-attention-row span{font-size:9px;margin-top:4px}
+.v24-attention-count{min-width:28px;text-align:right;font-size:17px}
+
+/* Main dashboard KPI cards */
+.v24-kpi{
+  min-height:104px;
+  padding:14px 15px 13px 17px;
+  border:1px solid #dfe7f0;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(18,45,75,.035);
+}
+.v24-kpi:before{width:3px}
+.v24-kpi .k-label{font-size:9px;letter-spacing:.85px}
+.v24-kpi .k-value{font-size:27px;margin:6px 0 2px}
+.v24-kpi .k-sub{font-size:9px}
+
+/* Maintenance dashboard KPI cards */
+.maintenance-kpis .metric{
+  min-height:118px;
+  padding:14px 15px 13px;
+  border:1px solid #dfe7f0;
+  border-radius:14px;
+  box-shadow:0 2px 8px rgba(18,45,75,.035);
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.maintenance-kpis .metric:hover{
+  transform:translateY(-2px);
+  border-color:#cbdceb;
+  box-shadow:0 8px 20px rgba(18,45,75,.08);
+}
+.maintenance-kpis .metric-icon{
+  width:36px;height:36px;border-radius:10px;margin-bottom:11px;
+  font-size:17px;border-width:1px;
+  box-shadow:0 2px 5px rgba(18,45,75,.04);
+}
+.maintenance-kpis .metric .label{
+  font-size:9px;letter-spacing:.75px;color:#64778d;
+}
+.maintenance-kpis .metric .value{
+  font-size:27px;line-height:1.05;margin:6px 0 3px;color:#102d4b;
+}
+.maintenance-kpis .metric .sub{font-size:9px;color:#7a8b9e}
+
+/* Maintenance service attention cards */
+.maintenance-page .attention-card{
+  border:1px solid #dfe7f0!important;
+  border-radius:13px!important;
+  box-shadow:0 2px 8px rgba(18,45,75,.035)!important;
+  background:#fff!important;
+  min-height:100px;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.maintenance-page .attention-card:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(18,45,75,.07)!important}
+.maintenance-page .attention-card span{font-size:9px!important;letter-spacing:.7px;font-weight:800}
+.maintenance-page .attention-card b{font-size:27px!important}
+.maintenance-page .attention-card small{font-size:9px!important}
+
+@media(max-width:800px){
+  .v24-panel{padding:17px 15px}
+  .v24-panel-head{align-items:flex-start}
+  .v24-panel-head p{margin-left:42px!important}
+  .v24-kpi{min-height:100px}
+  .maintenance-kpis .metric{min-height:110px}
+}
+
+
+/* IY Maintain V24.3 — Maintenance dashboard uses the primary blue identity */
+.maintenance-page > .hero{
+  background:linear-gradient(120deg,#062b67 0%,#0b57c9 55%,#0a8de8 100%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 14px 30px rgba(8,55,120,.18);
+}
+.maintenance-page > .hero h2{letter-spacing:-.035em}
+.maintenance-page > .hero p{color:#eaf3ff}
+.maintenance-page .maintenance-kpis .metric{
+  border-top:3px solid #0b7f78;
+  padding-top:12px;
+}
+.maintenance-page .maintenance-kpis .metric:nth-child(1){border-top-color:#315b9d}
+.maintenance-page .maintenance-kpis .metric:nth-child(2){border-top-color:#18a66d}
+.maintenance-page .maintenance-kpis .metric:nth-child(3){border-top-color:#0b8b78}
+.maintenance-page .maintenance-kpis .metric:nth-child(4){border-top-color:#4f6f9f}
+.maintenance-page .maintenance-kpis .metric:nth-child(5){border-top-color:#d3911a}
+.maintenance-page .maintenance-kpis .metric:nth-child(6){border-top-color:#56718f}
+.maintenance-page .maintenance-kpis .metric .label{color:#31566f}
+.maintenance-page .maintenance-kpis .metric:nth-child(2) .label,
+.maintenance-page .maintenance-kpis .metric:nth-child(3) .label{color:#08745f}
+.maintenance-page .maintenance-kpis .metric:nth-child(5) .label{color:#a56a00}
+.maintenance-page .panel > h3{
+  color:#123b56;
+}
+.maintenance-page .panel > h3::after{
+  content:"";
+  display:block;
+  width:34px;
+  height:3px;
+  border-radius:3px;
+  margin-top:9px;
+  background:linear-gradient(90deg,#0b7f78,#12a879);
+}
+.maintenance-page .panel .hint{margin-top:7px}
+.maintenance-page .attention-card{
+  position:relative;
+  overflow:hidden;
+}
+.maintenance-page .attention-card::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:3px;
+  background:#0b7f78;
+}
+.maintenance-page .attention-card.danger::before{background:#d23b3b}
+.maintenance-page .attention-card.warn::before{background:#d3911a}
+.maintenance-page .attention-card.ok::before{background:#18a66d}
+
+/* V24.4 — Search & Issue Parts professional filters */
+.issue-page-panel{padding:20px!important}
+.issue-filter-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.issue-filter-title{font-size:17px;font-weight:750;color:#102a43;letter-spacing:-.01em}
+.issue-filter-sub{font-size:12px;color:#718096;margin-top:3px}
+.issue-filter-badge{font-size:9px;font-weight:800;letter-spacing:.06em;color:#1769d2;background:#eef6ff;border:1px solid #d9eaff;padding:7px 10px;border-radius:999px;white-space:nowrap}
+.issue-filters{display:grid;grid-template-columns:minmax(260px,2.2fr) minmax(150px,1fr) minmax(150px,1fr) minmax(150px,1fr) auto;gap:12px;align-items:end;padding:16px;border:1px solid #dfe8f2;border-radius:14px;background:linear-gradient(180deg,#fbfdff,#f7fafd);margin-bottom:16px}
+.issue-filter-field label{display:block;font-size:10px;font-weight:800;letter-spacing:.04em;color:#496176;margin:0 0 7px 2px}
+.issue-filter-field .input{width:100%;height:42px;box-sizing:border-box}
+.issue-search-wrap{position:relative}.issue-search-wrap>span{position:absolute;left:13px;top:10px;color:#71859a;font-size:17px;z-index:2}.issue-search-wrap .input{padding-left:37px}
+.issue-reset-btn{height:42px;padding:0 15px;border:1px solid #d4e0ec;background:#fff;color:#1769d2;border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}.issue-reset-btn:hover{background:#f3f8ff;border-color:#bcd4ef}
+.issue-results-meta{font-size:11px;color:#718096;margin:2px 2px 10px}.issue-stock-number{font-weight:800}.issue-stock-number.ok{color:#078a58}.issue-stock-number.warn{color:#d48700}.issue-stock-number.bad{color:#d52f35}
+.issue-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7f93;gap:7px}.issue-empty-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#edf4fb;color:#1769d2;font-size:23px;margin-bottom:5px}.issue-empty b{font-size:15px;color:#16324b}.issue-empty span{font-size:12px;margin-bottom:7px}
+@media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
+@media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
 </style>
