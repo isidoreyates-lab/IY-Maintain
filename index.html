@@ -789,42 +789,83 @@ button,input,select,textarea{font-family:inherit}
 }
 .brand.iy-product-brand{
   align-items:flex-start;
-  padding:8px 10px 18px;
+  gap:12px;
+  padding:10px 10px 18px;
+  margin-bottom:16px;
+  position:relative;
 }
 .brand.iy-product-brand .iy-product-logo{
-  width:46px;
-  height:46px;
-  padding:4px;
+  width:48px;
+  height:48px;
+  padding:5px;
   object-fit:contain;
-  border-radius:12px;
+  border-radius:14px;
   background:#fff;
-  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  box-shadow:0 8px 24px rgba(0,0,0,.20);
+  flex:0 0 48px;
+}
+.brand.iy-product-brand > div{
+  min-width:0;
+  padding-top:1px;
 }
 .brand.iy-product-brand b{
   display:block;
   color:#fff;
   font-size:18px;
-  letter-spacing:-.02em;
+  line-height:1.05;
+  letter-spacing:-.03em;
 }
 .brand.iy-product-brand small{
   display:block;
   color:#8fcfff;
-  font-size:10px;
-  margin-top:3px;
+  font-size:9px;
+  margin-top:5px;
   font-weight:700;
-  letter-spacing:.04em;
+  letter-spacing:.045em;
+  text-transform:uppercase;
 }
 .workspace-label{
-  display:block;
-  max-width:155px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  max-width:175px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
-  color:#b9d5ee;
+  color:#d7e8f8;
+  font-size:10px;
+  line-height:1.2;
+  margin-top:12px;
+  padding:9px 10px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:9px;
+  background:rgba(255,255,255,.055);
+}
+.workspace-label:before{
+  content:'\25A6';
+  color:#19c6ff;
+  font-size:11px;
+  flex:0 0 auto;
+}
+.access-role-note{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  max-width:175px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#eef6ff,#dcecff);
+  color:#0753c9;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  margin-top:7px;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+.access-role-note:before{
+  content:'\25C9';
   font-size:9px;
-  margin-top:8px;
-  padding-top:7px;
-  border-top:1px solid rgba(255,255,255,.12);
+  color:#075fff;
 }
 .navbtn.active{
   background:linear-gradient(90deg,rgba(7,95,255,.34),rgba(25,198,255,.10));
@@ -1106,6 +1147,55 @@ button,input,select,textarea{font-family:inherit}
 }
 </style>
 
+
+<style id="mobile-professional-shell">
+/* Mobile professional navigation + search polish */
+.mobile-bottom-nav{display:none}
+.mobile-nav-backdrop{display:none}
+.mobile-nav-sheet{display:none}
+@media(max-width:700px){
+  body{padding-bottom:76px;overflow-x:hidden}
+  .app{min-height:calc(100vh - 76px)}
+  .sidebar{display:none!important}
+  .main{margin-left:0!important;width:100%!important}
+  .top{height:64px!important;padding:0 14px!important;display:flex!important;align-items:center!important;gap:10px;position:sticky;top:0;z-index:80}
+  .top>div:first-child{min-width:0;flex:1}
+  .top h1{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top-actions{gap:7px!important;flex:0 0 auto}
+  .global-search-wrap{position:relative!important;width:42px!important;height:42px;display:block}
+  .global-search{width:42px!important;height:42px!important;padding:0!important;border-radius:12px!important;font-size:0!important;text-indent:-9999px;background:#f6f9fc!important;border-color:#dbe5ee!important;cursor:pointer}
+  .global-search-icon{left:0!important;top:0!important;width:42px;height:42px;display:grid;place-items:center;font-size:17px!important;color:#526b84!important;z-index:2}
+  .global-search-wrap:focus-within{position:fixed!important;left:12px;right:12px;top:10px;width:auto!important;height:44px;z-index:300}
+  .global-search-wrap:focus-within .global-search{width:100%!important;height:44px!important;padding:0 44px!important;font-size:13px!important;text-indent:0!important;background:#fff!important;box-shadow:0 10px 30px rgba(10,37,64,.18)!important}
+  .global-search-wrap:focus-within .global-search-icon{left:12px!important;top:0!important}
+  .global-search-panel{position:fixed!important;left:12px!important;right:12px!important;top:60px!important;width:auto!important;max-width:none!important;max-height:calc(100vh - 82px);box-shadow:0 18px 55px rgba(10,37,64,.22)!important;border-radius:16px!important}
+  .global-search-results{max-height:52vh!important}
+  .notification-trigger,.profile-trigger{width:42px!important;height:42px!important}
+  .profile-trigger{padding:0!important}
+  .profile-copy{display:none!important}
+  .notification-panel{right:-4px!important;top:50px!important;width:min(350px,calc(100vw - 24px))!important}
+  .content{padding:18px 14px 28px!important}
+  .mobile-bottom-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:10px;right:10px;bottom:10px;height:64px;background:rgba(6,26,79,.97);border:1px solid rgba(255,255,255,.12);border-radius:18px;box-shadow:0 12px 35px rgba(6,26,79,.28);z-index:220;padding:6px}
+  .mobile-nav-item{border:0;background:transparent;color:#aebed1;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:700;cursor:pointer;min-width:0}
+  .mobile-nav-item .mn-icon{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;font-size:14px}
+  .mobile-nav-item.active{background:rgba(255,255,255,.10);color:#fff}
+  .mobile-nav-item.active .mn-icon{background:#075fff;color:#fff;box-shadow:0 5px 14px rgba(7,95,255,.28)}
+  .mobile-nav-item.menu .mn-icon{background:rgba(255,255,255,.10);color:#fff}
+  .mobile-nav-backdrop{position:fixed;display:block;inset:0;background:rgba(4,15,35,.45);backdrop-filter:blur(3px);z-index:230}
+  .mobile-nav-sheet{position:fixed;display:block;left:10px;right:10px;bottom:84px;max-height:calc(100vh - 120px);overflow:auto;background:#fff;border:1px solid #dce5ed;border-radius:20px;box-shadow:0 24px 70px rgba(10,37,64,.25);z-index:240;padding:16px}
+  .mobile-nav-sheet-head{display:flex;align-items:center;justify-content:space-between;padding:2px 2px 13px;border-bottom:1px solid #edf1f5;margin-bottom:8px}
+  .mobile-nav-sheet-head b{font-size:15px;color:#0a2540}.mobile-nav-sheet-head span{font-size:10px;color:#7a8da1;margin-top:2px;display:block}
+  .mobile-nav-close{width:34px;height:34px;border:1px solid #dce5ed;background:#f7f9fb;border-radius:10px;font-size:18px;color:#526b84}
+  .mobile-nav-group{font-size:9px;letter-spacing:.14em;font-weight:800;color:#8494a5;margin:15px 4px 6px}
+  .mobile-nav-link{width:100%;display:flex;align-items:center;gap:11px;border:1px solid transparent;background:#fff;color:#233b54;border-radius:11px;padding:11px 10px;text-align:left;font-size:12px;font-weight:700}
+  .mobile-nav-link.active{background:#edf5ff;border-color:#d7e8ff;color:#075fff}
+  .mobile-nav-link .mnl-icon{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:grid;place-items:center;color:#526b84;font-size:13px;flex:0 0 30px}
+  .mobile-nav-link.active .mnl-icon{background:#dcecff;color:#075fff}
+  .mobile-nav-link .mnl-label{min-width:0;flex:1}
+  .mobile-nav-link .mnl-arrow{color:#a0adba;font-size:14px}
+}
+@media(min-width:701px){.mobile-bottom-nav,.mobile-nav-backdrop,.mobile-nav-sheet{display:none!important}}
+</style>
 </head>
 <body>
 <div id="app"></div>
@@ -1145,6 +1235,7 @@ let notificationRefreshBusy=false;
 let loggedIn=false;
 let globalSearchOpen=false;
 let globalSearchQuery="";
+let mobileMenuOpen=false;
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function loadDB(){try{const x=localStorage.getItem(KEY);return x?JSON.parse(x):clone(INITIAL_DATA)}catch(e){return clone(INITIAL_DATA)}}
@@ -1163,9 +1254,27 @@ function logActivity(action,details=""){
  save();
 }
 function initials(name){return String(name||"A").trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"A"}
-function nav(page){if(!canAccess(page)){toast("You do not have permission to open this section.");return}currentPage=page;profileOpen=false;notificationOpen=false;logActivity("Viewed page",pageTitleFor(page));render()}
+function nav(page){if(!canAccess(page)){toast("You do not have permission to open this section.");return}currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()}
 function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mentry:"Maintenance Entry",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data"};return t[page]||"Dashboard"}
 function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`}
+function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${icon}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
+function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=false;profileOpen=false;notificationOpen=false;render()}
+function mobileBottomItem(id,label,icon){const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${icon}</span><span>${label}</span></button>`}
+function renderMobileNavigation(){
+ const menu=mobileMenuOpen?`<div class="mobile-nav-backdrop" onclick="toggleMobileMenu()"></div><div class="mobile-nav-sheet">
+  <div class="mobile-nav-sheet-head"><div><b>Navigation</b><span>All IY Maintain modules</span></div><button class="mobile-nav-close" onclick="toggleMobileMenu()">×</button></div>
+  ${mobileNavLink('dashboard','Dashboard','⌂')}
+  <div class="mobile-nav-group">PARTS</div>
+  ${mobileNavLink('issue','Search & Issue Parts','▣')}${mobileNavLink('receive','Receive Parts','+')}${mobileNavLink('inventory','Inventory','▤')}${mobileNavLink('updates','Parts Updates','↻')}
+  <div class="mobile-nav-group">MAINTENANCE</div>
+  ${mobileNavLink('mdashboard','Maintenance Dashboard','◇')}${mobileNavLink('mentry','Maintenance Entry','+')}${mobileNavLink('mlog','Maintenance Log','▤')}${mobileNavLink('machines','Machines','⚙')}
+  <div class="mobile-nav-group">REPORTS</div>
+  ${mobileNavLink('preports','Parts Reports','▥')}${mobileNavLink('mreports','Maintenance Reports','▥')}
+  <div class="mobile-nav-group">SYSTEM</div>
+  ${mobileNavLink('settings','Settings','⚙')}${mobileNavLink('users','Users & Roles','♙')}${mobileNavLink('activity','User Activity','◷')}${mobileNavLink('backup','Backup Data','⇩')}
+ </div>`:'';
+ return `${menu}<nav class="mobile-bottom-nav" aria-label="Mobile navigation">${mobileBottomItem('dashboard','Home','⌂')}${mobileBottomItem('issue','Parts','▣')}${mobileBottomItem('mdashboard','Maintenance','◇')}${mobileBottomItem('preports','Reports','▥')}<button class="mobile-nav-item menu ${mobileMenuOpen?'active':''}" onclick="toggleMobileMenu()"><span class="mn-icon">☰</span><span>Menu</span></button></nav>`;
+}
 
 function notificationReadSet(){return new Set(Array.isArray(notificationReads)?notificationReads:[])}
 function notificationTimeLabel(v){if(!v)return "";const d=new Date(v);if(isNaN(d))return "";const mins=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));if(mins<1)return "Just now";if(mins<60)return `${mins}m ago`;const hrs=Math.floor(mins/60);if(hrs<24)return `${hrs}h ago`;const days=Math.floor(hrs/24);return days===1?"Yesterday":`${days}d ago`}
@@ -1274,6 +1383,7 @@ function render(){
    </div></header>
    <section class="content page-${currentPage}">${pageContent()}</section>
   </main>
+  ${renderMobileNavigation()}
  </div>`;
  if(currentPage==="users"&&isCompanyAdmin())setTimeout(renderUsersTable,0);
 
