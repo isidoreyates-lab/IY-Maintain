@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.12 — Settings Organization & System Lock -->
+<!-- IY Maintain V24.13 — Users & Roles Management -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -666,7 +666,7 @@ button,input,select,textarea{font-family:inherit}
 
 /* V24.9 Parts Orders actions */
 .parts-orders-actions{display:flex;gap:7px;align-items:center;white-space:nowrap}.parts-orders-actions .btn{font-size:12px;padding:7px 10px}.parts-orders-actions .btn.receive-order{background:#e8f6ef;color:#17633a;border:1px solid #c9e8d5}.parts-orders-actions .btn.receive-order:hover{background:#dff1e8}.order-edit-note{padding:10px 12px;border-radius:9px;background:#eef5ff;border:1px solid #d5e5fb;color:#315b85;font-size:12px;margin-bottom:14px}
-</style>
+.table-action.danger{color:#b42318;border-color:#f3c1bd;background:#fff5f4}.table-action.danger:hover{background:#fee4e2}.muted{color:var(--muted)}</style>
 
 <style>
 .iy-auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,520px);background:#f6f8fb;color:#111827}
@@ -2656,7 +2656,7 @@ async function renderUsersTable(){
       <td>${esc(u.department||"—")}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button></td>
+      <td><div style="display:flex;gap:8px;justify-content:flex-end;align-items:center"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id!==iyAuthUser?.id?`<button class="table-action danger" onclick="removeWorkspaceUser('${u.id}')">Remove</button>`:`<span class="muted" style="font-size:12px">You</span>`}</div></td>
     </tr>`).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
@@ -2763,6 +2763,24 @@ async function saveUserMembership(id){if(!canEdit("users"))return alert("Company
    toast("User updated.");
  }catch(e){alert(e?.message||"User could not be updated.");}
 }
+async function removeWorkspaceUser(id){
+ if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ if(!isCompanyAdmin())return alert("Company Administrator access is required.");
+ const u=iyUsersCache.find(x=>x.id===id);
+ if(!u)return;
+ if(u.user_id===iyAuthUser?.id)return alert("You cannot remove your own account from this workspace.");
+ const name=u.full_name||u.email||"this user";
+ const confirmed=confirm(`Remove ${name} from ${iyCompany?.name||"this workspace"}?\n\nThey will immediately lose access to this company's data. Their Supabase account is not deleted and can be invited again later.`);
+ if(!confirmed)return;
+ try{
+   const {error}=await iySupabase.from("memberships").delete().eq("id",id).eq("company_id",iyCompany.id);
+   if(error)throw error;
+   await cloudAudit("Removed user",`${u.email||u.user_id} · ${roleLabel(u.role)}`);
+   await renderUsersTable();
+   toast("User removed from the workspace.");
+ }catch(e){alert(e?.message||"User could not be removed from the workspace.");}
+}
+
 function activityPage(){
  const logs=(db.activityLog||[]).slice(0,100);
  const today=new Date().toISOString().slice(0,10);
@@ -3037,7 +3055,7 @@ async function loadCompanyContext(user){
  await iySupabase.from("memberships").update({last_login_at:new Date().toISOString()}).eq("id",membership.id);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"MAINTENANCE MANAGEMENT SYSTEM",version:"V24.10",developer:"ISIDORE KWEKU YATES",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"MAINTENANCE MANAGEMENT SYSTEM",version:"V24.13",developer:"ISIDORE KWEKU YATES",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
