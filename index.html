@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.13 — Users & Roles Management -->
+<!-- IY Maintain V24.10 — Parts Updates Workflow Fix -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -267,7 +267,7 @@ content{padding:28px 34px 50px}
 .settings-status-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid #dce6ef;border-radius:999px;background:#fff;color:#5e7288;font-size:11px;font-weight:700;box-shadow:0 1px 2px rgba(16,36,58,.03)}
 .status-pulse{width:8px;height:8px;border-radius:50%;background:#20a66a;box-shadow:0 0 0 4px rgba(32,166,106,.10)}
 .settings-nav-strip{display:flex;gap:4px;border-bottom:1px solid #dfe7ef;margin-bottom:20px;padding-left:2px}
-.settings-nav-item{display:flex;align-items:center;gap:8px;padding:10px 14px 12px;color:#708298;font-size:12px;font-weight:700;border:0;border-bottom:2px solid transparent;background:transparent;font-family:inherit;cursor:pointer}
+.settings-nav-item{display:flex;align-items:center;gap:8px;padding:10px 14px 12px;color:#708298;font-size:12px;font-weight:700;border-bottom:2px solid transparent}
 .settings-nav-item.active{color:#1769aa;border-bottom-color:#1769aa}
 .nav-icon{font-size:13px;opacity:.9}
 .modern-settings-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(360px,.85fr);gap:20px;align-items:start}
@@ -666,7 +666,7 @@ button,input,select,textarea{font-family:inherit}
 
 /* V24.9 Parts Orders actions */
 .parts-orders-actions{display:flex;gap:7px;align-items:center;white-space:nowrap}.parts-orders-actions .btn{font-size:12px;padding:7px 10px}.parts-orders-actions .btn.receive-order{background:#e8f6ef;color:#17633a;border:1px solid #c9e8d5}.parts-orders-actions .btn.receive-order:hover{background:#dff1e8}.order-edit-note{padding:10px 12px;border-radius:9px;background:#eef5ff;border:1px solid #d5e5fb;color:#315b85;font-size:12px;margin-bottom:14px}
-.table-action.danger{color:#b42318;border-color:#f3c1bd;background:#fff5f4}.table-action.danger:hover{background:#fee4e2}.muted{color:var(--muted)}</style>
+</style>
 
 <style>
 .iy-auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,520px);background:#f6f8fb;color:#111827}
@@ -964,7 +964,6 @@ button,input,select,textarea{font-family:inherit}
 .report-document{display:flex;flex-direction:column;gap:26px;align-items:center}
 .report-page{box-sizing:border-box;width:1123px;min-height:794px}
 .report-page-parts{page-break-before:always}
-.report-page-orders{page-break-before:always}
 .report-paper .r-head{min-height:92px;padding-bottom:16px;margin-bottom:16px}
 .report-paper .r-logo{max-width:125px;max-height:70px}
 .report-paper .r-title{font-size:24px}
@@ -990,7 +989,6 @@ button,input,select,textarea{font-family:inherit}
 .report-paper .r-sig-image{max-width:95px;max-height:36px}
 .report-paper .r-footer{margin-top:18px;padding-top:8px;font-size:6.5px}
 .report-page-parts .r-signatures{margin-top:34px}
-.report-page-orders .r-signatures{margin-top:34px}
 
 @media(max-width:1200px){
  .report-document{align-items:flex-start}
@@ -1003,7 +1001,7 @@ button,input,select,textarea{font-family:inherit}
  body.printing-maintenance-report .report-document{display:block!important}
  body.printing-maintenance-report .report-page{width:297mm!important;min-height:210mm!important;height:210mm!important;margin:0!important;padding:11mm 14mm 8mm!important;transform:none!important;box-shadow:none!important;page-break-after:always!important;overflow:hidden!important}
  body.printing-maintenance-report .report-page:last-child{page-break-after:auto!important}
- body.printing-maintenance-report .report-page-parts, body.printing-maintenance-report .report-page-orders{page-break-before:always!important}
+ body.printing-maintenance-report .report-page-parts{page-break-before:always!important}
 }
 </style>
 <style>
@@ -1288,11 +1286,8 @@ let iyAuthBusy = false;
 
 const INITIAL_DATA = {"inventory": [["T143134", "Primary Air Filter", "MAC 25", 4, 4, 0, 2, "MCL 12/4", null], ["T143135", "Secondary Air Filter", "MAC 25", 4, 4, 0, 2, "MCL 12/4", null], ["PP8158522", "Engine Fan Belt", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T138322", "Lenght Cable ", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T133746", "Angle Sensor", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP2105000", "Hydraulic Filter", "MAC 25", 4, 4, 0, 2, "MCL 12/4", null], ["PP2280600", "Oil Filter", "MAC 25", 8, 8, 0, 2, "MCL 12/4", null], ["PP2280800", "Fuel Filter", "MAC 25", 8, 8, 0, 2, "MCL 12/4", null], ["PP2280700", "Fuel Seperator", "MAC 25", 6, 6, 0, 2, "MCL 12/4", null], ["PP2285400", "Transmission Filter", "MAC 25", 3, 3, 0, 2, "MCL 12/4", null], ["T181984", "Display", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T159340", "Angle Sensor Retrofit", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T178891", "Tilt Sensor Plate Bracket", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP9155006", "Wheel Axle Stud", "MAC 25", 9, 9, 0, 2, "MCL 12/3", null], ["PP1888400", "A/C Blower", "MAC 25", 2, 2, 0, 2, "MCL 12/3", null], ["PP0101200", "A/C Fan Switch", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T134473", "350 Bar Transducer", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T169080", "6 Bar Switch (Hyd. Pressure)", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T133761", "Angle Sensor Magnet", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP2368600", "Switch 55 Mbar 1/8\" Vacuum", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP2198700", "Wheel Nuts", "MAC 25", 9, 9, 0, 2, "MCL 12/3", null], ["PP0100900", "A/C Fan Motor", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["MXC3145", "Engine To Radiator Hose", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP2396600", "Arm Wiper", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP2396800", "Blade Wiper", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PLMXC3152", "A2B Swicth", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T137350", "Proximity Switch Counterweight", "MAC 25", 6, 6, 0, 2, "MCL 12/3", null], ["T172839", "Tilt Sensor Dual Axis", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["PP8004160", "24V Relay Led", "MAC 25", 5, 5, 0, 2, "MCL 12/3", null], ["T135942", "LMI Cable Clamp", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["T173373", "Hook 25.6T Swivel", "MAC 25", 1, 1, 0, 2, "Under Canopy", null], ["T168417", "Hoist Rope", "MAC 25", 4, 4, 0, 2, "Under Canopy", null], ["PP8158524", "Belt Tensioner", "MAC 25", 1, 1, 0, 2, "MCL 12/3", null], ["53002309", "Primary Air Filter", "MHT-X10230", 5, 5, 0, 2, "MCL 11/4", null], ["299937", "Secondary Air Filter", "MHT-X10230,MT-X790", 7, 7, 0, 2, "MCL 11/4", null], ["52815949", "Hydraulic Stariner", "MHT-X10230", 4, 4, 0, 2, "MCL 11/2", null], ["924765", "Hydraulic Filter (Suction)", "MHT-X10230", 2, 2, 0, 2, "MCL 11/2", null], ["737524", "Hydraulic Filter", "MHT-X10230", 7, 7, 0, 2, "MCL 11/2", null], ["732118", "Reverse Buzzer", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["52768444", "Cabin Filter (Inside)", "MHT-X10230,MT-X790", 1, 1, 0, 2, "MCL 11/2", null], ["278288", "Breather", "MHT-X10230", 1, 1, 0, 2, "MCL 11/2", null], ["261971", "Cabin Filter(Outside)", "MHT-X10230", 1, 1, 0, 2, "MCL 11/2", null], ["52816288", "Fuel Filter", "MHT-X10230", 11, 11, 0, 2, "MCL 11/2", null], ["710887", "Fule Strainer", "MHT-X10230", 11, 11, 0, 2, "MCL 11/2", null], ["608773", "Oil Filter", "MHT-X10230", 1, 1, 0, 2, "MCL 11/2", null], ["608776", "Fuel Water Seperator", "MHT-X10230", 1, 1, 0, 2, "MCL 11/2", null], ["282526", "Hydraulic Filter", "MHT-X10230", 2, 2, 0, 2, "MCL 11/2", null], ["53013301", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["53003392", "Engine Fan Belt", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["745456", "Pin", "MHT-X10230", 2, 2, 0, 2, "MCL 11/3", null], ["710829", "Pressure Sensor", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["5301330", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["609439", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["50313299", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["53013298", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["226063", "Vibration Damper", "MT-X790", 1, 1, 0, 2, "MCL 11/3", null], ["53003022", "Temperature Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["738528", "Emergency Stop Button", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["711043", "Temperature Sensor", "MHT-X10230", 2, 2, 0, 2, "MCL 11/3", null], ["746486", "Wiper", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["746458", "Wiper", "MHT-X10230", 2, 2, 0, 2, "MCL 11/3", null], ["53013330", "Seal Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["798238", "Rearview Mirror", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["895222", "Temperature Sensor", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["924767", "Hydraulic Oil Filter (Suction)", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["909111", "Handle (Joystick)", "MT-X790", 1, 1, 0, 2, "MCL 11/3", null], ["910629", "Remote Control", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["52621031", "Kit", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["924002", "Remote Control", "MHT-X10230", 1, 1, 0, 2, "MCL 11/3", null], ["781336", "Breather", "MHT-X10230", 2, 2, 0, 2, "MCL 11/3", null], ["37002204670", "Plate Name", "TR500XL", 1, 1, 0, 2, "GEB1", null], ["34260233221", "Wiper Blade", "TR500XL", 1, 1, 0, 2, "GEB1", null], ["37002501840", "Hose", "TR500XL", 1, 1, 0, 2, "GEB1", null], ["33660000211", "Oil Guage", "TR500XL", 1, 1, 0, 2, "GEB1", null], ["36191870000", "AML (Old Part)", "TR500XL", 1, 1, 0, 2, "GEB1", null], ["03142459", "Pressure Sensor", "GMK5200-1", 23, 23, 0, 2, "GEB2", null], ["03067118", "Proximity Sensor", "GMK5200-1", 8, 8, 0, 2, "GEB2", null], ["04170817", "Displacement Transducer", "GMK5200-1", 4, 4, 0, 2, "GEB2", null], ["1417542", "Bracket", "GMK5200-1", 4, 4, 0, 2, "GEB2", null], ["7660160000", "Nut 3/8", "GMK5200-1", 4, 4, 0, 2, "GEB2", null], ["7115160850", "Bolt 3/8", "GMK5200-1", 4, 4, 0, 2, "GEB2", null], ["04161567", "Fuel Filter", "GMK5200-1", 8, 8, 0, 2, "MCL 12/1", null], ["04157844", "Air Dryer", "GMK5200-1", 1, 1, 0, 2, "MCL 12/1", null], ["03142360", "Breather Filter", "GMK5200-1", 1, 1, 0, 2, "MCL 12/1", null], ["04241159", "Main Air Filter", "GMK5200-1", 1, 1, 0, 2, "MCL 12/1", null], ["04241160", "Safety Filter", "GMK5200-1", 1, 1, 0, 2, "MCL 12/1", null], ["03135866", "Pipe Filter", "GMK5200-1", 2, 2, 0, 2, "MCL 12/1", null], ["04161566", "Fuel Strainer", "GMK5200-1", 2, 2, 0, 2, "MCL 12/1", null], ["02310863", "Suspension Oil", "GMK5200-1", 32, 32, 0, 2, "MCL 13/2", null], ["80130814", "Anemometer", "GRT880", 3, 3, 0, 2, "MCL 13/2", null], ["90046645", "Fan & Motor Assy", "GRT9165", 1, 1, 0, 2, "MCL 13/2", null], ["80125412", "Module Multiview", "GRT9165", 1, 1, 0, 2, "MCL 13/2", null], ["FF63054NN - 5660774", "Fuel Filter", "GRT9165", 21, 22, 1, 2, "MCL 11/1", null], ["90013227", "Fuel Filter", "GRT880", 1, 1, 0, 2, "MCL 11/1", null], ["90060400", "Battery", "GRT880", 2, 2, 0, 2, "GEB1", null], ["9414101756", "Fuel Seperator", "GRT880", 1, 1, 0, 2, "MCL 11/1", null], ["90019747", "Engine Belt", "GRT9165", 2, 2, 0, 2, "MCL 13/2 GEB1", null], ["90032402", "Angle Sensor", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["90032403", "Encoder", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["7750000757", "Relay", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["9926112936", "12V Coil", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["9926113337", "24V Coil", "GRT9165", 2, 2, 0, 2, "MCL 13/2 GEB1", null], ["9926112987", "Bobine 12V Coil", "GRT9165", 2, 2, 0, 2, "MCL 13/2 GEB1", null], ["90046985", "12V Cart & Coil VAlve Assy", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["03142615", "Jogdial", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["90032308", "Pressure Switch", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["80059840", "Tele Enable Switch", "GRT9165", 2, 2, 0, 2, "MCL 13/2 GEB1", null], ["00108831", "Circlips", "GRT9165", 2, 2, 0, 2, "MCL 13/2 GEB1", null], ["80058429", "Crane Functions Enable", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["80059839", "Lift Enable Switch", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["04156349", "Potentiometer", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["7872100171", "Temperature Switch", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["03313289", "Hall Effect Sensor", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["03143332", "Proximity Sensor", "GRT9165", 4, 4, 0, 2, "MCL 13/2 GEB1", null], ["90018864", "Filter", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["90015312", "24V Coils Assy", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["80096956", "100 Amps Fuse", "GRT9165", 5, 5, 0, 2, "MCL 13/2 GEB1", null], ["7482000035", "5 Amps Fuse", "GRT9165", 4, 4, 0, 2, "MCL 13/2 GEB1", null], ["7482000032", "15 Amps Fuse", "GRT9165", 5, 5, 0, 2, "MCL 13/2 GEB1", null], ["80093979", "Float", "GRT9165", 1, 1, 0, 2, "MCL 13/1", null], ["90018571", "Brake Linning", "GRT9165", 2, 2, 0, 2, "MCL 13/1", null], ["7926101003", "Steering Valve", "GRT9165", 1, 1, 0, 2, "MCL 13/2 GEB1", null], ["80058894", "Alternator", "GRT9165", 1, 1, 0, 2, "MCL 13/2", null], ["80033330", "125 Amps Fuse", "GRT9165", 5, 5, 0, 2, "MCL 13/2 GEB1", null], ["80023219", "100 Amps Fuse", "GRT9165", 8, 8, 0, 2, "MCL 13/2 GEB1", null], ["9437100849", "Hydraulic Oil filter", "GRT9165", 0, 1, 1, 2, "MCL 13/2 GEB1", null], ["03139283", "Steering Cylinders", "GMK5200-1", 6, 6, 0, 2, "MCL 13/1", null], ["01576638", "Steering Cylinders", "GMK5200-1", 4, 4, 0, 2, "MCL 13/1", null], ["03011141", "Steering Cylinders", "GMK5200-1", 4, 4, 0, 2, "MCL 13/1", null], ["9414101679", "Oil Filter", "GRT9165", 5, 6, 1, 2, null, null], ["80106026", "Famos Camera", "GRT9165", 1, 1, 0, 2, null, null], ["36671279510", "Element", "TR500XL", 1, 1, 0, 2, null, null], ["184818", "Keys", "MT-X790", 2, 2, 0, 0, null, null]], "receipts": [["2026-08-06T14:13:19.358000", "T143134", "Primary Air Filter", "MAC 25", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T14:14:15.793000", "T143135", "Secondary Air Filter", "MAC 25", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T14:16:36.534000", "PP8158522", "Engine Fan Belt", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:18:12.784000", "T138322", "Lenght Cable ", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:20:06.145000", "T133746", "Angle Sensor", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:20:57.495000", "PP2105000", "Hydraulic Filter", "MAC 25", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T14:21:55.323000", "PP2280600", "Oil Filter", "MAC 25", 8, "iy", null, "Patrick Amoh"], ["2026-08-06T14:22:46.448000", "PP2280800", "Fuel Filter", "MAC 25", 8, "iy", null, "Patrick Amoh"], ["2026-08-06T14:23:32.474000", "PP2280700", "Fuel Seperator", "MAC 25", 6, "iy", null, "Patrick Amoh"], ["2026-08-06T14:24:18.443000", "PP2285400", "Transmission Filter", "MAC 25", 3, "iy", null, "Patrick Amoh"], ["2026-08-06T14:25:03.826000", "T181984", "Display", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:26:04.216000", "T159340", "Angle Sensor Retrofit", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:27:27.325000", "T178891", "Tilt Sensor Plate Bracket", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:29:31.560000", "PP9155006", "Wheel Axle Stud", "MAC 25", 9, "iy", null, "Patrick Amoh"], ["2026-08-06T14:31:36.040000", "PP1888400", "A/C Blower", "MAC 25", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T14:32:32.119000", "PP0101200", "A/C Fan Switch", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:33:41.328000", "T134473", "350 Bar Transducer", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:36:30.376000", "T169080", "6 Bar Switch (Hyd. Pressure)", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:39:47.723000", "T133761", "Angle Sensor Magnet", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:39:57.631000", "T133761", "Angle Sensor Magnet", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:45:29.406000", "PP2368600", "Switch 55 Mbar 1/8\" Vacuum", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:46:47.932000", "PP2198700", "Wheel Nuts", "MAC 25", 9, "iy", null, "Patrick Amoh"], ["2026-08-06T14:47:27.337000", "PP0100900", "A/C Fan Motor", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:48:28.011000", "MXC3145", "Engine To Radiator Hose", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:49:10.217000", "PP2396600", "Arm Wiper", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:50:10.439000", "PP2396800", "Blade Wiper", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:50:51.570000", "PLMXC3152", "A2B Swicth", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:51:50.868000", "T137350", "Proximity Switch Counterweight", "MAC 25", 6, "iy", null, "Patrick Amoh"], ["2026-08-06T14:52:34.183000", "T172839", "Tilt Sensor Dual Axis", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:53:23.580000", "PP8004160", "24V Relay Led", "MAC 25", 5, "iy", null, "Patrick Amoh"], ["2026-08-06T14:54:11.390000", "T135942", "LMI Cable Clamp", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:54:55.956000", "T173373", "Hook 25.6T Swivel", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T14:56:39.069000", "T168417", "Hoist Rope", "MAC 25", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T14:57:59.757000", "PP8158524", "Belt Tensioner", "MAC 25", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T15:24:59.905000", 53002309, "Primary Air Filter", "MHT-X10230", 5, "iy", null, "Patrick Amoh"], ["2026-08-06T19:58:15.210000", 299937, "Secondary Air Filter", "MHT-X10230,MT-X790", 7, "iy", null, "Patrick Amoh"], ["2026-08-06T20:01:43.898000", 52815949, "Hydraulic Stariner", "MHT-X10230", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T20:12:49.695000", 924765, "Hydraulic Filter (Suction)", "MHT-X10230", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:13:25.955000", 737524, "Hydraulic Filter", "MHT-X10230", 7, "iy", null, "Patrick Amoh"], ["2026-08-06T20:14:08.654000", 732118, "Reverse Buzzer", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:14:46.694000", 52768444, "Cabin Filter (Inside)", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:15:43.884000", 278288, "Breather", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:16:13.744000", 261971, "Cabin Filter(Outside)", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:16:38.563000", 52816288, "Fuel Filter", "MHT-X10230", 11, "iy", null, "Patrick Amoh"], ["2026-08-06T20:17:04.527000", 710887, "Fule Strainer", "MHT-X10230", 11, "iy", null, "Patrick Amoh"], ["2026-08-06T20:17:25.531000", 608773, "Oil Filter", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:18:07.898000", 608776, "Fuel Water Seperator", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:18:33.496000", 282526, "Hydraulic Filter", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:18:58.138000", 282526, "Hydraulic Filter", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:19:26.347000", 53013301, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:19:53.627000", 53003392, "Engine Fan Belt", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:20:17.177000", 745456, "Pin", "MHT-X10230", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:20:45.279000", 710829, "Pressure Sensor", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:21:09.849000", 5301330, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:21:35.370000", 609439, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:21:55.866000", 50313299, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:22:21.771000", 53013298, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:23:16.511000", 226063, "Vibration Damper", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:24:19.879000", 53003022, "Temperature Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:24:56.063000", 738528, "Emergency Stop Button", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:25:30.052000", 711043, "Temperature Sensor", "MHT-X10230", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:25:55.110000", 746486, "Wiper", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:26:18.975000", 746458, "Wiper", "MHT-X10230", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:26:43.344000", 53013330, "Seal Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:27:07.975000", 798238, "Rearview Mirror", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:27:44.437000", 895222, "Temperature Sensor", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:28:41.805000", 924767, "Hydraulic Oil Filter (Suction)", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:30:52.124000", 909111, "Handle (Joystick)", "MT-X790", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:31:38.845000", 910629, "Remote Control", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:32:05.236000", 52621031, "Kit", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:33:00.579000", 924002, "Remote Control", "MHT-X10230", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:33:57.947000", 781336, "Breather", "MHT-X10230", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:36:34.117000", 37002204670, "Plate Name", "TR500XL", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:37:06.435000", 34260233221, "Wiper Blade", "TR500XL", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:37:31.891000", 37002501840, "Hose", "TR500XL", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:38:08.906000", 33660000211, "Oil Guage", "TR500XL", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:39:03.522000", 36191870000, "AML (Old Part)", "TR500XL", 1, "Newmont", null, "Patrick Amoh"], ["2026-08-06T20:39:44.101000", 3142459, "Pressure Sensor", "GMK5200-1", 23, "iy", null, "Patrick Amoh"], ["2026-08-06T20:40:41.088000", 3067118, "Proximity Sensor", "GMK5200-1", 8, "iy", null, "Patrick Amoh"], ["2026-08-06T20:41:25.671000", 4170817, "Displacement Transducer", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T20:41:57.367000", 1417542, "Bracket", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T20:42:43.925000", 7660160000, "Nut 3/8", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T20:43:20.503000", 7115160850, "Bolt 3/8", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-06T20:43:53.025000", 4157844, "Air Dryer", "GMK5200-1", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:44:35.458000", 3142360, "Breather Filter", "GMK5200-1", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:45:14.491000", 4241159, "Main Air Filter", "GMK5200-1", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:46:31.101000", 4241160, "Safety Filter", "GMK5200-1", 1, "iy", null, "Patrick Amoh"], ["2026-08-06T20:47:11.259000", 3135866, "Pipe Filter", "GMK5200-1", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:47:44.416000", 4161566, "Fuel Strainer", "GMK5200-1", 2, "iy", null, "Patrick Amoh"], ["2026-08-06T20:48:13.032000", 2310863, "Suspension Oil", "GMK5200-1", 32, "iy", null, "Patrick Amoh"], ["2026-08-07T08:41:39.820000", 80130814, "Anemometer", "GRT880", 3, "iy", null, "Isidore Yates"], ["2026-08-07T08:44:21.055000", 90046645, "Fan & Motor Assy", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T08:45:03.533000", 80125412, "Module Multiview", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T08:46:07.111000", 5660774, "Fuel Filter", "GRT9165", 22, "iy", null, "Patrick Amoh"], ["2026-08-07T08:48:51.077000", 90013227, "Fuel Filter", "GRT880", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T08:50:02.409000", 90060400, "Battery", "GRT880", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T08:50:47.101000", 9414101756, "Fuel Seperator", "GRT880", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T08:51:45.508000", 90019747, "Engine Belt", "GRT9165", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T08:52:13.558000", 90032402, "Angle Sensor", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T08:54:03.390000", 90032403, "Encoder", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:00:58.945000", 7750000757, "Relay", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:01:44.284000", 9926112936, "12V Coil", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:03:19.589000", 9926113337, "24V Coil", "GRT9165", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T09:04:38.095000", 9926112987, "Bobine 12V Coil", "GRT9165", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T09:05:34.973000", 90046985, "12V Cart & Coil VAlve Assy", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:08:11.359000", 3142615, "Jogdial", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:09:31.324000", 90032308, "Pressure Switch", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:10:37.530000", 80059840, "Tele Enable Switch", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:11:13.894000", 108831, "Circlips", "GRT9165", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T09:13:26.894000", 80059840, "Swing Enable Switch", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:14:07.642000", 80058429, "Crane Functions Enable", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:15:00.899000", 80059839, "Lift Enable Switch", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:17:02.938000", 4156349, "Potentiometer", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:37:27.927000", 7872100171, "Temperature Switch", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:38:07.827000", 3313289, "Hall Effect Sensor", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:39:10.762000", 3143332, "Proximity Sensor", "GRT9165", 4, "iy", null, "Patrick Amoh"], ["2026-08-07T09:40:23.569000", 90018864, "Filter", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T09:41:09.560000", 90015312, "24V Coils Assy", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T10:45:08.409000", 80096956, "100 Amps Fuse", "GRT9165", 5, "iy", null, "Patrick Amoh"], ["2026-08-07T10:45:44.641000", 7482000035, "5 Amps Fuse", "GRT9165", 4, "iy", null, "Patrick Amoh"], ["2026-08-07T10:46:45.828000", 7482000032, "15 Amps Fuse", "GRT9165", 5, "iy", null, "Patrick Amoh"], ["2026-08-07T10:47:15.681000", 80093979, "Float", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T10:48:02.456000", 90018571, "Brake Linning", "GRT9165", 2, "iy", null, "Patrick Amoh"], ["2026-08-07T10:48:55.748000", 7926101003, "Steering Valve", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T10:49:47.033000", 80058894, "Alternator", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T10:50:30.787000", 80033330, "125 Amps Fuse", "GRT9165", 5, "iy", null, "Patrick Amoh"], ["2026-08-07T10:51:26.631000", 80023219, "100 Amps Fuse", "GRT9165", 8, "iy", null, "Patrick Amoh"], ["2026-08-07T10:52:45.316000", 9437100849, "Hydraulic Oil filter", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-07T10:53:39.511000", 3139283, "Steering Cylinders", "GMK5200-1", 6, "iy", null, "Patrick Amoh"], ["2026-08-07T10:54:12.374000", 1576638, "Steering Cylinders", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-07T10:54:56.252000", 3011141, "Steering Cylinders", "GMK5200-1", 4, "iy", null, "Patrick Amoh"], ["2026-08-11T07:38:27.234000", 9414101679, "Oil Filter", "GRT9165", 6, "iy", null, "Patrick Amoh"], ["2026-08-11T08:02:12.954000", 80106026, "Famos Camera", "GRT9165", 1, "iy", null, "Patrick Amoh"], ["2026-08-11T08:03:34.373000", 36671279510, "Element", "TR500XL", 1, "iy", null, "Patrick Amoh"], ["2026-08-18T10:36:42.570000", 184818, "Keys", "MT-X790", 2, "iy", 3003306011, "Isidore Yates"]], "issues": [["2026-08-10T00:00:00", 5660774, "Fuel Filter", "GRT9165", 1, "Patrick Amoh", 15859859, "PM Completed - No Air filter"], ["2026-08-10T00:00:00", 9414101679, "Oil Filter", "GRT9165", 1, "Patrick Amoh", 15859859, "PM Completed - No Air filter"], ["2026-08-10T00:00:00", 9437100849, "Hydraulic Oil filter", "GRT9165", 1, "Patrick Amoh", 15859859, "PM Completed - No Air filter"]], "updates": [["2026-08-21T10:57:00.382000", 9437100849, "Hydraulic Oil filter", "GRT9165", 5, null, "iy", null, "TO ORDER", null, "AUTO - ZERO STOCK"]], "maintenance": [["PSC802", "2026-08-17T00:00:00", "MHT-X10229", 1072929, "FLT1008", 2754, 2870, "Weekly Inspection", "Weekly Inspection", "Inspection Passed", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"], ["PSC802", "2026-08-18T00:00:00", "TR500XL", 540377, "CR004", 8873, 9074, "Weekly Inspection", "Weekly Inspection", "Inspections", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"], ["PSC802", "2026-08-19T00:00:00", "MT-X625", "A01174121", "FLT1003", 5, 100, "Weekly Inspection", "Weekly Inspection", "Inspection Passed", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"], ["PSC802", "2026-08-20T00:00:00", "MAC 25", "MAC 25 251629", "CRM004", 311, 350, "Weekly Inspection", "Weekly Inspection", "Inspection Completed", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"], ["PSC802", "2026-08-21T00:00:00", "SMV4532TCE5", "C22208", "CRM1013", 563, 750, "Weekly Inspection", "Weekly Inspection ", "Inspection Passed", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"], ["PSC802", "2026-08-24T00:00:00", "GRT9165", 237201, "CRM001", 3108, 3325, "Weekly Inspection", "Weekly inspection", "Inspection Passed", "Completed", null, "Isidore Yates, Patrick Amoh", "Inspection Passed"]], "machines": [["FLT1002", "MANITOU TELEHANDLER", "MT-X790", 1055550, "Manitou", "9 T", "MAINTENANCE", "Running", "Isidore Yates"], ["FLT1009", "MANITOU TELEHANDLER ", "MHT-X10230", 1072929, "Manitou", "23 T", "PROCESSING", "Running", "Patrick Amoh"], ["CRM001", "GROVE ROUGH TERRAIN", "GRT9165", 237201, "Grove", "150 T", "PROCESSING", "Running", null], ["CRM003", "GROVE ROUGH TERRAIN", "GRT880", 622650, "Grove", "80 T", "PROCESSING", "Running", null], ["CR004", "TADANO ROUGH TERRAIN", "TR500XL", 540377, "Tadano", "50 T", "PROCESSING", "Running", null], ["CRM004", "FRANNA CRANE", "MAC 25", "MAC 25 251629", "Franna", "25 T", "PROCESSING", "Running", null], ["CRM1013", "REACH STACKER", "SMV4532TCE5", "C22208", "Konecranes", "45 T", "PROCESSING", "Running", null], ["CRM002", "GROVE ALL TERRAIN", "GMK5200-1", 52006014, "Grove", "200 T", "PROCESSING", "Running", null], ["FLT1003", "MANITOU TELEHANDLER", "MT-X625", "A01174121", "Manitou", "2.5 T", "EXPLORATION", "Running", null]], "settings": {"companyName": "iy", "companyAddress": "TEMA", "telephone": 553243650, "email": "I.YATES@PATERSONSIMONS.COM", "website": "-", "storeManager": "-", "preparedBy": "ISIDORE YATES", "department": "SERVICE CONTRACT NEWMONT AHAFO NORTH", "defaultMinimumStock": 3.0, "reportFooter": "-", "systemName": "IY MAINTAIN", "version": "Version 1.0", "developer": "ISIDORE KWEKU YATES", "signaturePrepared": "", "signatureTeamLead": "", "signaturePartsCoordinator": "", "signatureManager": ""}};
 const KEY="iy_STANDALONE_V1";
-const APP_VERSION="V24.12";
-let settingsTab="general";
 let db=loadDB();
 db.settings=db.settings||{};
-db.settings.systemName="CMMS";db.settings.version=APP_VERSION;db.settings.developer="IY Digital Innovations";
 ["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"].forEach(k=>{if(typeof db.settings[k]!=="string")db.settings[k]=""});
 db.user=db.user||{name:"admin",email:"",role:"Administrator",userId:"ADMIN-001"};
 db.activityLog=Array.isArray(db.activityLog)?db.activityLog:[];
@@ -1860,11 +1855,6 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
    });
    if(error)throw error;
 
-   // Keep Parts Updates as the permanent incoming-parts tracking log.
-   // When a receipt is made against an active order, automatically update
-   // the matching Parts Update to PARTIALLY RECEIVED or RECEIVED.
-   await syncPartsUpdateAfterReceipt(pn, reference, qty);
-
    // Reload from the database so the UI reflects the committed transaction.
    await loadCloudData();
    await cloudAudit("Received parts","Parts receipt transaction recorded");
@@ -1971,28 +1961,6 @@ async function savePartsOrder(orderId){
   const payload={part_id:partId,order_date:document.getElementById("po_date").value||null,machine_model:document.getElementById("po_machine").value.trim()||null,quantity:qty,po_reference:ref,supplier:document.getElementById("po_supplier").value.trim()||null,expected_date:document.getElementById("po_expected").value||null,onsite_date:document.getElementById("po_onsite").value||null,remarks:document.getElementById("po_remarks").value.trim()||null,updated_by:iyAuthUser?.id||null};
   const {error}=await iySupabase.from("parts_orders").update(payload).eq("id",orderId).eq("company_id",iyCompany.id);
   if(error)throw error;
-
-  // Keep the permanent Parts Updates log synchronized when an active order
-  // is edited (especially when its J-Ref is changed).
-  const oldPartId=x[12]||partId;
-  const oldRef=String(x[5]||"");
-  let uq=iySupabase.from("parts_updates").update({
-    order_date:document.getElementById("po_date").value||null,
-    part_id:partId,
-    machine_model:document.getElementById("po_machine").value.trim()||null,
-    quantity:qty,
-    po_reference:ref,
-    supplier:document.getElementById("po_supplier").value.trim()||null,
-    expected_date:document.getElementById("po_expected").value||null,
-    onsite_date:document.getElementById("po_onsite").value||null,
-    status:"ORDERED",
-    remarks:document.getElementById("po_remarks").value.trim()||null,
-    updated_by:iyAuthUser?.id||null
-  }).eq("company_id",iyCompany.id).eq("part_id",oldPartId).eq("status","ORDERED");
-  if(oldRef)uq=uq.eq("po_reference",oldRef);
-  const {error:updateError}=await uq;
-  if(updateError)throw updateError;
-
   await loadCloudData();
   await cloudAudit("Edited parts order","Parts order updated for "+partNumber+" · "+ref);
   closeModal();render();toast("Parts order updated successfully.");
@@ -2041,34 +2009,24 @@ async function saveUpdate(index){
  try{
    const id=await cloudSaveUpdate(row,index);
 
-   // Parts Updates is a permanent lifecycle log. Changing a row to ORDERED
-   // must NOT delete it. It creates/updates one active Parts Order instead.
+   // ORDERED is the hand-off from Parts Updates to Parts Orders.
+   // Create the order directly in Supabase, then remove the source update.
+   // This avoids leaving the update stuck at TO ORDER when the legacy RPC
+   // is unavailable or contains stale status logic.
    if(row[8]==="ORDERED"){
      const updateId=id||db.updates[index]?.[11]||null;
      const part=await cloudGetPart(row[1]);
      if(!part?.id)throw new Error("The selected part could not be resolved in this company workspace.");
-
-     // Prevent duplicate active orders when the same update is saved more than once.
-     let existingOrder=null;
-     const {data:existingOrders,error:existingOrderError}=await iySupabase.from("parts_orders")
-       .select("id")
-       .eq("company_id",iyCompany.id)
-       .eq("part_id",part.id)
-       .eq("po_reference",row[5])
-       .limit(1);
-     if(existingOrderError)throw existingOrderError;
-     existingOrder=existingOrders?.[0]||null;
-
-     if(!existingOrder){
-       const orderPayload={company_id:iyCompany.id,part_id:part.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:new Date().toISOString(),onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id};
-       const {error:orderError}=await iySupabase.from("parts_orders").insert(orderPayload);
-       if(orderError)throw orderError;
+     const orderPayload={company_id:iyCompany.id,part_id:part.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:new Date().toISOString(),onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id};
+     const {data:order,error:orderError}=await iySupabase.from("parts_orders").insert(orderPayload).select("id").single();
+     if(orderError)throw orderError;
+     if(updateId){
+       const {error:deleteError}=await iySupabase.from("parts_updates").delete().eq("id",updateId).eq("company_id",iyCompany.id);
+       if(deleteError)throw deleteError;
      }
-
-     // The original update remains in the log with status ORDERED.
      await loadCloudData();
-     await cloudAudit("Ordered part","Parts Update marked ORDERED and active Parts Order created for "+row[1]+" · "+row[5]);
-     closeModal();render();toast(existingOrder?"Parts Update updated. Existing Parts Order retained.":"Order placed. Parts Update retained in the tracking log.");
+     await cloudAudit("Ordered part","Parts Update moved to active Parts Orders for "+row[1]+" · "+row[5]);
+     closeModal();render();toast("Order placed. The Parts Update has been cleared and the order is now in Parts Orders.");
      return;
    }
 
@@ -2076,39 +2034,6 @@ async function saveUpdate(index){
    else{db.updates[index]={...row,11:id};await cloudAudit("Edited parts update","Parts update edited for "+row[1])}
    closeModal();render();toast(index===null?"Parts update saved.":"Parts update updated.");
  }catch(e){console.error("Parts update save failed",e);alert(e?.message||"Parts update could not be saved to the cloud.")}
-}
-
-async function syncPartsUpdateAfterReceipt(partNumber,reference,receivedQty){
- const pn=String(partNumber||"").trim();
- if(!pn)return;
- const part=await cloudGetPart(pn);
- if(!part?.id)return;
-
- // Prefer the update/order with the same J-Ref; fall back to the latest active
- // update for the part when the reference is blank.
- let q=iySupabase.from("parts_updates")
-   .select("id,part_id,quantity,po_reference,status,onsite_date,order_date")
-   .eq("company_id",iyCompany.id)
-   .eq("part_id",part.id);
- if(reference)q=q.eq("po_reference",reference);
- const {data:updates,error:updateError}=await q.order("order_date",{ascending:false}).limit(20);
- if(updateError)throw updateError;
- const active=(updates||[]).find(u=>!['RECEIVED','CANCELLED'].includes(String(u.status||"").toUpperCase()));
- if(!active)return;
-
- // Sum receipts against the same part/reference so repeated partial receipts
- // move the same update through PARTIALLY RECEIVED -> RECEIVED.
- let rq=iySupabase.from("part_receipts").select("quantity,reference,received_at")
-   .eq("company_id",iyCompany.id).eq("part_id",part.id);
- if(reference)rq=rq.eq("reference",reference);
- const {data:receipts,error:receiptError}=await rq;
- if(receiptError)throw receiptError;
- const totalReceived=(receipts||[]).reduce((sum,r)=>sum+num(r.quantity),0);
- const orderedQty=Math.max(0,num(active.quantity));
- const newStatus=totalReceived>=orderedQty && orderedQty>0?"RECEIVED":"PARTIALLY RECEIVED";
- const payload={status:newStatus,onsite_date:newStatus==="RECEIVED"?new Date().toISOString().slice(0,10):active.onsite_date||null,updated_by:iyAuthUser.id};
- const {error}=await iySupabase.from("parts_updates").update(payload).eq("id",active.id).eq("company_id",iyCompany.id);
- if(error)throw error;
 }
 
 function maintenanceDashboard(){
@@ -2520,15 +2445,9 @@ function reportPartsUpdateTable(rows){
  if(!rows.length)return `<div class="empty">No parts updates for this reporting period.</div>`;
  return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td></tr>`).join("")}</table></div>`;
 }
-function reportPartsOrderTable(rows){
- if(!rows.length)return `<div class="empty">No active parts orders for this reporting period.</div>`;
- return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${fmtDate(x[8])}</td><td>${esc(x[10]||"—")}</td></tr>`).join("")}</table></div>`;
-}
 function runMaintenanceReport(){const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date").value;const d=new Date(date+"T00:00:00");let start=new Date(d),end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}let rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
  const partsUpdates=db.updates.filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
- const partsOrders=(db.orders||[]).slice().sort((a,b)=>new Date(b[0])-new Date(a[0]));
  window.__maintenanceReportParts=partsUpdates;
- window.__maintenanceReportPartsOrders=partsOrders;
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length,ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length,preventive=rows.filter(x=>["preventive maintenance","preventive","pm"].includes(String(x[7]).toLowerCase())).length,repairs=rows.filter(x=>["repair","repairs"].includes(String(x[7]).toLowerCase())).length,parts=rows.filter(x=>String(x[11]||"").trim()!=="").length;
  document.getElementById("mrout").innerHTML=`<div class="cards">${metric("TOTAL JOBS",rows.length,type)}${metric("COMPLETED",completed,"Completed")}${metric("ONGOING",ongoing,"Open / in progress")}${metric("PARTS REQUIRED",parts,"Jobs with parts listed")}</div><div class="notice"><b>${type}</b> period: ${fmtDate(start)} to ${fmtDate(end)} &nbsp; | &nbsp; Preventive: ${preventive} &nbsp; | &nbsp; Repairs: ${repairs}</div><section class="report-section maintenance-report-section"><div class="report-section-heading"><h3>Maintenance Records</h3><span>${rows.length} job(s)</span></div>${maintenanceTable(rows)}</section><section class="report-section parts-report-section"><div class="report-section-heading"><h3>Parts Updates</h3><span>${partsUpdates.length} update(s)</span></div>${reportPartsUpdateTable(partsUpdates)}</section>`}
 
@@ -2587,7 +2506,7 @@ function accessDeniedPage(title="Access restricted",message="You do not have per
 async function fetchCompanyUsers(){
  if(!iyCloudReady||!iyCompany)throw new Error("Secure cloud workspace is not ready.");
  const {data,error}=await iySupabase.from("memberships")
-   .select("id,user_id,company_id,full_name,email,role,department,is_active,last_login_at,invited_at,created_at")
+   .select("id,user_id,company_id,user_code,full_name,email,role,department,is_active,last_login_at,invited_at,created_at")
    .eq("company_id",iyCompany.id)
    .order("created_at",{ascending:true});
  if(error)throw error;
@@ -2617,6 +2536,13 @@ function userStatusLabel(u){
  return `<span class="user-status pending">Pending</span>`;
 }
 function userInitials(name){return initials(name||"User")}
+function displayUserId(userOrId){
+ const id=typeof userOrId==="string"?userOrId:userOrId?.user_id;
+ if(!id)return "—";
+ if(iyMembership?.user_id===id && iyMembership?.user_code)return iyMembership.user_code;
+ const cached=iyUsersCache.find(u=>u.user_id===id);
+ return cached?.user_code||id;
+}
 
 function usersRolesPageShell(){
  if(!isCompanyAdmin()){
@@ -2650,13 +2576,13 @@ async function renderUsersTable(){
    if(!users.length){el.innerHTML=`<div class="empty">No users have been added yet.</div>`;return;}
    el.innerHTML=`<div class="users-table-wrap"><table class="users-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Department</th><th>Status</th><th>Last sign in</th><th>Action</th></tr></thead><tbody>
     ${users.map(u=>`<tr>
-      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||u.email))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(u.user_id===iyAuthUser?.id?"You":u.user_id||"")}</small></div></div></td>
+      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||u.email))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
       <td>${esc(u.email||"—")}</td>
       <td><span class="role-pill">${esc(roleLabel(u.role))}</span></td>
       <td>${esc(u.department||"—")}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><div style="display:flex;gap:8px;justify-content:flex-end;align-items:center"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id!==iyAuthUser?.id?`<button class="table-action danger" onclick="removeWorkspaceUser('${u.id}')">Remove</button>`:`<span class="muted" style="font-size:12px">You</span>`}</div></td>
+      <td><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button></td>
     </tr>`).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
@@ -2735,6 +2661,7 @@ function openEditUser(id){
   <div class="profile-note">${self?"You are editing your own membership.":"Update this member's role, department or access status."}</div>
   <div class="profile-modal-grid" style="margin-top:16px">
    <div class="field"><label>Full name</label><input id="eu_name" class="input" value="${esc(u.full_name||"")}"></div>
+   <div class="field"><label>User ID</label><input class="input" value="${esc(displayUserId(u))}" disabled></div>
    <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(u.email||"")}" disabled></div>
    <div class="field"><label>Role</label><select id="eu_role" class="select">${userRoleOptions(u.role)}</select></div>
    <div class="field"><label>Department</label><input id="eu_department" class="input" value="${esc(u.department||"")}"></div>
@@ -2763,24 +2690,6 @@ async function saveUserMembership(id){if(!canEdit("users"))return alert("Company
    toast("User updated.");
  }catch(e){alert(e?.message||"User could not be updated.");}
 }
-async function removeWorkspaceUser(id){
- if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
- if(!isCompanyAdmin())return alert("Company Administrator access is required.");
- const u=iyUsersCache.find(x=>x.id===id);
- if(!u)return;
- if(u.user_id===iyAuthUser?.id)return alert("You cannot remove your own account from this workspace.");
- const name=u.full_name||u.email||"this user";
- const confirmed=confirm(`Remove ${name} from ${iyCompany?.name||"this workspace"}?\n\nThey will immediately lose access to this company's data. Their Supabase account is not deleted and can be invited again later.`);
- if(!confirmed)return;
- try{
-   const {error}=await iySupabase.from("memberships").delete().eq("id",id).eq("company_id",iyCompany.id);
-   if(error)throw error;
-   await cloudAudit("Removed user",`${u.email||u.user_id} · ${roleLabel(u.role)}`);
-   await renderUsersTable();
-   toast("User removed from the workspace.");
- }catch(e){alert(e?.message||"User could not be removed from the workspace.");}
-}
-
 function activityPage(){
  const logs=(db.activityLog||[]).slice(0,100);
  const today=new Date().toISOString().slice(0,10);
@@ -2800,12 +2709,12 @@ function openProfileEditor(){
   <div class="field"><label>Full name</label><input id="p_name" class="input" value="${esc(u.name||"admin")}"></div>
   <div class="field"><label>Role</label><input id="p_role" class="input" value="${esc(u.role||"Administrator")}"></div>
   <div class="field"><label>Email</label><input id="p_email" class="input" value="${esc(u.email||"")}"></div>
-  <div class="field"><label>User ID</label><input id="p_userId" class="input" value="${esc(u.userId||"ADMIN-001")}"></div>
+  <div class="field"><label>User ID</label><input id="p_userId" class="input" value="${esc(u.userId||"—")}" disabled></div>
  </div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveProfile()">Save profile</button></div>`);
 }
 function saveProfile(){
- db.user={name:document.getElementById("p_name").value.trim()||"admin",role:document.getElementById("p_role").value.trim()||"Administrator",email:document.getElementById("p_email").value.trim(),userId:document.getElementById("p_userId").value.trim()||"ADMIN-001"};
+ db.user={...db.user,name:document.getElementById("p_name").value.trim()||"admin",role:document.getElementById("p_role").value.trim()||"Administrator",email:document.getElementById("p_email").value.trim()};
  logActivity("Updated profile","User profile details changed");
  closeModal();render();toast("Profile updated.");
 }
@@ -3030,13 +2939,13 @@ async function completeAuthenticatedSession(user){
  await loadCompanyContext(user);
  await loadCloudData();
  loggedIn=true;
- db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:user.id};
+ db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—"};
  await cloudAudit("Logged in","Supabase authenticated session started");
  render();
 }
 
 async function loadCompanyContext(user){
- let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
+ let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
  if(error)throw error;
  if(!membership){
    const companyName=user.user_metadata?.company_name?.trim();
@@ -3045,7 +2954,7 @@ async function loadCompanyContext(user){
    if(provisionError)throw provisionError;
    const companyId=Array.isArray(provision)?provision[0]?.company_id:provision?.company_id;
    if(!companyId)throw new Error("Your company workspace could not be created.");
-   const res=await iySupabase.from("memberships").select("id,company_id,user_id,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
+   const res=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
    if(res.error)throw res.error; membership=res.data;
  }
  iyMembership=membership;
@@ -3055,7 +2964,7 @@ async function loadCompanyContext(user){
  await iySupabase.from("memberships").update({last_login_at:new Date().toISOString()}).eq("id",membership.id);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"MAINTENANCE MANAGEMENT SYSTEM",version:"V24.13",developer:"ISIDORE KWEKU YATES",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"MAINTENANCE MANAGEMENT SYSTEM",version:"V24.10",developer:"ISIDORE KWEKU YATES",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -3071,7 +2980,7 @@ async function loadCloudAssets(settings){
 
 async function loadCloudData(){
  const empty=blankCloudDB();
- const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,notificationReadRows]=await Promise.all([
+ const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,memberships,notificationReadRows]=await Promise.all([
   iySupabase.from("machines").select("*").order("fleet_id"),
   iySupabase.from("parts").select("*").order("part_number"),
   iySupabase.from("inventory").select("*,parts(part_number,description,machine_id,machine_model,supplier,location,minimum_stock,remarks)").order("updated_at",{ascending:false}),
@@ -3082,9 +2991,11 @@ async function loadCloudData(){
   iySupabase.from("maintenance_records").select("*,machines(fleet_id,machine_model,machine_serial_number),fault_problem,work_performed").order("job_date"),
   iySupabase.from("company_settings").select("*").eq("company_id",iyCompany.id).maybeSingle(),
   iySupabase.from("audit_logs").select("*").order("created_at",{ascending:false}).limit(500),
+  iySupabase.from("memberships").select("id,user_id,user_code,full_name").eq("company_id",iyCompany.id).eq("is_active",true).order("created_at",{ascending:true}),
   iySupabase.from("notification_reads").select("notification_id,read_at").eq("company_id",iyCompany.id).eq("user_id",iyAuthUser.id)
  ]);
  for(const r of [machines,parts,inventory,receipts,issues,updates,maintenance,settings,activity])if(r.error)throw r.error;
+ if(memberships?.error)throw memberships.error;
  if(orders?.error && orders.error.code!=="PGRST205")throw orders.error;
  if(notificationReadRows?.error){console.warn("Notification read-state table is not available yet.",notificationReadRows.error.message||notificationReadRows.error);notificationReads=[]}else{notificationReads=(notificationReadRows.data||[]).map(x=>x.notification_id);}
  notificationLastRefresh=new Date();
@@ -3103,9 +3014,10 @@ async function loadCloudData(){
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"CMMS",version:APP_VERSION,developer:"IY Digital Innovations"});
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:cs.system_name||"MAINTENANCE MANAGEMENT SYSTEM",version:cs.app_version||"V24.9",developer:cs.developer||""});
  await loadCloudAssets(empty.settings);
- empty.activityLog=(activity.data||[]).map(x=>({time:x.created_at,user:db.user?.name||iyMembership?.full_name||"User",userId:x.user_id||"",action:x.action,details:x.details||""}));
+ const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
+ empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
  db=empty;iyCloudReady=true;
 }
 function machineModelFromPart(p,machines){if(p.machine_id){const m=machines.find(x=>x[9]===p.machine_id);if(m)return m[2]}return p.machine_model||p.model||""}
@@ -3213,19 +3125,50 @@ async function cloudSaveMaintenance(row){
  return data.id;
 }
 async function cloudSaveMachine(row){const payload={company_id:iyCompany.id,fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};const {data,error}=await iySupabase.from("machines").upsert(payload,{onConflict:"company_id,fleet_id"}).select("id").single();if(error)throw error;return data.id}
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null},{onConflict:"company_id"});if(e2)throw e2}
+async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:s.systemName||"MAINTENANCE MANAGEMENT SYSTEM",app_version:s.version||"V24.9",developer:s.developer||null},{onConflict:"company_id"});if(e2)throw e2}
 
-function setSettingsTab(tab){settingsTab=tab;render()}
-function settingsPage(){const s=db.settings||{};const tabs=[['general','⚙','General'],['branding','▣','Branding'],['signatures','✎','Signatures'],['system','ⓘ','System']];
- const nav=tabs.map(([k,i,l])=>`<button type="button" class="settings-nav-item ${settingsTab===k?'active':''}" onclick="setSettingsTab('${k}')"><span class="nav-icon">${i}</span><span>${l}</span></button>`).join('');
- let content='';
- if(settingsTab==='general') content=`<section class="modern-settings-main"><section class="modern-card"><div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div><div class="modern-form-grid">
- ${[['companyName','Company Name'],['companyAddress','Company Address'],['telephone','Telephone'],['email','Email'],['website','Website'],['storeManager','Store Manager'],['preparedBy','Prepared By'],['department','Department'],['defaultMinimumStock','Default Minimum Stock'],['reportFooter','Report Footer']].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k])}"></div>`).join('')}
- </div></section><div class="modern-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()">Save Settings</button></div></section>`;
- if(settingsTab==='branding') content=`<section class="modern-settings-main"><section class="modern-card branding-card"><div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your logo appears on generated reports.</p></div></div><div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div><div class="modern-meta-row"><span>PNG, JPG, WebP or SVG</span><span>Max 2 MB</span></div><div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?'Replace logo':'Upload logo'}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="handleLogoUpload(this)">${s.logoData?`<button class="modern-secondary-btn" onclick="removeCompanyLogo()">Remove</button>`:''}</div></section></section>`;
- if(settingsTab==='signatures') content=`<section class="modern-settings-main"><section class="modern-card signatures-card"><div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div><div class="signature-modern-list">${[['signaturePrepared','Prepared By'],['signatureTeamLead','Team Lead'],['signaturePartsCoordinator','Parts Coordinator'],['signatureManager','Manager']].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?'Signature uploaded':'No signature uploaded'}</span></div><div class="signature-modern-action"><label for="${k}_file">${s[k]?'Replace':'Upload'}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload(this,'${k}')">${s[k]?`<button onclick="removeSignature('${k}')" title="Remove signature">×</button>`:''}</div></div>`).join('')}</div></section></section>`;
- if(settingsTab==='system') content=`<section class="modern-settings-main"><section class="modern-card"><div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity is controlled by IY Digital Innovations and cannot be edited.</p></div></div><div class="modern-form-grid"><div class="modern-field"><label>System Name</label><input class="modern-input" value="CMMS" readonly disabled></div><div class="modern-field"><label>Version</label><input class="modern-input" value="${APP_VERSION}" readonly disabled></div><div class="modern-field"><label>Developed By</label><input class="modern-input" value="IY Digital Innovations" readonly disabled></div></div></section><section class="modern-card compact-system-card"><div class="modern-card-head"><div class="head-icon gray">ⓘ</div><div><h3>About this setup</h3><p>Application information.</p></div></div><div class="modern-info-list"><div><span>Storage</span><strong>Supabase Cloud</strong></div><div><span>Reports</span><strong>PDF ready</strong></div><div><span>Application</span><strong>CMMS</strong></div></div></section></section>`;
- return `<div class="modern-settings-shell"><div class="settings-nav-strip">${nav}</div><div class="modern-settings-grid">${content}</div></div>`}
+function settingsPage(){const s=db.settings;return `<div class="modern-settings-shell">
+<div class="settings-nav-strip">
+  <div class="settings-nav-item active"><span class="nav-icon">⚙</span><span>General</span></div>
+  <div class="settings-nav-item"><span class="nav-icon">▣</span><span>Branding</span></div>
+  <div class="settings-nav-item"><span class="nav-icon">✎</span><span>Signatures</span></div>
+  <div class="settings-nav-item"><span class="nav-icon">ⓘ</span><span>System</span></div>
+</div>
+<div class="modern-settings-grid">
+<section class="modern-settings-main">
+  <section class="modern-card">
+    <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
+    <div class="modern-form-grid">
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k])}"></div>`).join("")}
+    </div>
+  </section>
+  <section class="modern-card">
+    <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity and developer information.</p></div></div>
+    <div class="modern-form-grid">
+      ${[["systemName","System Name"],["version","Version"],["developer","Developed By"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k])}"></div>`).join("")}
+    </div>
+  </section>
+  <div class="modern-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()">Save Settings</button></div>
+</section>
+<aside class="modern-settings-side">
+  <section class="modern-card branding-card">
+    <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your logo appears on generated reports.</p></div></div>
+    <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
+    <div class="modern-meta-row"><span>PNG, JPG, WebP or SVG</span><span>Max 2 MB</span></div>
+    <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="handleLogoUpload(this)">${s.logoData?`<button class="modern-secondary-btn" onclick="removeCompanyLogo()">Remove</button>`:""}</div>
+  </section>
+  <section class="modern-card signatures-card">
+    <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
+    <div class="signature-modern-list">
+      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload(this,'${k}')">${s[k]?`<button onclick="removeSignature('${k}')" title="Remove signature">×</button>`:""}</div></div>`).join("")}
+    </div>
+  </section>
+  <section class="modern-card compact-system-card">
+    <div class="modern-card-head"><div class="head-icon gray">ⓘ</div><div><h3>About this setup</h3><p>Quick information about how your settings work.</p></div></div>
+    <div class="modern-info-list"><div><span>Storage</span><strong>Supabase Cloud</strong></div><div><span>Reports</span><strong>PDF ready</strong></div><div><span>Application</span><strong>${esc(s.systemName||"Maintenance Management System")}</strong></div></div>
+  </section>
+</aside>
+</div></div>`}
 async function handleLogoUpload(input){
  const file=input.files&&input.files[0];if(!file)return;if(file.size>2*1024*1024)return alert("Please choose a logo smaller than 2 MB.");
  if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
@@ -3246,7 +3189,7 @@ async function removeSignature(key){
 }
 function signatureImage(key){const src=db.settings&&db.settings[key];return src?`<img class="r-sig-image" src="${src}" alt="Signature">`:``}
 
-async function saveSettings(){if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter"].forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);db.settings.systemName="CMMS";db.settings.version=APP_VERSION;db.settings.developer="IY Digital Innovations";try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or system settings changed");await cloudAudit("Updated settings","Company, branding or system settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}}
+async function saveSettings(){if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");Object.keys(db.settings).forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or system settings changed");await cloudAudit("Updated settings","Company, branding or system settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}}
 
 function backup(){
  logActivity("Downloaded complete cloud system backup","Full cloud workspace data exported to JSON");
@@ -3332,7 +3275,6 @@ function buildMaintenanceReportHTML(){
  }).slice().reverse();
 
  const partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
- const partsOrders=(db.orders||[]).slice().sort((a,b)=>new Date(b[0])-new Date(a[0]));
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length;
  const ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length;
  const partsRequired=rows.filter(x=>String(x[11]||"").trim()!=="").length;
@@ -3363,14 +3305,6 @@ function buildMaintenanceReportHTML(){
  ${partsUpdates.length?partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]||"—"}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"—")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"—")}</td></tr>`).join(""):`<tr><td colspan="11" class="r-empty-cell">No parts updates for this reporting period.</td></tr>`}
  </tbody></table>`;
 
- const orders=`<table class="r-report-table r-parts-orders-report-table"><colgroup>
-   <col style="width:9%"><col style="width:10%"><col style="width:12%"><col style="width:10%"><col style="width:6%"><col style="width:11%"><col style="width:10%"><col style="width:9%"><col style="width:9%"><col style="width:14%">
- </colgroup><thead><tr>
-   <th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th>
- </tr></thead><tbody>
- ${partsOrders.length?partsOrders.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]||"—"}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td>${fmtDate(x[7])}</td><td>${fmtDate(x[8])}</td><td>${esc(x[10]||"—")}</td></tr>`).join(""):`<tr><td colspan="10" class="r-empty-cell">No active parts orders for this reporting period.</td></tr>`}
- </tbody></table>`;
-
  const signatures=`<div class="r-signatures">
    <div class="r-sig"><div class="r-sig-space">${signatureImage("signaturePrepared")}</div><div class="r-sig-line">Prepared By</div><div class="r-sig-name">${prepared||""}</div></div>
    <div class="r-sig"><div class="r-sig-space">${signatureImage("signatureTeamLead")}</div><div class="r-sig-line">Team Lead</div><div class="r-sig-name"></div></div>
@@ -3395,14 +3329,6 @@ function buildMaintenanceReportHTML(){
    <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PARTS UPDATES</span><b>${partsUpdates.length} record(s)</b></div><div><span>DEPARTMENT</span><b>${department||"—"}</b></div></div>
    <div class="r-section">PARTS UPDATE <small>${partsUpdates.length} update(s)</small></div>
    ${parts}
-   ${signatures}
-   ${footerHtml}
-  </section>
-  <section class="report-paper report-page report-page-orders">
-   <div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS ORDERS — ${esc(reportType)}</p></div>
-   <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>ACTIVE PARTS ORDERS</span><b>${partsOrders.length} order(s)</b></div><div><span>DEPARTMENT</span><b>${department||"—"}</b></div></div>
-   <div class="r-section">PARTS ORDERS <small>${partsOrders.length} active order(s)</small></div>
-   ${orders}
    ${signatures}
    ${footerHtml}
   </section>
