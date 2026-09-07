@@ -928,7 +928,19 @@ button,input,select,textarea{font-family:inherit}
 .profile-avatar{
   background:#e9f2ff;
   color:#075fff;
+  overflow:hidden;
 }
+.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-editor-avatar{width:82px;height:82px;border-radius:50%;background:#e9f2ff;color:#075fff;display:grid;place-items:center;font-weight:800;font-size:24px;overflow:hidden;border:1px solid #d9e5f1;flex:0 0 82px}
+.profile-editor-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-photo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:12px;background:#f7faff;border:1px solid #e3ebf3;border-radius:10px}
+.profile-photo-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.profile-photo-actions label,.profile-photo-actions button{border:1px solid #d5e0eb;background:#fff;border-radius:8px;padding:8px 11px;font-size:10px;font-weight:800;cursor:pointer;color:#075fff}
+.profile-photo-actions button{color:#c53939;border-color:#f0c7c7;background:#fff5f5}
+.profile-photo-actions label:hover{background:#edf5ff}
+.profile-photo-actions button:hover{background:#ffe9e9}
+.profile-photo-copy strong{display:block;font-size:11px;color:#263b50}
+.profile-photo-copy span{display:block;font-size:9px;color:#8191a2;margin-top:3px}
 .profile-menu-item:hover{background:#f0f6ff}
 .signature-modern-action label{color:var(--iy-blue)}
 .signature-modern-action label:hover{background:#edf5ff}
@@ -1441,7 +1453,7 @@ function render(){
     </div>
     <div class="profile-wrap">
     <button class="profile-trigger" onclick="toggleProfileMenu(event)">
-      <div class="profile-avatar">${esc(initials(db.user.name))}</div>
+      <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(db.user.name))}</div>
       <div class="profile-copy"><b>${esc(db.user.name||"admin")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
     </button>
     <div id="profileMenu" class="profile-menu ${profileOpen?"open":""}">
@@ -2708,20 +2720,75 @@ function activityPage(){
 function openProfileEditor(){
  profileOpen=false;
  const u=db.user||{};
+ const role=iyMembership?.role||u.role||"employee";
  openModal(`<div class="modalhead"><h2>Edit profile</h2><button class="close" onclick="closeModal()">×</button></div>
- <div class="profile-note">This profile identifies the person using the cloud workspace and is used in the activity trail.</div>
- <div class="profile-modal-grid" style="margin-top:16px">
+ <div class="profile-note">Update your personal profile. Your account role is assigned by the company administrator and cannot be changed here.</div>
+ <div class="profile-photo-row">
+   <div class="profile-editor-avatar">${u.avatarUrl?`<img id="profilePhotoPreview" src="${esc(u.avatarUrl)}" alt="Profile photo">`:esc(initials(u.name))}</div>
+   <div class="profile-photo-copy" style="flex:1;min-width:0"><strong>Profile photo</strong><span>Upload a PNG, JPG or WebP image. The photo is stored securely with your account.</span><div class="profile-photo-actions" style="margin-top:8px"><label for="p_avatarFile">${u.avatarUrl?"Change photo":"Upload photo"}</label><input id="p_avatarFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="previewProfilePhoto(this)">${u.avatarUrl?`<button type="button" onclick="removeProfilePhoto()">Remove</button>`:""}</div></div>
+ </div>
+ <div class="profile-modal-grid">
   <div class="field"><label>Full name</label><input id="p_name" class="input" value="${esc(u.name||"admin")}"></div>
-  <div class="field"><label>Role</label><input id="p_role" class="input" value="${esc(u.role||"Administrator")}"></div>
-  <div class="field"><label>Email</label><input id="p_email" class="input" value="${esc(u.email||"")}"></div>
+  <div class="field"><label>Role</label><input id="p_role" class="input" value="${esc(roleLabel(role))}" disabled title="Your role is fixed by your account assignment."></div>
+  <div class="field"><label>Email</label><input id="p_email" class="input" value="${esc(u.email||"")}" disabled></div>
   <div class="field"><label>User ID</label><input id="p_userId" class="input" value="${esc(u.userId||"—")}" disabled></div>
  </div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveProfile()">Save profile</button></div>`);
 }
-function saveProfile(){
- db.user={...db.user,name:document.getElementById("p_name").value.trim()||"admin",role:document.getElementById("p_role").value.trim()||"Administrator",email:document.getElementById("p_email").value.trim()};
- logActivity("Updated profile","User profile details changed");
- closeModal();render();toast("Profile updated.");
+
+function previewProfilePhoto(input){
+ const file=input?.files?.[0];
+ if(!file)return;
+ if(file.size>4*1024*1024){input.value="";return alert("Profile photo must be 4 MB or smaller.");}
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type))return alert("Please choose a PNG, JPG or WebP image.");
+ const reader=new FileReader();
+ reader.onload=()=>{
+   const img=new Image();
+   img.onload=()=>{
+     const max=320, scale=Math.min(1,max/Math.max(img.width,img.height));
+     const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+     const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+     const ctx=canvas.getContext("2d");ctx.drawImage(img,0,0,w,h);
+     const dataUrl=canvas.toDataURL("image/jpeg",0.82);
+     const preview=document.getElementById("profilePhotoPreview");
+     const holder=preview?.parentElement||document.querySelector(".profile-editor-avatar");
+     if(holder)holder.innerHTML=`<img id="profilePhotoPreview" src="${dataUrl}" alt="Profile photo">`;
+     const state=document.getElementById("modalBack");if(state)state.dataset.profileAvatar=dataUrl;
+   };
+   img.src=reader.result;
+ };
+ reader.readAsDataURL(file);
+}
+
+function removeProfilePhoto(){
+ const state=document.getElementById("modalBack");
+ if(state)state.dataset.profileAvatar="";
+ const holder=document.querySelector(".profile-editor-avatar");
+ if(holder)holder.innerHTML=esc(initials(db.user?.name||"User"));
+ const input=document.getElementById("p_avatarFile");if(input)input.value="";
+}
+
+async function saveProfile(){
+ const name=document.getElementById("p_name")?.value.trim()||"User";
+ const role=iyMembership?.role||db.user?.role||"employee";
+ const state=document.getElementById("modalBack");
+ const avatarUrl=state?.dataset?.profileAvatar!==undefined?state.dataset.profileAvatar:(db.user?.avatarUrl||"");
+ if(!iyAuthUser)return alert("Your secure session has expired. Please sign in again.");
+ const btn=state?.querySelector(".btn.primary");if(btn)btn.disabled=true;
+ try{
+   const {data,error}=await iySupabase.auth.updateUser({data:{...(iyAuthUser.user_metadata||{}),full_name:name,avatar_url:avatarUrl||null}});
+   if(error)throw error;
+   iyAuthUser=data?.user||iyAuthUser;
+   // Keep the workspace membership name synchronized when the current user has permission to update it.
+   if(iyMembership?.id){
+     const res=await iySupabase.from("memberships").update({full_name:name}).eq("id",iyMembership.id).eq("user_id",iyAuthUser.id);
+     if(res.error)console.warn("Membership name sync skipped:",res.error.message||res.error);
+     else iyMembership.full_name=name;
+   }
+   db.user={...db.user,name,role,email:iyAuthUser.email||db.user?.email||"",userId:iyMembership?.user_code||db.user?.userId||"—",avatarUrl:avatarUrl||""};
+   await cloudAudit("Updated profile","User profile details changed");
+   closeModal();render();toast("Profile updated successfully.");
+ }catch(e){alert(e?.message||"Profile could not be updated.");if(btn)btn.disabled=false;}
 }
 function toggleProfileMenu(e){e.stopPropagation();profileOpen=!profileOpen;render()}
 function closeHeaderMenusOnOutsideClick(e){
@@ -2945,7 +3012,7 @@ async function completeAuthenticatedSession(user){
  await loadCloudData();
  db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.11";db.settings.developer="IY Digital Innovations";
  loggedIn=true;
- db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—"};
+ db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",avatarUrl:user.user_metadata?.avatar_url||""};
  await cloudAudit("Logged in","Supabase authenticated session started");
  render();
  setTimeout(()=>maybeResumeRestore(),250);
