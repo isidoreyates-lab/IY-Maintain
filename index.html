@@ -1784,6 +1784,10 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
    render();
    toast("Part issued successfully.");
 
+   // Use the refreshed inventory row for the low-stock alert.
+   // The RPC has already committed successfully, so do not reference an
+   // undefined local `committed` variable.
+   const committed=db.inventory.find(x=>String(x[0]).trim()===pn.trim());
    if(committed && num(committed[3])<=num(committed[6])){
      setTimeout(()=>alert("LOW STOCK ALERT\n\n"+committed[0]+" — "+committed[1]+"\nCurrent stock: "+committed[3]+"\nMinimum stock: "+committed[6]),100);
    }
