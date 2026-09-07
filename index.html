@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.10 — Parts Updates Workflow Fix -->
+<!-- IY Maintain V24.11 — Restore & Settings Update -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -666,6 +666,11 @@ button,input,select,textarea{font-family:inherit}
 
 /* V24.9 Parts Orders actions */
 .parts-orders-actions{display:flex;gap:7px;align-items:center;white-space:nowrap}.parts-orders-actions .btn{font-size:12px;padding:7px 10px}.parts-orders-actions .btn.receive-order{background:#e8f6ef;color:#17633a;border:1px solid #c9e8d5}.parts-orders-actions .btn.receive-order:hover{background:#dff1e8}.order-edit-note{padding:10px 12px;border-radius:9px;background:#eef5ff;border:1px solid #d5e5fb;color:#315b85;font-size:12px;margin-bottom:14px}
+
+.settings-nav-item{border:0;background:transparent;font:inherit;cursor:pointer;color:inherit;padding:10px 16px;display:flex;align-items:center;gap:7px}
+.settings-nav-item.active{color:#1267a7;border-bottom:2px solid #1267a7}
+.settings-nav-item:disabled{cursor:not-allowed}
+.settings-tab-panel{width:100%}
 </style>
 
 <style>
@@ -2938,6 +2943,7 @@ async function completeAuthenticatedSession(user){
  iyAuthUser=user;
  await loadCompanyContext(user);
  await loadCloudData();
+ db.settings.systemName="Computerized Machine Machine System";db.settings.version="V24.11";db.settings.developer="IY Digital Innovations";
  loggedIn=true;
  db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—"};
  await cloudAudit("Logged in","Supabase authenticated session started");
@@ -2962,10 +2968,11 @@ async function loadCompanyContext(user){
  const {data:company,error:companyError}=await iySupabase.from("companies").select("*").eq("id",membership.company_id).single();
  if(companyError)throw companyError;
  iyCompany=company;
+ if(iyMembership){ }
  await iySupabase.from("memberships").update({last_login_at:new Date().toISOString()}).eq("id",membership.id);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"MAINTENANCE MANAGEMENT SYSTEM",version:"V24.10",developer:"ISIDORE KWEKU YATES",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machine Machine System",version:"V24.11",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -3015,7 +3022,7 @@ async function loadCloudData(){
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:cs.system_name||"MAINTENANCE MANAGEMENT SYSTEM",version:cs.app_version||"V24.9",developer:cs.developer||""});
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:cs.system_name||"Computerized Machine Machine System",version:cs.app_version||"V24.9",developer:cs.developer||""});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
@@ -3126,71 +3133,84 @@ async function cloudSaveMaintenance(row){
  return data.id;
 }
 async function cloudSaveMachine(row){const payload={company_id:iyCompany.id,fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};const {data,error}=await iySupabase.from("machines").upsert(payload,{onConflict:"company_id,fleet_id"}).select("id").single();if(error)throw error;return data.id}
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:s.systemName||"MAINTENANCE MANAGEMENT SYSTEM",app_version:s.version||"V24.9",developer:s.developer||null},{onConflict:"company_id"});if(e2)throw e2}
+async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machine Machine System",app_version:"V24.11",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
-function settingsPage(){const s=db.settings;return `<div class="modern-settings-shell">
-<div class="settings-nav-strip">
-  <div class="settings-nav-item active"><span class="nav-icon">⚙</span><span>General</span></div>
-  <div class="settings-nav-item"><span class="nav-icon">▣</span><span>Branding</span></div>
-  <div class="settings-nav-item"><span class="nav-icon">✎</span><span>Signatures</span></div>
-  <div class="settings-nav-item"><span class="nav-icon">ⓘ</span><span>System</span></div>
-</div>
-<div class="modern-settings-grid">
-<section class="modern-settings-main">
-  <section class="modern-card">
-    <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
-    <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k])}"></div>`).join("")}
-    </div>
+function settingsPage(){
+ const s=db.settings||{};
+ const canSettings=canEdit("settings");
+ return `<div class="modern-settings-shell">
+ <div class="settings-nav-strip" id="settings-tabs">
+  <button type="button" class="settings-nav-item active" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>General</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="branding" onclick="switchSettingsTab('branding')"><span class="nav-icon">▣</span><span>Branding</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="signatures" onclick="switchSettingsTab('signatures')"><span class="nav-icon">✎</span><span>Signatures</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="system" onclick="switchSettingsTab('system')"><span class="nav-icon">ⓘ</span><span>System</span></button>
+ </div>
+ <div class="modern-settings-grid">
+  <section class="modern-settings-main">
+   <div id="settings-panel-general" class="settings-tab-panel">
+    <section class="modern-card">
+     <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
+     <div class="modern-form-grid">
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canSettings?"":"disabled"}></div>`).join("")}
+     </div>
+    </section>
+   </div>
+   <div id="settings-panel-branding" class="settings-tab-panel" style="display:none">
+    <section class="modern-card branding-card">
+     <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your company logo appears on generated reports.</p></div></div>
+     <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
+     <div class="modern-meta-row"><span>PNG, JPG, WebP or SVG</span><span>Max 2 MB</span></div>
+     <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}>${s.logoData?`<button class="modern-secondary-btn" onclick="removeCompanyLogo()" ${canSettings?"":"disabled"}>Remove</button>`:""}</div>
+    </section>
+   </div>
+   <div id="settings-panel-signatures" class="settings-tab-panel" style="display:none">
+    <section class="modern-card signatures-card">
+     <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
+     <div class="signature-modern-list">
+      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}>${s[k]?`<button class="modern-link-btn" onclick="removeSignature('${k}')" ${canSettings?"":"disabled"}>Remove</button>`:""}</div></div>`).join("")}
+     </div>
+    </section>
+   </div>
+   <div id="settings-panel-system" class="settings-tab-panel" style="display:none">
+    <section class="modern-card">
+     <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity is controlled by IY Digital Innovations.</p></div></div>
+     <div class="modern-form-grid">
+      <div class="modern-field"><label>System Name</label><input class="modern-input" value="CMMS" readonly disabled></div>
+      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.11" readonly disabled></div>
+      <div class="modern-field"><label>Developed By</label><input class="modern-input" value="IY Digital Innovations" readonly disabled></div>
+     </div>
+     <div class="modern-save-bar" style="margin-top:16px"><div><strong>System information is read-only</strong><span>Only IY Digital Innovations can change the system identity and application version.</span></div></div>
+    </section>
+   </div>
+   <div class="modern-save-bar" id="settings-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()" ${canSettings?"":"disabled"}>Save Settings</button></div>
   </section>
-  <section class="modern-card">
-    <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity and developer information.</p></div></div>
-    <div class="modern-form-grid">
-      ${[["systemName","System Name"],["version","Version"],["developer","Developed By"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k])}"></div>`).join("")}
-    </div>
-  </section>
-  <div class="modern-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()">Save Settings</button></div>
-</section>
-<aside class="modern-settings-side">
-  <section class="modern-card branding-card">
-    <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your logo appears on generated reports.</p></div></div>
-    <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
-    <div class="modern-meta-row"><span>PNG, JPG, WebP or SVG</span><span>Max 2 MB</span></div>
-    <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="handleLogoUpload(this)">${s.logoData?`<button class="modern-secondary-btn" onclick="removeCompanyLogo()">Remove</button>`:""}</div>
-  </section>
-  <section class="modern-card signatures-card">
-    <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
-    <div class="signature-modern-list">
-      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload(this,'${k}')">${s[k]?`<button onclick="removeSignature('${k}')" title="Remove signature">×</button>`:""}</div></div>`).join("")}
-    </div>
-  </section>
-  <section class="modern-card compact-system-card">
-    <div class="modern-card-head"><div class="head-icon gray">ⓘ</div><div><h3>About this setup</h3><p>Quick information about how your settings work.</p></div></div>
-    <div class="modern-info-list"><div><span>Storage</span><strong>Supabase Cloud</strong></div><div><span>Reports</span><strong>PDF ready</strong></div><div><span>Application</span><strong>${esc(s.systemName||"Maintenance Management System")}</strong></div></div>
-  </section>
-</aside>
-</div></div>`}
-async function handleLogoUpload(input){
- const file=input.files&&input.files[0];if(!file)return;if(file.size>2*1024*1024)return alert("Please choose a logo smaller than 2 MB.");
- if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
- try{const files=await storageListSafe("company-assets",iyCompany.id);const old=files.filter(f=>String(f.name||"").toLowerCase().startsWith("logo."));if(old.length){const {error}=await iySupabase.storage.from("company-assets").remove(old.map(f=>`${iyCompany.id}/${f.name}`));if(error)throw error;}const ext=(file.name.split(".").pop()||"png").toLowerCase().replace(/[^a-z0-9]/g,"")||"png";const path=`${iyCompany.id}/logo.${ext}`;const {error}=await iySupabase.storage.from("company-assets").upload(path,file,{contentType:file.type||"image/png",upsert:true,cacheControl:"3600"});if(error)throw error;db.settings.logoData=`${publicStorageUrl("company-assets",path)}?v=${Date.now()}`;await cloudAudit("Updated company logo","Company logo uploaded to Supabase Storage");render();toast("Company logo saved to the cloud.");}catch(e){console.error(e);alert(e?.message||"Company logo could not be saved to the cloud.");}finally{input.value="";}
+ </div>
+ </div>`;
 }
-async function removeCompanyLogo(){
- if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
- try{const files=await storageListSafe("company-assets",iyCompany.id);const old=files.filter(f=>String(f.name||"").toLowerCase().startsWith("logo."));if(old.length){const {error}=await iySupabase.storage.from("company-assets").remove(old.map(f=>`${iyCompany.id}/${f.name}`));if(error)throw error;}db.settings.logoData="";await cloudAudit("Removed company logo","Company logo removed from Supabase Storage");render();toast("Company logo removed from the cloud.");}catch(e){console.error(e);alert(e?.message||"Company logo could not be removed from the cloud.");}
-}
-async function handleSignatureUpload(input,key){
- const file=input.files&&input.files[0];if(!file)return;if(file.size>500*1024)return alert("Please choose a signature image smaller than 500 KB.");
- if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
- try{const blob=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(new Error("The signature could not be read."));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error("The signature could not be processed."));img.onload=()=>{const max=1200,scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext("2d");ctx.drawImage(img,0,0,c.width,c.height);c.toBlob(b=>b?resolve(b):reject(new Error("The signature could not be converted.")),"image/png");};img.src=reader.result;};reader.readAsDataURL(file);});const prefix=`${iyCompany.id}/signatures`;const files=await storageListSafe("company-assets",prefix);const old=files.filter(f=>String(f.name||"").toLowerCase().startsWith(`${key.toLowerCase()}.`));if(old.length){const {error}=await iySupabase.storage.from("company-assets").remove(old.map(f=>`${prefix}/${f.name}`));if(error)throw error;}const path=`${prefix}/${key}.png`;const {error}=await iySupabase.storage.from("company-assets").upload(path,blob,{contentType:"image/png",upsert:true,cacheControl:"3600"});if(error)throw error;db.settings[key]=`${publicStorageUrl("company-assets",path)}?v=${Date.now()}`;await cloudAudit("Updated signature",`${key} signature uploaded to Supabase Storage`);render();toast("Signature saved to the cloud.");}catch(e){console.error(e);alert(e?.message||"Signature could not be saved to the cloud.");}finally{input.value="";}
-}
-async function removeSignature(key){
- if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
- try{const prefix=`${iyCompany.id}/signatures`;const files=await storageListSafe("company-assets",prefix);const old=files.filter(f=>String(f.name||"").toLowerCase().startsWith(`${key.toLowerCase()}.`));if(old.length){const {error}=await iySupabase.storage.from("company-assets").remove(old.map(f=>`${prefix}/${f.name}`));if(error)throw error;}db.settings[key]="";await cloudAudit("Removed signature",`${key} signature removed from Supabase Storage`);render();toast("Signature removed from the cloud.");}catch(e){console.error(e);alert(e?.message||"Signature could not be removed from the cloud.");}
+function switchSettingsTab(tab){
+ const tabs=["general","branding","signatures","system"];
+ tabs.forEach(t=>{
+  const panel=document.getElementById("settings-panel-"+t);
+  if(panel)panel.style.display=t===tab?"block":"none";
+  const btn=document.querySelector(`[data-settings-tab="${t}"]`);
+  if(btn)btn.classList.toggle("active",t===tab);
+ });
+ const saveBar=document.getElementById("settings-save-bar");
+ if(saveBar)saveBar.style.display=tab==="system"?"none":"flex";
 }
 function signatureImage(key){const src=db.settings&&db.settings[key];return src?`<img class="r-sig-image" src="${src}" alt="Signature">`:``}
 
-async function saveSettings(){if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");Object.keys(db.settings).forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or system settings changed");await cloudAudit("Updated settings","Company, branding or system settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}}
+async function saveSettings(){
+ if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");
+ const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData","signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
+ editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
+ db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
+ // System identity is controlled by IY Digital Innovations and is never editable by company users.
+ db.settings.systemName="Computerized Machine Machine System";
+ db.settings.version="V24.11";
+ db.settings.developer="IY Digital Innovations";
+ try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or report settings changed");await cloudAudit("Updated settings","Company, branding or report settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}
+}
 
 function backup(){
  logActivity("Downloaded complete cloud system backup","Full cloud workspace data exported to JSON");
@@ -3318,7 +3338,18 @@ async function runRestoreJob(payload,name,options={}){
   await checkpoint("orders",78,"Restoring Parts Orders…","Importing active and historical parts orders.","Parts Orders are being restored and linked to the restored parts.");
   const orders=Array.isArray(data.orders)?data.orders:[];if(orders.length){const rows=orders.map(row=>({company_id:iyCompany.id,part_id:partByNumber.get(String(row[1]||"").trim()),order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:row[8]||null,onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id})).filter(x=>x.part_id);if(rows.length){const {error}=await iySupabase.from("parts_orders").insert(rows);if(error)throw new Error(`Could not restore parts orders: ${error.message||error}`)}}
   await checkpoint("maintenance",84,"Restoring maintenance records…","Importing maintenance history and linking machines.","Maintenance records are being rebuilt against the restored machine list.");
-  const maintenance=Array.isArray(data.maintenance)?data.maintenance:[];if(maintenance.length){const rows=[];for(let idx=0;idx<maintenance.length;idx++){const row=maintenance[idx];await checkpoint("maintenance",84+(idx/maintenance.length)*8,"Restoring maintenance records…",`Restoring maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");const fleet=String(row[4]||"").trim();let machineId=null;if(fleet)machineId=machineByFleet.get(fleet)||null;if(!machineId&&row[2]){const {data:m}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",row[2]).limit(1).maybeSingle();machineId=m?.id||null;}if(!machineId)continue;rows.push({company_id:iyCompany.id,service_ref:String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id});}if(rows.length){const {error}=await iySupabase.from("maintenance_records").insert(rows);if(error)throw new Error(`Could not restore maintenance records: ${error.message||error}`)}}
+  const maintenance=Array.isArray(data.maintenance)?data.maintenance:[];if(maintenance.length){const usedServiceRefs=new Set();for(let idx=0;idx<maintenance.length;idx++){const row=maintenance[idx];const pct=84+(idx/maintenance.length)*8;await checkpoint("maintenance",pct,"Restoring maintenance records…",`Restoring maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");const fleet=String(row[4]||"").trim();let machineId=null;if(fleet)machineId=machineByFleet.get(fleet)||null;if(!machineId&&row[2]){const {data:m,error:me}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",row[2]).limit(1).maybeSingle();if(me)throw new Error(`Could not match machine for maintenance record ${idx+1} (${fleet||row[2]||"unknown machine"}): ${me.message||me}`);machineId=m?.id||null;}if(!machineId){
+  // Backups can contain maintenance history for a machine whose machine master
+  // record is missing from the backup. Preserve the maintenance history by
+  // rebuilding the missing machine from the maintenance row itself.
+  if(!fleet){throw new Error(`Could not restore maintenance record ${idx+1}: no matching machine was found and the maintenance record has no fleet ID.`);}
+  const fallbackMachine={company_id:iyCompany.id,fleet_id:fleet,machine_model:String(row[2]||"").trim()||null,machine_serial_number:String(row[3]||"").trim()||null,meter_reading:null,manufacturer:null,capacity:null,department:null,status:"Active",assigned_to:null};
+  const {data:createdFallback,error:fm}=await iySupabase.from("machines").insert(fallbackMachine).select("id,fleet_id,machine_model").single();
+  if(fm)throw new Error(`Could not rebuild missing machine ${fleet} for maintenance record ${idx+1}: ${fm.message||fm}`);
+  machineId=createdFallback.id;
+  machineByFleet.set(fleet,machineId);
+}
+let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serviceRef=baseRef;let suffix=1;while(usedServiceRefs.has(serviceRef))serviceRef=`${baseRef}-R${suffix++}`;usedServiceRefs.add(serviceRef);const record={company_id:iyCompany.id,service_ref:serviceRef,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id};const {error}=await iySupabase.from("maintenance_records").insert(record);if(error)throw new Error(`Could not restore maintenance record ${idx+1} (${serviceRef}): ${error.message||error}`);await checkpoint("maintenance",84+((idx+1)/maintenance.length)*8,"Restoring maintenance records…",`Restored maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");}}
   await checkpoint("settings",92,"Restoring company settings…","Applying company details, report settings and configuration.","Branding and report configuration are being restored last.");
   if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:ss.systemName||"MAINTENANCE MANAGEMENT SYSTEM",app_version:ss.version||"Version 1.0",developer:ss.developer||null},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
   await checkpoint("finish",97,"Finalizing restore…","Refreshing the workspace and verifying restored data.","Almost finished. Please keep this page open.");
@@ -3332,7 +3363,7 @@ async function runRestoreJob(payload,name,options={}){
   render();toast("System backup restored successfully.");alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
  }catch(e){
   console.error("Backup restore failed",e);job.status="interrupted";job.error=e?.message||"Unknown error";job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);hideRestoreProgress();clearRestoreUnloadGuard();
-  alert(`Restore stopped at ${job.percent||0}%. Nothing else was changed after the last completed step. Your saved backup remains available so you can safely restart the restore.`);
+  alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nYour saved backup remains available. Fix the reported issue and restart the restore safely.`);
   throw e;
  }
 }
