@@ -1260,7 +1260,7 @@ button,input,select,textarea{font-family:inherit}
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* IY Maintain V24.5 — Supabase cloud-only data integrity release. */
+/* IY Maintain V24.6 — Supabase cloud-only data integrity release. */
 /* Supabase configuration — browser-safe publishable key only. */
 const iy_SUPABASE_URL = "https://kxpwufuyueiseakhotyd.supabase.co";
 const iy_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_pHACrYAq0Ej4XcH14_faGQ_Fo7uqLEl";
@@ -1748,8 +1748,9 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
    render();
    toast("Part issued successfully.");
 
-   if(committed && num(committed[3])<=num(committed[6])){
-     setTimeout(()=>alert("LOW STOCK ALERT\n\n"+committed[0]+" — "+committed[1]+"\nCurrent stock: "+committed[3]+"\nMinimum stock: "+committed[6]),100);
+   const currentPart=db.inventory.find(x=>String(x[0])===String(pn));
+   if(currentPart && num(currentPart[3])<=num(currentPart[6])){
+     setTimeout(()=>alert("LOW STOCK ALERT\n\n"+currentPart[0]+" — "+currentPart[1]+"\nCurrent stock: "+currentPart[3]+"\nMinimum stock: "+currentPart[6]),100);
    }
  }catch(e){
    console.error("Issue transaction failed",e);
@@ -2865,6 +2866,7 @@ async function loadCloudData(){
  await loadCloudAssets(empty.settings);
  empty.activityLog=(activity.data||[]).map(x=>({time:x.created_at,user:db.user?.name||iyMembership?.full_name||"User",userId:x.user_id||"",action:x.action,details:x.details||""}));
  db=empty;iyCloudReady=true;
+ await ensureZeroStockPartsUpdates();
 }
 function machineModelFromPart(p,machines){if(p.machine_id){const m=machines.find(x=>x[9]===p.machine_id);if(m)return m[2]}return p.machine_model||p.model||""}
 
@@ -2898,6 +2900,43 @@ async function cloudInsertIssue(row){
  });
  if(error)throw error;
  return data?.issue_id||data;
+}
+async function ensureZeroStockPartsUpdates(){
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return;
+ const zeroStock=db.inventory.filter(x=>num(x[3])===0 && x[10]);
+ if(!zeroStock.length)return;
+ let changed=false;
+ for(const inv of zeroStock){
+   const partId=inv[10];
+   const existing=db.updates.find(u=>String(u[12]||"")===String(partId) && !["RECEIVED","CANCELLED"].includes(String(u[8]||"").trim().toUpperCase()));
+   if(existing)continue;
+   const suggestedQty=Math.max(1,num(inv[6])||1);
+   const row=[
+     new Date().toISOString(),
+     inv[0]||"",
+     inv[1]||"",
+     inv[2]||"",
+     suggestedQty,
+     "",
+     "",
+     "",
+     "TO ORDER",
+     "",
+     "AUTO - ZERO STOCK",
+     null,
+     partId
+   ];
+   try{
+     const id=await cloudSaveUpdate(row,null);
+     row[11]=id;
+     db.updates.push(row);
+     changed=true;
+     await cloudAudit("Created zero stock parts update","Automatic parts update created for "+inv[0]);
+   }catch(e){
+     console.warn("Automatic zero stock Parts Update could not be created for "+inv[0],e?.message||e);
+   }
+ }
+ if(changed)save();
 }
 async function cloudSaveUpdate(row,index){const p=await cloudGetPart(String(row[1]));if(!p)throw new Error("Part number must exist before creating a parts update.");const payload={company_id:iyCompany.id,part_id:p.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,updated_by:iyAuthUser.id};let id=row[11];let q=iySupabase.from("parts_updates");if(id){const {data,error}=await q.update(payload).eq("id",id).select("id").single();if(error)throw error;return data.id}else{const {data,error}=await q.insert({...payload,created_by:iyAuthUser.id}).select("id").single();if(error)throw error;return data.id}}
 async function cloudSaveMaintenance(row){
