@@ -3200,6 +3200,8 @@ function backup(){
    backupType:"Complete iy Maintenance Management System Backup",
    createdAt:now.toISOString(),
    application:"iy Standalone Maintenance Management System",
+   companyId:iyCompany?.id||null,
+   companyName:iyCompany?.name||db.settings?.companyName||"",
    version:(db.settings&&db.settings.version)||"Version 1.0",
    includes:["Company settings and branding","User profile","User activity/audit log","Parts inventory","Parts issue transactions","Parts receipt transactions","Parts requisition/updates","Maintenance entries and logs","Machines","Report configuration and signatures","All other locally stored application data"]
   },
@@ -3216,8 +3218,118 @@ function backup(){
  setTimeout(()=>URL.revokeObjectURL(url),1000);
  toast("Complete system backup downloaded.");
 }
-function restoreBackupFile(){
- alert("Cloud restore is controlled to protect the live Supabase workspace. Please contact the system administrator to restore a backup.");
+async function restoreBackupFile(){
+ if(!isCompanyAdmin())return alert("Only a Company Administrator can restore a system backup.");
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
+ const input=document.createElement("input");
+ input.type="file";input.accept=".json,application/json";input.style.display="none";
+ document.body.appendChild(input);
+ input.onchange=async()=>{
+  const file=input.files&&input.files[0];input.remove();if(!file)return;
+  try{
+   const text=await file.text();let payload;
+   try{payload=JSON.parse(text)}catch(e){throw new Error("The selected file is not a valid JSON backup.")}
+   const data=payload?.data;
+   if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
+   const backupCompanyId=payload?.backupInfo?.companyId||data?.companyId||null;
+   if(backupCompanyId&&String(backupCompanyId)!==String(iyCompany.id)){
+    throw new Error("This backup belongs to a different company workspace and cannot be restored here.");
+   }
+   const name=payload?.backupInfo?.companyName||data?.settings?.companyName||"this workspace";
+   const counts={
+    machines:Array.isArray(data.machines)?data.machines.length:0,
+    parts:Array.isArray(data.inventory)?data.inventory.length:0,
+    receipts:Array.isArray(data.receipts)?data.receipts.length:0,
+    issues:Array.isArray(data.issues)?data.issues.length:0,
+    updates:Array.isArray(data.updates)?data.updates.length:0,
+    maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0
+   };
+   const ok=confirm(`RESTORE SYSTEM BACKUP\n\nCompany: ${name}\nMachines: ${counts.machines}\nParts / inventory: ${counts.parts}\nReceipts: ${counts.receipts}\nIssues: ${counts.issues}\nParts updates: ${counts.updates}\nMaintenance records: ${counts.maintenance}\n\nThis will REPLACE the current company records with the selected backup.\n\nUsers, passwords and Supabase authentication accounts will NOT be changed.\n\nContinue?`);
+   if(!ok)return;
+   const second=prompt('For safety, type RESTORE to confirm the replacement of the current company data.');
+   if(second!=="RESTORE")return alert("Restore cancelled. No data was changed.");
+   const btn=document.querySelector('.restore-button');if(btn)btn.disabled=true;
+   toast("Restoring company backup…");
+
+   // Remove company records in dependency order. RLS still applies, and only a Company Admin reaches this path.
+   const deleteTables=["maintenance_records","parts_orders","parts_updates","part_issues","part_receipts","inventory","parts","machines"];
+   for(const table of deleteTables){
+    const {error}=await iySupabase.from(table).delete().eq("company_id",iyCompany.id);
+    if(error)throw new Error(`Could not clear ${table}: ${error.message||error}`);
+   }
+
+   const machines=Array.isArray(data.machines)?data.machines:[];
+   const machineByFleet=new Map();
+   for(const row of machines){
+    const payload={company_id:iyCompany.id,fleet_id:row[0],machine_model:row[2]||row[1]||null,machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
+    const {data:created,error}=await iySupabase.from("machines").insert(payload).select("id,fleet_id,machine_model").single();
+    if(error)throw new Error(`Could not restore machine ${row[0]||""}: ${error.message||error}`);
+    machineByFleet.set(String(row[0]||""),created.id);
+   }
+
+   const partByNumber=new Map();
+   const invRows=Array.isArray(data.inventory)?data.inventory:[];
+   for(const row of invRows){
+    const pn=String(row[0]||"").trim();if(!pn)continue;
+    const machineModel=String(row[2]||"").trim()||null;
+    let machineId=null;
+    if(machineModel){
+      const {data:m,error:me}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",machineModel).limit(1).maybeSingle();
+      if(me)throw new Error(`Could not match machine for part ${pn}: ${me.message||me}`);machineId=m?.id||null;
+    }
+    const payload={company_id:iyCompany.id,part_number:pn,description:String(row[1]||pn),machine_id:machineId,machine_model:machineModel,supplier:null,location:row[7]||null,minimum_stock:num(row[6]),remarks:row[8]||null};
+    const {data:part,error}=await iySupabase.from("parts").insert(payload).select("id,part_number").single();
+    if(error)throw new Error(`Could not restore part ${pn}: ${error.message||error}`);
+    partByNumber.set(pn,part.id);
+    const {error:ie}=await iySupabase.from("inventory").insert({company_id:iyCompany.id,part_id:part.id,current_stock:num(row[3]),total_received:num(row[4]),total_issued:num(row[5]),damaged_repair:0});
+    if(ie)throw new Error(`Could not restore inventory for ${pn}: ${ie.message||ie}`);
+   }
+
+   const receipts=Array.isArray(data.receipts)?data.receipts:[];
+   if(receipts.length){
+    const rows=receipts.map(row=>({company_id:iyCompany.id,part_id:partByNumber.get(String(row[1]||"").trim()),received_at:row[0]||null,quantity:num(row[4]),supplier:row[5]||null,reference:row[6]||null,receiver_name:row[7]||null,machine_model:row[3]||null})).filter(x=>x.part_id);
+    if(rows.length){const {error}=await iySupabase.from("part_receipts").insert(rows);if(error)throw new Error(`Could not restore receipt history: ${error.message||error}`)}
+   }
+   const issues=Array.isArray(data.issues)?data.issues:[];
+   if(issues.length){
+    const rows=issues.map(row=>({company_id:iyCompany.id,part_id:partByNumber.get(String(row[1]||"").trim()),issued_at:row[0]||null,quantity:num(row[4]),technician_name:row[5]||null,work_order:row[6]||null,remarks:row[7]||null,machine_model:row[10]||row[3]||null})).filter(x=>x.part_id);
+    if(rows.length){const {error}=await iySupabase.from("part_issues").insert(rows);if(error)throw new Error(`Could not restore issue history: ${error.message||error}`)}
+   }
+   const updates=Array.isArray(data.updates)?data.updates:[];
+   if(updates.length){
+    const rows=updates.map(row=>({company_id:iyCompany.id,part_id:partByNumber.get(String(row[1]||"").trim()),order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id})).filter(x=>x.part_id);
+    if(rows.length){const {error}=await iySupabase.from("parts_updates").insert(rows);if(error)throw new Error(`Could not restore parts updates: ${error.message||error}`)}
+   }
+   const orders=Array.isArray(data.orders)?data.orders:[];
+   if(orders.length){
+    const rows=orders.map(row=>({company_id:iyCompany.id,part_id:partByNumber.get(String(row[1]||"").trim()),order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:row[8]||null,onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id})).filter(x=>x.part_id);
+    if(rows.length){const {error}=await iySupabase.from("parts_orders").insert(rows);if(error)throw new Error(`Could not restore parts orders: ${error.message||error}`)}
+   }
+   const maintenance=Array.isArray(data.maintenance)?data.maintenance:[];
+   if(maintenance.length){
+    const rows=[];
+    for(const row of maintenance){
+      const fleet=String(row[4]||"").trim();let machineId=null;
+      if(fleet)machineId=machineByFleet.get(fleet)||null;
+      if(!machineId&&row[2]){const {data:m}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",row[2]).limit(1).maybeSingle();machineId=m?.id||null;}
+      if(!machineId)continue;
+      rows.push({company_id:iyCompany.id,service_ref:String(row[0]||"").trim()||`RESTORE-${Date.now()}-${rows.length+1}`,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id});
+    }
+    if(rows.length){const {error}=await iySupabase.from("maintenance_records").insert(rows);if(error)throw new Error(`Could not restore maintenance records: ${error.message||error}`)}
+   }
+
+   if(data.settings){
+    const s=data.settings;
+    const {error:e1}=await iySupabase.from("companies").update({name:s.companyName||iyCompany.name,address:s.companyAddress||null,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);
+    if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);
+    const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock)||3,report_footer:s.reportFooter||null,system_name:s.systemName||"MAINTENANCE MANAGEMENT SYSTEM",app_version:s.version||"Version 1.0",developer:s.developer||null},{onConflict:"company_id"});
+    if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`);
+   }
+   await cloudAudit("Restored system backup",`Company backup restored by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`);
+   await loadCloudData();render();toast("System backup restored successfully.");alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
+  }catch(e){console.error("Backup restore failed",e);alert(`Restore failed: ${e?.message||"Unknown error"}. If records were already cleared, do not retry blindly; use the backup file again after checking the workspace.`)}finally{const btn=document.querySelector('.restore-button');if(btn)btn.disabled=false}
+ };
+ input.click();
 }
 
 function backupPage(){
@@ -3241,7 +3353,7 @@ function backupPage(){
      <p>Load a iy backup file and replace the current cloud workspace data with the saved version. This includes settings, records, users, audit history and report configuration.</p>
      <div class="backup-meta"><span>JSON backup only</span><span>Replaces current data</span><span>Confirmation required</span></div>
     </div>
-    <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore via Administrator</button>
+    <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore Backup</button>
    </div>
   </div>
   <div class="restore-warning"><strong>Important:</strong> Restoring a backup replaces the current local data. For safety, download a fresh backup before restoring an older one.</div>

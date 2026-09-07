@@ -1,9 +1,15 @@
-IY Maintain V24.13 — Users & Roles Management
+# IY Maintain — Backup & Restore Update
 
-Changes:
-- Users & Roles supports inviting new users from the workspace.
-- Added Remove action for users other than the signed-in administrator.
-- Removing a user deletes their company membership, immediately removing workspace access while preserving their Supabase Auth account for possible future re-invitation.
-- Self-removal is blocked.
-- User management remains company-scoped through Supabase RLS.
-- System version updated to V24.13.
+## What changed
+- Restore System Backup is now functional for the IY Maintain JSON backup format.
+- Restore is restricted to the `company_admin` role.
+- The restore checks the backup company ID when available and blocks cross-company restores.
+- A two-step confirmation is required before replacement.
+- User accounts, passwords, Supabase Auth IDs and memberships are not replaced by the restore.
+- Company records are restored into the currently authenticated company workspace.
+- The backup download now records the company ID and company name for safer future restores.
+
+## Deployment
+Replace the production `index.html` with this file and deploy it to GitHub Pages.
+
+No RLS policies need to be disabled.
