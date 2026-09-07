@@ -2558,7 +2558,7 @@ async function loadCompanyContext(user){
  if(!membership){
    const companyName=user.user_metadata?.company_name?.trim();
    if(!companyName)throw new Error("Your account is not linked to a company. Please ask a company administrator to add your membership.");
-   const {data,error:provisionError}=await iySupabase.rpc("provision_company_for_user",{p_company_name:companyName,p_full_name:user.user_metadata?.full_name||user.email?.split("@")[0]||"User"});
+   const {data:provision,error:provisionError}=await iySupabase.rpc("provision_company_for_user",{p_company_name:companyName,p_full_name:user.user_metadata?.full_name||user.email?.split("@")[0]||"User"});
    if(provisionError)throw provisionError;
    const companyId=Array.isArray(provision)?provision[0]?.company_id:provision?.company_id;
    if(!companyId)throw new Error("Your company workspace could not be created.");
