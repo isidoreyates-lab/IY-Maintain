@@ -353,6 +353,7 @@ content{padding:28px 34px 50px}
   body.printing-parts-report #partsReportPreviewModal{display:block!important;position:static!important;inset:auto!important;background:#fff!important;padding:0!important;overflow:visible!important}
   body.printing-parts-report .report-preview-shell{display:block!important;width:auto!important;height:auto!important;background:#fff!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
   body.printing-parts-report .report-preview-bar{display:none!important}
+  body.printing-parts-report .report-approval-panel{display:none!important}
   body.printing-parts-report .report-preview-scroll{display:block!important;overflow:visible!important;padding:0!important}
   body.printing-parts-report .report-paper{width:297mm!important;min-height:210mm!important;margin:0 auto!important;padding:11mm 14mm 8mm!important;box-shadow:none!important;transform:none!important}
 }
@@ -378,6 +379,7 @@ content{padding:28px 34px 50px}
   body.printing-maintenance-report #reportPreviewModal{display:block!important;position:static!important;inset:auto!important;background:#fff!important;padding:0!important;overflow:visible!important}
   body.printing-maintenance-report .report-preview-shell{display:block!important;width:auto!important;height:auto!important;background:#fff!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
   body.printing-maintenance-report .report-preview-bar{display:none!important}
+  body.printing-maintenance-report .report-approval-panel{display:none!important}
   body.printing-maintenance-report .report-preview-scroll{display:block!important;overflow:visible!important;padding:0!important}
   body.printing-maintenance-report .report-paper{width:297mm!important;min-height:210mm!important;margin:0 auto!important;padding:11mm 14mm 8mm!important;box-shadow:none!important;transform:none!important}
 }
@@ -425,7 +427,14 @@ button,input,select,textarea{font-family:inherit}
 .modern-save-bar{border:1px solid #e1e7ee;border-radius:10px;background:#f8fafc}.modern-primary-btn,.modern-upload-btn{background:#075fff;border-radius:8px;padding:10px 14px}.modern-primary-btn:hover,.modern-upload-btn:hover{background:#0547d8}
 .modern-logo-preview{border-color:#cfd8e3;background:#fafbfd;border-radius:10px}.modern-secondary-btn{border-color:#d2dbe5;border-radius:8px}.signature-modern-row{padding:11px 0}.signature-modern-avatar{border-color:#dbe3ea;border-radius:8px}.signature-modern-action label{color:#075fff}.signature-modern-action label:hover{background:#f0efff}
 /* Tables, report filters and report action bars */
-.report-preview-shell{border:1px solid #dfe5ec;border-radius:12px;box-shadow:0 24px 70px rgba(10,37,64,.22)}.report-preview-bar{height:60px}.report-pdf{background:#075fff!important;border-radius:8px!important}.report-close{border-radius:8px!important}
+.report-preview-shell{border:1px solid #dfe5ec;border-radius:12px;box-shadow:0 24px 70px rgba(10,37,64,.22)}
+/* V24.12 — Report approval workflow visual prototype */
+.report-approval-panel{margin:0 0 18px;background:#fff;border:1px solid #d8e2ec;border-radius:12px;padding:14px 16px;box-shadow:0 2px 10px rgba(20,40,60,.06)}
+.report-approval-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.report-approval-title{font-size:12px;font-weight:900;color:#123f68}.report-approval-status{font-size:9px;font-weight:900;padding:6px 9px;border-radius:999px;background:#eef6fb;color:#1769aa}
+.report-approval-actions{display:flex;gap:8px;flex-wrap:wrap}.report-approval-actions button{border:1px solid #d5e0e9;background:#fff;color:#23435d;border-radius:8px;padding:8px 11px;font-size:10px;font-weight:800;cursor:pointer}.report-approval-actions .primary{background:#075fff;color:#fff;border-color:#075fff}.report-approval-actions .success{background:#edf9f1;color:#17743a;border-color:#bfe3cb}
+.report-approval-note{font-size:9px;color:#718398;margin-top:9px}.report-approval-chain{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.approval-chip{border:1px solid #dce5ed;border-radius:8px;padding:7px 9px;background:#fafcfe;min-width:125px}.approval-chip strong{display:block;font-size:9px;color:#263e54}.approval-chip span{display:block;font-size:8px;color:#8292a2;margin-top:3px}.approval-chip.signed{border-color:#bfe3cb;background:#f4fbf6}.approval-chip.pending{border-style:dashed}
+.report-preview-bar{height:60px}.report-pdf{background:#075fff!important;border-radius:8px!important}.report-close{border-radius:8px!important}
 .backup-page{padding:24px}.backup-page .settings-kicker{color:#075fff;font-size:10px;letter-spacing:.15em;font-weight:700;margin-bottom:4px}.backup-page h2{font-size:28px;letter-spacing:-.04em}.backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}.backup-card{position:relative;display:flex;flex-direction:column;min-height:285px;padding:22px;border:1px solid #e1e7ee;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(10,37,64,.025)}.backup-card:hover{border-color:#cbd5e1;box-shadow:0 10px 28px rgba(10,37,64,.07)}.backup-icon{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:#eeedff;color:#075fff;font-size:22px;font-weight:700;margin-bottom:18px}.restore-icon{background:#eaf8f2;color:#147a52}.backup-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:750;color:#697b8f;margin-bottom:5px}.backup-copy h3{font-size:17px;letter-spacing:-.025em;margin:0 0 8px}.backup-copy p{font-size:12px;line-height:1.6;color:#66788c;max-width:650px;margin:0}.backup-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}.backup-meta span{font-size:10px;padding:5px 8px;border:1px solid #e1e7ee;border-radius:999px;background:#f8fafc;color:#5f7286}.backup-download{margin-top:auto;align-self:flex-start}.restore-button{cursor:pointer;text-decoration:none}.restore-button:hover{background:#e5eaf0}.restore-warning{margin-top:16px;padding:12px 14px;border:1px solid #f0d89c;background:#fff8e6;color:#805500;border-radius:9px;font-size:11px;line-height:1.5}.restore-progress-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(5,20,48,.62);backdrop-filter:blur(4px);padding:20px}.restore-progress-card{width:min(520px,calc(100vw - 40px));background:#fff;border-radius:18px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.restore-progress-top{display:flex;align-items:center;gap:14px;margin-bottom:20px}.restore-progress-spinner{width:42px;height:42px;border:4px solid #e5edf8;border-top-color:#075fff;border-radius:50%;animation:iyRestoreSpin .8s linear infinite;flex:0 0 auto}.restore-progress-title{font-size:18px;font-weight:800;color:#102a43}.restore-progress-step{font-size:12px;color:#65788d;margin-top:4px}.restore-progress-track{height:12px;background:#e9eef5;border-radius:999px;overflow:hidden}.restore-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#073b9e,#075fff,#22a7ff);border-radius:999px;transition:width .25s ease}.restore-progress-meta{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:11px;color:#718198}.restore-progress-detail{margin-top:16px;padding:12px 14px;border:1px solid #e4eaf2;border-radius:10px;background:#f8fafc;font-size:11px;line-height:1.5;color:#53677c}.restore-progress-stage-list{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;padding:12px 14px;border:1px solid #e4eaf2;border-radius:10px;background:#fbfdff}.restore-progress-stage-list div{font-size:10px;color:#7b8da0;line-height:1.4}.restore-progress-stage-list div.current{color:#075fff;font-weight:800}.restore-progress-stage-list div.done{color:#16805b;font-weight:750}.iy-restore-running .restore-button{pointer-events:none;opacity:.55}@media(max-width:560px){.restore-progress-stage-list{grid-template-columns:1fr}}@keyframes iyRestoreSpin{to{transform:rotate(360deg)}}@media(max-width:800px){.backup-grid{grid-template-columns:1fr}}
 /* Keep generated report styling authoritative; only preview chrome is themed. */
 @media(max-width:1000px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}}
@@ -2570,6 +2579,15 @@ function runPartsReport(){
  const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
  toast("Parts report generated.");
 }
+function approvalDemoKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return (kind+"|"+JSON.stringify(d||{})).slice(0,500);}
+function currentReportActor(){return {name:iyMembership?.full_name||db.settings.preparedBy||"Current User",role:iyMembership?.role||"Report Generator",signature:signatureForCurrentUser()};}
+function signatureForCurrentUser(){const r=String(iyMembership?.role||"").toLowerCase();const map={company_admin:"signatureManager",super_admin:"signatureManager",manager:"signatureManager",supervisor:"signatureTeamLead",team_lead:"signatureTeamLead",parts_coordinator:"signaturePartsCoordinator",storekeeper:"signaturePartsCoordinator",technician:"signaturePrepared",maintenance:"signaturePrepared"};const k=map[r]||"signaturePrepared";return db.settings?.[k]||"";}
+function buildReportApprovalSignatureHTML(kind,prepared){const actor=currentReportActor();const key=approvalDemoKey(kind);const st=window.__reportApprovalDemo?.[key]||{signed:[{name:prepared||actor.name,role:"Report Generator",signature:db.settings?.signaturePrepared||"",at:new Date().toLocaleString("en-GB")}],pending:null};const signed=st.signed||[];const cards=signed.map(x=>`<div class="r-sig"><div class="r-sig-space">${x.signature?`<img class="r-sig-image" src="${x.signature}" alt="Signature">`:``}</div><div class="r-sig-line">${esc(x.role||"Approved By")}</div><div class="r-sig-name">${esc(x.name||"")}<br>${esc(x.at||"")}</div></div>`).join("");return `<div class="r-signatures">${cards||`<div class="r-sig"><div class="r-sig-space"></div><div class="r-sig-line">No signatures</div><div class="r-sig-name"></div></div>`}</div>`;}
+function reportApprovalPanel(kind){const actor=currentReportActor();const key=approvalDemoKey(kind);const st=window.__reportApprovalDemo?.[key]||{signed:[{name:actor.name,role:"Report Generator",signature:actor.signature||db.settings?.signaturePrepared||"",at:new Date().toLocaleString("en-GB")}],pending:null};window.__reportApprovalDemo=window.__reportApprovalDemo||{};window.__reportApprovalDemo[key]=st;const approvalRoles=["company_admin","super_admin","manager","team_lead","parts_coordinator","storekeeper","maintenance_supervisor","supervisor","technician","maintenance"];const users=(iyUsersCache||[]).filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id&&approvalRoles.includes(String(u.role||"").toLowerCase())).sort((a,b)=>roleLabel(a.role).localeCompare(roleLabel(b.role))||String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||"")));const opts=users.length?users.map(u=>`<option value="${esc(u.user_id)}">${esc(u.full_name||u.email||"User")} — ${esc(roleLabel(u.role))}</option>`).join(""): `<option value="">No other active approval users loaded</option>`;const status=st.pending?`Awaiting ${esc(st.pending.name)}`:`${st.signed.length} signature${st.signed.length===1?"":"s"} recorded`;return `<div class="report-approval-panel"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL & SIGNATURE</div><div class="report-approval-note">Each account signs only with its own uploaded signature. Export shows only signatures already applied.</div></div><span class="report-approval-status">${status}</span></div><div class="report-approval-chain">${st.signed.map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.name)}</strong><span>${esc(x.role)} · Signed</span></div>`).join("")}${st.pending?`<div class="approval-chip pending"><strong>⏳ ${esc(st.pending.name)}</strong><span>${esc(st.pending.role)} · Approval requested</span></div>`:""}</div><div class="report-approval-actions" style="margin-top:12px"><button class="success" onclick="signCurrentReport('${kind}')">✍ Sign Report</button><select id="approvalUser_${kind}" class="select" style="min-width:230px;height:34px"><option value="">Select user for further approval</option>${opts}</select><button class="primary" onclick="requestReportApproval('${kind}')">Request Approval</button></div></div>`;}
+function signCurrentReport(kind){const key=approvalDemoKey(kind);window.__reportApprovalDemo=window.__reportApprovalDemo||{};const st=window.__reportApprovalDemo[key]||{signed:[],pending:null};const actor=currentReportActor();if(st.signed.some(x=>x.name===actor.name))return alert("This account has already signed this report.");if(!actor.signature)return alert("Your account does not have a signature uploaded yet. Upload your signature in your profile/settings first.");st.signed.push({name:actor.name,role:actor.role,signature:actor.signature,at:new Date().toLocaleString("en-GB")});st.pending=null;window.__reportApprovalDemo[key]=st;refreshReportApprovalPreview(kind);}
+function requestReportApproval(kind){const sel=document.getElementById("approvalUser_"+kind);const u=(iyUsersCache||[]).find(x=>x.user_id===sel?.value);if(!u)return alert("Select the user you need approval from.");const key=approvalDemoKey(kind);window.__reportApprovalDemo=window.__reportApprovalDemo||{};const st=window.__reportApprovalDemo[key]||{signed:[],pending:null};st.pending={user_id:u.user_id,name:u.full_name||u.email||"User",role:u.role||"User"};window.__reportApprovalDemo[key]=st;refreshReportApprovalPreview(kind);toast(`Approval requested from ${st.pending.name}.`);}
+function refreshReportApprovalPreview(kind){if(kind==="parts"){const m=document.getElementById("partsReportPreviewScroll");if(m)m.innerHTML=buildPartsReportHTML();}else{const m=document.getElementById("reportPreviewScroll");if(m)m.innerHTML=buildMaintenanceReportHTML();}}
+
 function buildPartsReportHTML(){
  const data=window.__partsReportData;if(!data||!data.rows)return "";
  const company=esc(db.settings.companyName||"iy"),system=esc(db.settings.systemName||"MAINTENANCE MANAGEMENT SYSTEM"),prepared=esc(db.settings.preparedBy||""),department=esc(db.settings.department||""),footer=esc(db.settings.reportFooter||""),logo=db.settings.logoData||"";
@@ -2578,7 +2596,7 @@ function buildPartsReportHTML(){
  const table=isOrders?(rows.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active parts orders match the selected filters.</div>`):(rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`);
  const kpis=isOrders?`${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("TOTAL QUANTITY",total,"Units on order")}${metricReportKpi("SUPPLIERS",new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,"Suppliers")}${metricReportKpi("MACHINES",new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size,"Machines")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
  const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Active Parts Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
- return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>DEPARTMENT</span><b>${department}</b></div></div><div class="r-kpis">${kpis}</div>${summary}<div class="r-section">${isOrders?"ACTIVE PARTS ORDERS":"PARTS TRANSACTIONS"}</div>${table}<div class="r-signatures"><div class="r-sig"><div class="r-sig-space">${signatureImage("signaturePrepared")}</div><div class="r-sig-line">Prepared By</div><div class="r-sig-name">${prepared||""}</div></div><div class="r-sig"><div class="r-sig-space">${signatureImage("signatureTeamLead")}</div><div class="r-sig-line">Team Lead</div><div class="r-sig-name"></div></div><div class="r-sig"><div class="r-sig-space">${signatureImage("signaturePartsCoordinator")}</div><div class="r-sig-line">Parts Coordinator</div><div class="r-sig-name"></div></div><div class="r-sig"><div class="r-sig-space">${signatureImage("signatureManager")}</div><div class="r-sig-line">Manager</div><div class="r-sig-name"></div></div></div><div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
+ return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>DEPARTMENT</span><b>${department}</b></div></div><div class="r-kpis">${kpis}</div>${summary}<div class="r-section">${isOrders?"ACTIVE PARTS ORDERS":"PARTS TRANSACTIONS"}</div>${table}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
 }
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 function openPartsReportPreview(){
@@ -2615,36 +2633,38 @@ function currentRole(){return String(iyMembership?.role||"").toLowerCase();}
 function canAccess(page){
  const role=currentRole();
  if(["company_admin","super_admin"].includes(role))return true;
+ const operational=["manager","team_lead","technician"];
  const access={
-   dashboard:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   issue:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   receive:["storekeeper"],
-   inventory:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   updates:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   orders:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   mdashboard:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-      mlog:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   machines:["supervisor","technician","viewer","maintenance","employee"],
-   preports:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   mreports:["storekeeper","supervisor","technician","viewer","maintenance","employee"],
-   settings:["company_admin","super_admin"],
-   users:["company_admin","super_admin"],
-   activity:["company_admin","supervisor","storekeeper","technician","viewer","maintenance","employee"],
-   backup:["company_admin","super_admin"]
+   dashboard:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   issue:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper"],
+   receive:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper"],
+   inventory:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   updates:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   orders:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   mdashboard:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   mlog:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   machines:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   preports:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   mreports:[...operational,"parts_coordinator","supervisor","maintenance","storekeeper","viewer"],
+   settings:[],
+   users:[],
+   activity:["manager","team_lead","technician","supervisor","storekeeper","parts_coordinator","maintenance"],
+   backup:[]
  };
  return (access[page]||[]).includes(role);
 }
 function canEdit(area){
  const role=currentRole();
  if(["company_admin","super_admin"].includes(role))return true;
+ const fullOperational=["manager","team_lead","technician"];
  const edit={
-   issue:["storekeeper","supervisor","technician","maintenance"],
-   receive:["storekeeper"],
-   inventory:["storekeeper"],
-   updates:["storekeeper"],
-   orders:["storekeeper"],
-   maintenance:["supervisor","technician","maintenance"],
-   machines:["supervisor"],
+   issue:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   receive:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   inventory:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   updates:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   orders:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   maintenance:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   machines:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
    settings:["company_admin","super_admin"],
    users:["company_admin","super_admin"]
  };
@@ -2671,6 +2691,8 @@ function roleLabel(role){
    company_admin:"Company Admin",
    parts_coordinator:"Parts Coordinator",
    storekeeper:"Parts Coordinator",
+   manager:"Manager",
+   team_lead:"Team Lead",
    maintenance_supervisor:"Maintenance Supervisor",
    supervisor:"Maintenance Supervisor",
    technician:"Technician",
@@ -2756,6 +2778,8 @@ function userRoleOptions(selected="technician"){
    company_admin:"company_admin",
    parts_coordinator:"parts_coordinator",
    storekeeper:"parts_coordinator",
+   manager:"manager",
+   team_lead:"team_lead",
    maintenance_supervisor:"maintenance_supervisor",
    supervisor:"maintenance_supervisor",
    technician:"technician",
@@ -2763,13 +2787,15 @@ function userRoleOptions(selected="technician"){
    viewer:"viewer"
  };
  const selectedUi=dbToUi[String(selected||"").toLowerCase()]||selected;
- const roles=[["company_admin","Company Admin"],["parts_coordinator","Parts Coordinator"],["maintenance_supervisor","Maintenance Supervisor"],["technician","Technician"],["viewer","Viewer"]];
+ const roles=[["company_admin","Company Admin"],["manager","Manager"],["team_lead","Team Lead"],["parts_coordinator","Parts Coordinator"],["maintenance_supervisor","Maintenance Supervisor"],["technician","Technician"],["viewer","Viewer"]];
  return roles.map(([v,l])=>`<option value="${v}" ${v===selectedUi?"selected":""}>${l}</option>`).join("");
 }
 
 function membershipRoleForSave(uiRole){
  const map={
    company_admin:"company_admin",
+   manager:"manager",
+   team_lead:"team_lead",
    parts_coordinator:"storekeeper",
    maintenance_supervisor:"supervisor",
    technician:"technician",
@@ -3891,6 +3917,7 @@ function buildMaintenanceReportHTML(){
  }).slice().reverse();
 
  const partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
+ window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),rows};
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length;
  const ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length;
  const partsRequired=rows.filter(x=>String(x[11]||"").trim()!=="").length;
@@ -3921,12 +3948,7 @@ function buildMaintenanceReportHTML(){
  ${partsUpdates.length?partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]||"—"}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"—")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"—")}</td></tr>`).join(""):`<tr><td colspan="11" class="r-empty-cell">No parts updates for this reporting period.</td></tr>`}
  </tbody></table>`;
 
- const signatures=`<div class="r-signatures">
-   <div class="r-sig"><div class="r-sig-space">${signatureImage("signaturePrepared")}</div><div class="r-sig-line">Prepared By</div><div class="r-sig-name">${prepared||""}</div></div>
-   <div class="r-sig"><div class="r-sig-space">${signatureImage("signatureTeamLead")}</div><div class="r-sig-line">Team Lead</div><div class="r-sig-name"></div></div>
-   <div class="r-sig"><div class="r-sig-space">${signatureImage("signaturePartsCoordinator")}</div><div class="r-sig-line">Parts Coordinator</div><div class="r-sig-name"></div></div>
-   <div class="r-sig"><div class="r-sig-space">${signatureImage("signatureManager")}</div><div class="r-sig-line">Manager</div><div class="r-sig-name"></div></div>
- </div>`;
+ const signatures=buildReportApprovalSignatureHTML("maintenance", prepared);
 
  const footerHtml=`<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div>`;
 
@@ -3945,6 +3967,7 @@ function buildMaintenanceReportHTML(){
    <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PARTS UPDATES</span><b>${partsUpdates.length} record(s)</b></div><div><span>DEPARTMENT</span><b>${department||"—"}</b></div></div>
    <div class="r-section">PARTS UPDATE <small>${partsUpdates.length} update(s)</small></div>
    ${parts}
+   ${reportApprovalPanel("maintenance")}
    ${signatures}
    ${footerHtml}
   </section>
