@@ -3791,7 +3791,13 @@ let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serv
   await restoreYield();
   await iyDeleteRestoreJob(key);setRestoreBusy(false);clearRestoreUnloadGuard();
   const sp=document.getElementById("iy-restore-spinner");if(sp)sp.style.display="none";
-  render();toast("System backup restored successfully.");alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
+  // After a successful restore, immediately return the user to the live Dashboard
+  // using the freshly loaded cloud data. No manual browser refresh is required.
+  currentPage="dashboard";
+  hideRestoreProgress();
+  render();
+  toast("System backup restored successfully.");
+  alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
  }catch(e){
   console.error("Backup restore failed",e);job.status="interrupted";job.error=e?.message||"Unknown error";job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);hideRestoreProgress();clearRestoreUnloadGuard();
   alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nYour saved backup remains available. Fix the reported issue and restart the restore safely.`);
