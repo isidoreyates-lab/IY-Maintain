@@ -2128,24 +2128,9 @@ function maintenanceEntryPage(){return `<div class="panel maintenance-entry-work
  </div>
  <div class="entry-note"><b>Tip:</b> Maintenance Entry is for recording new work. The full historical record is maintained separately under Maintenance Log.</div>
  </div>`}
-function maintenanceModal(){if(!canEdit("maintenance"))return alert("You do not have permission to create maintenance records.");
- openModal(`<div class="modalhead"><h2>Maintenance Entry</h2><button class="close" onclick="closeModal()">×</button></div>
- <div class="formgrid">
- <div class="field"><label>Service Reference</label><input id="m_ref" class="input" value="PSC${String(Math.floor(Math.random()*900)+100)}"></div>
- <div class="field"><label>Job Date</label><input id="m_date" class="input" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
- <div class="field"><label>Machine Model</label><select id="m_machine" class="select" onchange="populateMachineDetails()">${db.machines.map(x=>`<option value="${esc(x[2])}">${esc(x[2])} (${esc(x[0])})</option>`).join("")}</select></div>
- <div class="field"><label>Serial Number</label><input id="m_serial" class="input" readonly></div>
- <div class="field"><label>Fleet ID</label><input id="m_fleet" class="input" readonly></div>
- <div class="field"><label>Machine Hours</label><input id="m_hours" class="input" type="number"></div>
- <div class="field"><label>Next Service Hours</label><input id="m_next" class="input" type="number"></div>
- <div class="field"><label>Job Type</label><input id="m_type" class="input" value="Weekly Inspection"></div>
- <div class="field"><label>Job Status</label><select id="m_status" class="select"><option>Completed</option><option>Ongoing</option><option>In Progress</option><option>Open</option></select></div>
- <div class="field"><label>Technician(s)</label><input id="m_tech" class="input"></div>
- <div class="field full"><label>Parts Required</label><input id="m_parts" class="input"></div>
- <div class="field full"><label>Fault / Problem</label><textarea id="m_fault" class="textarea"></textarea></div>
- <div class="field full"><label>Work Performed</label><textarea id="m_work" class="textarea"></textarea></div>
- <div class="field full"><label>Remarks</label><textarea id="m_rem" class="textarea"></textarea></div></div>
- <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMaintenance()">Save Entry</button></div>`);
+function maintenanceModal(){
+ if(!canEdit("maintenance"))return alert("You do not have permission to create maintenance records.");
+ openMaintenanceModal(null);
 }
 function populateMachineDetails(){
   const machineEl=document.getElementById("m_machine");
@@ -2169,7 +2154,7 @@ if(!window.__machineDetailWatcher){
   __machineDetailObserver.observe(document.body,{childList:true,subtree:true});
 }
 
-async function saveMaintenance(){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
+async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
  const machine=document.getElementById("m_machine").value;
  const mach=db.machines.find(x=>x[2]===machine);
  const row=[
@@ -2188,6 +2173,11 @@ async function saveMaintenance(){if(!canEdit("maintenance"))return alert("You do
    document.getElementById("m_tech").value,
    document.getElementById("m_rem").value
  ];
+ if(editId){
+   const existingIndex=(db.maintenance||[]).findIndex(x=>String(x[14]||"")===String(editId));
+   if(existingIndex<0)return alert("Maintenance record could not be found.");
+   row[14]=String(editId);
+ }
  if(!row[0])return alert("Service Reference is required.");
  if(!machine||!mach)return alert("Please select a valid machine.");
  if(!row[1])return alert("Job Date is required.");
@@ -2196,24 +2186,55 @@ async function saveMaintenance(){if(!canEdit("maintenance"))return alert("You do
    try{
      const id=await cloudSaveMaintenance(row);
      row[14]=id;
-     await cloudAudit("Created maintenance entry","Maintenance record saved");
+     await cloudAudit(editId?"Updated maintenance entry":"Created maintenance entry",editId?"Maintenance record updated":"Maintenance record saved");
    }catch(e){
      console.error("Maintenance save failed:",e);
      return alert(e?.message||"Maintenance record could not be saved to the cloud. No local record was added.");
    }
  }
- db.maintenance.push(row);
+ const existingIndex=editId?(db.maintenance||[]).findIndex(x=>String(x[14]||"")===String(editId)):-1;
+ if(existingIndex>=0)db.maintenance[existingIndex]=row;else db.maintenance.push(row);
  save();
  closeModal();
  render();
- toast("Maintenance entry saved to the cloud.");
+ toast(editId?"Maintenance entry updated successfully.":"Maintenance entry saved to the cloud.");
 }
 function maintenanceLogTable(rows){
  if(!rows.length)return `<div class="maintenance-log-empty"><div class="maintenance-log-empty-icon">▤</div><b>No maintenance records found</b><span>Create your first maintenance entry to get started.</span><button class="btn primary maintenance-empty-btn" onclick="maintenanceModal()">+ New Maintenance Entry</button></div>`;
  return `<div class="tablewrap maintenance-log-wrap"><table class="table maintenance-log-table"><tr>
- <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th>
- </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td></tr>`).join("")}</table></div>`;
+ <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th><th>Action</th>
+ </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
 }
+function editMaintenance(id){
+ if(!canEdit("maintenance"))return alert("You do not have permission to edit maintenance records.");
+ const row=(db.maintenance||[]).find(x=>String(x[14]||"")===String(id||""));
+ if(!row)return alert("Maintenance record could not be found.");
+ openMaintenanceModal(row);
+}
+function openMaintenanceModal(existing){
+ const row=existing||null;
+ const machineModel=String(row?.[2]||"");
+ const machineOptions=db.machines.map(x=>`<option value="${esc(x[2])}" ${String(x[2])===machineModel?'selected':''}>${esc(x[2])} (${esc(x[0])})</option>`).join("");
+ openModal(`<div class="modalhead"><h2>${row?'Edit Maintenance Entry':'Maintenance Entry'}</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="formgrid">
+ <div class="field"><label>Service Reference</label><input id="m_ref" class="input" value="${esc(row?.[0]||`PSC${String(Math.floor(Math.random()*900)+100)}`)}"></div>
+ <div class="field"><label>Job Date</label><input id="m_date" class="input" type="date" value="${esc(row?.[1]||new Date().toISOString().slice(0,10))}"></div>
+ <div class="field"><label>Machine Model</label><select id="m_machine" class="select" onchange="populateMachineDetails()">${machineOptions}</select></div>
+ <div class="field"><label>Serial Number</label><input id="m_serial" class="input" readonly value="${esc(row?.[3]||"")}"></div>
+ <div class="field"><label>Fleet ID</label><input id="m_fleet" class="input" readonly value="${esc(row?.[4]||"")}"></div>
+ <div class="field"><label>Machine Hours</label><input id="m_hours" class="input" type="number" value="${row?.[5]??''}"></div>
+ <div class="field"><label>Next Service Hours</label><input id="m_next" class="input" type="number" value="${row?.[6]??''}"></div>
+ <div class="field"><label>Job Type</label><input id="m_type" class="input" value="${esc(row?.[7]||'Weekly Inspection')}"></div>
+ <div class="field"><label>Job Status</label><select id="m_status" class="select"><option ${String(row?.[10]||'Completed')==='Completed'?'selected':''}>Completed</option><option ${String(row?.[10]||'')==='Ongoing'?'selected':''}>Ongoing</option><option ${String(row?.[10]||'')==='In Progress'?'selected':''}>In Progress</option><option ${String(row?.[10]||'')==='Open'?'selected':''}>Open</option></select></div>
+ <div class="field"><label>Technician(s)</label><input id="m_tech" class="input" value="${esc(row?.[12]||"")}"></div>
+ <div class="field full"><label>Parts Required</label><input id="m_parts" class="input" value="${esc(row?.[11]||"")}"></div>
+ <div class="field full"><label>Fault / Problem</label><textarea id="m_fault" class="textarea">${esc(row?.[8]||"")}</textarea></div>
+ <div class="field full"><label>Work Performed</label><textarea id="m_work" class="textarea">${esc(row?.[9]||"")}</textarea></div>
+ <div class="field full"><label>Remarks</label><textarea id="m_rem" class="textarea">${esc(row?.[13]||"")}</textarea></div></div>
+ <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMaintenance(${row?JSON.stringify(String(row[14]||'')):''})">${row?'Save Changes':'Save Entry'}</button></div>`);
+ populateMachineDetails();
+}
+
 function maintenanceLogPage(){
  const rows=db.maintenance||[];
  const machines=[...new Set(rows.map(x=>String(x[2]||'').trim()).filter(Boolean))].sort();
@@ -3110,15 +3131,8 @@ async function completeAuthenticatedSession(user){
 }
 
 async function loadCompanyContext(user){
- const {data:memberships,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).order("is_active",{ascending:false}).limit(20);
+ let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
  if(error)throw error;
- let membership=(memberships||[]).find(m=>m.is_active===true)||null;
- const existingMembership=(memberships||[])[0]||null;
- if(!membership && existingMembership){
-   iyAuthUser=null;iyMembership=null;iyCompany=null;loggedIn=false;
-   await iySupabase.auth.signOut();
-   throw new Error("Access Deactivated: your IY Maintain account access has been deactivated. Please contact your Company Administrator.");
- }
  if(!membership){
    const companyName=user.user_metadata?.company_name?.trim();
    if(!companyName)throw new Error("Your account is not linked to a company. Please ask a company administrator to add your membership.");
@@ -3128,12 +3142,14 @@ async function loadCompanyContext(user){
    if(!companyId)throw new Error("Your company workspace could not be created.");
    const res=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
    if(res.error)throw res.error; membership=res.data;
-   if(!membership)throw new Error("Your company workspace could not be loaded.");
  }
  iyMembership=membership;
  const {data:company,error:companyError}=await iySupabase.from("companies").select("*").eq("id",membership.company_id).single();
  if(companyError)throw companyError;
  iyCompany=company;
+ if(iyMembership){ }
+ const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
+  if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
 
 function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.11",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
@@ -3330,11 +3346,23 @@ async function cloudSaveMaintenance(row){
 
  if(!payload.service_ref)throw new Error("Service Reference is required.");
 
- const {data,error}=await iySupabase
-   .from("maintenance_records")
-   .upsert(payload,{onConflict:"company_id,service_ref"})
-   .select("id")
-   .single();
+ let query;
+ if(row[14]){
+   query=iySupabase
+     .from("maintenance_records")
+     .update(payload)
+     .eq("id",row[14])
+     .eq("company_id",iyCompany.id)
+     .select("id")
+     .single();
+ }else{
+   query=iySupabase
+     .from("maintenance_records")
+     .upsert(payload,{onConflict:"company_id,service_ref"})
+     .select("id")
+     .single();
+ }
+ const {data,error}=await query;
  if(error)throw error;
  return data.id;
 }
