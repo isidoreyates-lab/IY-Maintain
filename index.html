@@ -671,7 +671,7 @@ button,input,select,textarea{font-family:inherit}
 .settings-nav-item.active{color:#1267a7;border-bottom:2px solid #1267a7}
 .settings-nav-item:disabled{cursor:not-allowed}
 .settings-tab-panel{width:100%;display:block!important;margin-bottom:18px}.settings-tab-panel:last-of-type{margin-bottom:0}.settings-nav-strip{display:none!important}.modern-settings-grid{display:block}
-</style>
+.user-action-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.table-action.danger{color:#b42318;border-color:#f0b8b3}.table-action.danger:hover{background:#fff5f4}</style>
 
 <style>
 .iy-auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,520px);background:#f6f8fb;color:#111827}
@@ -2626,7 +2626,7 @@ async function renderUsersTable(){
       <td>${esc(u.department||"—")}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button></td>
+      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
     </tr>`).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
@@ -2712,6 +2712,53 @@ function openEditUser(id){
   </div>
   <div class="field" style="margin-top:14px"><label>Access</label><select id="eu_active" class="select"><option value="true" ${u.is_active?"selected":""}>Active</option><option value="false" ${!u.is_active?"selected":""}>Inactive</option></select></div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUserMembership('${u.id}')">Save Changes</button></div>`);
+}
+
+async function deactivateUser(id){
+ if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ const u=iyUsersCache.find(x=>x.id===id);
+ if(!u)return;
+ if(u.user_id===iyAuthUser?.id)return alert("You cannot remove your own account.");
+ if(!u.is_active)return;
+ if(!confirm(`Remove ${u.full_name||u.email||"this user"} from this workspace?\n\nTheir access will be deactivated, but their historical records and activity will be preserved.`))return;
+ try{
+   const {error}=await iySupabase.from("memberships").update({is_active:false}).eq("id",id).eq("company_id",iyCompany.id);
+   if(error)throw error;
+   await cloudAudit("Removed user",`${u.email||u.user_id} · access deactivated`);
+   await renderUsersTable();
+   toast("User access removed.");
+ }catch(e){alert(e?.message||"User could not be removed.");}
+}
+
+async function reactivateUser(id){
+ if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ const u=iyUsersCache.find(x=>x.id===id);
+ if(!u)return;
+ if(u.is_active)return;
+ if(!confirm(`Reactivate ${u.full_name||u.email||"this user"}?\n\nTheir existing role and historical records will be preserved.`))return;
+ try{
+   const {error}=await iySupabase.from("memberships").update({is_active:true}).eq("id",id).eq("company_id",iyCompany.id);
+   if(error)throw error;
+   await cloudAudit("Reactivated user",`${u.email||u.user_id} · access restored`);
+   await renderUsersTable();
+   toast("User reactivated.");
+ }catch(e){alert(e?.message||"User could not be reactivated.");}
+}
+
+async function cancelUserInvitation(id){
+ if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ const u=iyUsersCache.find(x=>x.id===id);
+ if(!u)return;
+ if(u.user_id===iyAuthUser?.id)return alert("You cannot cancel your own membership.");
+ if(!u.is_active||u.last_login_at)return alert("This user is no longer a pending invitation.");
+ if(!confirm(`Cancel the invitation for ${u.full_name||u.email||"this user"}?\n\nThe pending workspace membership will be removed. This does not delete historical records.`))return;
+ try{
+   const {error}=await iySupabase.from("memberships").delete().eq("id",id).eq("company_id",iyCompany.id).eq("is_active",true).is("last_login_at",null);
+   if(error)throw error;
+   await cloudAudit("Cancelled user invitation",`${u.email||u.user_id}`);
+   await renderUsersTable();
+   toast("Invitation cancelled.");
+ }catch(e){alert(e?.message||"Invitation could not be cancelled.");}
 }
 
 async function saveUserMembership(id){if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
