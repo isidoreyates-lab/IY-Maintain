@@ -3357,6 +3357,19 @@ async function removeKnownAssetPaths(paths){
  const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(clean);
  if(error)throw error;
 }
+function assetPathFromStoredUrl(value,bucket){
+ try{
+  const raw=String(value||"");
+  if(!raw||!raw.includes("/storage/v1/object/"))return "";
+  const marker=`/storage/v1/object/`;
+  const i=raw.indexOf(marker);
+  if(i<0)return "";
+  let tail=raw.slice(i+marker.length);
+  const prefixes=[`sign/${bucket}/`,`public/${bucket}/`,`authenticated/${bucket}/`,`download/${bucket}/`];
+  for(const prefix of prefixes){if(tail.startsWith(prefix))return decodeURIComponent(tail.slice(prefix.length).split("?")[0]);}
+  return "";
+ }catch(e){return "";}
+}
 async function handleLogoUpload(input){
  if(!canEdit("settings"))return alert("Company Administrator access is required to change branding.");
  const file=input?.files?.[0];
@@ -3371,11 +3384,13 @@ async function handleLogoUpload(input){
   if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP logo.");}
   const folder=String(iyCompany.id);
   const newPath=`${folder}/logo.${ext}`;
-  // Remove known previous logo names without LIST. This avoids the failing Storage list endpoint.
+  // A restored backup can point to an older asset path. Delete that exact path too,
+  // without LIST, so the replacement never depends on an existing object.
+  const restoredPath=assetPathFromStoredUrl(db.settings?.logoData,IY_COMPANY_ASSETS_BUCKET);
   await removeKnownAssetPaths([
-    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`,
-    `${folder}/logo-${Date.now()}.png`
-  ].filter(p=>p!==newPath));
+    restoredPath,
+    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`
+  ].filter(p=>p&&p!==newPath));
   const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
   await loadCloudAssets(db.settings);
@@ -3415,11 +3430,13 @@ async function handleSignatureUpload(key,input){
   if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP signature.");}
   const folder=`${iyCompany.id}/signatures`;
   const newPath=`${folder}/${key}.${ext}`;
-  // Remove known previous names without LIST. This avoids the failing Storage list endpoint.
+  // A restored backup can point to an older signature path. Delete that exact path too,
+  // without LIST, so replacement is independent of the restored object.
+  const restoredPath=assetPathFromStoredUrl(db.settings?.[key],IY_COMPANY_ASSETS_BUCKET);
   await removeKnownAssetPaths([
-    `${folder}/${key}.png`,`${folder}/${key}.jpg`,`${folder}/${key}.jpeg`,`${folder}/${key}.webp`,
-    `${folder}/${key}-${Date.now()}.png`
-  ].filter(p=>p!==newPath));
+    restoredPath,
+    `${folder}/${key}.png`,`${folder}/${key}.jpg`,`${folder}/${key}.jpeg`,`${folder}/${key}.webp`
+  ].filter(p=>p&&p!==newPath));
   const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
   await loadCloudAssets(db.settings);
