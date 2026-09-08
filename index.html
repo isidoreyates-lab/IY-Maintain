@@ -3091,15 +3091,27 @@ async function signedStorageUrl(bucket,path,expiresIn=3600){
  if(error)throw error;
  return data?.signedUrl||"";
 }
+async function assetSignedUrlOrEmpty(path){
+ try{return await signedStorageUrl(IY_COMPANY_ASSETS_BUCKET,path,3600)}catch(e){return ""}
+}
 async function loadCloudAssets(settings){
  if(!iyCompany)return;
- const [root,signatures]=await Promise.all([storageListSafe(IY_COMPANY_ASSETS_BUCKET,iyCompany.id),storageListSafe(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/signatures`)]);
- const logo=root.find(f=>{const n=String(f.name||"").toLowerCase();return n.startsWith("logo.")||n.startsWith("logo-");});
- settings.logoData=logo?`${await signedStorageUrl(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/${logo.name}`)}&v=${Date.now()}`:"";
- for(const key of ["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"]){
-   const f=signatures.find(x=>(()=>{const n=String(x.name||"").toLowerCase();return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);})());
-   settings[key]=f?`${await signedStorageUrl(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/signatures/${f.name}`)}&v=${Date.now()}`:"";
- }
+ const folder=String(iyCompany.id);
+ const candidates=[
+   `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,
+   `${folder}/logo.svg`
+ ];
+   let logoUrl="";
+   for(const path of candidates){logoUrl=await assetSignedUrlOrEmpty(path);if(logoUrl)break;}
+   settings.logoData=logoUrl?`${logoUrl}&v=${Date.now()}`:"";
+   for(const key of ["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"]){
+     let sigUrl="";
+     for(const ext of ["png","jpg","jpeg","webp"]){
+       sigUrl=await assetSignedUrlOrEmpty(`${folder}/signatures/${key}.${ext}`);
+       if(sigUrl)break;
+     }
+     settings[key]=sigUrl?`${sigUrl}&v=${Date.now()}`:"";
+   }
 }
 async function loadProfileAvatar(){
  if(!iyAuthUser?.id)return "";
@@ -3339,6 +3351,12 @@ function switchSettingsTab(tab){
 }
 function signatureImage(key){const src=db.settings&&db.settings[key];return src?`<img class="r-sig-image" src="${src}" alt="Signature">`:``}
 
+async function removeKnownAssetPaths(paths){
+ const clean=[...new Set(paths.filter(Boolean))];
+ if(!clean.length)return;
+ const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(clean);
+ if(error)throw error;
+}
 async function handleLogoUpload(input){
  if(!canEdit("settings"))return alert("Company Administrator access is required to change branding.");
  const file=input?.files?.[0];
@@ -3351,42 +3369,36 @@ async function handleLogoUpload(input){
   const uploadMime=mimeMap[extFromName]||file.type;
   const ext=Object.keys(mimeMap).find(k=>mimeMap[k]===uploadMime)||extFromName;
   if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP logo.");}
-
   const folder=String(iyCompany.id);
-  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
-  if(listError)throw listError;
-
-  // Upload the replacement first so a failed upload never destroys the existing logo.
-  const path=`${folder}/logo-${Date.now()}.${ext}`;
-  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
+  const newPath=`${folder}/logo.${ext}`;
+  // Remove known previous logo names without LIST. This avoids the failing Storage list endpoint.
+  await removeKnownAssetPaths([
+    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`,
+    `${folder}/logo-${Date.now()}.png`
+  ].filter(p=>p!==newPath));
+  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
-
-  const oldFiles=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith("logo." )||String(f.name||"").toLowerCase().startsWith("logo-"));
-  const oldPaths=oldFiles.map(f=>`${folder}/${f.name}`).filter(p=>p!==path);
-  if(oldPaths.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldPaths);if(removeError)throw removeError;}
-
   await loadCloudAssets(db.settings);
   save();
   render();
   toast("Company logo updated successfully.");
  }catch(e){console.error("Logo upload failed",e);alert(`Could not upload the company logo.\n\n${e?.message||e}`)}finally{input.value=""}
 }
-
 async function removeCompanyLogo(){
  if(!canEdit("settings"))return alert("Company Administrator access is required to change branding.");
  if(!iyCloudReady||!iyCompany)return;
  if(!confirm("Remove the company logo from generated reports?"))return;
  try{
-  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(String(iyCompany.id),{limit:1000});
-  if(listError)throw listError;
-  const files=(existing||[]).filter(f=>(()=>{const n=String(f.name||"").toLowerCase();return n.startsWith("logo.")||n.startsWith("logo-");})());
-  if(files.length){const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(files.map(f=>`${iyCompany.id}/${f.name}`));if(error)throw error;}
+  const folder=String(iyCompany.id);
+  await removeKnownAssetPaths([
+    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`,
+    `${folder}/logo.jpg`,`${folder}/logo.png`
+  ]);
   db.settings.logoData="";
   await loadCloudAssets(db.settings);
   save();render();toast("Company logo removed.");
  }catch(e){console.error("Logo removal failed",e);alert(`Could not remove the company logo.\n\n${e?.message||e}`)}
 }
-
 async function handleSignatureUpload(key,input){
  if(!canEdit("settings"))return alert("Company Administrator access is required to change signatures.");
  const allowed=["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
@@ -3401,30 +3413,21 @@ async function handleSignatureUpload(key,input){
   const uploadMime=mimeMap[extFromName]||file.type;
   const ext=Object.keys(mimeMap).find(k=>mimeMap[k]===uploadMime)||extFromName;
   if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP signature.");}
-
   const folder=`${iyCompany.id}/signatures`;
-  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
-  if(listError)throw listError;
-
-  // Upload the replacement first so a failed upload never destroys the existing signature.
-  const path=`${folder}/${key}-${Date.now()}.${ext}`;
-  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
+  const newPath=`${folder}/${key}.${ext}`;
+  // Remove known previous names without LIST. This avoids the failing Storage list endpoint.
+  await removeKnownAssetPaths([
+    `${folder}/${key}.png`,`${folder}/${key}.jpg`,`${folder}/${key}.jpeg`,`${folder}/${key}.webp`,
+    `${folder}/${key}-${Date.now()}.png`
+  ].filter(p=>p!==newPath));
+  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
-
-  const oldFiles=(existing||[]).filter(f=>{
-   const n=String(f.name||"").toLowerCase();
-   return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);
-  });
-  const oldPaths=oldFiles.map(f=>`${folder}/${f.name}`).filter(p=>p!==path);
-  if(oldPaths.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldPaths);if(removeError)throw removeError;}
-
   await loadCloudAssets(db.settings);
   save();
   render();
   toast("Signature updated successfully.");
  }catch(e){console.error("Signature upload failed",e);alert(`Could not upload the signature.\n\n${e?.message||e}`)}finally{input.value=""}
 }
-
 async function removeSignature(key){
  if(!canEdit("settings"))return alert("Company Administrator access is required to change signatures.");
  const allowed=["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
@@ -3433,10 +3436,9 @@ async function removeSignature(key){
  if(!confirm("Remove this report signature?"))return;
  try{
   const folder=`${iyCompany.id}/signatures`;
-  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
-  if(listError)throw listError;
-  const files=(existing||[]).filter(f=>(()=>{const n=String(f.name||"").toLowerCase();return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);})());
-  if(files.length){const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(files.map(f=>`${folder}/${f.name}`));if(error)throw error;}
+  await removeKnownAssetPaths([
+    `${folder}/${key}.png`,`${folder}/${key}.jpg`,`${folder}/${key}.jpeg`,`${folder}/${key}.webp`
+  ]);
   db.settings[key]="";
   await loadCloudAssets(db.settings);
   save();render();toast("Signature removed.");
