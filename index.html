@@ -3078,7 +3078,8 @@ async function loadCompanyContext(user){
  if(companyError)throw companyError;
  iyCompany=company;
  if(iyMembership){ }
- await iySupabase.from("memberships").update({last_login_at:new Date().toISOString()}).eq("id",membership.id);
+ const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
+  if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
 
 function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.11",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
