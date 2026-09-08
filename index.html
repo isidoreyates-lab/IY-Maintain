@@ -2611,7 +2611,7 @@ async function renderUsersTable(){
  if(!el)return;
  try{
    const users=await fetchCompanyUsers();
-   const active=users.filter(u=>u.is_active).length;
+   const active=users.filter(u=>u.is_active&&u.last_login_at).length;
    const pending=users.filter(u=>u.is_active&&!u.last_login_at).length;
    const total=document.getElementById("usersTotal"),a=document.getElementById("usersActive"),p=document.getElementById("usersPending");
    if(total)total.textContent=users.length;
@@ -3049,6 +3049,8 @@ async function handleAuthSubmit(event){
 async function completeAuthenticatedSession(user){
  iyAuthUser=user;
  await loadCompanyContext(user);
+ const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
+ if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
  await loadCloudData();
  db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.11";db.settings.developer="IY Digital Innovations";
  await migrateLegacyProfileAvatar();
