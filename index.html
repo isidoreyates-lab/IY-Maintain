@@ -3094,10 +3094,10 @@ async function signedStorageUrl(bucket,path,expiresIn=3600){
 async function loadCloudAssets(settings){
  if(!iyCompany)return;
  const [root,signatures]=await Promise.all([storageListSafe(IY_COMPANY_ASSETS_BUCKET,iyCompany.id),storageListSafe(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/signatures`)]);
- const logo=root.find(f=>String(f.name||"").toLowerCase().startsWith("logo."));
+ const logo=root.find(f=>{const n=String(f.name||"").toLowerCase();return n.startsWith("logo.")||n.startsWith("logo-");});
  settings.logoData=logo?`${await signedStorageUrl(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/${logo.name}`)}&v=${Date.now()}`:"";
  for(const key of ["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"]){
-   const f=signatures.find(x=>String(x.name||"").toLowerCase().startsWith(`${key.toLowerCase()}.`));
+   const f=signatures.find(x=>(()=>{const n=String(x.name||"").toLowerCase();return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);})());
    settings[key]=f?`${await signedStorageUrl(IY_COMPANY_ASSETS_BUCKET,`${iyCompany.id}/signatures/${f.name}`)}&v=${Date.now()}`:"";
  }
 }
@@ -3299,14 +3299,14 @@ function settingsPage(){
      <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your company logo appears on generated reports.</p></div></div>
      <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
      <div class="modern-meta-row"><span>PNG, JPG or WebP</span><span>Max 2 MB</span></div>
-     <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}>${s.logoData?`<button class="modern-secondary-btn" onclick="removeCompanyLogo()" ${canSettings?"":"disabled"}>Remove</button>`:""}</div>
+     <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}><button type="button" class="modern-secondary-btn" onclick="removeCompanyLogo()" ${(!s.logoData||!canSettings)?"disabled":""}>Remove</button></div>
     </section>
    </div>
    <div id="settings-panel-signatures" class="settings-tab-panel" style="display:none">
     <section class="modern-card signatures-card">
      <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
      <div class="signature-modern-list">
-      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label class="modern-upload-link" for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}>${s[k]?`<button type="button" class="modern-link-btn" onclick="removeSignature('${k}')" ${canSettings?"":"disabled"}>Remove</button>`:""}</div></div>`).join("")}
+      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label class="modern-upload-link" for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}><button type="button" class="modern-link-btn" onclick="removeSignature('${k}')" ${(!s[k]||!canSettings)?"disabled":""}>Remove</button></div></div>`).join("")}
      </div>
     </section>
    </div>
@@ -3346,16 +3346,25 @@ async function handleLogoUpload(input){
  if(file.size>2*1024*1024){input.value="";return alert("Logo must be 2 MB or smaller.");}
  if(!iyCloudReady||!iyCompany)return alert("Your company workspace is not ready yet. Please refresh and try again.");
  try{
-  const ext=(file.name.split(".").pop()||"png").toLowerCase().replace(/[^a-z0-9]/g,"")||"png";
-  if(!["png","jpg","jpeg","webp"].includes(ext)||!["image/png","image/jpeg","image/webp"].includes(file.type)){input.value="";return alert("Please upload a PNG, JPG or WebP logo.");}
-  const pathPrefix=`${iyCompany.id}/logo`;
-  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(String(iyCompany.id),{limit:1000});
+  const extFromName=(file.name.split(".").pop()||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+  const mimeMap={png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",webp:"image/webp"};
+  const uploadMime=mimeMap[extFromName]||file.type;
+  const ext=Object.keys(mimeMap).find(k=>mimeMap[k]===uploadMime)||extFromName;
+  if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP logo.");}
+
+  const folder=String(iyCompany.id);
+  const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
   if(listError)throw listError;
-  const oldFiles=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith("logo."));
-  if(oldFiles.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldFiles.map(f=>`${iyCompany.id}/${f.name}`));if(removeError)throw removeError;}
-  const path=`${pathPrefix}.${ext}`;
-  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:mime,cacheControl:"3600"});
+
+  // Upload the replacement first so a failed upload never destroys the existing logo.
+  const path=`${folder}/logo-${Date.now()}.${ext}`;
+  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
+
+  const oldFiles=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith("logo." )||String(f.name||"").toLowerCase().startsWith("logo-"));
+  const oldPaths=oldFiles.map(f=>`${folder}/${f.name}`).filter(p=>p!==path);
+  if(oldPaths.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldPaths);if(removeError)throw removeError;}
+
   await loadCloudAssets(db.settings);
   save();
   render();
@@ -3370,7 +3379,7 @@ async function removeCompanyLogo(){
  try{
   const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(String(iyCompany.id),{limit:1000});
   if(listError)throw listError;
-  const files=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith("logo."));
+  const files=(existing||[]).filter(f=>(()=>{const n=String(f.name||"").toLowerCase();return n.startsWith("logo.")||n.startsWith("logo-");})());
   if(files.length){const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(files.map(f=>`${iyCompany.id}/${f.name}`));if(error)throw error;}
   db.settings.logoData="";
   await loadCloudAssets(db.settings);
@@ -3387,16 +3396,28 @@ async function handleSignatureUpload(key,input){
  if(file.size>2*1024*1024){input.value="";return alert("Signature image must be 2 MB or smaller.");}
  if(!iyCloudReady||!iyCompany)return alert("Your company workspace is not ready yet. Please refresh and try again.");
  try{
-  const ext=(file.name.split(".").pop()||"png").toLowerCase().replace(/[^a-z0-9]/g,"")||"png";
-  const prefix=`${key}.`;
+  const extFromName=(file.name.split(".").pop()||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+  const mimeMap={png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",webp:"image/webp"};
+  const uploadMime=mimeMap[extFromName]||file.type;
+  const ext=Object.keys(mimeMap).find(k=>mimeMap[k]===uploadMime)||extFromName;
+  if(!mimeMap[ext]||uploadMime!==mimeMap[ext]){input.value="";return alert("Please upload a PNG, JPG or WebP signature.");}
+
   const folder=`${iyCompany.id}/signatures`;
   const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
   if(listError)throw listError;
-  const oldFiles=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith(prefix.toLowerCase()));
-  if(oldFiles.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldFiles.map(f=>`${folder}/${f.name}`));if(removeError)throw removeError;}
-  const path=`${folder}/${key}.${ext}`;
-  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:mime,cacheControl:"3600"});
+
+  // Upload the replacement first so a failed upload never destroys the existing signature.
+  const path=`${folder}/${key}-${Date.now()}.${ext}`;
+  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(path,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
+
+  const oldFiles=(existing||[]).filter(f=>{
+   const n=String(f.name||"").toLowerCase();
+   return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);
+  });
+  const oldPaths=oldFiles.map(f=>`${folder}/${f.name}`).filter(p=>p!==path);
+  if(oldPaths.length){const {error:removeError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(oldPaths);if(removeError)throw removeError;}
+
   await loadCloudAssets(db.settings);
   save();
   render();
@@ -3414,7 +3435,7 @@ async function removeSignature(key){
   const folder=`${iyCompany.id}/signatures`;
   const {data:existing,error:listError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).list(folder,{limit:1000});
   if(listError)throw listError;
-  const files=(existing||[]).filter(f=>String(f.name||"").toLowerCase().startsWith(`${key.toLowerCase()}.`));
+  const files=(existing||[]).filter(f=>(()=>{const n=String(f.name||"").toLowerCase();return n.startsWith(`${key.toLowerCase()}.`)||n.startsWith(`${key.toLowerCase()}-`);})());
   if(files.length){const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).remove(files.map(f=>`${folder}/${f.name}`));if(error)throw error;}
   db.settings[key]="";
   await loadCloudAssets(db.settings);
