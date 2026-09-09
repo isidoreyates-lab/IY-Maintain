@@ -2582,7 +2582,16 @@ async function saveMachine(old){if(!canEdit("machines"))return alert("You do not
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
 function pendingApprovalRows(){
- return (reportApprovalRequests||[]).filter(x=>x.status==="pending"&&x.user_id===iyAuthUser?.id).sort((a,b)=>new Date(b.requested_at||0)-new Date(a.requested_at||0));
+ const reports=reportApprovalReports||[];
+ return (reportApprovalRequests||[])
+  .filter(x=>x.status==="pending"&&x.user_id===iyAuthUser?.id)
+  .map(q=>{
+    const r=reports.find(x=>x.id===q.report_id);
+    if(!r)return null;
+    return {...r, __approvalRequest:q};
+  })
+  .filter(Boolean)
+  .sort((a,b)=>new Date(b.__approvalRequest?.requested_at||b.created_at||0)-new Date(a.__approvalRequest?.requested_at||a.created_at||0));
 }
 function pendingApprovalCount(){return pendingApprovalRows().length;}
 function approvalReportRequestSet(reportId){return (reportApprovalRequests||[]).filter(x=>x.report_id===reportId);}
