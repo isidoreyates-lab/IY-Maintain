@@ -3075,6 +3075,18 @@ async function saveProfile(){
  if(!iyAuthUser)return alert("Your secure session has expired. Please sign in again.");
  const modal=document.getElementById("modalBack");const btn=modal?.querySelector(".btn.primary");if(btn)btn.disabled=true;
  try{
+   // Re-check/refresh the Supabase session immediately before Storage/Auth writes.
+   // This prevents a stale Company Admin browser session from reaching Storage without a JWT.
+   let {data:sessionData,error:sessionError}=await iySupabase.auth.getSession();
+   if(sessionError)throw sessionError;
+   if(!sessionData?.session){
+     const refreshed=await iySupabase.auth.refreshSession();
+     if(refreshed.error)throw refreshed.error;
+     sessionData=refreshed.data;
+   }
+   if(!sessionData?.session?.user?.id)throw new Error("Auth session missing. Please sign out and sign in again.");
+   iyAuthUser=sessionData.session.user;
+
    let avatarPath=iyAuthUser.user_metadata?.avatar_path||"";
    if(pendingProfilePhotoFile){
      avatarPath=`${iyCompany.id}/${iyAuthUser.id}.jpg`;
