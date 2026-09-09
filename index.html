@@ -2640,7 +2640,7 @@ function runPartsReport(){
   if(type!=="Parts Issued")db.receipts.forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["RECEIVED",...x])});
  }
  rows.sort((a,b)=>new Date(a[1])-new Date(b[1]));
- window.__partsReportData={type,tech,machine,part,from,to,rows};
+ window.__partsReportData={type,tech,machine,part,from,to,rows};startFreshReportApproval("parts");
  const total=rows.reduce((a,x)=>a+num(x[5]),0),issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED");
  if(type==="Parts Orders"){
   const suppliers=new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,machines=new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size;
@@ -2654,6 +2654,7 @@ function runPartsReport(){
 function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
 function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
 function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
+function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];}
 function approvalStateForKind(kind){const id=approvalActiveId(kind);if(id){const r=reportApprovalReports.find(x=>x.id===id);const req=reportApprovalRequests.filter(x=>x.report_id===id);return {id,report:r,requests:req};}return {id:"",report:null,requests:[]};}
 function approvalSnapshotForKind(kind){
  const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;
@@ -4124,7 +4125,7 @@ function buildMaintenanceReportHTML(snapshotOverride){
    reportType=type==="WEEKLY"?"Weekly - Week "+getISOWeek_(startDate):type==="MONTHLY"?"Monthly - "+startDate.toLocaleDateString("en-GB",{month:"long",year:"numeric"}):type==="CUSTOM DATE"?"Custom Date - "+fmtDate(startDate)+" to "+fmtDate(endDate):"Daily - "+fmtDate(startDate);period=fmtDate(startDate)+" - "+fmtDate(endDate);
    rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=startDate&&z<=new Date(endDate.getTime()+86399999);}).slice().reverse();
    partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
-   window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),reportType,period,rows};window.__maintenanceReportParts=partsUpdates;
+   window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),reportType,period,rows};window.__maintenanceReportParts=partsUpdates;startFreshReportApproval("maintenance");
  }
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length;
  const ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length;
