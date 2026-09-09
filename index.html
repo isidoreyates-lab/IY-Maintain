@@ -2619,9 +2619,39 @@ function approvalReportCard(r,mode="pending"){
 function setApprovalInboxTab(tab){window.__approvalInboxTab=tab==="approved"?"approved":"pending";render();}
 function myApprovalsPage(){
  const tab=window.__approvalInboxTab||"pending",pending=pendingApprovalRows(),approved=userApprovedReportRows(),rows=tab==="approved"?approved:pending;
- return `<div class="approval-workspace"><div class="approval-page-hero"><div><div class="approval-kicker">APPROVALS</div><h2>My Approvals</h2><p>${tab==="pending"?"Reports waiting for your signature. Review the exact saved report, sign with your account signature, and submit your approval.":"Reports you have signed or reports you requested that are fully approved. Open any report to export its exact saved PDF."}</p></div><div class="approval-hero-stat"><strong>${rows.length}</strong><span>${tab==="pending"?"Pending approval":"Approved report"}${rows.length===1?'':'s'}</span></div></div><div class="approval-tabs"><button class="approval-tab ${tab==='pending'?'active':''}" onclick="setApprovalInboxTab('pending')">My Approvals <span>${pending.length}</span></button><button class="approval-tab ${tab==='approved'?'active':''}" onclick="setApprovalInboxTab('approved')">Approved Reports <span>${approved.length}</span></button></div><div class="approval-toolbar"><div><strong>${tab==="pending"?"Awaiting your action":"Approved & signed reports"}</strong><span>${tab==="pending"?"Only reports assigned to your account are shown here.":"Reports are available here after you sign them, or after all requested approvers complete a report you requested."}</span></div><button class="btn secondary" onclick="refreshApprovalInbox()">↻ Refresh</button></div><div class="approval-inbox-list">${rows.length?rows.map(r=>approvalReportCard(r,tab==='pending'?'pending':'approved')).join(''):`<div class="approval-empty-large"><div class="approval-empty-icon">✓</div><h3>${tab==='pending'?'You\'re all caught up':'No approved reports yet'}</h3><p>${tab==='pending'?'No reports are currently waiting for your signature.':'Signed or fully approved reports will appear here.'}</p><button class="btn primary" onclick="nav('dashboard')">Return to Dashboard</button></div>`}</div></div>`;
+ return `<div class="approval-workspace"><div class="approval-page-hero"><div><div class="approval-kicker">APPROVALS</div><h2>My Approvals</h2><p>${tab==="pending"?"Reports waiting for your signature. Review the exact saved report, sign with your account signature, and submit your approval.":"Reports you have signed or reports you requested that are fully approved. Open any report to export its exact saved PDF."}</p></div><div class="approval-hero-stat"><strong>${rows.length}</strong><span>${tab==="pending"?"Pending approval":"Approved report"}${rows.length===1?'':'s'}</span></div></div><div class="approval-tabs"><button class="approval-tab ${tab==='pending'?'active':''}" onclick="setApprovalInboxTab('pending')">My Approvals <span>${pending.length}</span></button><button class="approval-tab ${tab==='approved'?'active':''}" onclick="setApprovalInboxTab('approved')">Approved Reports <span>${approved.length}</span></button></div><div class="approval-toolbar"><div><strong>${tab==="pending"?"Awaiting your action":"Approved & signed reports"}</strong><span>${tab==="pending"?"Only reports assigned to your account are shown here.":"Reports are available here after you sign them, or after all requested approvers complete a report you requested."}</span></div><button class="btn secondary" data-approval-refresh onclick="refreshApprovalInbox()">↻ Refresh</button></div><div class="approval-inbox-list">${rows.length?rows.map(r=>approvalReportCard(r,tab==='pending'?'pending':'approved')).join(''):`<div class="approval-empty-large"><div class="approval-empty-icon">✓</div><h3>${tab==='pending'?'You\'re all caught up':'No approved reports yet'}</h3><p>${tab==='pending'?'No reports are currently waiting for your signature.':'Signed or fully approved reports will appear here.'}</p><button class="btn primary" onclick="nav('dashboard')">Return to Dashboard</button></div>`}</div></div>`;
 }
-async function refreshApprovalInbox(){try{await loadCloudData();toast("Approval inbox refreshed.");}catch(e){alert(e?.message||"Approvals could not be refreshed.");}}
+let approvalInboxRefreshBusy=false;
+async function loadApprovalInboxFast({renderPage=true,notice=true}={}){
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return;
+ if(approvalInboxRefreshBusy)return;
+ approvalInboxRefreshBusy=true;
+ const btns=[...document.querySelectorAll('[data-approval-refresh]')];
+ btns.forEach(b=>{b.disabled=true;b.dataset.originalText=b.textContent;b.textContent="↻ Refreshing…";});
+ try{
+   const [reports,requests]=await Promise.all([
+     iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,created_by,created_at,updated_at").eq("company_id",iyCompany.id).order("created_at",{ascending:false}).limit(100),
+     iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("company_id",iyCompany.id).order("requested_at",{ascending:true}).limit(500)
+   ]);
+   if(reports.error)throw reports.error;
+   if(requests.error)throw requests.error;
+   reportApprovalReports=reports.data||[];
+   reportApprovalRequests=requests.data||[];
+   if(renderPage&&currentPage==="approvals")render();
+   if(notice)toast("✓ Approvals refreshed.");
+ }catch(e){
+   console.error("Fast approval refresh failed",e);
+   if(notice)toast("Approval refresh failed.");
+   throw e;
+ }finally{
+   btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.originalText||"↻ Refresh";delete b.dataset.originalText;});
+   approvalInboxRefreshBusy=false;
+ }
+}
+async function refreshApprovalInbox(){
+ try{await loadApprovalInboxFast({renderPage:true,notice:true});}
+ catch(e){alert(e?.message||"Approvals could not be refreshed.");}
+}
 async function openApprovalWorkItem(reportId){await openReportNotification(reportId);}
 async function openApprovedReport(reportId){await openReportNotification(reportId);}
 
@@ -2702,7 +2732,7 @@ async function loadReportApprovalRecord(id){
 }
 async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
- try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadCloudData();}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
+ try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
 async function signOwnCurrentReport(kind){
  try{
@@ -2711,8 +2741,8 @@ async function signOwnCurrentReport(kind){
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_own_report",{p_report_id:id});
   if(error)throw error;
-  await loadCloudData();await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  refreshReportApprovalPreview(kind);toast("Your signature has been applied to this report.");
+  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
+  refreshReportApprovalPreview(kind);toast("✓ Your signature has been applied to this report.");
  }catch(e){console.error(e);alert(e?.message||"Your signature could not be applied.");}
 }
 async function signCurrentReport(kind){
@@ -2723,9 +2753,8 @@ async function signCurrentReport(kind){
   if(!req)throw new Error("You do not have a pending approval request for this report.");
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
-  await loadCloudData();await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  toast("✓ Approval submitted successfully. Your signature has been applied to the report.");
-  if(currentPage==="approvals")render();else refreshReportApprovalPreview(kind);
+  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
+  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
 async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
