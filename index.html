@@ -3089,7 +3089,10 @@ async function saveProfile(){
    if(pendingSignatureFile){
      signaturePath=`${iyCompany.id}/${iyAuthUser.id}.png`;
      const {error:signatureUploadError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).upload(signaturePath,pendingSignatureFile,{upsert:true,contentType:"image/png",cacheControl:"3600"});
-     if(signatureUploadError)throw signatureUploadError;
+     if(signatureUploadError){
+       console.error("Account signature upload failed",signatureUploadError);
+       throw new Error(`Signature could not be saved. ${signatureUploadError.message||"Storage access was denied."}`);
+     }
    }else if(signatureRemovePending&&signaturePath){
      const {error:signatureRemoveError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).remove([signaturePath]);
      if(signatureRemoveError)throw signatureRemoveError;signaturePath="";
