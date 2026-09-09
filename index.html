@@ -435,6 +435,8 @@ button,input,select,textarea{font-family:inherit}
 .report-approval-note{font-size:9px;line-height:1.55;color:#718398;margin-top:6px;max-width:680px}
 .report-approval-chain{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 16px}.approval-chip{position:relative;border:1px solid #dce5ed;border-radius:10px;padding:9px 12px;background:#fff;min-width:155px;box-shadow:0 1px 2px rgba(20,40,60,.03)}.approval-chip strong{display:block;font-size:9px;line-height:1.35;color:#263e54}.approval-chip span{display:block;font-size:8px;line-height:1.4;color:#8292a2;margin-top:4px}.approval-chip.signed{border-color:#bfe3cb;background:#f4fbf6}.approval-chip.pending{border-style:dashed;border-color:#b8cfe3;background:#f8fbfe}
 .report-approval-actions{display:grid;grid-template-columns:auto minmax(220px,1fr) auto;align-items:center;gap:10px;padding-top:14px;border-top:1px solid #edf1f5;margin-top:2px!important}.report-approval-actions button{height:38px;border:1px solid #d5e0e9;background:#fff;color:#23435d;border-radius:9px;padding:0 14px;font-size:10px;font-weight:800;cursor:pointer;transition:.16s ease;white-space:nowrap}.report-approval-actions button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(20,40,60,.08)}.report-approval-actions .primary{background:#075fff;color:#fff;border-color:#075fff}.report-approval-actions .primary:hover{background:#0547d8}.report-approval-actions .success{background:#edf9f1;color:#17743a;border-color:#bfe3cb}.report-approval-actions .success:hover{background:#e4f6eb}.report-approval-actions .select{width:100%;min-width:0!important;height:38px!important;padding:0 36px 0 12px!important;border-radius:9px!important;background:#fff}
+.saved-approval-card{margin-top:16px;background:#fff;border:1px solid #dfe7ef;border-radius:14px;overflow:hidden}.saved-approval-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid #edf1f5}.saved-approval-head strong{display:block;font-size:12px;color:#20384f}.saved-approval-head span{display:block;font-size:9px;color:#7b8c9e;margin-top:3px}.saved-approval-head>span{margin:0;padding:5px 8px;border:1px solid #dce5ed;border-radius:999px;background:#f8fafc;white-space:nowrap}.saved-approval-list{display:grid}.saved-approval-row{display:grid;grid-template-columns:30px minmax(0,1fr) 72px 54px;gap:10px;align-items:center;padding:11px 14px;border:0;border-bottom:1px solid #edf1f5;background:#fff;text-align:left;cursor:pointer}.saved-approval-row:last-child{border-bottom:0}.saved-approval-row:hover{background:#f8fbff}.saved-approval-icon{width:30px;height:30px;border-radius:8px;background:#edf4fb;color:#1769aa;display:grid;place-items:center;font-size:13px}.saved-approval-main{min-width:0}.saved-approval-main strong{display:block;font-size:10px;color:#21384f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.saved-approval-main small{display:block;font-size:8px;color:#8292a2;margin-top:3px}.saved-approval-status{text-align:right}.saved-approval-status b{display:block;font-size:8px;color:#187447}.saved-approval-status small{display:block;font-size:8px;color:#8a9aaa;margin-top:2px}.saved-approval-open{text-align:right;font-size:9px;font-weight:800;color:#075fff}.saved-approval-empty{padding:18px 16px;font-size:10px;color:#7d8e9f}@media(max-width:700px){.saved-approval-row{grid-template-columns:30px minmax(0,1fr) auto}.saved-approval-open{display:none}}
+.approval-request-box{border:1px solid #e1e8ef;border-radius:12px;background:#f9fbfd;padding:13px 14px 14px;margin-top:4px}.approval-request-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.approval-request-head strong{display:block;font-size:11px;color:#223a52}.approval-request-head span{display:block;font-size:9px;color:#7a8c9e;margin-top:3px}.approval-request-head>span{background:#fff;border:1px solid #dce5ed;border-radius:999px;padding:6px 9px;white-space:nowrap;font-weight:800;color:#536b80}.approval-user-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.approval-user-option{display:flex;align-items:center;gap:9px;min-width:0;padding:9px 10px;border:1px solid #dce5ed;border-radius:9px;background:#fff;cursor:pointer;transition:.15s ease}.approval-user-option:hover{border-color:#b9cce0;background:#fbfdff}.approval-user-option.selected{border-color:#9fc2ff;background:#f5f9ff}.approval-user-option input{position:absolute;opacity:0;pointer-events:none}.approval-user-check{width:18px;height:18px;border:1px solid #c6d2de;border-radius:5px;display:grid;place-items:center;flex:0 0 18px;font-size:11px;font-weight:900;color:#fff;background:#fff}.approval-user-option.selected .approval-user-check{background:#075fff;border-color:#075fff}.approval-user-main{min-width:0}.approval-user-main strong{display:block;font-size:10px;color:#20384f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-user-main small{display:block;font-size:8px;color:#7d8e9f;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.approval-empty-state,.approval-no-users{font-size:9px;color:#8191a2;padding:9px 0}.report-approval-actions{grid-template-columns:auto 1fr!important}.report-approval-actions .primary{justify-self:end}.report-approval-actions .success{min-width:120px}@media(max-width:700px){.approval-user-grid{grid-template-columns:1fr}.report-approval-actions{grid-template-columns:1fr!important}.report-approval-actions .primary{justify-self:stretch}}
 @media(max-width:700px){.report-approval-panel{padding:15px}.report-approval-head{flex-direction:column;gap:9px}.report-approval-status{align-self:flex-start}.report-approval-actions{grid-template-columns:1fr}.report-approval-actions button,.report-approval-actions .select{width:100%}.approval-chip{min-width:0;flex:1 1 180px}}
 .report-preview-bar{height:60px}.report-pdf{background:#075fff!important;border-radius:8px!important}.report-close{border-radius:8px!important}
 .backup-page{padding:24px}.backup-page .settings-kicker{color:#075fff;font-size:10px;letter-spacing:.15em;font-weight:700;margin-bottom:4px}.backup-page h2{font-size:28px;letter-spacing:-.04em}.backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}.backup-card{position:relative;display:flex;flex-direction:column;min-height:285px;padding:22px;border:1px solid #e1e7ee;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(10,37,64,.025)}.backup-card:hover{border-color:#cbd5e1;box-shadow:0 10px 28px rgba(10,37,64,.07)}.backup-icon{width:44px;height:44px;border-radius:11px;display:grid;place-items:center;background:#eeedff;color:#075fff;font-size:22px;font-weight:700;margin-bottom:18px}.restore-icon{background:#eaf8f2;color:#147a52}.backup-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:750;color:#697b8f;margin-bottom:5px}.backup-copy h3{font-size:17px;letter-spacing:-.025em;margin:0 0 8px}.backup-copy p{font-size:12px;line-height:1.6;color:#66788c;max-width:650px;margin:0}.backup-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}.backup-meta span{font-size:10px;padding:5px 8px;border:1px solid #e1e7ee;border-radius:999px;background:#f8fafc;color:#5f7286}.backup-download{margin-top:auto;align-self:flex-start}.restore-button{cursor:pointer;text-decoration:none}.restore-button:hover{background:#e5eaf0}.restore-warning{margin-top:16px;padding:12px 14px;border:1px solid #f0d89c;background:#fff8e6;color:#805500;border-radius:9px;font-size:11px;line-height:1.5}.restore-progress-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(5,20,48,.62);backdrop-filter:blur(4px);padding:20px}.restore-progress-card{width:min(520px,calc(100vw - 40px));background:#fff;border-radius:18px;padding:28px;box-shadow:0 24px 70px rgba(0,0,0,.25)}.restore-progress-top{display:flex;align-items:center;gap:14px;margin-bottom:20px}.restore-progress-spinner{width:42px;height:42px;border:4px solid #e5edf8;border-top-color:#075fff;border-radius:50%;animation:iyRestoreSpin .8s linear infinite;flex:0 0 auto}.restore-progress-title{font-size:18px;font-weight:800;color:#102a43}.restore-progress-step{font-size:12px;color:#65788d;margin-top:4px}.restore-progress-track{height:12px;background:#e9eef5;border-radius:999px;overflow:hidden}.restore-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#073b9e,#075fff,#22a7ff);border-radius:999px;transition:width .25s ease}.restore-progress-meta{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:11px;color:#718198}.restore-progress-detail{margin-top:16px;padding:12px 14px;border:1px solid #e4eaf2;border-radius:10px;background:#f8fafc;font-size:11px;line-height:1.5;color:#53677c}.restore-progress-stage-list{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;padding:12px 14px;border:1px solid #e4eaf2;border-radius:10px;background:#fbfdff}.restore-progress-stage-list div{font-size:10px;color:#7b8da0;line-height:1.4}.restore-progress-stage-list div.current{color:#075fff;font-weight:800}.restore-progress-stage-list div.done{color:#16805b;font-weight:750}.iy-restore-running .restore-button{pointer-events:none;opacity:.55}@media(max-width:560px){.restore-progress-stage-list{grid-template-columns:1fr}}@keyframes iyRestoreSpin{to{transform:rotate(360deg)}}@media(max-width:800px){.backup-grid{grid-template-columns:1fr}}
@@ -942,6 +944,7 @@ button,input,select,textarea{font-family:inherit}
   overflow:hidden;
 }
 .profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-signature-box{margin-top:18px;border:1px solid #dfe7ef;border-radius:12px;padding:14px;background:#fbfcfe}.profile-signature-copy strong{display:block;font-size:12px;color:#21384f}.profile-signature-copy span{display:block;margin-top:4px;font-size:10px;line-height:1.45;color:#778a9d}.profile-signature-preview{height:82px;margin-top:11px;border:1px dashed #cbd8e4;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}.profile-signature-preview img{max-width:90%;max-height:68px;object-fit:contain}.profile-signature-preview span{font-size:10px;color:#8a9aaa}.profile-signature-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}.profile-signature-actions label,.profile-signature-actions button{border:1px solid #d5e0e9;background:#fff;color:#075fff;border-radius:8px;padding:7px 10px;font-size:10px;font-weight:800;cursor:pointer}.profile-signature-actions button{color:#c53939;border-color:#efcaca;background:#fff7f7}.profile-signature-actions input{display:none}
 .profile-editor-avatar{width:82px;height:82px;border-radius:50%;background:#e9f2ff;color:#075fff;display:grid;place-items:center;font-weight:800;font-size:24px;overflow:hidden;border:1px solid #d9e5f1;flex:0 0 82px}
 .profile-editor-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .profile-photo-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:12px;background:#f7faff;border:1px solid #e3ebf3;border-radius:10px}
@@ -1341,6 +1344,13 @@ let notificationFilter="all";
 let notificationLastRefresh=null;
 let notificationReads=[];
 let notificationRefreshBusy=false;
+let notificationTimer=null;
+let cloudNotifications=[];
+let reportApprovalReports=[];
+let reportApprovalRequests=[];
+let pendingSignatureFile=null;
+let signatureRemovePending=false;
+const IY_SIGNATURE_BUCKET="user-signatures";
 // Security-hardened profile image workflow: files live in private Supabase Storage; auth metadata stores only a path.
 let pendingProfilePhotoFile=null;
 let profilePhotoRemovePending=false;
@@ -1396,8 +1406,9 @@ function renderMobileNavigation(){
 function notificationReadSet(){return new Set(Array.isArray(notificationReads)?notificationReads:[])}
 function notificationTimeLabel(v){if(!v)return "";const d=new Date(v);if(isNaN(d))return "";const mins=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));if(mins<1)return "Just now";if(mins<60)return `${mins}m ago`;const hrs=Math.floor(mins/60);if(hrs<24)return `${hrs}h ago`;const days=Math.floor(hrs/24);return days===1?"Yesterday":`${days}d ago`}
 function getNotifications(){
- const items=[];const seen=new Set();const now=new Date();
- const add=(id,type,title,detail,page,meta={})=>{if(seen.has(id))return;seen.add(id);items.push({id,type,title,detail,page,createdAt:meta.createdAt||null,source:meta.source||"System",severity:meta.severity||type});};
+ const items=[];const seen=new Set();
+ const add=(id,type,title,detail,page,meta={})=>{if(seen.has(id))return;seen.add(id);items.push({id,type,title,detail,page,createdAt:meta.createdAt||null,source:meta.source||"System",severity:meta.severity||type,reportId:meta.reportId||null,cloud:!!meta.cloud,readAt:meta.readAt||null});};
+ (cloudNotifications||[]).forEach(n=>add("cloud-"+n.id,n.type||"info",n.title||"Notification",n.detail||"",n.page||"mreports",{createdAt:n.created_at,source:"Report Approval",severity:n.type==="ok"?"ok":"info",reportId:n.report_id,cloud:true,readAt:n.read_at}));
  const inv=db.inventory||[];
  inv.filter(x=>num(x[3])===0).forEach(x=>add('stock-out-'+String(x[0]),'bad','Part out of stock',`${x[0]} — ${x[1]||'No description'} has no stock available.`,'inventory',{source:'Parts Inventory',severity:'bad'}));
  inv.filter(x=>num(x[3])>0&&num(x[3])<=num(x[6])).forEach(x=>add('stock-low-'+String(x[0]),'warn','Low stock',`${x[0]} — ${x[1]||'No description'} is at or below the minimum stock level.`,'inventory',{source:'Parts Inventory',severity:'warn'}));
@@ -1407,21 +1418,23 @@ function getNotifications(){
  Object.keys(latest).forEach(fleet=>{const x=latest[fleet],current=num(x[5]),next=num(x[6]);if(next>0&&current>=next)add('maint-due-'+fleet,'bad','Maintenance overdue',`${fleet} has reached ${current} hours and is due at ${next} hours.`,'mreports',{source:'Maintenance',severity:'bad',createdAt:x[1]});else if(next>0&&next-current<=100)add('maint-upcoming-'+fleet,'warn','Maintenance approaching',`${fleet} has ${Math.max(0,next-current)} hours remaining until service.`,'mreports',{source:'Maintenance',severity:'warn',createdAt:x[1]});});
  return items.sort((a,b)=>{const sa=a.severity==='bad'?0:a.severity==='warn'?1:2,sb=b.severity==='bad'?0:b.severity==='warn'?1:2;return sa-sb}).slice(0,25);
 }
-function notificationState(){const all=getNotifications(),reads=notificationReadSet();return {all,unread:all.filter(n=>!reads.has(n.id)),critical:all.filter(n=>n.severity==='bad').length,attention:all.filter(n=>n.severity==='warn').length};}
+function notificationState(){const all=getNotifications(),reads=notificationReadSet();const isRead=n=>n.cloud?!!n.readAt:reads.has(n.id);return {all,unread:all.filter(n=>!isRead(n)),critical:all.filter(n=>n.severity==='bad').length,attention:all.filter(n=>n.severity==='warn').length};}
 function toggleNotificationMenu(e){e.stopPropagation();notificationOpen=!notificationOpen;profileOpen=false;render();}
 async function markNotificationsRead(){
- const ns=getNotifications(); if(!ns.length){notificationOpen=true;render();return;}
- const ids=ns.map(n=>n.id);notificationReads=[...new Set([...(notificationReads||[]),...ids])];
- if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from('notification_reads').upsert(ids.map(id=>({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()})),{onConflict:'company_id,user_id,notification_id'});}catch(e){console.warn('Notification read state not saved to cloud',e)}}
+ const ns=getNotifications();if(!ns.length){notificationOpen=true;render();return;}
+ const now=new Date().toISOString();const cloudIds=ns.filter(n=>n.cloud&&!n.readAt).map(n=>n.id.replace(/^cloud-/,'')).filter(Boolean);
+ notificationReads=[...new Set([...(notificationReads||[]),...ns.filter(n=>!n.cloud).map(n=>n.id)])];
+ if(iyCloudReady&&iyCompany&&iyAuthUser){try{if(cloudIds.length)await iySupabase.from("notifications").update({read_at:now}).in("id",cloudIds);const ids=ns.filter(n=>!n.cloud).map(n=>n.id);if(ids.length)await iySupabase.from("notification_reads").upsert(ids.map(id=>({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:now})),{onConflict:"company_id,user_id,notification_id"});cloudNotifications=(cloudNotifications||[]).map(n=>cloudIds.includes(n.id)?{...n,read_at:now}:n);}catch(e){console.warn("Notification read state not saved to cloud",e)}}
  notificationOpen=true;render();
 }
 async function markNotificationRead(id){
+ if(String(id).startsWith("cloud-")){const real=String(id).slice(6);const now=new Date().toISOString();cloudNotifications=(cloudNotifications||[]).map(n=>n.id===real?{...n,read_at:now}:n);if(iyCloudReady&&iyAuthUser){try{await iySupabase.from("notifications").update({read_at:now}).eq("id",real).eq("recipient_user_id",iyAuthUser.id);}catch(e){console.warn("Cloud notification read state not saved",e)}}return;}
  if(!notificationReads.includes(id))notificationReads.push(id);
- if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from('notification_reads').upsert({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()},{onConflict:'company_id,user_id,notification_id'});}catch(e){console.warn('Notification read state not saved to cloud',e)}}
+ if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from("notification_reads").upsert({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()},{onConflict:"company_id,user_id,notification_id"});}catch(e){console.warn("Notification read state not saved to cloud",e)}}
 }
-async function refreshNotifications(){
- if(!iyCloudReady||notificationRefreshBusy)return;notificationRefreshBusy=true;try{await loadCloudData();notificationLastRefresh=new Date();}catch(e){console.warn('Notification refresh failed',e)}finally{notificationRefreshBusy=false;render();}
-}
+async function handleNotificationClick(id,reportId,page){await markNotificationRead(id);notificationOpen=false;if(reportId)await openReportNotification(reportId);else nav(page||"dashboard");}
+async function loadApprovalNotificationsOnly(){if(!iyCloudReady||!iyAuthUser)return;try{const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);if(error)throw error;cloudNotifications=data||[];notificationLastRefresh=new Date();render();}catch(e){if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e)}}
+async function refreshNotifications(){if(notificationRefreshBusy)return;notificationRefreshBusy=true;try{await loadApprovalNotificationsOnly();}finally{notificationRefreshBusy=false;}}
 function notificationCount(){return notificationState().unread.length;}
 function notificationIconType(type){return type==='bad'?'●':type==='warn'?'▲':'●'}
 
@@ -1480,7 +1493,7 @@ function render(){
           <div class="notification-summary"><span>${ns.all.length} active</span><span class="critical">${ns.critical} critical</span><span class="attention">${ns.attention} attention</span></div>
           <div class="notification-actions-v22"><button class="notification-filter ${notificationFilter==='all'?'active':''}" onclick="event.stopPropagation();notificationFilter='all';render()">All</button><button class="notification-filter ${notificationFilter==='unread'?'active':''}" onclick="event.stopPropagation();notificationFilter='unread';render()">Unread ${ns.unread.length?`(${ns.unread.length})`:''}</button><button class="notification-refresh" onclick="event.stopPropagation();refreshNotifications()">↻ Refresh</button></div>
         </div>
-        <div class="notification-list">${(()=>{const reads=notificationReadSet();const list=notificationFilter==='unread'?ns.unread:ns.all;if(!list.length)return `<div class="notification-empty-v22"><div class="empty-icon">✓</div><b>You're all caught up</b><span>No ${notificationFilter==='unread'?'unread ':''}alerts need your attention.</span></div>`;return list.map(n=>`<button class="notification-item-v22 ${reads.has(n.id)?'':'unread'}" style="width:100%;border:0;text-align:left" onclick="markNotificationRead('${esc(n.id)}');notificationOpen=false;nav('${n.page}')"><span class="notification-dot ${n.type}"></span><span class="notification-content-v22"><span class="notification-title-row"><b>${esc(n.title)}</b><span class="notification-time">${esc(notificationTimeLabel(n.createdAt))}</span></span><p>${esc(n.detail)}</p><span class="notification-meta"><span class="notification-severity ${n.severity}">${n.severity==='bad'?'Critical':n.severity==='warn'?'Attention':'Info'}</span><span style="font-size:9px;color:#8798a9">${esc(n.source)}</span>${!reads.has(n.id)?'<span class="notification-unread-dot"></span>':''}</span></span></button>`).join('')})()}</div>
+        <div class="notification-list">${(()=>{const reads=notificationReadSet();const isRead=n=>n.cloud?!!n.readAt:reads.has(n.id);const list=notificationFilter==='unread'?ns.unread:ns.all;if(!list.length)return `<div class="notification-empty-v22"><div class="empty-icon">✓</div><b>You're all caught up</b><span>No ${notificationFilter==='unread'?'unread ':''}alerts need your attention.</span></div>`;return list.map(n=>`<button class="notification-item-v22 ${isRead(n)?'':'unread'}" style="width:100%;border:0;text-align:left" onclick="handleNotificationClick('${esc(n.id)}','${esc(n.reportId||"")}','${esc(n.page)}')"><span class="notification-dot ${n.type}"></span><span class="notification-content-v22"><span class="notification-title-row"><b>${esc(n.title)}</b><span class="notification-time">${esc(notificationTimeLabel(n.createdAt))}</span></span><p>${esc(n.detail)}</p><span class="notification-meta"><span class="notification-severity ${n.severity}">${n.severity==='bad'?'Critical':n.severity==='warn'?'Attention':'Info'}</span><span style="font-size:9px;color:#8798a9">${esc(n.source)}</span>${!isRead(n)?'<span class="notification-unread-dot"></span>':''}</span></span></button>`).join('')})()}</div>
         <div class="notification-foot-v22"><span>${notificationLastRefresh?`Updated ${notificationTimeLabel(notificationLastRefresh)}`:'Updates from your current workspace'}</span><button onclick="nav('activity')">View activity</button></div>
       </div>`})()}
     </div>
@@ -2556,9 +2569,10 @@ async function saveMachine(old){if(!canEdit("machines"))return alert("You do not
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
+function savedApprovalReportsList(kind){const rows=(reportApprovalReports||[]).filter(r=>r.report_kind===kind).slice(0,12);if(!rows.length)return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Reports shared for approval and their current signature status.</span></div></div><div class="saved-approval-empty">No saved approval reports yet.</div></section>`;return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Open any saved report to view the exact snapshot and export its applied signatures.</span></div><span>${rows.length} recent</span></div><div class="saved-approval-list">${rows.map(r=>{const req=(reportApprovalRequests||[]).filter(x=>x.report_id===r.id),signed=req.filter(x=>x.status==='signed').length,pending=req.filter(x=>x.status==='pending').length,creator=iyUsersCache.find(u=>u.user_id===r.created_by);return `<button class="saved-approval-row" type="button" onclick="openReportNotification('${esc(r.id)}')"><span class="saved-approval-icon">▤</span><span class="saved-approval-main"><strong>${esc(r.title)}</strong><small>${creator?esc(creator.full_name||creator.email||'User'):'User'} · ${esc(new Date(r.created_at).toLocaleString('en-GB'))}</small></span><span class="saved-approval-status"><b>${signed} signed</b><small>${pending} pending</small></span><span class="saved-approval-open">Open ›</span></button>`}).join('')}</div></section>`;}
 function partsReportsPage(){return `<div class="panel">
  <div class="formgrid"><div class="field"><label>Report Type</label><select id="pr_type" class="select"><option>All Transactions</option><option>Parts Issued</option><option>Parts Received</option><option>Parts Orders</option></select></div><div class="field"><label>Technician</label><input id="pr_tech" class="input"></div><div class="field"><label>Machine</label><input id="pr_machine" class="input"></div><div class="field"><label>Part Number</label><input id="pr_part" class="input"></div><div class="field"><label>Date From</label><input id="pr_from" class="input" type="date"></div><div class="field"><label>Date To</label><input id="pr_to" class="input" type="date"></div></div>
- <div class="actions"><button class="btn primary" onclick="runPartsReport()">Generate Report</button></div><div id="prout" style="margin-top:22px"></div></div>`}
+ <div class="actions"><button class="btn primary" onclick="runPartsReport()">Generate Report</button></div><div id="prout" style="margin-top:22px"></div></div>${savedApprovalReportsList("parts")}`}
 function dateIn(v,from,to){const d=new Date(v);if(from&&d<new Date(from))return false;if(to&&d>new Date(to+"T23:59:59"))return false;return true}
 function runPartsReport(){
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
@@ -2581,18 +2595,68 @@ function runPartsReport(){
  const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
  toast("Parts report generated.");
 }
-function approvalDemoKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return (kind+"|"+JSON.stringify(d||{})).slice(0,500);}
-function currentReportActor(){return {name:iyMembership?.full_name||db.settings.preparedBy||"Current User",role:iyMembership?.role||"Report Generator",signature:signatureForCurrentUser()};}
-function signatureForCurrentUser(){const r=String(iyMembership?.role||"").toLowerCase();const map={company_admin:"signatureManager",super_admin:"signatureManager",manager:"signatureManager",supervisor:"signatureTeamLead",team_lead:"signatureTeamLead",parts_coordinator:"signaturePartsCoordinator",storekeeper:"signaturePartsCoordinator",technician:"signaturePrepared",maintenance:"signaturePrepared"};const k=map[r]||"signaturePrepared";return db.settings?.[k]||"";}
-function buildReportApprovalSignatureHTML(kind,prepared){const actor=currentReportActor();const key=approvalDemoKey(kind);const st=window.__reportApprovalDemo?.[key]||{signed:[{name:prepared||actor.name,role:"Report Generator",signature:db.settings?.signaturePrepared||"",at:new Date().toLocaleString("en-GB")}],pending:null};const signed=st.signed||[];const cards=signed.map(x=>`<div class="r-sig"><div class="r-sig-space">${x.signature?`<img class="r-sig-image" src="${x.signature}" alt="Signature">`:``}</div><div class="r-sig-line">${esc(x.role||"Approved By")}</div><div class="r-sig-name">${esc(x.name||"")}<br>${esc(x.at||"")}</div></div>`).join("");return `<div class="r-signatures">${cards||`<div class="r-sig"><div class="r-sig-space"></div><div class="r-sig-line">No signatures</div><div class="r-sig-name"></div></div>`}</div>`;}
-function reportApprovalPanel(kind){const actor=currentReportActor();const key=approvalDemoKey(kind);const st=window.__reportApprovalDemo?.[key]||{signed:[{name:actor.name,role:"Report Generator",signature:actor.signature||db.settings?.signaturePrepared||"",at:new Date().toLocaleString("en-GB")}],pending:null};window.__reportApprovalDemo=window.__reportApprovalDemo||{};window.__reportApprovalDemo[key]=st;const approvalRoles=["company_admin","super_admin","manager","team_lead","parts_coordinator","storekeeper","maintenance_supervisor","supervisor","technician","maintenance"];const users=(iyUsersCache||[]).filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id&&approvalRoles.includes(String(u.role||"").toLowerCase())).sort((a,b)=>roleLabel(a.role).localeCompare(roleLabel(b.role))||String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||"")));const opts=users.length?users.map(u=>`<option value="${esc(u.user_id)}">${esc(u.full_name||u.email||"User")} — ${esc(roleLabel(u.role))}</option>`).join(""): `<option value="">No other active approval users loaded</option>`;const status=st.pending?`Awaiting ${esc(st.pending.name)}`:`${st.signed.length} signature${st.signed.length===1?"":"s"} recorded`;return `<div class="report-approval-panel"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL & SIGNATURE</div><div class="report-approval-note">Each account signs only with its own uploaded signature. Export shows only signatures already applied.</div></div><span class="report-approval-status">${status}</span></div><div class="report-approval-chain">${st.signed.map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.name)}</strong><span>${esc(x.role)} · Signed</span></div>`).join("")}${st.pending?`<div class="approval-chip pending"><strong>⏳ ${esc(st.pending.name)}</strong><span>${esc(st.pending.role)} · Approval requested</span></div>`:""}</div><div class="report-approval-actions"><button class="success" onclick="signCurrentReport('${kind}')">✍ Sign Report</button><select id="approvalUser_${kind}" class="select"><option value="">Select user for further approval</option>${opts}</select><button class="primary" onclick="requestReportApproval('${kind}')">Request Approval</button></div></div>`;}
-function signCurrentReport(kind){const key=approvalDemoKey(kind);window.__reportApprovalDemo=window.__reportApprovalDemo||{};const st=window.__reportApprovalDemo[key]||{signed:[],pending:null};const actor=currentReportActor();if(st.signed.some(x=>x.name===actor.name))return alert("This account has already signed this report.");if(!actor.signature)return alert("Your account does not have a signature uploaded yet. Upload your signature in your profile/settings first.");st.signed.push({name:actor.name,role:actor.role,signature:actor.signature,at:new Date().toLocaleString("en-GB")});st.pending=null;window.__reportApprovalDemo[key]=st;refreshReportApprovalPreview(kind);}
-function requestReportApproval(kind){const sel=document.getElementById("approvalUser_"+kind);const u=(iyUsersCache||[]).find(x=>x.user_id===sel?.value);if(!u)return alert("Select the user you need approval from.");const key=approvalDemoKey(kind);window.__reportApprovalDemo=window.__reportApprovalDemo||{};const st=window.__reportApprovalDemo[key]||{signed:[],pending:null};st.pending={user_id:u.user_id,name:u.full_name||u.email||"User",role:u.role||"User"};window.__reportApprovalDemo[key]=st;refreshReportApprovalPreview(kind);toast(`Approval requested from ${st.pending.name}.`);}
+function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
+function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
+function approvalStateForKind(kind){const id=approvalActiveId(kind);if(id){const r=reportApprovalReports.find(x=>x.id===id);const req=reportApprovalRequests.filter(x=>x.report_id===id);return {id,report:r,requests:req};}return {id:"",report:null,requests:[]};}
+function approvalSnapshotForKind(kind){
+ const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;
+ if(!d)return null;
+ const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:db.settings.preparedBy||"",department:db.settings.department||"",reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
+ if(kind==="maintenance")snapshot.data.partsUpdates=Array.isArray(window.__maintenanceReportParts)?clone(window.__maintenanceReportParts):[];
+ return snapshot;
+}
+function reportApprovalEligibleUsers(){const roles=["company_admin","super_admin","manager","team_lead","parts_coordinator","storekeeper","maintenance_supervisor","supervisor","technician","maintenance"];return (iyUsersCache||[]).filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id&&roles.includes(String(u.role||"").toLowerCase())).sort((a,b)=>roleLabel(a.role).localeCompare(roleLabel(b.role))||String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||"")));}
+function reportApprovalPanel(kind){
+ const st=approvalStateForKind(kind),users=reportApprovalEligibleUsers(),requests=st.requests||[];
+ const signed=requests.filter(x=>x.status==="signed"),pending=requests.filter(x=>x.status==="pending");
+ const signedCount=signed.length,status=signedCount?`${signedCount} signature${signedCount===1?"":"s"} recorded`:pending.length?`${pending.length} approval${pending.length===1?"":"s"} requested`:"No signatures yet";
+ const selectedUsers=window.__approvalSelections?.[kind]||[];
+ const userCards=users.length?users.map(u=>{const checked=selectedUsers.includes(u.user_id);return `<label class="approval-user-option ${checked?"selected":""}"><input type="checkbox" value="${esc(u.user_id)}" ${checked?"checked":""} onchange="toggleApprovalUser('${kind}',this)"><span class="approval-user-check">${checked?"✓":""}</span><span class="approval-user-main"><strong>${esc(u.full_name||u.email||"User")}</strong><small>${esc(roleLabel(u.role))}${u.user_code?` · ${esc(u.user_code)}`:""}</small></span></label>`;}).join(""):`<div class="approval-no-users">No other active approval users are available.</div>`;
+ const chips=[...signed.map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · Signed ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):""}</span></div>`),...pending.map(x=>`<div class="approval-chip pending"><strong>⏳ ${esc((iyUsersCache.find(u=>u.user_id===x.user_id)||{}).full_name||x.user_id)}</strong><span>Approval requested · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`)].join("");
+ return `<div class="report-approval-panel"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL & SIGNATURE</div><div class="report-approval-note">Select one or more people to receive this exact report. Each person signs only with their own account signature. Export never signs automatically.</div></div><span class="report-approval-status">${status}</span></div><div class="report-approval-chain">${chips||`<div class="approval-empty-state">No signatures have been applied to this report yet.</div>`}</div><div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Choose everyone who should receive this report.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div><div class="report-approval-actions"><button class="success" onclick="signCurrentReport('${kind}')">✍ Sign Report</button><button class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button></div></div>`;
+}
+function toggleApprovalUser(kind,input){window.__approvalSelections=window.__approvalSelections||{};const list=new Set(window.__approvalSelections[kind]||[]);if(input.checked)list.add(input.value);else list.delete(input.value);window.__approvalSelections[kind]=[...list];refreshReportApprovalPreview(kind);}
+async function persistCurrentReport(kind,userIds=[]){
+ const snapshot=approvalSnapshotForKind(kind);if(!snapshot)throw new Error("Generate the report before requesting approval.");
+ const draftKey=approvalDraftKey(kind);window.__approvalDraftKeys=window.__approvalDraftKeys||{};
+ let id=approvalActiveId(kind);if(id&&window.__approvalDraftKeys[kind]!==draftKey)id="";
+ if(!id){const title=kind==="parts"?`Parts Report — ${snapshot.data?.type||"Report"}`:`Maintenance Report — ${snapshot.data?.type||"Report"}`;const {data,error}=await iySupabase.rpc("create_report_approval",{p_report_kind:kind,p_title:title,p_snapshot:snapshot,p_user_ids:userIds});if(error)throw error;id=data;window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]=id;window.__approvalDraftKeys[kind]=draftKey;}else if(userIds.length){const {error}=await iySupabase.rpc("add_report_approval_requests",{p_report_id:id,p_user_ids:userIds});if(error)throw error;}
+ await loadReportApprovalRecord(id);return id;
+}
+async function loadReportApprovalRecord(id){
+ if(!id||!iyCloudReady)return null;
+ const [r,q]=await Promise.all([iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,snapshot,created_by,created_at,updated_at").eq("id",id).maybeSingle(),iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("report_id",id).order("requested_at",{ascending:true})]);
+ if(r.error)throw r.error;if(q.error)throw q.error;
+ const idx=reportApprovalReports.findIndex(x=>x.id===id);if(r.data){if(idx>=0)reportApprovalReports[idx]=r.data;else reportApprovalReports.unshift(r.data);window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[r.data.report_kind]=approvalDraftKey(r.data.report_kind);}
+ reportApprovalRequests=reportApprovalRequests.filter(x=>x.report_id!==id).concat(q.data||[]);
+ window.__activeReportApproval=window.__activeReportApproval||{};if(r.data)window.__activeReportApproval[r.data.report_kind]=id;
+ return r.data?{report:r.data,requests:q.data||[]}:null;
+}
+async function requestReportApproval(kind){
+ const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
+ try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadCloudData();}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
+}
+async function signCurrentReport(kind){
+ try{
+  const id=approvalActiveId(kind);
+  if(!id){await persistCurrentReport(kind,[]);}
+  const reportId=approvalActiveId(kind);
+  if(!reportId)throw new Error("The report could not be saved for signing.");
+  if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
+  const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:reportId});if(error)throw error;
+  await loadCloudData();await loadReportApprovalRecord(reportId);await hydrateApprovalSignatureUrls(reportId);refreshReportApprovalPreview(kind);toast("Your signature has been applied to the report.");
+ }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
+}
+async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
+function buildReportApprovalSignatureHTML(kind,prepared){const st=approvalStateForKind(kind),signed=st.requests.filter(x=>x.status==="signed");const cards=signed.map(x=>{const url=x.signature_url||window.__approvalSignatureUrls?.[st.id]?.find(y=>y.id===x.id)?.signature_url||"";return `<div class="r-sig"><div class="r-sig-space">${url?`<img class="r-sig-image" src="${esc(url)}" alt="Signature">`:``}</div><div class="r-sig-line">${esc(roleLabel(x.signer_role||"Approved By"))}</div><div class="r-sig-name">${esc(x.signer_name||"")}<br>${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):""}</div></div>`}).join("");return `<div class="r-signatures">${cards||`<div class="r-sig"><div class="r-sig-space"></div><div class="r-sig-line">No signatures applied</div><div class="r-sig-name">Signatures appear here only after the account signs.</div></div>`}</div>`;}
+async function openReportNotification(reportId){
+ if(!reportId)return nav("mreports");
+ try{const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;await hydrateApprovalSignatureUrls(reportId);window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
+}
 function refreshReportApprovalPreview(kind){if(kind==="parts"){const m=document.getElementById("partsReportPreviewScroll");if(m)m.innerHTML=buildPartsReportHTML();}else{const m=document.getElementById("reportPreviewScroll");if(m)m.innerHTML=buildMaintenanceReportHTML();}}
-
-function buildPartsReportHTML(){
- const data=window.__partsReportData;if(!data||!data.rows)return "";
- const company=esc(db.settings.companyName||"iy"),system=esc(db.settings.systemName||"MAINTENANCE MANAGEMENT SYSTEM"),prepared=esc(db.settings.preparedBy||""),department=esc(db.settings.department||""),footer=esc(db.settings.reportFooter||""),logo=db.settings.logoData||"";
+function buildPartsReportHTML(snapshotOverride){
+ const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
+ const ss=snapshotOverride?.settings||db.settings;const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
  const rows=data.rows,issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const table=isOrders?(rows.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active parts orders match the selected filters.</div>`):(rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`);
@@ -2608,9 +2672,10 @@ function openPartsReportPreview(){
  document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
+function openPartsReportPreviewFromSnapshot(snapshot){const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
-function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,10);return `<div class="panel"><div class="formgrid"><div class="field"><label>Report Type</label><select id="mr_type" class="select" onchange="toggleMaintenanceCustomDates()"><option>DAILY</option><option>WEEKLY</option><option>MONTHLY</option><option>CUSTOM DATE</option></select></div><div class="field" id="mr_single_date_field"><label>Report Date</label><input id="mr_date" class="input" type="date" value="${today}"></div><div class="field" id="mr_from_field" style="display:none"><label>From Date</label><input id="mr_from" class="input" type="date" value="${today}"></div><div class="field" id="mr_to_field" style="display:none"><label>To Date</label><input id="mr_to" class="input" type="date" value="${today}"></div></div><div class="actions"><button class="btn primary" onclick="runMaintenanceReport()">Generate Report</button></div><div id="mrout" style="margin-top:22px"></div></div>`}
+function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,10);return `<div class="panel"><div class="formgrid"><div class="field"><label>Report Type</label><select id="mr_type" class="select" onchange="toggleMaintenanceCustomDates()"><option>DAILY</option><option>WEEKLY</option><option>MONTHLY</option><option>CUSTOM DATE</option></select></div><div class="field" id="mr_single_date_field"><label>Report Date</label><input id="mr_date" class="input" type="date" value="${today}"></div><div class="field" id="mr_from_field" style="display:none"><label>From Date</label><input id="mr_from" class="input" type="date" value="${today}"></div><div class="field" id="mr_to_field" style="display:none"><label>To Date</label><input id="mr_to" class="input" type="date" value="${today}"></div></div><div class="actions"><button class="btn primary" onclick="runMaintenanceReport()">Generate Report</button></div><div id="mrout" style="margin-top:22px"></div></div>${savedApprovalReportsList("maintenance")}`}
 function toggleMaintenanceCustomDates(){const custom=document.getElementById("mr_type")?.value==="CUSTOM DATE";const single=document.getElementById("mr_single_date_field"),from=document.getElementById("mr_from_field"),to=document.getElementById("mr_to_field");if(single)single.style.display=custom?"none":"";if(from)from.style.display=custom?"":"none";if(to)to.style.display=custom?"":"none"}
 function reportPartsUpdateTable(rows){
  if(!rows.length)return `<div class="empty">No parts updates for this reporting period.</div>`;
@@ -2926,8 +2991,23 @@ function activityPage(){
   ${logs.length?`<div style="overflow:auto"><table class="activity-table"><thead><tr><th>Date & time</th><th>User</th><th>Action</th><th>Details</th></tr></thead><tbody>${logs.map(x=>`<tr><td>${esc(new Date(x.time).toLocaleString("en-GB"))}</td><td><strong>${esc(x.user)}</strong><br><small>${esc(x.userId)}</small></td><td>${esc(x.action)}</td><td>${esc(x.details||"—")}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">No activity recorded yet.</div>`}</section>
  </div>`;
 }
+async function loadCurrentUserSignature(){
+ if(!iyMembership?.signature_path)return "";
+ try{return await signedStorageUrl(IY_SIGNATURE_BUCKET,iyMembership.signature_path,3600);}catch(e){console.warn("Account signature could not be loaded",e?.message||e);return "";}
+}
+function previewAccountSignature(input){
+ const file=input?.files?.[0];if(!file)return;
+ if(file.size>2*1024*1024){input.value="";return alert("Signature must be 2 MB or smaller.");}
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type))return alert("Please choose a PNG, JPG or WebP signature.");
+ const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onerror=()=>{input.value="";alert("The selected signature could not be processed.");};img.onload=()=>{
+   const max=1000,scale=Math.min(1,max/Math.max(img.width,img.height));const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+   const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;const ctx=canvas.getContext("2d");ctx.clearRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+   canvas.toBlob(blob=>{if(!blob)return alert("The signature could not be converted.");pendingSignatureFile=blob;signatureRemovePending=false;const holder=document.querySelector(".profile-signature-preview");if(holder)holder.innerHTML=`<img src="${URL.createObjectURL(blob)}" alt="Signature preview">`;},"image/png");
+ };img.src=reader.result;};reader.readAsDataURL(file);
+}
+function removeAccountSignature(){pendingSignatureFile=null;signatureRemovePending=true;const holder=document.querySelector(".profile-signature-preview");if(holder)holder.innerHTML=`<span>✎ No signature uploaded</span>`;const input=document.getElementById("p_signatureFile");if(input)input.value="";}
 function openProfileEditor(){
- profileOpen=false;pendingProfilePhotoFile=null;profilePhotoRemovePending=false;
+ profileOpen=false;pendingProfilePhotoFile=null;profilePhotoRemovePending=false;pendingSignatureFile=null;signatureRemovePending=false;
  const u=db.user||{};
  const role=iyMembership?.role||u.role||"employee";
  openModal(`<div class="modalhead"><h2>Edit profile</h2><button class="close" onclick="closeModal()">×</button></div>
@@ -2941,6 +3021,11 @@ function openProfileEditor(){
   <div class="field"><label>Role</label><input id="p_role" class="input" value="${esc(roleLabel(role))}" disabled title="Your role is fixed by your account assignment."></div>
   <div class="field"><label>Email</label><input id="p_email" class="input" value="${esc(u.email||"")}" disabled></div>
   <div class="field"><label>User ID</label><input id="p_userId" class="input" value="${esc(u.userId||"—")}" disabled></div>
+ </div>
+ <div class="profile-signature-box">
+   <div class="profile-signature-copy"><strong>My report signature</strong><span>This signature belongs only to your account and is used when you sign a report.</span></div>
+   <div class="profile-signature-preview">${u.signatureUrl?`<img src="${esc(u.signatureUrl)}" alt="Your report signature">`:`<span>✎ No signature uploaded</span>`}</div>
+   <div class="profile-signature-actions"><label for="p_signatureFile">${u.signatureUrl?"Replace signature":"Upload signature"}</label><input id="p_signatureFile" type="file" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="previewAccountSignature(this)">${u.signatureUrl?`<button type="button" onclick="removeAccountSignature()">Remove</button>`:""}</div>
  </div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveProfile()">Save profile</button></div>`);
 }
@@ -2996,18 +3081,28 @@ async function saveProfile(){
      if(removeError)throw removeError;
      avatarPath="";
    }
+   let signaturePath=iyMembership?.signature_path||"";
+   if(pendingSignatureFile){
+     signaturePath=`${iyCompany.id}/${iyAuthUser.id}.png`;
+     const {error:signatureUploadError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).upload(signaturePath,pendingSignatureFile,{upsert:true,contentType:"image/png",cacheControl:"3600"});
+     if(signatureUploadError)throw signatureUploadError;
+   }else if(signatureRemovePending&&signaturePath){
+     const {error:signatureRemoveError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).remove([signaturePath]);
+     if(signatureRemoveError)throw signatureRemoveError;signaturePath="";
+   }
    const metadata={...(iyAuthUser.user_metadata||{}),full_name:name,avatar_path:avatarPath||null};
    delete metadata.avatar_url;
    const {data,error}=await iySupabase.auth.updateUser({data:metadata});
    if(error)throw error;
    iyAuthUser=data?.user||iyAuthUser;
    if(iyMembership?.id){
-     const res=await iySupabase.from("memberships").update({full_name:name}).eq("id",iyMembership.id).eq("user_id",iyAuthUser.id);
-     if(res.error)console.warn("Membership name sync skipped:",res.error.message||res.error);else iyMembership.full_name=name;
+     const res=await iySupabase.from("memberships").update({full_name:name,signature_path:signaturePath||null}).eq("id",iyMembership.id).eq("user_id",iyAuthUser.id);
+     if(res.error)console.warn("Membership profile sync skipped:",res.error.message||res.error);else{iyMembership.full_name=name;iyMembership.signature_path=signaturePath||null;}
    }
    const avatarUrl=await loadProfileAvatar();
-   db.user={...db.user,name,role,email:iyAuthUser.email||db.user?.email||"",userId:iyMembership?.user_code||db.user?.userId||"—",avatarUrl};
-   pendingProfilePhotoFile=null;profilePhotoRemovePending=false;
+   const signatureUrl=await loadCurrentUserSignature();
+   db.user={...db.user,name,role,email:iyAuthUser.email||db.user?.email||"",userId:iyMembership?.user_code||db.user?.userId||"—",avatarUrl,signatureUrl};
+   pendingProfilePhotoFile=null;profilePhotoRemovePending=false;pendingSignatureFile=null;signatureRemovePending=false;
    await cloudAudit("Updated profile","User profile details changed");
    closeModal();render();toast("Profile updated successfully.");
  }catch(e){alert(e?.message||"Profile could not be updated.");if(btn)btn.disabled=false;}
@@ -3029,7 +3124,7 @@ async function logoutUser(){
   await cloudAudit("Logged out","User signed out");
   await iySupabase.auth.signOut();
  }catch(e){console.warn("Logout audit/signout warning",e)}
- iyAuthUser=null;iyCompany=null;iyMembership=null;iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];
+ iyAuthUser=null;iyCompany=null;iyMembership=null;iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
  renderLogin("signedout");
 }
 
@@ -3237,15 +3332,17 @@ async function completeAuthenticatedSession(user){
  db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.11";db.settings.developer="IY Digital Innovations";
  await migrateLegacyProfileAvatar();
  const profileAvatar=await loadProfileAvatar();
+ const signatureUrl=await loadCurrentUserSignature();
  loggedIn=true;
- db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",avatarUrl:profileAvatar};
+ db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
+ if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
 
 async function loadCompanyContext(user){
- let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
+ let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at,signature_path").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
  if(error)throw error;
  if(!membership){
    const companyName=user.user_metadata?.company_name?.trim();
@@ -3254,7 +3351,7 @@ async function loadCompanyContext(user){
    if(provisionError)throw provisionError;
    const companyId=Array.isArray(provision)?provision[0]?.company_id:provision?.company_id;
    if(!companyId)throw new Error("Your company workspace could not be created.");
-   const res=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
+   const res=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,is_active,last_login_at,signature_path").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
    if(res.error)throw res.error; membership=res.data;
  }
  iyMembership=membership;
@@ -3323,7 +3420,7 @@ async function migrateLegacyProfileAvatar(){
 
 async function loadCloudData(){
  const empty=blankCloudDB();
- const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,memberships,notificationReadRows]=await Promise.all([
+ const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,memberships,notificationReadRows,notifications,approvalReports,approvalRequests]=await Promise.all([
   iySupabase.from("machines").select("*").order("fleet_id"),
   iySupabase.from("parts").select("*").order("part_number"),
   iySupabase.from("inventory").select("*,parts(part_number,description,machine_id,machine_model,supplier,location,minimum_stock,remarks)").order("updated_at",{ascending:false}),
@@ -3334,13 +3431,22 @@ async function loadCloudData(){
   iySupabase.from("maintenance_records").select("*,machines(fleet_id,machine_model,machine_serial_number),fault_problem,work_performed").order("job_date"),
   iySupabase.from("company_settings").select("*").eq("company_id",iyCompany.id).maybeSingle(),
   iySupabase.from("audit_logs").select("*").order("created_at",{ascending:false}).limit(500),
-  iySupabase.from("memberships").select("id,user_id,user_code,full_name").eq("company_id",iyCompany.id).eq("is_active",true).order("created_at",{ascending:true}),
-  iySupabase.from("notification_reads").select("notification_id,read_at").eq("company_id",iyCompany.id).eq("user_id",iyAuthUser.id)
+  iySupabase.from("memberships").select("id,user_id,user_code,full_name,role,department,is_active,last_login_at,invited_at,signature_path").eq("company_id",iyCompany.id).eq("is_active",true).order("created_at",{ascending:true}),
+  iySupabase.from("notification_reads").select("notification_id,read_at").eq("company_id",iyCompany.id).eq("user_id",iyAuthUser.id),
+  iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100),
+  iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,snapshot,created_by,created_at,updated_at").eq("company_id",iyCompany.id).order("created_at",{ascending:false}).limit(100),
+  iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("company_id",iyCompany.id).order("requested_at",{ascending:true})
  ]);
  for(const r of [machines,parts,inventory,receipts,issues,updates,maintenance,settings,activity])if(r.error)throw r.error;
  if(memberships?.error)throw memberships.error;
  if(orders?.error && orders.error.code!=="PGRST205")throw orders.error;
  if(notificationReadRows?.error){console.warn("Notification read-state table is not available yet.",notificationReadRows.error.message||notificationReadRows.error);notificationReads=[]}else{notificationReads=(notificationReadRows.data||[]).map(x=>x.notification_id);}
+ cloudNotifications=notifications?.error?(notifications.error.code==="PGRST205"?[]:(() => {console.warn("Notifications table is not available yet.",notifications.error.message||notifications.error);return []})()):(notifications.data||[]);
+ reportApprovalReports=approvalReports?.error?(approvalReports.error.code==="PGRST205"?[]:[]):(approvalReports.data||[]);
+ reportApprovalRequests=approvalRequests?.error?(approvalRequests.error.code==="PGRST205"?[]:[]):(approvalRequests.data||[]);
+ if(notifications?.error&&notifications.error.code!=="PGRST205")console.warn("Report notifications could not be loaded.",notifications.error.message||notifications.error);
+ if(approvalReports?.error&&approvalReports.error.code!=="PGRST205")console.warn("Report approval records could not be loaded.",approvalReports.error.message||approvalReports.error);
+ if(approvalRequests?.error&&approvalRequests.error.code!=="PGRST205")console.warn("Report approval requests could not be loaded.",approvalRequests.error.message||approvalRequests.error);
  notificationLastRefresh=new Date();
  empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id]);
  try{
@@ -3901,25 +4007,24 @@ function getISOWeek_(date){
  const firstDay=(firstThursday.getDay()+6)%7;
  return 1+Math.round((d-firstThursday)/604800000)+Math.floor((firstDay)/7);
 }
-function buildMaintenanceReportHTML(){
+function buildMaintenanceReportHTML(snapshotOverride){
  const out=document.getElementById("mrout");
- if(!out||!out.innerHTML)return "";
- const company=esc(db.settings.companyName||"iy"),system=esc(db.settings.systemName||"MAINTENANCE MANAGEMENT SYSTEM");
- const prepared=esc(db.settings.preparedBy||""),department=esc(db.settings.department||""),footer=esc(db.settings.reportFooter||"");
- const logo=db.settings.logoData||"";
- const type=document.getElementById("mr_type")?.value||"DAILY",date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);
- let startDate,endDate;
- if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(from&&to){startDate=new Date(from+"T00:00:00");endDate=new Date(to+"T00:00:00")}else{startDate=new Date(date+"T00:00:00");endDate=new Date(startDate)}}else{const d=new Date(date+"T00:00:00");startDate=new Date(d);endDate=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;startDate.setDate(d.getDate()-day);endDate=new Date(startDate);endDate.setDate(startDate.getDate()+6)}if(type==="MONTHLY"){startDate=new Date(d.getFullYear(),d.getMonth(),1);endDate=new Date(d.getFullYear(),d.getMonth()+1,0)}}
- const reportType=type==="WEEKLY"?"Weekly - Week "+getISOWeek_(startDate):type==="MONTHLY"?"Monthly - "+startDate.toLocaleDateString("en-GB",{month:"long",year:"numeric"}):type==="CUSTOM DATE"?"Custom Date - "+fmtDate(startDate)+" to "+fmtDate(endDate):"Daily - "+fmtDate(startDate);
- const period=fmtDate(startDate)+" - "+fmtDate(endDate);
-
- const rows=db.maintenance.filter(x=>{
-   const z=new Date(x[1]);
-   return z>=startDate&&z<=new Date(endDate.getTime()+86399999);
- }).slice().reverse();
-
- const partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
- window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),rows};
+ if(!snapshotOverride&&(!out||!out.innerHTML))return "";
+ const ss=snapshotOverride?.settings||db.settings;
+ const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System");
+ const prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||"");
+ const logo=ss.logoData||"";
+ let reportType,period,rows,partsUpdates;
+ if(snapshotOverride?.data){
+   const d=snapshotOverride.data;reportType=d.reportType||d.type||"Maintenance Report";period=d.period||((d.from||"")+(d.to?" - "+d.to:""));rows=Array.isArray(d.rows)?d.rows:[];partsUpdates=Array.isArray(d.partsUpdates)?d.partsUpdates:[];
+ }else{
+   const type=document.getElementById("mr_type")?.value||"DAILY",date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let startDate,endDate;
+   if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(from&&to){startDate=new Date(from+"T00:00:00");endDate=new Date(to+"T00:00:00")}else{startDate=new Date(date+"T00:00:00");endDate=new Date(startDate)}}else{const d=new Date(date+"T00:00:00");startDate=new Date(d);endDate=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;startDate.setDate(d.getDate()-day);endDate=new Date(startDate);endDate.setDate(startDate.getDate()+6)}if(type==="MONTHLY"){startDate=new Date(d.getFullYear(),d.getMonth(),1);endDate=new Date(d.getFullYear(),d.getMonth()+1,0)}}
+   reportType=type==="WEEKLY"?"Weekly - Week "+getISOWeek_(startDate):type==="MONTHLY"?"Monthly - "+startDate.toLocaleDateString("en-GB",{month:"long",year:"numeric"}):type==="CUSTOM DATE"?"Custom Date - "+fmtDate(startDate)+" to "+fmtDate(endDate):"Daily - "+fmtDate(startDate);period=fmtDate(startDate)+" - "+fmtDate(endDate);
+   rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=startDate&&z<=new Date(endDate.getTime()+86399999);}).slice().reverse();
+   partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
+   window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),reportType,period,rows};window.__maintenanceReportParts=partsUpdates;
+ }
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length;
  const ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length;
  const partsRequired=rows.filter(x=>String(x[11]||"").trim()!=="").length;
@@ -3982,6 +4087,7 @@ function openReportPreview(){
  document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
+function openReportPreviewFromSnapshot(snapshot){const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
