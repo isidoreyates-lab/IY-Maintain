@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.14 — Professional Inter Font Update -->
+<!-- IY Maintain V24.19 — Visible Blue CMMS Card Icons -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1358,7 +1358,357 @@ button,input,select,textarea{font-family:inherit}
 h1,h2,h3,h4,h5,h6,.title,.hero-title,.page-title,button,.btn,.nav-item,.tab,.pill,.badge{font-family:"Google Sans","Google Sans Text",Arial,sans-serif;}
 input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 </style>
+
+<style>
+.iy-auth-check-blue{color:#075fff!important;background:linear-gradient(145deg,#ffffff,#dff4ff)!important;border:1px solid rgba(7,95,255,.22);box-shadow:0 8px 20px rgba(7,95,255,.16),inset 0 1px 0 rgba(255,255,255,.95)!important}.iy-auth-check-blue svg{display:block;flex:none}.iy-auth-check-blue span{display:none!important}
+/* V24.18 — refined CMMS SaaS introduction and feature cards */
+.iy-auth-points{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+  max-width:820px;
+  margin-top:40px;
+}
+.iy-auth-point{
+  display:block;
+  min-height:190px;
+  padding:22px 21px 20px;
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.055));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 14px 34px rgba(0,0,0,.09);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.iy-auth-point:hover{
+  transform:translateY(-3px);
+  border-color:rgba(143,233,255,.42);
+  background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.065));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.11),0 18px 38px rgba(0,0,0,.12);
+}
+.iy-auth-check{
+  width:42px;height:42px;border-radius:13px;margin:0 0 17px;
+  background:linear-gradient(145deg,#f7fdff,#b9efff);
+  color:#0753c9;
+  box-shadow:0 8px 18px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.75);
+  display:grid;place-items:center;font-size:18px;
+}
+.iy-auth-check span{display:block;line-height:1;font-weight:900}
+.iy-auth-point-title{
+  display:block;
+  font-size:14px;font-weight:800;line-height:1.3;letter-spacing:-.15px;
+  color:#fff;margin:0 0 9px;
+}
+.iy-auth-point>span{
+  display:block;color:#c9ddf7;font-size:11px;line-height:1.62;
+  max-width:205px;
+}
+
+/* V24.17 — premium CMMS SaaS login refinement */
+.iy-auth-shell{
+  min-height:100vh;
+  grid-template-columns:minmax(620px,1.48fr) minmax(430px,560px);
+  background:#f5f8fd;
+}
+.iy-auth-brand{
+  padding:54px clamp(42px,6vw,92px) 34px;
+  background:
+    radial-gradient(700px 420px at 8% 8%,rgba(25,198,255,.17),transparent 60%),
+    radial-gradient(650px 520px at 90% 82%,rgba(7,95,255,.34),transparent 62%),
+    linear-gradient(132deg,#061a4f 0%,#082b76 43%,#075fff 100%);
+}
+.iy-auth-brand:before{
+  width:520px;height:520px;right:-170px;top:-210px;
+  border-color:rgba(255,255,255,.13);
+  box-shadow:0 0 0 90px rgba(255,255,255,.024),0 0 0 180px rgba(255,255,255,.015);
+}
+.iy-auth-brand:after{
+  width:300px;height:300px;left:-145px;bottom:-165px;
+  background:radial-gradient(circle at 55% 45%,rgba(25,198,255,.18),rgba(7,95,255,0) 68%);
+}
+.iy-auth-brand-inner{max-width:790px;display:flex;flex-direction:column;justify-content:center;min-height:calc(100vh - 110px)}
+.iy-auth-logo-wide{width:min(360px,72%);margin-bottom:64px;filter:drop-shadow(0 14px 32px rgba(0,0,0,.24))}
+.iy-auth-eyebrow{font-size:11px;letter-spacing:2.35px;color:#7ee8ff;margin-bottom:17px}
+.iy-auth-brand h1{font-size:clamp(42px,4.35vw,66px);line-height:1.015;letter-spacing:-3.25px;max-width:790px;margin-bottom:20px}
+.iy-auth-brand-copy{max-width:675px;color:rgba(231,242,255,.78);font-size:15px;line-height:1.72}
+.iy-auth-points{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;max-width:820px;margin-top:40px;
+}
+.iy-auth-point{
+  min-height:205px;padding:20px 19px 18px;
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.055));
+  border:1px solid rgba(255,255,255,.17);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 32px rgba(0,0,0,.08);
+  backdrop-filter:blur(14px);
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.iy-auth-point:hover{transform:translateY(-3px);border-color:rgba(143,233,255,.38);background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.065))}
+.iy-auth-check{
+  width:40px;height:40px;border-radius:12px;margin:0 0 17px;
+  background:linear-gradient(145deg,#f5fdff,#b9efff);
+  color:#0753c9;box-shadow:0 8px 18px rgba(0,0,0,.13);
+  font-size:18px;
+}
+.iy-auth-check span{display:block;line-height:1;font-weight:900}
+.iy-auth-point-title{font-size:14px;font-weight:800;line-height:1.25;letter-spacing:-.15px;color:#fff;margin-bottom:9px}
+.iy-auth-point>span{color:#c9ddf7;font-size:11px;line-height:1.58;display:block}
+.iy-auth-footer{font-size:10px;color:rgba(196,220,247,.72);letter-spacing:.15px}
+.iy-auth-panel{padding:42px 48px;background:linear-gradient(180deg,#fff 0%,#f6f9fe 100%)}
+.iy-auth-card{
+  width:min(100%,456px);padding:40px;
+  border-radius:26px;border:1px solid #dfe8f3;
+  box-shadow:0 30px 85px rgba(6,26,79,.14),0 3px 12px rgba(6,26,79,.04);
+}
+.iy-auth-card:after{
+  content:"";position:absolute;right:-70px;top:-70px;width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle,rgba(25,198,255,.10),transparent 68%);pointer-events:none;
+}
+.iy-auth-logo{width:64px;height:64px;border-radius:18px;margin-bottom:27px}
+.iy-auth-logo img{width:50px;height:50px}
+.iy-auth-kicker{font-size:10px;letter-spacing:1.9px}
+.iy-auth-card h2{font-size:32px;line-height:1.12;letter-spacing:-1.15px;margin:8px 0 10px}
+.iy-auth-sub{font-size:13px;line-height:1.65;color:#66778f;margin-bottom:27px}
+.iy-auth-form{gap:16px}
+.iy-auth-field label{font-size:12px;margin-bottom:8px;font-weight:750}
+.iy-auth-field input{height:48px;border-radius:11px;border-color:#d5e0ec;padding:0 14px;font-family:inherit;font-size:14px;color:#10233f;transition:border-color .15s ease,box-shadow .15s ease}
+.iy-auth-field input::placeholder{color:#94a3b8}
+.iy-auth-btn{height:48px;border-radius:11px;font-size:14px;background:linear-gradient(135deg,#061a4f 0%,#075fff 100%);box-shadow:0 12px 25px rgba(7,95,255,.23)}
+.iy-auth-switch{margin-top:21px}
+.iy-auth-trust{
+  display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
+  margin-top:24px;padding-top:17px;border-top:1px solid #edf1f6;
+  color:#7a8ca3;font-size:10px;
+}
+.iy-auth-trust .trust-dot{width:7px;height:7px;border-radius:50%;background:#18b67a;box-shadow:0 0 0 4px rgba(24,182,122,.10)}
+@media(max-width:1200px){
+  .iy-auth-shell{grid-template-columns:minmax(540px,1.2fr) minmax(400px,500px)}
+  .iy-auth-brand{padding-left:48px;padding-right:48px}
+  .iy-auth-logo-wide{width:310px;margin-bottom:52px}
+}
+@media(max-width:1000px){
+  .iy-auth-shell{grid-template-columns:1fr}
+  .iy-auth-brand{min-height:auto;padding:48px 34px 42px}
+  .iy-auth-brand-inner{min-height:auto}
+  .iy-auth-panel{padding:34px 20px}
+}
+@media(max-width:650px){
+  .iy-auth-brand{padding:34px 22px 28px}
+  .iy-auth-logo-wide{width:245px;margin-bottom:38px}
+  .iy-auth-brand h1{font-size:38px;letter-spacing:-1.9px}
+  .iy-auth-brand-copy{font-size:14px}
+  .iy-auth-points{grid-template-columns:1fr;margin-top:28px}
+  .iy-auth-point{min-height:0}
+  .iy-auth-card{padding:30px 22px;border-radius:22px}
+}
+</style>
+
+<style>
+/* V24.18 responsive card refinements */
+@media(max-width:1200px){
+  .iy-auth-point{min-height:184px;padding:20px 18px 19px}
+  .iy-auth-point>span{max-width:190px}
+}
+@media(max-width:1000px){
+  .iy-auth-points{grid-template-columns:repeat(3,minmax(0,1fr));max-width:100%;gap:12px}
+}
+@media(max-width:760px){
+  .iy-auth-points{grid-template-columns:1fr}
+  .iy-auth-point{min-height:auto}
+  .iy-auth-point>span{max-width:none}
+}
+</style>
+<style id="iy-card-icons-v2419">
+/* V24.19 — explicit blue feature-card icons */
+.iy-auth-point .iy-auth-check.iy-auth-check-blue{color:#075fff!important;background:#eaf4ff!important;border:1px solid rgba(7,95,255,.24)!important}
+.iy-auth-point .iy-auth-check.iy-auth-check-blue svg{color:#075fff!important;stroke:#075fff!important;opacity:1!important;visibility:visible!important}
+</style>
+
+<style id="mobile-cmms-ux-v24-20">
+/* V24.20 — Mobile CMMS shell + report preview refinement */
+@media(max-width:700px){
+  /* Keep the app header fixed and visually independent from page scrolling. */
+  .top{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    top:0!important;
+    height:64px!important;
+    z-index:310!important;
+    background:rgba(255,255,255,.97)!important;
+    -webkit-backdrop-filter:blur(14px)!important;
+    backdrop-filter:blur(14px)!important;
+    border-bottom:1px solid #dfe7ef!important;
+    box-shadow:0 4px 18px rgba(9,37,66,.08)!important;
+  }
+  .main{padding-top:64px!important}
+  .content{padding-top:18px!important}
+
+  /* Menu becomes a deliberate navigation drawer with a clear exit control. */
+  .mobile-nav-backdrop{z-index:320!important;background:rgba(3,16,38,.52)!important}
+  .mobile-nav-sheet{
+    left:10px!important;right:10px!important;bottom:84px!important;
+    max-height:calc(100vh - 104px)!important;
+    z-index:330!important;padding:14px!important;
+    border-radius:22px!important;
+    box-shadow:0 28px 80px rgba(5,25,55,.32)!important;
+  }
+  .mobile-nav-sheet-head{
+    padding:2px 2px 12px!important;margin-bottom:10px!important;
+    position:sticky;top:0;background:#fff;z-index:2;
+  }
+  .mobile-nav-sheet-head b{font-size:16px!important;font-weight:900!important}
+  .mobile-nav-sheet-head span{font-size:10px!important}
+  .mobile-nav-close{
+    width:auto!important;min-width:88px!important;height:38px!important;
+    padding:0 12px!important;border:1px solid #c8dbf2!important;
+    background:#edf5ff!important;color:#075fff!important;border-radius:11px!important;
+    font-size:11px!important;font-weight:900!important;display:flex!important;
+    align-items:center;justify-content:center;gap:6px;cursor:pointer;
+  }
+  .mobile-nav-close::before{content:'×';font-size:18px;line-height:1;font-weight:500}
+  .mobile-nav-close{font-size:0}
+  .mobile-nav-close::after{content:'Close menu';font-size:11px}
+  .mobile-nav-link{min-height:48px!important}
+
+  /* Full-screen mobile report viewer: readable page, fixed toolbar, natural scrolling. */
+  .report-preview-modal{
+    padding:0!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+    background:rgba(5,18,38,.72)!important;
+  }
+  .report-preview-shell{
+    width:100%!important;height:100dvh!important;max-height:none!important;
+    border-radius:0!important;background:#eef3f8!important;
+    display:flex!important;overflow:hidden!important;
+  }
+  .report-preview-bar{
+    position:sticky!important;top:0!important;z-index:5!important;
+    min-height:64px!important;height:auto!important;padding:9px 10px!important;
+    gap:8px!important;box-shadow:0 3px 14px rgba(9,37,66,.08)!important;
+  }
+  .report-preview-title{
+    font-size:13px!important;line-height:1.2!important;min-width:0!important;
+    flex:1!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .report-preview-actions{gap:6px!important;flex:0 0 auto!important}
+  .report-preview-actions button{
+    min-height:40px!important;padding:0 10px!important;border-radius:10px!important;
+    font-size:10px!important;white-space:nowrap;
+  }
+  .report-close{color:#203b57!important;background:#f2f6fa!important;border:1px solid #d9e3ec!important}
+  .report-pdf{background:#075fff!important;color:#fff!important}
+  .report-preview-scroll{
+    flex:1!important;min-height:0!important;overflow:auto!important;
+    padding:14px 10px 34px!important;display:block!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .report-paper{
+    width:100%!important;min-height:0!important;margin:0 auto!important;
+    padding:22px 16px 28px!important;box-sizing:border-box!important;
+    transform:none!important;transform-origin:center top!important;
+    box-shadow:0 4px 22px rgba(20,40,60,.14)!important;border-radius:6px!important;
+  }
+  .report-paper .r-head{min-height:0!important;padding-bottom:15px!important;margin-bottom:16px!important}
+  .report-paper .r-logo{position:relative!important;display:block!important;left:auto!important;top:auto!important;margin:0 auto 10px!important;max-width:125px!important;max-height:58px!important}
+  .report-paper .r-title{font-size:19px!important;line-height:1.15!important}
+  .report-paper .r-system{font-size:10px!important;line-height:1.3!important}
+  .report-paper .r-sub{font-size:9px!important;line-height:1.35!important}
+  .report-paper .r-meta{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-bottom:15px!important}
+  .report-paper .r-meta>div{padding:10px 8px!important;min-height:52px!important}
+  .report-paper .r-meta span{font-size:7px!important;margin-bottom:4px!important}
+  .report-paper .r-meta b{font-size:8px!important;line-height:1.25!important;word-break:break-word}
+  .report-paper .r-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin-bottom:15px!important}
+  .report-paper .r-kpi{min-height:62px!important;padding:8px 4px!important}
+  .report-paper .r-kpi label{font-size:7px!important}
+  .report-paper .r-kpi strong{font-size:18px!important;margin-top:6px!important}
+  .report-paper .r-section{font-size:9px!important;margin:15px 0 7px!important}
+  .report-paper .r-section:before{width:4px!important;height:18px!important}
+  .report-paper table{display:block!important;width:100%!important;overflow-x:auto!important;table-layout:auto!important;-webkit-overflow-scrolling:touch!important}
+  .report-paper table thead,.report-paper table tbody{width:max-content!important;min-width:100%!important}
+  .report-paper th{font-size:7px!important;padding:6px 5px!important;white-space:nowrap!important}
+  .report-paper td{font-size:7px!important;padding:6px 5px!important;line-height:1.25!important;min-width:58px!important}
+  .report-paper .r-signatures{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;margin-top:30px!important}
+  .report-paper .r-sig{height:76px!important}
+  .report-paper .r-sig-space{height:38px!important}
+  .report-paper .r-sig-image{max-width:85px!important;max-height:34px!important}
+  .report-paper .r-sig-line{font-size:8px!important;padding-top:5px!important}
+  .report-paper .r-sig-name{font-size:7px!important}
+  .report-paper .r-footer{font-size:7px!important;margin-top:18px!important}
+
+  /* Parts-report-specific summary blocks */
+  .parts-report-paper .parts-summary{grid-template-columns:1fr!important;gap:7px!important;margin-bottom:14px!important}
+  .parts-report-paper .parts-summary-box{padding:9px 10px!important}
+  .parts-report-paper .parts-summary-box span{font-size:7px!important}
+  .parts-report-paper .parts-summary-box b{font-size:9px!important}
+  .parts-report-paper .parts-note{font-size:8px!important;padding:8px 10px!important}
+}
+</style>
 </head>
+
+<style>
+/* V24.16 — CMMS SaaS authentication experience */
+.iy-auth-shell{
+  grid-template-columns:minmax(560px,1.7fr) minmax(430px,.8fr);
+  background:#f6f9fd;
+}
+.iy-auth-brand{
+  padding:48px clamp(42px,6.8vw,104px) 34px;
+  background:
+    radial-gradient(circle at 78% 18%,rgba(25,198,255,.20),transparent 24%),
+    radial-gradient(circle at 82% 78%,rgba(7,95,255,.30),transparent 32%),
+    linear-gradient(135deg,#061a4f 0%,#082f7f 46%,#075fff 100%);
+}
+.iy-auth-brand-inner{max-width:860px}
+.iy-auth-logo-wide{width:min(330px,58%);margin-bottom:48px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.18))}
+.iy-auth-eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:18px;font-size:11px;letter-spacing:1.9px;color:#a9efff}
+.iy-auth-eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:#54dcff;box-shadow:0 0 0 5px rgba(84,220,255,.10)}
+.iy-auth-brand h1{font-size:clamp(42px,4.35vw,68px);line-height:1.02;letter-spacing:-3.3px;max-width:850px;margin-bottom:20px}
+.iy-auth-brand-copy{max-width:720px;color:#d9eaff;font-size:16px;line-height:1.72}
+.iy-auth-points{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:920px;margin-top:38px}
+.iy-auth-point{min-height:142px;padding:18px;background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.16);border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(16px)}
+.iy-auth-point b{font-size:13px;line-height:1.25;margin-bottom:7px}
+.iy-auth-point span{font-size:11px;line-height:1.55;color:#c9dcf6}
+.iy-auth-check{width:31px;height:31px;border-radius:10px;margin-bottom:13px;background:linear-gradient(135deg,#ffffff,#bfefff);color:#063477;box-shadow:0 5px 12px rgba(0,0,0,.10)}
+.iy-auth-footer{font-size:10px;color:#b6cef0;letter-spacing:.25px}
+.iy-auth-panel{padding:34px clamp(24px,4vw,66px);background:linear-gradient(180deg,#ffffff 0%,#f5f9fe 100%)}
+.iy-auth-card{width:min(100%,470px);padding:40px;border-radius:24px;box-shadow:0 30px 85px rgba(6,26,79,.13),0 2px 8px rgba(6,26,79,.04)}
+.iy-auth-card:before{height:4px}
+.iy-auth-logo{width:62px;height:62px;border-radius:18px;margin-bottom:25px}
+.iy-auth-kicker{font-size:10px;letter-spacing:1.8px}
+.iy-auth-card h2{font-size:32px;letter-spacing:-1.15px;margin-top:8px}
+.iy-auth-sub{font-size:13px;line-height:1.65;margin-bottom:27px}
+.iy-auth-form{gap:15px}
+.iy-auth-field label{font-size:11px;font-weight:700;margin-bottom:7px}
+.iy-auth-field input{height:46px;border-radius:11px;padding:12px 14px;font-size:13px;border-color:#d5dfeb;background:#fbfdff;transition:.18s ease}
+.iy-auth-field input:hover{border-color:#b9c9dc}
+.iy-auth-field input:focus{background:#fff}
+.iy-auth-btn{height:46px;border-radius:11px;font-size:13px;letter-spacing:.01em;margin-top:2px}
+.iy-auth-switch{font-size:11px;margin-top:19px}
+.iy-auth-card .iy-auth-trust{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:22px;padding-top:17px;border-top:1px solid #edf1f6;color:#7a8da5;font-size:10px}
+.iy-auth-trust .trust-dot{width:6px;height:6px;border-radius:50%;background:#19a974;box-shadow:0 0 0 4px rgba(25,169,116,.08)}
+@media(max-width:1100px){
+  .iy-auth-shell{grid-template-columns:minmax(460px,1.2fr) minmax(410px,.8fr)}
+  .iy-auth-brand{padding-left:44px;padding-right:44px}
+  .iy-auth-points{grid-template-columns:1fr}
+  .iy-auth-point{min-height:0}
+}
+@media(max-width:850px){
+  .iy-auth-shell{grid-template-columns:1fr}
+  .iy-auth-brand{display:flex;min-height:510px;padding:42px 34px}
+  .iy-auth-panel{padding:30px 20px}
+}
+@media(max-width:650px){
+  .iy-auth-brand{min-height:420px;padding:30px 22px}
+  .iy-auth-logo-wide{width:240px;margin-bottom:34px}
+  .iy-auth-brand h1{font-size:37px;letter-spacing:-1.9px}
+  .iy-auth-brand-copy{font-size:14px}
+  .iy-auth-points{display:none}
+  .iy-auth-card{padding:30px 22px;border-radius:22px}
+}
+</style>
 <body>
 <div id="app"></div>
 <div id="modalBack" class="modalback"><div id="modal" class="modal"></div></div>
@@ -1441,7 +1791,7 @@ function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=fals
 function mobileBottomItem(id,label,icon){const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${icon}</span><span>${label}</span></button>`}
 function renderMobileNavigation(){
  const menu=mobileMenuOpen?`<div class="mobile-nav-backdrop" onclick="toggleMobileMenu()"></div><div class="mobile-nav-sheet">
-  <div class="mobile-nav-sheet-head"><div><b>Navigation</b><span>All IY Maintain modules</span></div><button class="mobile-nav-close" onclick="toggleMobileMenu()">×</button></div>
+  <div class="mobile-nav-sheet-head"><div><b>Navigation</b><span>All IY Maintain modules</span></div><button class="mobile-nav-close" aria-label="Close navigation menu" title="Close menu" onclick="toggleMobileMenu()">Close</button></div>
   ${mobileNavLink('dashboard','Dashboard','⌂')}
   <div class="mobile-nav-group">PARTS</div>
   ${mobileNavLink('issue','Search & Issue Parts','▣')}${mobileNavLink('receive','Receive Parts','+')}${mobileNavLink('inventory','Inventory','▤')}${mobileNavLink('updates','Parts Updates','↻')}${mobileNavLink('orders','Parts Orders','▤')}
@@ -3446,22 +3796,34 @@ function renderLogin(mode="signin"){
   <section class="iy-auth-brand">
    <div class="iy-auth-brand-inner">
     <img class="iy-auth-logo-wide" src="${IY_BRAND_LOGO}" alt="${IY_BRAND_COMPANY}">
-    <div class="iy-auth-eyebrow">IY MAINTAIN • ROLE BASED CLOUD WORKSPACE</div>
-    <h1>Maintenance and parts, in one secure workspace.</h1>
-    <p class="iy-auth-brand-copy">Manage parts inventory, receipts, issues, machines, maintenance records and reports with secure company-level data isolation.</p>
+    <div class="iy-auth-eyebrow">COMPUTERIZED MACHINES MAINTENANCE SYSTEM • ROLE BASED CLOUD WORKSPACE</div>
+    <h1>Keep every machine, maintenance task and part under control.</h1>
+    <p class="iy-auth-brand-copy">A secure computerized maintenance management workspace for managing machines, parts, maintenance records, inventory activity and professional reporting — all in one connected system.</p>
     <div class="iy-auth-points">
-      <div class="iy-auth-point"><div class="iy-auth-check">✓</div><b>Secure authentication</b><span>Protected user sessions powered by Supabase Auth.</span></div>
-      <div class="iy-auth-point"><div class="iy-auth-check">✓</div><b>Company isolation</b><span>Each organisation sees only its own operational records.</span></div>
-      <div class="iy-auth-point"><div class="iy-auth-check">✓</div><b>Built for maintenance</b><span>Parts, machines, maintenance and reporting stay connected.</span></div>
+      <div class="iy-auth-point">
+        <div class="iy-auth-check iy-auth-check-blue" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.2 5.2L4 17v3h3l5.5-5.5a4 4 0 0 0 5.2-5.2l-2.1 2.1-2.8-.7-.7-2.8 2.6-1.6Z"/><path d="M18 4l2 2"/></svg></div>
+        <div class="iy-auth-point-title">Asset &amp; machine management</div>
+        <span>Organize machine records, fleet details and maintenance history in one operational workspace.</span>
+      </div>
+      <div class="iy-auth-point">
+        <div class="iy-auth-check iy-auth-check-blue" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div class="iy-auth-point-title">Parts &amp; inventory control</div>
+        <span>Control stock, receipts, issues, updates and procurement activity with complete visibility.</span>
+      </div>
+      <div class="iy-auth-point">
+        <div class="iy-auth-check iy-auth-check-blue" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5 9 18l11-12"/><path d="M4 20h16"/></svg></div>
+        <div class="iy-auth-point-title">Maintenance &amp; reporting</div>
+        <span>Capture maintenance work and turn operational data into clear, professional reports.</span>
+      </div>
     </div>
    </div>
-   <div class="iy-auth-footer">IY Digital Innovations • Secure maintenance management software</div>
+   <div class="iy-auth-footer">IY Digital Innovations • Secure CMMS &amp; maintenance management software</div>
   </section>
   <section class="iy-auth-panel"><div class="iy-auth-card">
    <div class="iy-auth-logo"><img src="${IY_BRAND_ICON}" alt="IY"></div>
-   <div class="iy-auth-kicker">${forgot?"ACCOUNT RECOVERY":signup?"CREATE WORKSPACE":"SECURE SIGN IN"}</div>
+   <div class="iy-auth-kicker">${forgot?"ACCOUNT RECOVERY":signup?"CREATE WORKSPACE":signedout?"SECURE SIGN IN":"SECURE SIGN IN"}</div>
    <h2>${forgot?"Reset your password":signup?"Create your IY Maintain account":"Welcome back"}</h2>
-   <p class="iy-auth-sub">${forgot?"Enter your email and we'll send you a password reset link.":signup?"Create an account and your company workspace will be created securely.":signedout?"You have been signed out securely.":"Sign in to continue to your maintenance workspace."}</p>
+   <p class="iy-auth-sub">${forgot?"Enter your email and we'll send you a password reset link.":signup?"Create your secure maintenance workspace and get started.":signedout?"You have been signed out securely. Sign in again to return to your maintenance workspace.":"Sign in to access your secure CMMS maintenance workspace."}</p>
    <div id="iyAuthError" class="iy-auth-error"></div><div id="iyAuthSuccess" class="iy-auth-success"></div>
    <form class="iy-auth-form" onsubmit="return handleAuthSubmit(event)">
     ${signup?`<div class="iy-auth-field"><label>Full name</label><input id="auth_name" autocomplete="name" required placeholder="Your full name"></div><div class="iy-auth-field"><label>Company name</label><input id="auth_company" autocomplete="organization" required placeholder="Your company name"></div>`:""}
@@ -3472,6 +3834,7 @@ function renderLogin(mode="signin"){
     <button id="iyAuthBtn" class="iy-auth-btn" type="submit">${forgot?"Send reset link":signup?"Create account":"Sign in"}</button>
    </form>
    <div class="iy-auth-switch">${forgot?`Remember your password? <button class="iy-auth-link" onclick="authMode('signin')">Sign in</button>`:signup?`Already have an account? <button class="iy-auth-link" onclick="authMode('signin')">Sign in</button>`:`Don't have an account? <button class="iy-auth-link" onclick="authMode('signup')">Create account</button>`}</div>
+   <div class="iy-auth-trust"><span class="trust-dot"></span><span>Secure cloud workspace</span><span>•</span><span>Company-level data isolation</span></div>
   </div></section></div>`;
 }
 async function handleAuthSubmit(event){
