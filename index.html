@@ -909,6 +909,24 @@ button,input,select,textarea{font-family:inherit}
   box-shadow:inset 3px 0 0 var(--iy-cyan);
 }
 .navbtn:hover{background:rgba(25,198,255,.09)}
+/* v24.22 — professional workspace identity */
+.iy-workspace-card{margin:2px 2px 17px;padding:12px 11px 11px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.035));box-shadow:0 8px 24px rgba(0,0,0,.10)}
+.iy-workspace-company{display:flex;align-items:center;gap:9px;min-width:0;padding-bottom:10px;margin-bottom:9px;border-bottom:1px solid rgba(255,255,255,.09)}
+.iy-workspace-company-icon{width:28px;height:28px;flex:0 0 28px;border-radius:8px;display:grid;place-items:center;background:rgba(25,198,255,.12);border:1px solid rgba(25,198,255,.18);color:#8fe4ff;font-size:11px;font-weight:900}
+.iy-workspace-company-copy{min-width:0}
+.iy-workspace-eyebrow{display:block;margin-bottom:2px;color:#7fa0bd;font-size:7px;line-height:1;letter-spacing:.13em;text-transform:uppercase;font-weight:900}
+.iy-workspace-company-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-size:11px;line-height:1.25;font-weight:750}
+.iy-workspace-role{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin-bottom:7px}
+.iy-workspace-role-label{color:#7893ad;font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.iy-workspace-role-value{display:inline-flex;align-items:center;gap:6px;max-width:145px;min-width:0;padding:5px 8px;border-radius:999px;background:#eaf3ff;color:#0753c9;border:1px solid #cfe3ff;font-size:8px;font-weight:850;line-height:1}
+.iy-workspace-role-value:before{content:'\25C9';color:#075fff;font-size:8px}
+.iy-workspace-scope{display:flex;align-items:flex-start;gap:7px;min-width:0;padding:7px 8px;border-radius:9px;background:rgba(4,20,58,.28);border:1px solid rgba(255,255,255,.075)}
+.iy-workspace-scope-icon{flex:0 0 auto;color:#72d8ff;font-size:10px;line-height:1.2;margin-top:1px}
+.iy-workspace-scope-copy{min-width:0}
+.iy-workspace-scope-label{display:block;color:#7f9ab4;font-size:7px;letter-spacing:.09em;text-transform:uppercase;font-weight:850;margin-bottom:2px}
+.iy-workspace-scope-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dcecff;font-size:9px;font-weight:700;line-height:1.3}
+@media(max-width:1000px){.iy-workspace-card{margin-left:0;margin-right:0}}
+
 .navicon{
   background:rgba(255,255,255,.07);
 }
@@ -1733,6 +1751,8 @@ let iyCompany = null;
 let iyMembership = null;
 let iySite = null;
 let iyDepartment = null;
+let iyCompanySites = [];
+let iyCompanyDepartments = [];
 let iyCloudReady = false;
 let iyAuthBusy = false;
 
@@ -1869,7 +1889,12 @@ function render(){
  document.getElementById("app").innerHTML=`
  <div class="app">
   <aside class="sidebar">
-   <div class="brand iy-product-brand"><img class="brand-logo-img iy-product-logo" src="${IY_BRAND_ICON}" alt="IY Maintain"><div><b>IY Maintain</b><small>IY Digital Innovations</small><span class="workspace-label">${esc(iyCompany?.name||s.companyName||"Company workspace")}</span><span class="access-role-note">${esc(roleLabel(iyMembership?.role||"employee"))}</span>${workspaceScopeMarkup()}</div></div>
+   <div class="brand iy-product-brand"><img class="brand-logo-img iy-product-logo" src="${IY_BRAND_ICON}" alt="IY Maintain"><div><b>IY Maintain</b><small>IY Digital Innovations</small></div></div>
+   <div class="iy-workspace-card">
+    <div class="iy-workspace-company"><span class="iy-workspace-company-icon">▦</span><div class="iy-workspace-company-copy"><span class="iy-workspace-eyebrow">Workspace</span><span class="iy-workspace-company-name" title="${esc(iyCompany?.name||s.companyName||"Company workspace")}">${esc(iyCompany?.name||s.companyName||"Company workspace")}</span></div></div>
+    <div class="iy-workspace-role"><span class="iy-workspace-role-label">Access level</span><span class="iy-workspace-role-value" title="${esc(roleLabel(iyMembership?.role||"employee"))}">${esc(roleLabel(iyMembership?.role||"employee"))}</span></div>
+    <div class="iy-workspace-scope"><span class="iy-workspace-scope-icon">⌖</span><div class="iy-workspace-scope-copy"><span class="iy-workspace-scope-label">Operational scope</span><span class="iy-workspace-scope-value" title="${esc(workspaceScopeLabel())}">${esc(workspaceScopeLabel())}</span></div></div>
+   </div>
    ${navButton("dashboard","Dashboard","⌂")}
    <div class="group">PARTS</div>
    ${navButton("issue","Search & Issue Parts","▣")}
@@ -3271,12 +3296,39 @@ function accessDeniedPage(title="Access restricted",message="You do not have per
 async function fetchCompanyUsers(){
  if(!iyCloudReady||!iyCompany)throw new Error("Secure cloud workspace is not ready.");
  const {data,error}=await iySupabase.from("memberships")
-   .select("id,user_id,company_id,user_code,full_name,email,role,department,is_active,last_login_at,invited_at,created_at")
+   .select("id,user_id,company_id,user_code,full_name,email,role,department,site_id,department_id,is_active,last_login_at,invited_at,created_at")
    .eq("company_id",iyCompany.id)
    .order("created_at",{ascending:true});
  if(error)throw error;
  iyUsersCache=data||[];
  return iyUsersCache;
+}
+
+async function loadAdminLocationOptions(){
+ if(!iyCompany)throw new Error("Company workspace is not ready.");
+ const [sitesRes,deptsRes]=await Promise.all([
+   iySupabase.from("sites").select("id,company_id,name,code,is_active").eq("company_id",iyCompany.id).eq("is_active",true).order("name"),
+   iySupabase.from("departments").select("id,company_id,site_id,name,code,is_active").eq("company_id",iyCompany.id).eq("is_active",true).order("name")
+ ]);
+ if(sitesRes.error)throw sitesRes.error;
+ if(deptsRes.error)throw deptsRes.error;
+ iyCompanySites=sitesRes.data||[];
+ iyCompanyDepartments=deptsRes.data||[];
+ return {sites:iyCompanySites,departments:iyCompanyDepartments};
+}
+
+function siteOptionsMarkup(selected=""){
+ return `<option value="">${isCompanyWideScope()?"Company-wide / No site":"Select site"}</option>`+iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected||"")?"selected":""}>${esc(s.name)}${s.code?` · ${esc(s.code)}`:""}</option>`).join("");
+}
+
+function departmentOptionsMarkup(siteId,selected=""){
+ const list=iyCompanyDepartments.filter(d=>!siteId||String(d.site_id)===String(siteId));
+ return `<option value="">${siteId?"Select department":"Select a site first"}</option>`+list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===String(selected||"")?"selected":""}>${esc(d.name)}${d.code?` · ${esc(d.code)}`:""}</option>`).join("");
+}
+
+function refreshDepartmentSelect(selectId,siteId,selected=""){
+ const el=document.getElementById(selectId);
+ if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected);
 }
 
 function roleLabel(role){
@@ -3333,6 +3385,7 @@ async function renderUsersTable(){
  const el=document.getElementById("usersTable");
  if(!el)return;
  try{
+   await loadAdminLocationOptions();
    const users=await fetchCompanyUsers();
    const active=users.filter(u=>u.is_active&&u.last_login_at).length;
    const pending=users.filter(u=>u.is_active&&!u.last_login_at).length;
@@ -3341,12 +3394,15 @@ async function renderUsersTable(){
    if(a)a.textContent=active;
    if(p)p.textContent=pending;
    if(!users.length){el.innerHTML=`<div class="empty">No users have been added yet.</div>`;return;}
-   el.innerHTML=`<div class="users-table-wrap"><table class="users-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Department</th><th>Status</th><th>Last sign in</th><th>Action</th></tr></thead><tbody>
+   const siteById=Object.fromEntries(iyCompanySites.map(s=>[s.id,s.name]));
+   const deptById=Object.fromEntries(iyCompanyDepartments.map(d=>[d.id,d.name]));
+   el.innerHTML=`<div class="users-table-wrap"><table class="users-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Site</th><th>Department</th><th>Status</th><th>Last sign in</th><th>Action</th></tr></thead><tbody>
     ${users.map(u=>`<tr>
       <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||u.email))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
       <td>${esc(u.email||"—")}</td>
       <td><span class="role-pill">${esc(roleLabel(u.role))}</span></td>
-      <td>${esc(u.department||"—")}</td>
+      <td>${esc(siteById[u.site_id]||"Company-wide")}</td>
+      <td>${esc(deptById[u.department_id]||u.department||"—")}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
       <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
@@ -3354,17 +3410,30 @@ async function renderUsersTable(){
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
 
-function openInviteUser(){if(!canEdit("users"))return alert("Company Administrator access is required to invite users.");
+async function openInviteUser(){if(!canEdit("users"))return alert("Company Administrator access is required to invite users.");
  if(!isCompanyAdmin())return alert("Company Administrator access is required.");
+ try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
  openModal(`<div class="modalhead"><h2>Invite User</h2><button class="close" onclick="closeModal()">×</button></div>
-  <div class="profile-note">Send a secure invitation to add a person to <strong>${esc(iyCompany?.name||"this workspace")}</strong>. The user will set their password through Supabase Auth.</div>
+  <div class="profile-note">Send a secure invitation to add a person to <strong>${esc(iyCompany?.name||"this workspace")}</strong>. Assign the user's site and department now so their operational access is scoped correctly.</div>
   <div class="profile-modal-grid" style="margin-top:16px">
    <div class="field"><label>Full name</label><input id="u_name" class="input" placeholder="Full name"></div>
    <div class="field"><label>Email address</label><input id="u_email" type="email" class="input" placeholder="user@company.com"></div>
-   <div class="field"><label>Role</label><select id="u_role" class="select">${userRoleOptions()}</select></div>
-   <div class="field"><label>Department</label><input id="u_department" class="input" placeholder="e.g. Maintenance"></div>
+   <div class="field"><label>Role</label><select id="u_role" class="select" onchange="toggleInviteLocationFields()">${userRoleOptions()}</select></div>
+   <div class="field"><label>Site</label><select id="u_site" class="select" onchange="refreshDepartmentSelect('u_department',this.value)">${siteOptionsMarkup()}</select></div>
+   <div class="field"><label>Department</label><select id="u_department" class="select">${departmentOptionsMarkup("")}</select></div>
   </div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="sendUserInvitation()">Send Invitation</button></div>`);
+ toggleInviteLocationFields();
+}
+
+function toggleInviteLocationFields(){
+ const role=document.getElementById("u_role")?.value;
+ const companyWide=role==="company_admin";
+ const site=document.getElementById("u_site")?.closest(".field");
+ const dept=document.getElementById("u_department")?.closest(".field");
+ if(site)site.style.display=companyWide?"none":"";
+ if(dept)dept.style.display=companyWide?"none":"";
+ if(companyWide){if(document.getElementById("u_site"))document.getElementById("u_site").value="";if(document.getElementById("u_department"))document.getElementById("u_department").value="";}
 }
 
 function userRoleOptions(selected="technician"){
@@ -3402,8 +3471,11 @@ async function sendUserInvitation(){
  const name=document.getElementById("u_name")?.value.trim();
  const email=document.getElementById("u_email")?.value.trim().toLowerCase();
  const role=document.getElementById("u_role")?.value;
- const department=document.getElementById("u_department")?.value.trim();
+ const site_id=document.getElementById("u_site")?.value||null;
+ const department_id=document.getElementById("u_department")?.value||null;
+ const department=department_id?(iyCompanyDepartments.find(d=>d.id===department_id)?.name||null):null;
  if(!name||!email)return alert("Full name and email address are required.");
+ if(role!=="company_admin"&&(!site_id||!department_id))return alert("Please select both a site and department for this user.");
  const btn=document.querySelector("#modalBack .btn.primary");
  if(btn)btn.disabled=true;
  try{
@@ -3412,7 +3484,7 @@ async function sendUserInvitation(){
    const res=await fetch(`${iy_SUPABASE_URL}/functions/v1/invite-user`,{
      method:"POST",
      headers:{Authorization:`Bearer ${session.access_token}`,"Content-Type":"application/json"},
-     body:JSON.stringify({full_name:name,email,role,department})
+     body:JSON.stringify({full_name:name,email,role,department,site_id,department_id})
    });
    const payload=await res.json().catch(()=>({}));
    if(!res.ok)throw new Error(payload.error||payload.message||"Invitation could not be sent.");
@@ -3424,21 +3496,33 @@ async function sendUserInvitation(){
  }catch(e){alert(e?.message||"Invitation could not be sent.");if(btn)btn.disabled=false;}
 }
 
-function openEditUser(id){
+async function openEditUser(id){
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
+ try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
  const self=u.user_id===iyAuthUser?.id;
  openModal(`<div class="modalhead"><h2>Edit User</h2><button class="close" onclick="closeModal()">×</button></div>
-  <div class="profile-note">${self?"You are editing your own membership.":"Update this member's role, department or access status."}</div>
+  <div class="profile-note">${self?"You are editing your own membership.":"Update this member's role, site, department or access status."}</div>
   <div class="profile-modal-grid" style="margin-top:16px">
    <div class="field"><label>Full name</label><input id="eu_name" class="input" value="${esc(u.full_name||"")}"></div>
    <div class="field"><label>User ID</label><input class="input" value="${esc(displayUserId(u))}" disabled></div>
    <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(u.email||"")}" disabled></div>
-   <div class="field"><label>Role</label><select id="eu_role" class="select">${userRoleOptions(u.role)}</select></div>
-   <div class="field"><label>Department</label><input id="eu_department" class="input" value="${esc(u.department||"")}"></div>
+   <div class="field"><label>Role</label><select id="eu_role" class="select" onchange="toggleEditLocationFields()">${userRoleOptions(u.role)}</select></div>
+   <div class="field"><label>Site</label><select id="eu_site" class="select" onchange="refreshDepartmentSelect('eu_department',this.value)">${siteOptionsMarkup(u.site_id)}</select></div>
+   <div class="field"><label>Department</label><select id="eu_department" class="select">${departmentOptionsMarkup(u.site_id,u.department_id)}</select></div>
   </div>
   <div class="field" style="margin-top:14px"><label>Access</label><select id="eu_active" class="select"><option value="true" ${u.is_active?"selected":""}>Active</option><option value="false" ${!u.is_active?"selected":""}>Inactive</option></select></div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUserMembership('${u.id}')">Save Changes</button></div>`);
+ toggleEditLocationFields();
+}
+
+function toggleEditLocationFields(){
+ const role=document.getElementById("eu_role")?.value;
+ const companyWide=role==="company_admin";
+ const site=document.getElementById("eu_site")?.closest(".field");
+ const dept=document.getElementById("eu_department")?.closest(".field");
+ if(site)site.style.display=companyWide?"none":"";
+ if(dept)dept.style.display=companyWide?"none":"";
 }
 
 async function deactivateUser(id){
@@ -3494,13 +3578,17 @@ async function saveUserMembership(id){if(!canEdit("users"))return alert("Company
  const name=document.getElementById("eu_name").value.trim();
  const uiRole=document.getElementById("eu_role").value;
  const role=membershipRoleForSave(uiRole);
- const department=document.getElementById("eu_department").value.trim();
+ const site_id=document.getElementById("eu_site")?.value||null;
+ const department_id=document.getElementById("eu_department")?.value||null;
+ const department=department_id?(iyCompanyDepartments.find(d=>d.id===department_id)?.name||null):null;
  const is_active=document.getElementById("eu_active").value==="true";
  if(!role)return alert("Please select a valid role.");
  if(!name)return alert("Full name is required.");
+ if(role!=="company_admin"&&(!site_id||!department_id))return alert("Please select both a site and department for this user.");
+ if(site_id&&department_id){const d=iyCompanyDepartments.find(x=>x.id===department_id);if(!d||String(d.site_id)!==String(site_id))return alert("The selected department does not belong to the selected site.");}
  if(u.user_id===iyAuthUser?.id&&!is_active)return alert("You cannot deactivate your own account.");
  try{
-   const {error}=await iySupabase.from("memberships").update({full_name:name,role,department:department||null,is_active}).eq("id",id).eq("company_id",iyCompany.id);
+   const {error}=await iySupabase.from("memberships").update({full_name:name,role,department:department||null,site_id:role==="company_admin"?null:site_id,department_id:role==="company_admin"?null:department_id,is_active}).eq("id",id).eq("company_id",iyCompany.id);
    if(error)throw error;
    closeModal();
    await cloudAudit("Updated user",`${u.email||u.user_id} · ${roleLabel(role)} · ${is_active?"Active":"Inactive"}`);
