@@ -3232,16 +3232,16 @@ function canAccess(page){
 }
 function canEdit(area){
  const role=currentRole();
- if(["company_admin","super_admin"].includes(role))return true;
- const fullOperational=["manager","team_lead","technician"];
+ // Frontend permissions mirror the agreed IY Maintain role matrix.
+ // Supabase RLS/RPC authorization remains the final security boundary.
  const edit={
-   issue:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   receive:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   inventory:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   updates:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   orders:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   maintenance:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
-   machines:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   issue:["company_admin","super_admin","team_lead","technician","storekeeper","supervisor","maintenance"],
+   receive:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
+   inventory:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
+   updates:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
+   orders:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
+   maintenance:["company_admin","super_admin","team_lead","technician"],
+   machines:["company_admin","super_admin","team_lead","technician"],
    settings:["company_admin","super_admin"],
    users:["company_admin","super_admin"]
  };
@@ -4397,6 +4397,28 @@ async function restoreYield(){await new Promise(resolve=>requestAnimationFrame((
 function installRestoreUnloadGuard(){window.onbeforeunload=(e)=>{if(!iyRestoreRunning)return;const msg="A system restore is currently running. Leaving or refreshing this page may interrupt it.";e.preventDefault();e.returnValue=msg;return msg;};}
 function clearRestoreUnloadGuard(){if(!iyRestoreRunning)window.onbeforeunload=null;}
 
+function validateRestorePayload(payload){
+ const data=payload?.data||payload;
+ if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
+ const keys=["machines","inventory","receipts","issues","updates","orders","maintenance"];
+ for(const key of keys){if(data[key]!==undefined&&!Array.isArray(data[key]))throw new Error(`Backup validation failed: ${key} is not a valid array.`);}
+ const machines=Array.isArray(data.machines)?data.machines:[];
+ const inventory=Array.isArray(data.inventory)?data.inventory:[];
+ const machineIds=new Set();
+ for(const row of machines){const fleet=String(row?.[0]||"").trim();if(!fleet)throw new Error("Backup validation failed: a machine row has no fleet ID.");if(machineIds.has(fleet))throw new Error(`Backup validation failed: duplicate fleet ID ${fleet}.`);machineIds.add(fleet);}
+ const partIds=new Set();
+ for(const row of inventory){const pn=String(row?.[0]||"").trim();if(!pn)throw new Error("Backup validation failed: an inventory row has no part number.");if(partIds.has(pn))throw new Error(`Backup validation failed: duplicate part number ${pn}.`);partIds.add(pn);for(const value of [row?.[3],row?.[4],row?.[5],row?.[6]]){const n=num(value);if(!Number.isFinite(n)||n<0)throw new Error(`Backup validation failed: invalid stock values for part ${pn}.`);}}
+ for(const row of (Array.isArray(data.maintenance)?data.maintenance:[])){const fleet=String(row?.[4]||"").trim(),model=String(row?.[2]||"").trim();if(!fleet&&!model)throw new Error("Backup validation failed: a maintenance record has no fleet ID or machine model.");}
+ return data;
+}
+async function restorePreflight(){
+ if(!isCompanyAdmin())throw new Error("Only a Company Administrator can restore a system backup.");
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready. Please sign in again.");
+ const {data,error}=await iySupabase.auth.getSession();if(error)throw error;
+ if(!data?.session?.user?.id)throw new Error("Your secure session has expired. Please sign in again.");
+ return true;
+}
+
 async function runRestoreJob(payload,name,options={}){
  const data=payload?.data||payload;
  if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
@@ -4530,7 +4552,7 @@ function backupPage(){
     <div class="backup-copy">
      <div class="backup-eyebrow">RESTORE</div>
      <h3>Restore System Backup</h3>
-     <p>Load a iy backup file and replace the current cloud workspace data with the saved version. This includes company settings, operational records, Parts Orders, maintenance history, audit history and report configuration. Auth user accounts, passwords and memberships are not included.</p>
+     <p>Load a iy backup file and replace the current cloud workspace data with the saved version. The backup is validated before any current records are cleared. This includes company settings, operational records, Parts Orders, maintenance history, audit history and report configuration. Auth user accounts, passwords and memberships are not included.</p>
      <div class="backup-meta"><span>JSON backup only</span><span>Replaces current data</span><span>Confirmation required</span></div>
     </div>
     <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore Backup</button>
