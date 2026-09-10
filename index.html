@@ -1957,8 +1957,8 @@ function pageHeroV23(page){
  if(page==="mlog" && canEdit("maintenance"))action='<button class="hero-btn-v23 maintenance-log-hero-btn" onclick="maintenanceModal()"><span class="hero-btn-icon">+</span> New Maintenance Entry</button>';
  if(page==="machines" && canEdit("machines"))action='<button class="hero-btn-v23" onclick="machineModal()">+ Add Machine</button>';
  if(page==="updates" && canEdit("updates"))action='<button class="hero-btn-v23" onclick="updateModal()">+ New Update</button>';
- if(page==="preports")action='<button class="hero-btn-v23" onclick="openPartsReportPreview()">Preview / Export PDF</button>';
- if(page==="mreports")action='<button class="hero-btn-v23" onclick="openReportPreview()">Preview / Export PDF</button>';
+ if(page==="preports" && canGenerateReports())action='<button class="hero-btn-v23" onclick="openPartsReportPreview()">Preview / Export PDF</button>';
+ if(page==="mreports" && canGenerateReports())action='<button class="hero-btn-v23" onclick="openReportPreview()">Preview / Export PDF</button>';
  return `<div class="page-hero-v23"><div class="hero-copy"><div class="hero-kicker">${esc(cfg[0])}</div><h2>${esc(cfg[1])}</h2><p>${esc(cfg[2])}</p><div class="hero-meta"><span class="hero-meta-dot"></span><span>${esc(iyCompany?.name||db.settings.companyName||"Company workspace")}</span></div></div>${action?`<div class="hero-action">${action}</div>`:""}</div>`;
 }
 function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
@@ -3057,6 +3057,7 @@ function partsReportsPage(){return `<div class="panel">
  <div class="actions"><button class="btn primary" onclick="runPartsReport()">Generate Report</button></div><div id="prout" style="margin-top:22px"></div></div>`}
 function dateIn(v,from,to){const d=new Date(v);if(from&&d<new Date(from))return false;if(to&&d>new Date(to+"T23:59:59"))return false;return true}
 function runPartsReport(){
+ if(!canGenerateReports())return toast("You do not have permission to generate reports.");
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
  let rows=[];
  if(type==="Parts Orders"){
@@ -3188,7 +3189,8 @@ function reportPartsUpdateTable(rows){
  if(!rows.length)return `<div class="empty">No parts updates for this reporting period.</div>`;
  return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td></tr>`).join("")}</table></div>`;
 }
-function runMaintenanceReport(){const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
+function runMaintenanceReport(){
+ if(!canGenerateReports())return toast("You do not have permission to generate reports.");const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
  const partsUpdates=db.updates.filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
  window.__maintenanceReportParts=partsUpdates;
  startFreshReportApproval("maintenance");
@@ -3230,18 +3232,24 @@ function canAccess(page){
  };
  return (access[page]||[]).includes(role);
 }
+function canGenerateReports(){
+ const role=currentRole();
+ // Report generation/viewing is separate from edit permissions.
+ // Any authenticated workspace role that can access the report pages may generate reports.
+ return !!role && (canAccess("preports") || canAccess("mreports"));
+}
 function canEdit(area){
  const role=currentRole();
- // Frontend permissions mirror the agreed IY Maintain role matrix.
- // Supabase RLS/RPC authorization remains the final security boundary.
+ if(["company_admin","super_admin"].includes(role))return true;
+ const fullOperational=["manager","team_lead","technician"];
  const edit={
-   issue:["company_admin","super_admin","team_lead","technician","storekeeper","supervisor","maintenance"],
-   receive:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
-   inventory:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
-   updates:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
-   orders:["company_admin","super_admin","team_lead","technician","parts_coordinator","storekeeper"],
-   maintenance:["company_admin","super_admin","team_lead","technician"],
-   machines:["company_admin","super_admin","team_lead","technician"],
+   issue:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   receive:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   inventory:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   updates:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   orders:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   maintenance:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
+   machines:[...fullOperational,"storekeeper","supervisor","maintenance","parts_coordinator"],
    settings:["company_admin","super_admin"],
    users:["company_admin","super_admin"]
  };
@@ -4397,28 +4405,6 @@ async function restoreYield(){await new Promise(resolve=>requestAnimationFrame((
 function installRestoreUnloadGuard(){window.onbeforeunload=(e)=>{if(!iyRestoreRunning)return;const msg="A system restore is currently running. Leaving or refreshing this page may interrupt it.";e.preventDefault();e.returnValue=msg;return msg;};}
 function clearRestoreUnloadGuard(){if(!iyRestoreRunning)window.onbeforeunload=null;}
 
-function validateRestorePayload(payload){
- const data=payload?.data||payload;
- if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
- const keys=["machines","inventory","receipts","issues","updates","orders","maintenance"];
- for(const key of keys){if(data[key]!==undefined&&!Array.isArray(data[key]))throw new Error(`Backup validation failed: ${key} is not a valid array.`);}
- const machines=Array.isArray(data.machines)?data.machines:[];
- const inventory=Array.isArray(data.inventory)?data.inventory:[];
- const machineIds=new Set();
- for(const row of machines){const fleet=String(row?.[0]||"").trim();if(!fleet)throw new Error("Backup validation failed: a machine row has no fleet ID.");if(machineIds.has(fleet))throw new Error(`Backup validation failed: duplicate fleet ID ${fleet}.`);machineIds.add(fleet);}
- const partIds=new Set();
- for(const row of inventory){const pn=String(row?.[0]||"").trim();if(!pn)throw new Error("Backup validation failed: an inventory row has no part number.");if(partIds.has(pn))throw new Error(`Backup validation failed: duplicate part number ${pn}.`);partIds.add(pn);for(const value of [row?.[3],row?.[4],row?.[5],row?.[6]]){const n=num(value);if(!Number.isFinite(n)||n<0)throw new Error(`Backup validation failed: invalid stock values for part ${pn}.`);}}
- for(const row of (Array.isArray(data.maintenance)?data.maintenance:[])){const fleet=String(row?.[4]||"").trim(),model=String(row?.[2]||"").trim();if(!fleet&&!model)throw new Error("Backup validation failed: a maintenance record has no fleet ID or machine model.");}
- return data;
-}
-async function restorePreflight(){
- if(!isCompanyAdmin())throw new Error("Only a Company Administrator can restore a system backup.");
- if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready. Please sign in again.");
- const {data,error}=await iySupabase.auth.getSession();if(error)throw error;
- if(!data?.session?.user?.id)throw new Error("Your secure session has expired. Please sign in again.");
- return true;
-}
-
 async function runRestoreJob(payload,name,options={}){
  const data=payload?.data||payload;
  if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
@@ -4552,7 +4538,7 @@ function backupPage(){
     <div class="backup-copy">
      <div class="backup-eyebrow">RESTORE</div>
      <h3>Restore System Backup</h3>
-     <p>Load a iy backup file and replace the current cloud workspace data with the saved version. The backup is validated before any current records are cleared. This includes company settings, operational records, Parts Orders, maintenance history, audit history and report configuration. Auth user accounts, passwords and memberships are not included.</p>
+     <p>Load a iy backup file and replace the current cloud workspace data with the saved version. This includes company settings, operational records, Parts Orders, maintenance history, audit history and report configuration. Auth user accounts, passwords and memberships are not included.</p>
      <div class="backup-meta"><span>JSON backup only</span><span>Replaces current data</span><span>Confirmation required</span></div>
     </div>
     <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore Backup</button>
