@@ -694,7 +694,7 @@ button,input,select,textarea{font-family:inherit}
 .settings-nav-item:disabled{cursor:not-allowed}
 .settings-tab-panel{width:100%;display:block!important;margin-bottom:18px}.settings-tab-panel:last-of-type{margin-bottom:0}.settings-nav-strip{display:none!important}.modern-settings-grid{display:block}
 .user-action-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.table-action.danger{color:#b42318;border-color:#f0b8b3}.table-action.danger:hover{background:#fff5f4}
-.workspace-scope-note{display:block;font-size:10px;line-height:1.25;color:#5f7187;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-top:2px;}@media(max-width:760px){.workspace-scope-note{max-width:180px;font-size:9px;}}
+.iy-write-scope{margin-top:10px;padding:9px;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(4,20,58,.22)}.iy-write-scope-title{font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:#7f9ab4;font-weight:850;margin-bottom:6px}.iy-write-scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.iy-write-scope-select{min-width:0;background:rgba(255,255,255,.06);color:#e8f2ff;border-color:rgba(255,255,255,.12);font-size:9px;padding:7px}.iy-write-scope-note{margin-top:5px;font-size:8px;color:#9db3c9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:760px){.iy-write-scope-grid{grid-template-columns:1fr}.iy-write-scope-select{font-size:10px}}.workspace-scope-note{display:block;font-size:10px;line-height:1.25;color:#5f7187;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-top:2px;}@media(max-width:760px){.workspace-scope-note{max-width:180px;font-size:9px;}}
 </style>
 
 <style>
@@ -1739,7 +1739,7 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-src 'none'; connect-src 'self' https://kxpwufuyueiseakhotyd.supabase.co wss://kxpwufuyueiseakhotyd.supabase.co; img-src 'self' data: blob: https://kxpwufuyueiseakhotyd.supabase.co; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.115.0"></script>
 <script>
-/* IY Maintain V24.5 — Supabase cloud-only data integrity release. */
+/* IY Maintain V24.24 — Supabase cloud-only data integrity release. */
 /* Supabase configuration — browser-safe publishable key only. */
 const iy_SUPABASE_URL = "https://kxpwufuyueiseakhotyd.supabase.co";
 const iy_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_pHACrYAq0Ej4XcH14_faGQ_Fo7uqLEl";
@@ -1756,6 +1756,8 @@ let iySite = null;
 let iyDepartment = null;
 let iyCompanySites = [];
 let iyCompanyDepartments = [];
+let iyWriteSiteId = null;
+let iyWriteDepartmentId = null;
 let iyCloudReady = false;
 let iyAuthBusy = false;
 
@@ -1897,6 +1899,7 @@ function render(){
     <div class="iy-workspace-company"><span class="iy-workspace-company-icon">▦</span><div class="iy-workspace-company-copy"><span class="iy-workspace-eyebrow">Workspace</span><span class="iy-workspace-company-name" title="${esc(iyCompany?.name||s.companyName||"Company workspace")}">${esc(iyCompany?.name||s.companyName||"Company workspace")}</span></div></div>
     <div class="iy-workspace-role"><span class="iy-workspace-role-label">Access level</span><span class="iy-workspace-role-value" title="${esc(roleLabel(iyMembership?.role||"employee"))}">${esc(roleLabel(iyMembership?.role||"employee"))}</span></div>
     <div class="iy-workspace-scope"><span class="iy-workspace-scope-icon">⌖</span><div class="iy-workspace-scope-copy"><span class="iy-workspace-scope-label">Operational scope</span><span class="iy-workspace-scope-value" title="${esc(workspaceScopeLabel())}">${esc(workspaceScopeLabel())}</span></div></div>
+    ${isCompanyWideScope()?writeScopeSelectorMarkup():""}
    </div>
    ${navButton("dashboard","Dashboard","⌂")}
    <div class="group">PARTS</div>
@@ -2239,6 +2242,7 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  const tech=document.getElementById("f_tech").value.trim();
  const wo=document.getElementById("f_wo").value.trim();
  const rem=document.getElementById("f_rem").value.trim();
+ const scope=effectiveWriteScope(part?.[12],part?.[13]);
 
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
@@ -2344,6 +2348,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
  const receiver=document.getElementById("r_by").value.trim();
+ const scope=effectiveWriteScope(order?.[12],order?.[13]);
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
 
  const now=new Date().toISOString();
@@ -2465,7 +2470,8 @@ async function savePartsOrder(orderId){
   if(partError)throw partError;
   if(!part)throw new Error("The selected part does not exist in this company workspace.");
   partId=part.id;
-  const payload={part_id:partId,order_date:document.getElementById("po_date").value||null,machine_model:document.getElementById("po_machine").value.trim()||null,quantity:qty,po_reference:ref,supplier:document.getElementById("po_supplier").value.trim()||null,expected_date:document.getElementById("po_expected").value||null,onsite_date:document.getElementById("po_onsite").value||null,remarks:document.getElementById("po_remarks").value.trim()||null,updated_by:iyAuthUser?.id||null};
+  const scope=effectiveWriteScope(x?.[13],x?.[14]);
+  const payload={site_id:scope.siteId,department_id:scope.departmentId,part_id:partId,order_date:document.getElementById("po_date").value||null,machine_model:document.getElementById("po_machine").value.trim()||null,quantity:qty,po_reference:ref,supplier:document.getElementById("po_supplier").value.trim()||null,expected_date:document.getElementById("po_expected").value||null,onsite_date:document.getElementById("po_onsite").value||null,remarks:document.getElementById("po_remarks").value.trim()||null,updated_by:iyAuthUser?.id||null};
   const {error}=await iySupabase.from("parts_orders").update(payload).eq("id",orderId).eq("company_id",iyCompany.id);
   if(error)throw error;
   await loadCloudData();
@@ -2484,6 +2490,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  const status=x?String(x[8]||"TO ORDER"):"TO ORDER";
  openModal(`<div class="modalhead"><h2>${x?"Edit Parts Update":"Parts Requisition & Update"}</h2><button class="close" onclick="closeModal()">×</button></div>
  <div class="formgrid">
+ ${writeScopeSelectorMarkup()}
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
  <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${(db.inventory||[]).map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
@@ -2524,7 +2531,8 @@ async function saveUpdate(index){
      const updateId=id||db.updates[index]?.[11]||null;
      const part=await cloudGetPart(row[1]);
      if(!part?.id)throw new Error("The selected part could not be resolved in this company workspace.");
-     const orderPayload={company_id:iyCompany.id,part_id:part.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:new Date().toISOString(),onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id};
+     const scope=effectiveWriteScope(db.updates[index]?.[13],db.updates[index]?.[14]);
+     const orderPayload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:part.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:new Date().toISOString(),onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id};
      const {data:order,error:orderError}=await iySupabase.from("parts_orders").insert(orderPayload).select("id").single();
      if(orderError)throw orderError;
      if(updateId){
@@ -3333,6 +3341,46 @@ function refreshDepartmentSelect(selectId,siteId,selected=""){
  if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected);
 }
 
+function initializeWriteScope(){
+ if(!isCompanyWideScope())return;
+ if(!iyWriteSiteId && iyCompanySites.length===1)iyWriteSiteId=iyCompanySites[0].id;
+ if(!iyWriteDepartmentId){
+   const list=iyCompanyDepartments.filter(d=>!iyWriteSiteId||String(d.site_id)===String(iyWriteSiteId));
+   if(list.length===1)iyWriteDepartmentId=list[0].id;
+ }
+}
+function setWriteSite(siteId){
+ iyWriteSiteId=siteId||null;
+ iyWriteDepartmentId=null;
+ const list=iyCompanyDepartments.filter(d=>!iyWriteSiteId||String(d.site_id)===String(iyWriteSiteId));
+ if(list.length===1)iyWriteDepartmentId=list[0].id;
+ const dept=document.getElementById("iyWriteDepartmentSelect");
+ if(dept)dept.innerHTML=departmentOptionsMarkup(iyWriteSiteId,iyWriteDepartmentId);
+}
+function setWriteDepartment(deptId){iyWriteDepartmentId=deptId||null;}
+function writeScopeLabel(){
+ if(!isCompanyWideScope())return workspaceScopeLabel();
+ const site=iyCompanySites.find(s=>String(s.id)===String(iyWriteSiteId));
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(iyWriteDepartmentId));
+ if(site&&dept)return `${site.name} · ${dept.name}`;
+ if(site)return `${site.name} · Select Department`;
+ return "Select Site · Select Department";
+}
+function effectiveWriteScope(rowSiteId=null,rowDepartmentId=null){
+ const siteId=rowSiteId|| (isCompanyWideScope()?iyWriteSiteId:currentSiteId());
+ const departmentId=rowDepartmentId|| (isCompanyWideScope()?iyWriteDepartmentId:currentDepartmentId());
+ if((siteId&&!departmentId)||(!siteId&&departmentId))throw new Error("Select both Site and Department before saving this transaction.");
+ if(!siteId||!departmentId)throw new Error("Please select the Site and Department for this transaction.");
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId));
+ if(dept&&String(dept.site_id)!==String(siteId))throw new Error("The selected Department does not belong to the selected Site.");
+ return {siteId,departmentId};
+}
+function writeScopeSelectorMarkup(){
+ if(!isCompanyWideScope())return "";
+ initializeWriteScope();
+ return `<div class="iy-write-scope" title="New and edited transactions are saved to this operating location"><div class="iy-write-scope-title">Transaction scope</div><div class="iy-write-scope-grid"><select class="input iy-write-scope-select" id="iyWriteSiteSelect" onchange="setWriteSite(this.value)">${siteOptionsMarkup(iyWriteSiteId)}</select><select class="input iy-write-scope-select" id="iyWriteDepartmentSelect" onchange="setWriteDepartment(this.value)">${departmentOptionsMarkup(iyWriteSiteId,iyWriteDepartmentId)}</select></div><div class="iy-write-scope-note">${esc(writeScopeLabel())}</div></div>`;
+}
+
 function roleLabel(role){
  const map={
    super_admin:"Super Admin",
@@ -3776,7 +3824,7 @@ async function logoutUser(){
   await cloudAudit("Logged out","User signed out");
   await iySupabase.auth.signOut();
  }catch(e){console.warn("Logout audit/signout warning",e)}
- iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
+ iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
  renderLogin("signedout");
 }
 
@@ -3991,6 +4039,7 @@ async function handleAuthSubmit(event){
 async function completeAuthenticatedSession(user){
  iyAuthUser=user;
  await loadCompanyContext(user);
+ if(isCompanyWideScope()){await loadAdminLocationOptions();initializeWriteScope();}
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
  await loadCloudData();
@@ -4031,7 +4080,7 @@ async function loadCompanyContext(user){
   if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.11",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.24",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -4127,13 +4176,13 @@ async function loadCloudData(){
  }catch(e){console.warn("Machine image storage is not configured or could not be listed.",e?.message||e)}
  const partsById={};(parts.data||[]).forEach(x=>partsById[x.id]=x);
  const resolvePartMachine=(p)=>p?.machine_model||machineModelFromPart(p||{},empty.machines)||"";
- empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id]});
+ empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id,x.site_id||null,x.department_id||null]});
  empty.receipts=(receipts.data||[]).map(x=>[x.received_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.supplier||"",x.reference||"",x.receiver_name||"",x.id,x.part_id]);
  empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||""]);
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.11",developer:"IY Digital Innovations"});
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.24",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
@@ -4143,9 +4192,10 @@ function machineModelFromPart(p,machines){if(p.machine_id){const m=machines.find
 
 async function cloudAudit(action,details=""){if(!iyCloudReady||!iyCompany||!iyAuthUser)return;try{await iySupabase.from("audit_logs").insert({company_id:iyCompany.id,user_id:iyAuthUser.id,action,module:currentPage,details})}catch(e){console.warn("Audit log failed",e)}}
 async function cloudGetPart(pn){const {data,error}=await iySupabase.from("parts").select("*").eq("company_id",iyCompany.id).eq("part_number",pn).maybeSingle();if(error)throw error;return data}
-async function cloudUpsertPart(row){const [pn,desc,machine,stock,received,issued,min,loc,remarks]=row;let p=await cloudGetPart(pn);let machineId=null;if(machine){const {data:m}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",machine).limit(1).maybeSingle();machineId=m?.id||null}const payload={company_id:iyCompany.id,part_number:pn,description:desc||pn,machine_id:machineId,machine_model:machine||null,location:loc||null,minimum_stock:num(min),remarks:remarks||null};if(p){const {data:d,error}=await iySupabase.from("parts").update(payload).eq("id",p.id).select("*").single();if(error)throw error;p=d}else{const {data:d,error}=await iySupabase.from("parts").insert(payload).select("*").single();if(error)throw error;p=d}const invPayload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),part_id:p.id,current_stock:num(stock),total_received:num(received),total_issued:num(issued),damaged_repair:0};const {data:inv,error:ie}=await iySupabase.from("inventory").upsert(invPayload,{onConflict:"company_id,part_id"}).select("*").single();if(ie)throw ie;return {part:p,inventory:inv}}
+async function cloudUpsertPart(row){const [pn,desc,machine,stock,received,issued,min,loc,remarks]=row;const scope=effectiveWriteScope(row[12],row[13]);let p=await cloudGetPart(pn);let machineId=null;if(machine){const {data:m}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",machine).limit(1).maybeSingle();machineId=m?.id||null}const payload={company_id:iyCompany.id,part_number:pn,description:desc||pn,machine_id:machineId,machine_model:machine||null,location:loc||null,minimum_stock:num(min),remarks:remarks||null};if(p){const {data:d,error}=await iySupabase.from("parts").update(payload).eq("id",p.id).select("*").single();if(error)throw error;p=d}else{const {data:d,error}=await iySupabase.from("parts").insert(payload).select("*").single();if(error)throw error;p=d}const invPayload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:p.id,current_stock:num(stock),total_received:num(received),total_issued:num(issued),damaged_repair:0};const {data:inv,error:ie}=await iySupabase.from("inventory").upsert(invPayload,{onConflict:"company_id,site_id,department_id,part_id"}).select("*").single();if(ie)throw ie;return {part:p,inventory:inv}}
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
 async function cloudInsertReceipt(row){
+ const scope=effectiveWriteScope(row[10],row[11]);
  const {data,error}=await iySupabase.rpc("receive_part_transaction",{
    p_part_number:String(row[1]),
    p_description:row[2]||null,
@@ -4160,6 +4210,7 @@ async function cloudInsertReceipt(row){
  return data?.receipt_id||data;
 }
 async function cloudInsertIssue(row){
+ const scope=effectiveWriteScope(row[11],row[12]);
  const {data,error}=await iySupabase.rpc("issue_part_transaction",{
    p_part_number:String(row[1]),
    p_quantity:num(row[4]),
@@ -4172,7 +4223,7 @@ async function cloudInsertIssue(row){
  if(error)throw error;
  return data?.issue_id||data;
 }
-async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supplier){
+async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supplier,scope=null){
  const pn=String(partNumber||"").trim();
  if(!pn)throw new Error("Part number is required.");
  const {data:existing,error:findError}=await iySupabase.from("parts").select("id,part_number,description,machine_id,machine_model,supplier").eq("company_id",iyCompany.id).ilike("part_number",pn).maybeSingle();
@@ -4187,14 +4238,15 @@ async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supp
  const payload={company_id:iyCompany.id,part_number:pn,description:String(description||pn).trim()||pn,machine_id:machineId,machine_model:String(machineModel||"").trim()||null,supplier:String(supplier||"").trim()||null,minimum_stock:num(db.settings?.defaultMinimumStock)||3};
  const {data:created,error:createError}=await iySupabase.from("parts").insert(payload).select("id,part_number,description,machine_id,machine_model,supplier").single();
  if(createError)throw createError;
- const {error:inventoryError}=await iySupabase.from("inventory").insert({company_id:iyCompany.id,part_id:created.id,current_stock:0,total_received:0,total_issued:0,damaged_repair:0});
+ const {error:inventoryError}=await iySupabase.from("inventory").insert({company_id:iyCompany.id,site_id:scope?.siteId||null,department_id:scope?.departmentId||null,part_id:created.id,current_stock:0,total_received:0,total_issued:0,damaged_repair:0});
  if(inventoryError)throw inventoryError;
  return created;
 }
 async function cloudSaveUpdate(row,index){
  if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready.");
- const p=await cloudEnsurePartForUpdate(row[1],row[2],row[3],row[6]);
- const payload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),part_id:p.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,updated_by:iyAuthUser.id};
+ const scope=effectiveWriteScope(row[13],row[14]);
+ const p=await cloudEnsurePartForUpdate(row[1],row[2],row[3],row[6],scope);
+ const payload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:p.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,updated_by:iyAuthUser.id};
  let id=row[11];let q=iySupabase.from("parts_updates");
  if(id){const {data,error}=await q.update(payload).eq("id",id).eq("company_id",iyCompany.id).select("id").single();if(error)throw error;return data.id;}
  const {data,error}=await q.insert({...payload,created_by:iyAuthUser.id}).select("id").single();
@@ -4258,7 +4310,7 @@ async function cloudSaveMaintenance(row){
  return data.id;
 }
 async function cloudSaveMachine(row){const payload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};const {data,error}=await iySupabase.from("machines").upsert(payload,{onConflict:"company_id,fleet_id"}).select("id").single();if(error)throw error;return data.id}
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.11",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
+async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
 function settingsPage(){
  const s=db.settings||{};
@@ -4587,7 +4639,7 @@ async function runRestoreJob(payload,name,options={}){
 }
 let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serviceRef=baseRef;let suffix=1;while(usedServiceRefs.has(serviceRef))serviceRef=`${baseRef}-R${suffix++}`;usedServiceRefs.add(serviceRef);const record={company_id:iyCompany.id,service_ref:serviceRef,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id};const {error}=await iySupabase.from("maintenance_records").insert(record);if(error)throw new Error(`Could not restore maintenance record ${idx+1} (${serviceRef}): ${error.message||error}`);await checkpoint("maintenance",84+((idx+1)/maintenance.length)*8,"Restoring maintenance records…",`Restored maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");}}
   await checkpoint("settings",92,"Restoring company settings…","Applying company details, report settings and configuration.","Branding and report configuration are being restored last.");
-  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.11",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
+  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
   await checkpoint("finish",97,"Finalizing restore…","Refreshing the workspace and verifying restored data.","Almost finished. Please keep this page open.");
   await cloudAudit("Restored system backup",`Company backup restored by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`);
   await loadCloudData();
