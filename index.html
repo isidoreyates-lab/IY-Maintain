@@ -3315,14 +3315,17 @@ async function fetchCompanyUsers(){
 
 async function loadAdminLocationOptions(){
  if(!iyCompany)throw new Error("Company workspace is not ready.");
- const [sitesRes,deptsRes]=await Promise.all([
-   iySupabase.from("sites").select("id,company_id,name,code,is_active").eq("company_id",iyCompany.id).eq("is_active",true).order("name"),
-   iySupabase.from("departments").select("id,company_id,site_id,name,code,is_active").eq("company_id",iyCompany.id).eq("is_active",true).order("name")
- ]);
- if(sitesRes.error)throw sitesRes.error;
- if(deptsRes.error)throw deptsRes.error;
- iyCompanySites=sitesRes.data||[];
- iyCompanyDepartments=deptsRes.data||[];
+ const {data,error}=await iySupabase.rpc("get_my_company_locations");
+ if(error)throw error;
+ const rows=data||[];
+ const siteMap=new Map();
+ const deptMap=new Map();
+ rows.forEach(r=>{
+   if(r.site_id&&!siteMap.has(r.site_id))siteMap.set(r.site_id,{id:r.site_id,company_id:r.site_company_id,name:r.site_name,code:r.site_code,is_active:r.site_is_active});
+   if(r.department_id&&!deptMap.has(r.department_id))deptMap.set(r.department_id,{id:r.department_id,company_id:r.department_company_id,site_id:r.department_site_id,name:r.department_name,code:r.department_code,is_active:r.department_is_active});
+ });
+ iyCompanySites=Array.from(siteMap.values()).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+ iyCompanyDepartments=Array.from(deptMap.values()).sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
  return {sites:iyCompanySites,departments:iyCompanyDepartments};
 }
 
