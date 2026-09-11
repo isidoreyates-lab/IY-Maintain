@@ -2348,7 +2348,6 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
  const receiver=document.getElementById("r_by").value.trim();
- const scope=effectiveWriteScope(order?.[12],order?.[13]);
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
 
  const now=new Date().toISOString();
