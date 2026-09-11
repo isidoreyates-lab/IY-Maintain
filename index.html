@@ -2242,7 +2242,7 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  const tech=document.getElementById("f_tech").value.trim();
  const wo=document.getElementById("f_wo").value.trim();
  const rem=document.getElementById("f_rem").value.trim();
- const scope=effectiveWriteScope(part?.[12],part?.[13]);
+ const scope=effectiveWriteScope(part?.[11],part?.[12]);
 
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
@@ -4185,7 +4185,7 @@ async function loadCloudData(){
  const resolvePartMachine=(p)=>p?.machine_model||machineModelFromPart(p||{},empty.machines)||"";
  empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id,x.site_id||null,x.department_id||null]});
  empty.receipts=(receipts.data||[]).map(x=>[x.received_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.supplier||"",x.reference||"",x.receiver_name||"",x.id,x.part_id]);
- empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||""]);
+ empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||"",x.site_id||null,x.department_id||null]);
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id]);
