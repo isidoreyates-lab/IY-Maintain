@@ -1739,7 +1739,7 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-src 'none'; connect-src 'self' https://kxpwufuyueiseakhotyd.supabase.co wss://kxpwufuyueiseakhotyd.supabase.co; img-src 'self' data: blob: https://kxpwufuyueiseakhotyd.supabase.co; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.115.0"></script>
 <script>
-/* IY Maintain V24.24 — Supabase cloud-only data integrity release. */
+/* IY Maintain V24.27 — Secure location session resolution release. */
 /* Supabase configuration — browser-safe publishable key only. */
 const iy_SUPABASE_URL = "https://kxpwufuyueiseakhotyd.supabase.co";
 const iy_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_pHACrYAq0Ej4XcH14_faGQ_Fo7uqLEl";
@@ -4072,12 +4072,17 @@ async function loadCompanyContext(user){
  }
  iyMembership=membership;
  iySite=null;iyDepartment=null;
- if(membership.site_id){const {data:site,error:siteError}=await iySupabase.from("sites").select("id,company_id,name,code,is_active").eq("id",membership.site_id).eq("company_id",membership.company_id).maybeSingle();if(siteError)throw siteError;iySite=site||null;}
- if(membership.department_id){const {data:department,error:departmentError}=await iySupabase.from("departments").select("id,company_id,site_id,name,code,is_active").eq("id",membership.department_id).eq("company_id",membership.company_id).maybeSingle();if(departmentError)throw departmentError;iyDepartment=department||null;}
+
+ // Load the company first, then resolve the user's location through the
+ // secured location RPC. Do not query public.sites/departments directly
+ // from the browser session.
  const {data:company,error:companyError}=await iySupabase.from("companies").select("*").eq("id",membership.company_id).single();
  if(companyError)throw companyError;
  iyCompany=company;
- if(iyMembership){ }
+
+ await loadAdminLocationOptions();
+ iySite=membership.site_id ? (iyCompanySites.find(s=>String(s.id)===String(membership.site_id))||null) : null;
+ iyDepartment=membership.department_id ? (iyCompanyDepartments.find(d=>String(d.id)===String(membership.department_id))||null) : null;
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
   if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
