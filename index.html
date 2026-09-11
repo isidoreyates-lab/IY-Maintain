@@ -3784,7 +3784,7 @@ async function saveProfile(){
      const {error:signatureUploadError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).upload(signaturePath,pendingSignatureFile,{upsert:true,contentType:"image/png",cacheControl:"3600"});
      if(signatureUploadError){
        console.error("Account signature upload failed",signatureUploadError);
-       throw new Error(`Signature could not be saved. ${signatureUploadError.message||"Storage access was denied."}`);
+       throw new Error(`Signature could not be saved. ${signatureUploadError.message||"Storage access was denied."} Please ensure your account is allowed to upload and replace its own signature.`);
      }
    }else if(signatureRemovePending&&signaturePath){
      const {error:signatureRemoveError}=await iySupabase.storage.from(IY_SIGNATURE_BUCKET).remove([signaturePath]);
@@ -4266,7 +4266,7 @@ async function cloudSaveMaintenance(row){
 
  const {data:machine,error:machineError}=await iySupabase
    .from("machines")
-   .select("id,machine_model,machine_serial_number,fleet_id")
+   .select("id,machine_model,machine_serial_number,fleet_id,site_id,department_id")
    .eq("company_id",iyCompany.id)
    .eq("fleet_id",fleet)
    .maybeSingle();
@@ -4275,8 +4275,8 @@ async function cloudSaveMaintenance(row){
 
  const payload={
    company_id:iyCompany.id,
-   site_id:currentSiteId(),
-   department_id:currentDepartmentId(),
+   site_id:machine.site_id||currentSiteId(),
+   department_id:machine.department_id||currentDepartmentId(),
    service_ref:String(row[0]||"").trim(),
    job_date:row[1]||null,
    machine_id:machine.id,
@@ -4316,7 +4316,24 @@ async function cloudSaveMaintenance(row){
  if(error)throw error;
  return data.id;
 }
-async function cloudSaveMachine(row){const payload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};const {data,error}=await iySupabase.from("machines").upsert(payload,{onConflict:"company_id,fleet_id"}).select("id").single();if(error)throw error;return data.id}
+async function cloudSaveMachine(row){
+ const payload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
+ if(!payload.site_id||!payload.department_id)throw new Error("Your account must have a Site and Department assigned before machine records can be saved.");
+ let existing=null;
+ if(row[9]){
+   const {data,error}=await iySupabase.from("machines").select("id,site_id,department_id").eq("id",row[9]).eq("company_id",iyCompany.id).maybeSingle();
+   if(error)throw error; existing=data||null;
+ }
+ if(existing){
+   const {data,error}=await iySupabase.from("machines").update(payload).eq("id",existing.id).eq("company_id",iyCompany.id).select("id").single();
+   if(error)throw error; return data.id;
+ }
+ const {data:duplicate,error:dupError}=await iySupabase.from("machines").select("id,site_id,department_id").eq("company_id",iyCompany.id).eq("fleet_id",payload.fleet_id).maybeSingle();
+ if(dupError)throw dupError;
+ if(duplicate)throw new Error("Fleet ID "+payload.fleet_id+" already exists in this company. Use the existing machine record instead of creating a duplicate.");
+ const {data,error}=await iySupabase.from("machines").insert(payload).select("id").single();
+ if(error)throw error; return data.id;
+}
 async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
 function settingsPage(){
