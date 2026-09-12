@@ -4010,6 +4010,22 @@ function toggleEditLocationFields(){
  renderRoleHelp("eu_role","eu_role_help");
 }
 
+async function manageCompanyMembershipRPC(id,action,opts={}){
+ const {data,error}=await iySupabase.rpc("manage_company_membership",{
+   p_company_id:iyCompany.id,
+   p_membership_id:id,
+   p_action:action,
+   p_full_name:opts.full_name??null,
+   p_role:opts.role??null,
+   p_site_id:opts.site_id??null,
+   p_department_id:opts.department_id??null,
+   p_is_active:opts.is_active??null
+ });
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the membership change.");
+ return data;
+}
+
 async function deactivateUser(id){
  if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
@@ -4018,9 +4034,7 @@ async function deactivateUser(id){
  if(!u.is_active)return;
  if(!confirm(`Remove ${u.full_name||u.email||"this user"} from this workspace?\n\nTheir access will be deactivated, but their historical records and activity will be preserved.`))return;
  try{
-   const {error}=await iySupabase.from("memberships").update({is_active:false}).eq("id",id).eq("company_id",iyCompany.id);
-   if(error)throw error;
-   await cloudAudit("Removed user",`${u.email||u.user_id} · access deactivated`);
+   await manageCompanyMembershipRPC(id,"deactivate");
    await renderUsersTable();
    toast("User access removed.");
  }catch(e){alert(e?.message||"User could not be removed.");}
@@ -4033,9 +4047,7 @@ async function reactivateUser(id){
  if(u.is_active)return;
  if(!confirm(`Reactivate ${u.full_name||u.email||"this user"}?\n\nTheir existing role and historical records will be preserved.`))return;
  try{
-   const {error}=await iySupabase.from("memberships").update({is_active:true}).eq("id",id).eq("company_id",iyCompany.id);
-   if(error)throw error;
-   await cloudAudit("Reactivated user",`${u.email||u.user_id} · access restored`);
+   await manageCompanyMembershipRPC(id,"reactivate");
    await renderUsersTable();
    toast("User reactivated.");
  }catch(e){alert(e?.message||"User could not be reactivated.");}
@@ -4049,15 +4061,14 @@ async function cancelUserInvitation(id){
  if(!u.is_active||u.last_login_at)return alert("This user is no longer a pending invitation.");
  if(!confirm(`Cancel the invitation for ${u.full_name||u.email||"this user"}?\n\nThe pending workspace membership will be removed. This does not delete historical records.`))return;
  try{
-   const {error}=await iySupabase.from("memberships").delete().eq("id",id).eq("company_id",iyCompany.id).eq("is_active",true).is("last_login_at",null);
-   if(error)throw error;
-   await cloudAudit("Cancelled user invitation",`${u.email||u.user_id}`);
+   await manageCompanyMembershipRPC(id,"cancel_invitation");
    await renderUsersTable();
    toast("Invitation cancelled.");
  }catch(e){alert(e?.message||"Invitation could not be cancelled.");}
 }
 
-async function saveUserMembership(id){if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
+async function saveUserMembership(id){
+ if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  const name=document.getElementById("eu_name").value.trim();
@@ -4065,7 +4076,6 @@ async function saveUserMembership(id){if(!canEdit("users"))return alert("Manager
  const role=membershipRoleForSave(uiRole);
  const site_id=document.getElementById("eu_site")?.value||null;
  const department_id=document.getElementById("eu_department")?.value||null;
- const department=department_id?(iyCompanyDepartments.find(d=>d.id===department_id)?.name||null):null;
  const is_active=document.getElementById("eu_active").value==="true";
  if(!role)return alert("Please select a valid role.");
  if(!name)return alert("Full name is required.");
@@ -4075,10 +4085,14 @@ async function saveUserMembership(id){if(!canEdit("users"))return alert("Manager
  if(site_id&&department_id){const d=iyCompanyDepartments.find(x=>x.id===department_id);if(!d||String(d.site_id)!==String(site_id))return alert("The selected department does not belong to the selected site.");}
  if(u.user_id===iyAuthUser?.id&&!is_active)return alert("You cannot deactivate your own account.");
  try{
-   const {error}=await iySupabase.from("memberships").update({full_name:name,role,department:department||null,site_id:["company_admin","manager"].includes(role)?null:site_id,department_id:["company_admin","manager","site_supervisor"].includes(role)?null:department_id,is_active}).eq("id",id).eq("company_id",iyCompany.id);
-   if(error)throw error;
+   await manageCompanyMembershipRPC(id,"update",{
+     full_name:name,
+     role,
+     site_id,
+     department_id,
+     is_active
+   });
    closeModal();
-   await cloudAudit("Updated user",`${u.email||u.user_id} · ${roleLabel(role)} · ${is_active?"Active":"Inactive"}`);
    await renderUsersTable();
    toast("User updated.");
  }catch(e){alert(e?.message||"User could not be updated.");}
