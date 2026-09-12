@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.47 — Multi-Site Backup & Restore -->
+<!-- IY Maintain V24.49 — Restore Preflight Safety -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -4621,7 +4621,7 @@ async function loadCloudData(){
 }
 function machineModelFromPart(p,machines){if(p.machine_id){const m=machines.find(x=>x[9]===p.machine_id);if(m)return m[2]}return p.machine_model||p.model||""}
 
-async function cloudAudit(action,details=""){if(!iyCloudReady||!iyCompany||!iyAuthUser)return;try{await iySupabase.from("audit_logs").insert({company_id:iyCompany.id,user_id:iyAuthUser.id,action,module:currentPage,details})}catch(e){console.warn("Audit log failed",e)}}
+async function cloudAudit(action,details="",siteId=null,departmentId=null){if(!iyCloudReady||!iyCompany||!iyAuthUser)return;try{const scope=effectiveWriteScope(siteId,departmentId);await iySupabase.from("audit_logs").insert({company_id:iyCompany.id,user_id:iyAuthUser.id,site_id:scope.siteId,department_id:scope.departmentId,action,module:currentPage,details})}catch(e){console.warn("Audit log failed",e)}}
 async function cloudGetPart(pn){const {data,error}=await iySupabase.from("parts").select("*").eq("company_id",iyCompany.id).eq("part_number",pn).maybeSingle();if(error)throw error;return data}
 async function cloudUpsertPart(row){const [pn,desc,machine,stock,received,issued,min,loc,remarks]=row;const scope=effectiveWriteScope(row[12],row[13]);let p=await cloudGetPart(pn);let machineId=null;if(machine){const {data:m}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",machine).limit(1).maybeSingle();machineId=m?.id||null}const payload={company_id:iyCompany.id,part_number:pn,description:desc||pn,machine_id:machineId,machine_model:machine||null,location:loc||null,minimum_stock:num(min),remarks:remarks||null};if(p){const {data:d,error}=await iySupabase.from("parts").update(payload).eq("id",p.id).select("*").single();if(error)throw error;p=d}else{const {data:d,error}=await iySupabase.from("parts").insert(payload).select("*").single();if(error)throw error;p=d}const invPayload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:p.id,current_stock:num(stock),total_received:num(received),total_issued:num(issued),damaged_repair:0};const {data:inv,error:ie}=await iySupabase.from("inventory").upsert(invPayload,{onConflict:"company_id,site_id,department_id,part_id"}).select("*").single();if(ie)throw ie;return {part:p,inventory:inv}}
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
@@ -4957,7 +4957,10 @@ async function saveSettings(){
 }
 
 function backup(){
+ if(!isCompanyAdmin() && !isManager())return alert("Only a Company Administrator or Manager can download a complete system backup.");
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
  logActivity("Downloaded complete cloud system backup","Full cloud workspace data exported to JSON");
+ cloudAudit("Downloaded complete cloud system backup",`Complete company backup downloaded by ${iyMembership?.full_name||iyAuthUser.email||"authorized user"}.`);
  const now=new Date();
  const stamp=now.toISOString().replace(/[:.]/g,"-");
  const backup={
@@ -5038,11 +5041,50 @@ async function restoreYield(){await new Promise(resolve=>requestAnimationFrame((
 function installRestoreUnloadGuard(){window.onbeforeunload=(e)=>{if(!iyRestoreRunning)return;const msg="A system restore is currently running. Leaving or refreshing this page may interrupt it.";e.preventDefault();e.returnValue=msg;return msg;};}
 function clearRestoreUnloadGuard(){if(!iyRestoreRunning)window.onbeforeunload=null;}
 
+async function validateRestorePayload(payload){
+ const info=payload?.backupInfo||{};
+ if(Number(info.backupSchemaVersion||0)<2)throw new Error("This backup uses an older backup format. Please create a fresh backup with the current IY Maintain version before restoring.");
+ const data=payload?.data;
+ if(!data||typeof data!=="object")throw new Error("Backup data is missing or invalid.");
+ const arrays=["machines","inventory","receipts","issues","updates","orders","maintenance"];
+ for(const key of arrays)if(data[key]!=null&&!Array.isArray(data[key]))throw new Error(`Backup section '${key}' is invalid.`);
+ const {data:sites,error:se}=await iySupabase.from("sites").select("id").eq("company_id",iyCompany.id);
+ if(se)throw new Error(`Could not validate backup Sites: ${se.message||se}`);
+ const {data:depts,error:de}=await iySupabase.from("departments").select("id,site_id").eq("company_id",iyCompany.id);
+ if(de)throw new Error(`Could not validate backup Departments: ${de.message||de}`);
+ const siteIds=new Set((sites||[]).map(x=>String(x.id)));
+ const deptMap=new Map((depts||[]).map(x=>[String(x.id),String(x.site_id)]));
+ const scopeCheck=(row,label,siteIndex,deptIndex)=>{
+   const site=String(row?.[siteIndex]||"");const dept=String(row?.[deptIndex]||"");
+   if(!site||!dept)throw new Error(`${label} is missing its Site or Department scope.`);
+   if(!siteIds.has(site))throw new Error(`${label} references a Site that does not exist in this company workspace.`);
+   if(!deptMap.has(dept))throw new Error(`${label} references a Department that does not exist in this company workspace.`);
+   if(String(deptMap.get(dept))!==site)throw new Error(`${label} has a Department that does not belong to its Site.`);
+ };
+ (data.machines||[]).forEach((r,i)=>scopeCheck(r,`Machine ${i+1}`,11,12));
+ (data.inventory||[]).forEach((r,i)=>scopeCheck(r,`Inventory record ${i+1}`,11,12));
+ (data.receipts||[]).forEach((r,i)=>scopeCheck(r,`Receipt ${i+1}`,10,11));
+ (data.issues||[]).forEach((r,i)=>scopeCheck(r,`Issue ${i+1}`,11,12));
+ (data.updates||[]).forEach((r,i)=>scopeCheck(r,`Parts Update ${i+1}`,13,14));
+ (data.orders||[]).forEach((r,i)=>scopeCheck(r,`Parts Order ${i+1}`,13,14));
+ (data.maintenance||[]).forEach((r,i)=>scopeCheck(r,`Maintenance record ${i+1}`,16,17));
+ const fleetIds=new Set();
+ for(const [i,r] of (data.machines||[]).entries()){
+   const fleet=String(r?.[0]||"").trim();
+   if(fleet){if(fleetIds.has(fleet))throw new Error(`Backup contains duplicate Fleet ID '${fleet}'.`);fleetIds.add(fleet);}
+ }
+ return true;
+}
+
 async function runRestoreJob(payload,name,options={}){
  const data=payload?.data||payload;
  if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
  const key=restoreJobKey();
- const job={key,companyId:iyCompany.id,companyName:name,payload:payload,status:"running",startedAt:options.startedAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+ // Capture the currently loaded company snapshot before any destructive operation.
+ // This provides a browser-local rollback point if the restore fails after clearing data.
+ const existingJob=options.resume?await iyGetRestoreJob(key):null;
+ const rollbackPayload=existingJob?.rollbackPayload||options.rollbackPayload||{backupInfo:{backupType:"Automatic pre-restore rollback snapshot",backupSchemaVersion:2,scopeModel:"multi-site-department",scopeFields:["site_id","department_id"],createdAt:new Date().toISOString(),application:"iy Standalone Maintenance Management System",companyId:iyCompany?.id||null,companyName:iyCompany?.name||name,version:"V24.50"},data:clone(db)};
+ const job={key,companyId:iyCompany.id,companyName:name,payload:payload,rollbackPayload,status:"running",isRollback:!!options.isRollback,startedAt:options.startedAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
  await iySaveRestoreJob(job);
  setRestoreBusy(true);installRestoreUnloadGuard();showRestoreProgress(options.resume?"resume":"active");
  const checkpoint=async(stage,percent,step,detail,info)=>{job.stage=stage;job.percent=percent;job.step=step;job.detail=detail;job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);setRestoreProgress(percent,step,detail,info,stage);await restoreYield();};
@@ -5118,7 +5160,22 @@ let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serv
   alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
  }catch(e){
   console.error("Backup restore failed",e);job.status="interrupted";job.error=e?.message||"Unknown error";job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);hideRestoreProgress();clearRestoreUnloadGuard();
-  alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nYour saved backup remains available. Fix the reported issue and restart the restore safely.`);
+  if(!options.isRollback&&job.rollbackPayload){
+   const rollbackNow=confirm(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nIY Maintain saved an automatic snapshot of the company data from before this restore began.\n\nDo you want to roll the company back to that pre-restore snapshot now?`);
+   if(rollbackNow){
+    try{
+     await runRestoreJob(job.rollbackPayload,job.companyName||iyCompany.name,{isRollback:true,rollbackPayload:job.rollbackPayload,startedAt:job.startedAt});
+     alert("Rollback completed. The company has been returned to the pre-restore state.");
+    }catch(re){
+     console.error("Automatic rollback failed",re);
+     alert(`The automatic rollback could not be completed.\n\nReason: ${re?.message||"Unknown rollback error"}\n\nDo not start another restore. The original pre-restore snapshot is still saved in this browser restore checkpoint.`);
+    }
+   }else{
+    alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nYour automatic pre-restore snapshot remains saved in this browser. You can use it to roll back before starting another restore.`);
+   }
+  }else{
+   alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nThe restore checkpoint remains saved. Do not start another restore unless you are ready to recover from the saved snapshot.`);
+  }
   throw e;
  }
 }
@@ -5147,6 +5204,7 @@ async function restoreBackupFile(){
    const data=payload?.data;if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
    const backupCompanyId=payload?.backupInfo?.companyId||data?.companyId||null;if(backupCompanyId&&String(backupCompanyId)!==String(iyCompany.id))throw new Error("This backup belongs to a different company workspace and cannot be restored here.");
    const name=payload?.backupInfo?.companyName||data?.settings?.companyName||"this workspace";
+   await validateRestorePayload(payload);
    const counts={machines:Array.isArray(data.machines)?data.machines.length:0,parts:Array.isArray(data.inventory)?data.inventory.length:0,receipts:Array.isArray(data.receipts)?data.receipts.length:0,issues:Array.isArray(data.issues)?data.issues.length:0,updates:Array.isArray(data.updates)?data.updates.length:0,orders:Array.isArray(data.orders)?data.orders.length:0,maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0};
    const ok=confirm(`RESTORE SYSTEM BACKUP\n\nCompany: ${name}\nMachines: ${counts.machines}\nParts / inventory: ${counts.parts}\nReceipts: ${counts.receipts}\nIssues: ${counts.issues}\nParts updates: ${counts.updates}\nParts orders: ${counts.orders}\nMaintenance records: ${counts.maintenance}\n\nThis will REPLACE the current company records with the selected backup.\n\nUsers, passwords and Supabase authentication accounts will NOT be changed.\n\nContinue?`);if(!ok)return;
    const second=prompt("For safety, type RESTORE to confirm the replacement of the current company data.");if(second!=="RESTORE")return alert("Restore cancelled. No data was changed.");
@@ -5179,7 +5237,7 @@ function backupPage(){
     <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore Backup</button>
    </div>
   </div>
-  <div class="restore-warning"><strong>Important:</strong> Restoring a backup replaces the current local data. For safety, download a fresh backup before restoring an older one.</div>
+  <div class="restore-warning"><strong>Important:</strong> Restoring a backup replaces the current company cloud data. For safety, download a fresh backup before restoring an older one.</div>
  </div>`;
 }
 function getISOWeek_(date){
