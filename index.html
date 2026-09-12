@@ -694,8 +694,11 @@ button,input,select,textarea{font-family:inherit}
 .settings-nav-item:disabled{cursor:not-allowed}
 .settings-tab-panel{width:100%;display:block!important;margin-bottom:18px}.settings-tab-panel:last-of-type{margin-bottom:0}.settings-nav-strip{display:none!important}.modern-settings-grid{display:block}
 .user-action-group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.table-action.danger{color:#b42318;border-color:#f0b8b3}.table-action.danger:hover{background:#fff5f4}
-.iy-write-scope{margin-top:10px;padding:9px;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(4,20,58,.22)}.iy-write-scope-title{font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:#7f9ab4;font-weight:850;margin-bottom:6px}.iy-write-scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.iy-write-scope-select{min-width:0;background:rgba(255,255,255,.06);color:#e8f2ff;border-color:rgba(255,255,255,.12);font-size:9px;padding:7px}.iy-write-scope-note{margin-top:5px;font-size:8px;color:#9db3c9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}@media(max-width:760px){.iy-write-scope-grid{grid-template-columns:1fr}.iy-write-scope-select{font-size:10px}}.workspace-scope-note{display:block;font-size:10px;line-height:1.25;color:#5f7187;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-top:2px;}@media(max-width:760px){.workspace-scope-note{max-width:180px;font-size:9px;}}
-</style>
+.iy-write-scope{margin-top:10px;padding:10px;border:1px solid #e1e8f0;border-radius:12px;background:#fff;box-shadow:0 4px 12px rgba(16,36,58,.05)}.iy-write-scope-title{font-size:7px;letter-spacing:.11em;text-transform:uppercase;color:#526a82;font-weight:900;margin-bottom:8px}.iy-write-scope-grid{display:grid;grid-template-columns:1fr;gap:8px}.iy-write-scope-field{display:grid;gap:4px}.iy-write-scope-field label{font-size:7px;color:#718399;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.iy-write-scope-select{width:100%;box-sizing:border-box;min-width:0;background:#fff;color:#173654;border:1px solid #d4dfeb;border-radius:9px;font-size:9px;font-weight:700;padding:8px 9px;outline:none}.iy-write-scope-select:focus{border-color:#2c83ff;box-shadow:0 0 0 3px rgba(7,95,255,.10)}.iy-write-scope-note{margin-top:8px;padding-top:7px;border-top:1px solid #edf1f5;font-size:8px;color:#60768d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}.iy-write-scope-note:before{content:'Current: ';color:#8798a9;font-weight:600}@media(max-width:760px){.iy-write-scope-select{font-size:10px}}.workspace-scope-note{display:block;font-size:10px;line-height:1.25;color:#5f7187;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-top:2px;}@media(max-width:760px){.workspace-scope-note{max-width:180px;font-size:9px;}}
+
+/* V24.36 global workspace view scope — transaction scope card removed */
+.iy-global-view-scope{margin:10px 0 12px;padding:11px 11px 10px;border-radius:13px;background:linear-gradient(135deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 18px rgba(6,26,79,.20);color:#fff}.iy-global-view-scope-head{display:flex;gap:8px;align-items:center;margin-bottom:10px}.iy-global-view-scope-icon{width:25px;height:25px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.15);font-size:12px;flex:0 0 auto}.iy-global-view-scope-label{font-size:9px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#fff}.iy-global-view-scope-grid{display:grid;grid-template-columns:1fr;gap:8px}.iy-global-view-scope-grid>div{min-width:0}.iy-global-view-scope-grid label{display:block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.72);margin:0 0 4px}.iy-global-view-select{width:100%;height:32px!important;padding:0 9px!important;border-radius:8px!important;border:1px solid rgba(255,255,255,.18)!important;background:#fff!important;color:#163a6a!important;font-size:10px!important;font-weight:700}.iy-global-view-reset{width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:rgba(255,255,255,.84);border-radius:8px;padding:6px 7px;font-size:8px;font-weight:700;cursor:pointer}.iy-global-view-reset:hover{background:rgba(255,255,255,.15);color:#fff}
+.hero-scope-meta{margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,.28);font-weight:700;color:rgba(255,255,255,.88)}</style>
 
 <style>
 .iy-auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,520px);background:#f6f8fb;color:#111827}
@@ -910,21 +913,48 @@ button,input,select,textarea{font-family:inherit}
 }
 .navbtn:hover{background:rgba(25,198,255,.09)}
 /* v24.22 — professional workspace identity */
-.iy-workspace-card{margin:2px 2px 17px;padding:12px 11px 11px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.035));box-shadow:0 8px 24px rgba(0,0,0,.10)}
-.iy-workspace-company{display:flex;align-items:center;gap:9px;min-width:0;padding-bottom:10px;margin-bottom:9px;border-bottom:1px solid rgba(255,255,255,.09)}
-.iy-workspace-company-icon{width:28px;height:28px;flex:0 0 28px;border-radius:8px;display:grid;place-items:center;background:rgba(25,198,255,.12);border:1px solid rgba(25,198,255,.18);color:#8fe4ff;font-size:11px;font-weight:900}
+.iy-workspace-card{margin:2px 2px 17px;padding:14px 13px 13px;border:1px solid rgba(255,255,255,.10);border-radius:16px;background:#fff;box-shadow:0 12px 28px rgba(0,0,0,.16);color:#10243a}
+ .iy-workspace-company{display:flex;align-items:center;gap:10px;min-width:0;padding-bottom:11px;margin-bottom:10px;border-bottom:1px solid #e7edf3}
+ .iy-workspace-company-icon{width:30px;height:30px;flex:0 0 30px;border-radius:9px;display:grid;place-items:center;background:#eef6ff;border:1px solid #d9eaff;color:#075fff;font-size:12px;font-weight:900}
 .iy-workspace-company-copy{min-width:0}
-.iy-workspace-eyebrow{display:block;margin-bottom:2px;color:#7fa0bd;font-size:7px;line-height:1;letter-spacing:.13em;text-transform:uppercase;font-weight:900}
-.iy-workspace-company-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-size:11px;line-height:1.25;font-weight:750}
-.iy-workspace-role{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin-bottom:7px}
-.iy-workspace-role-label{color:#7893ad;font-size:8px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.iy-workspace-role-value{display:inline-flex;align-items:center;gap:6px;max-width:145px;min-width:0;padding:5px 8px;border-radius:999px;background:#eaf3ff;color:#0753c9;border:1px solid #cfe3ff;font-size:8px;font-weight:850;line-height:1}
-.iy-workspace-role-value:before{content:'\25C9';color:#075fff;font-size:8px}
-.iy-workspace-scope{display:flex;align-items:flex-start;gap:7px;min-width:0;padding:7px 8px;border-radius:9px;background:rgba(4,20,58,.28);border:1px solid rgba(255,255,255,.075)}
-.iy-workspace-scope-icon{flex:0 0 auto;color:#72d8ff;font-size:10px;line-height:1.2;margin-top:1px}
+ .iy-workspace-eyebrow{display:block;margin-bottom:3px;color:#74879b;font-size:7px;line-height:1;letter-spacing:.14em;text-transform:uppercase;font-weight:900}
+ .iy-workspace-company-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#102c4a;font-size:11px;line-height:1.25;font-weight:800}
+ .iy-workspace-role{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin-bottom:8px}
+ .iy-workspace-role-label{color:#6e8298;font-size:7px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+ .iy-workspace-role-value{display:inline-flex;align-items:center;gap:5px;max-width:150px;min-width:0;padding:5px 8px;border-radius:999px;background:#eef6ff;color:#0753c9;border:1px solid #d5e7ff;font-size:8px;font-weight:850;line-height:1}
+ .iy-workspace-role-value:before{content:'\25C9';color:#075fff;font-size:8px}
+ .iy-workspace-scope{display:flex;align-items:flex-start;gap:8px;min-width:0;padding:9px 9px;border-radius:11px;background:#f5f8fc;border:1px solid #e2eaf2}
+ .iy-workspace-scope-icon{flex:0 0 auto;color:#075fff;font-size:11px;line-height:1.2;margin-top:1px}
 .iy-workspace-scope-copy{min-width:0}
-.iy-workspace-scope-label{display:block;color:#7f9ab4;font-size:7px;letter-spacing:.09em;text-transform:uppercase;font-weight:850;margin-bottom:2px}
-.iy-workspace-scope-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dcecff;font-size:9px;font-weight:700;line-height:1.3}
+ .iy-workspace-scope-label{display:block;color:#74879b;font-size:7px;letter-spacing:.10em;text-transform:uppercase;font-weight:850;margin-bottom:3px}
+ .iy-workspace-scope-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#163a5e;font-size:9px;font-weight:800;line-height:1.3}
+/* V24.31 — colourful enterprise workspace / transaction scope polish */
+.iy-workspace-card{
+ position:relative;overflow:visible;background:#fff;border:1px solid #dce7f4;
+ box-shadow:0 14px 32px rgba(16,48,88,.18);padding:15px 13px 14px;
+}
+.iy-workspace-card:before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:4px;border-radius:16px 16px 0 0;background:linear-gradient(90deg,#075fff 0%,#5b5cf0 48%,#11a8a0 100%)}
+.iy-workspace-company{padding:8px 5px 12px;margin-bottom:11px;border-bottom:1px solid #e7edf5}
+.iy-workspace-company-icon{background:linear-gradient(135deg,#e8f2ff,#f1ecff);border:1px solid #d2e2ff;color:#075fff;box-shadow:0 5px 12px rgba(7,95,255,.10)}
+.iy-workspace-eyebrow{color:#71839a}
+.iy-workspace-company-name{color:#102f52;font-size:11.5px}
+.iy-workspace-role{padding:2px 5px 4px;margin-bottom:8px}
+.iy-workspace-role-label{color:#627991}
+.iy-workspace-role-value{background:linear-gradient(135deg,#edf5ff,#f1edff);color:#174fa8;border-color:#d2e2ff;box-shadow:0 3px 8px rgba(53,91,180,.07)}
+.iy-workspace-role-value:before{color:#5b5cf0}
+.iy-workspace-scope{background:linear-gradient(135deg,#f2f8ff 0%,#f7f5ff 52%,#effbf9 100%);border:1px solid #d9e5f2;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.iy-workspace-scope-icon{color:#075fff;background:#e5f0ff;border-radius:8px;padding:4px 5px;margin-top:0}
+.iy-workspace-scope-label{color:#647b94}
+.iy-workspace-scope-value{color:#173f68}
+.iy-write-scope{margin-top:11px;padding:11px 10px;border:1px solid #d9e4f1;background:linear-gradient(180deg,#fbfdff,#f7fbff);box-shadow:0 6px 16px rgba(21,55,94,.08)}
+.iy-write-scope-title{display:flex;align-items:center;gap:6px;color:#234c73}
+.iy-write-scope-title:before{content:'⌖';display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;background:linear-gradient(135deg,#e5f0ff,#eee9ff);color:#075fff;font-size:10px}
+.iy-write-scope-field label{color:#647c95}
+.iy-write-scope-select{border-color:#cbdbea;background:#fff;box-shadow:0 2px 6px rgba(26,58,94,.04);transition:.16s ease}
+.iy-write-scope-select:hover{border-color:#9dbce0;background:#fbfdff}
+.iy-write-scope-select:focus{border-color:#5b5cf0;box-shadow:0 0 0 3px rgba(91,92,240,.11),0 4px 10px rgba(7,95,255,.06)}
+.iy-write-scope-note{border-top-color:#e4ebf3;color:#47647f;background:linear-gradient(90deg,rgba(7,95,255,.035),rgba(17,168,160,.035));margin:8px -2px -2px;padding:7px 5px 4px;border-radius:7px}
+
 @media(max-width:1000px){.iy-workspace-card{margin-left:0;margin-right:0}}
 
 .navicon{
@@ -1282,6 +1312,11 @@ button,input,select,textarea{font-family:inherit}
 @media(min-width:701px){.mobile-bottom-nav,.mobile-nav-backdrop,.mobile-nav-sheet{display:none!important}}
 </style>
 
+<style id="iy-dashboard-scope-v24-34">
+/* V24.35 — dashboard scope switcher for company-wide roles */
+.v24-dashboard-scope{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 18px;padding:14px 16px;border:1px solid #d7e4f2;border-radius:14px;background:linear-gradient(135deg,#f7fbff 0%,#f4f7ff 55%,#f1fbfa 100%);box-shadow:0 5px 16px rgba(16,48,88,.06)}
+.v24-dashboard-scope-copy{min-width:0}.v24-dashboard-scope-kicker{font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:#526d89;margin-bottom:3px}.v24-dashboard-scope-title{font-size:14px;font-weight:900;color:#123a60}.v24-dashboard-scope-sub{font-size:10px;color:#71869b;margin-top:3px;line-height:1.35}.v24-dashboard-scope-controls{display:grid;grid-template-columns:minmax(170px,220px) minmax(170px,220px) auto;gap:8px;align-items:end;flex:0 0 auto}.v24-dashboard-scope-field{display:grid;gap:4px}.v24-dashboard-scope-field label{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#657b92;font-weight:850}.v24-dashboard-scope-select{height:36px;border:1px solid #cbdbea;border-radius:9px;background:#fff;color:#173f68;font-size:10px;font-weight:750;padding:0 10px;outline:none;box-shadow:0 2px 6px rgba(26,58,94,.04)}.v24-dashboard-scope-select:hover{border-color:#8fb5df}.v24-dashboard-scope-select:focus{border-color:#5b5cf0;box-shadow:0 0 0 3px rgba(91,92,240,.10)}.v24-dashboard-scope-reset{height:36px;padding:0 11px;border:1px solid #cbdbea;border-radius:9px;background:#fff;color:#24547e;font-size:9px;font-weight:850;cursor:pointer;white-space:nowrap}.v24-dashboard-scope-reset:hover{background:#f5f9ff;border-color:#8fb5df}.v24-dashboard-scope-current{margin-top:8px;font-size:9px;color:#41627f;font-weight:800}.v24-dashboard-scope-current b{color:#0b63c9}@media(max-width:900px){.v24-dashboard-scope{align-items:stretch;flex-direction:column}.v24-dashboard-scope-controls{grid-template-columns:1fr 1fr auto}.v24-dashboard-scope-sub{max-width:620px}}@media(max-width:620px){.v24-dashboard-scope-controls{grid-template-columns:1fr 1fr}.v24-dashboard-scope-reset{grid-column:1/-1}.v24-dashboard-scope-select{width:100%}}
+</style>
 <style id="iy-dashboard-identity-polish">
 /* IY Maintain dashboard visual identities */
 .v24-dashboard .v24-hero{
@@ -1669,6 +1704,55 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 <style id="iy-role-help-v23">
 .role-help{margin-top:7px;padding:9px 11px;border:1px solid #e2eaf2;background:#f7fafd;border-radius:10px}.role-help-title{font-size:11px;font-weight:800;color:#183653;display:flex;justify-content:space-between;gap:10px}.role-help-title span{font-weight:700;color:#5c7892}.role-help-desc{margin-top:3px;font-size:10px;line-height:1.45;color:#70879b}
 </style>
+
+<style id="iy-scope-header-v24-32">
+/* V24.33 — fixed scope CSS rendering; match Operational Scope + Transaction Scope to the IY header */
+.iy-workspace-scope{
+  background:linear-gradient(115deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 22px rgba(6,26,79,.22), inset 0 1px 0 rgba(255,255,255,.10);
+  color:#fff;
+}
+.iy-workspace-scope-icon{
+  color:#fff;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 4px 10px rgba(0,0,0,.10);
+}
+.iy-workspace-scope-label{color:rgba(255,255,255,.72)}
+.iy-workspace-scope-value{color:#fff}
+.iy-write-scope{
+  background:linear-gradient(115deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 22px rgba(6,26,79,.22), inset 0 1px 0 rgba(255,255,255,.10);
+  color:#fff;
+}
+.iy-write-scope-title{color:#fff}
+.iy-write-scope-title:before{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;
+}
+.iy-write-scope-field label{color:rgba(255,255,255,.82)}
+.iy-write-scope-select{
+  border-color:rgba(255,255,255,.28);
+  background:#fff;
+  color:#163a5e;
+  box-shadow:0 3px 8px rgba(0,0,0,.10);
+}
+.iy-write-scope-select:hover{border-color:#fff;background:#fff}
+.iy-write-scope-select:focus{
+  border-color:#8bdcff;
+  box-shadow:0 0 0 3px rgba(139,220,255,.20),0 5px 12px rgba(0,0,0,.10);
+}
+.iy-write-scope-note{
+  border-top-color:rgba(255,255,255,.18);
+  color:rgba(255,255,255,.78);
+  background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+}
+</style>
+
+<meta name="iy-version" content="V24.37 — Clean View Scope"><!-- V24.37 — removed Operational Scope card and moved View Scope selections into clear stacked rows. -->
 </head>
 
 <style>
@@ -1769,6 +1853,8 @@ db.settings=db.settings||{};
 db.user=db.user||{name:"admin",email:"",role:"Administrator",userId:"ADMIN-001"};
 db.activityLog=Array.isArray(db.activityLog)?db.activityLog:[];
 let currentPage="dashboard";
+let dashboardSiteId="";
+let dashboardDepartmentId="";
 let profileOpen=false;
 let notificationOpen=false;
 let notificationFilter="all";
@@ -1842,12 +1928,12 @@ function getNotifications(){
  const items=[];const seen=new Set();
  const add=(id,type,title,detail,page,meta={})=>{if(seen.has(id))return;seen.add(id);items.push({id,type,title,detail,page,createdAt:meta.createdAt||null,source:meta.source||"System",severity:meta.severity||type,reportId:meta.reportId||null,cloud:!!meta.cloud,readAt:meta.readAt||null});};
  (cloudNotifications||[]).forEach(n=>add("cloud-"+n.id,n.type||"info",n.title||"Notification",n.detail||"",n.page||"mreports",{createdAt:n.created_at,source:"Report Approval",severity:n.type==="ok"?"ok":"info",reportId:n.report_id,cloud:true,readAt:n.read_at}));
- const inv=db.inventory||[];
+ const inv=viewInventoryRows();
  inv.filter(x=>num(x[3])===0).forEach(x=>add('stock-out-'+String(x[0]),'bad','Part out of stock',`${x[0]} — ${x[1]||'No description'} has no stock available.`,'inventory',{source:'Parts Inventory',severity:'bad'}));
  inv.filter(x=>num(x[3])>0&&num(x[3])<=num(x[6])).forEach(x=>add('stock-low-'+String(x[0]),'warn','Low stock',`${x[0]} — ${x[1]||'No description'} is at or below the minimum stock level.`,'inventory',{source:'Parts Inventory',severity:'warn'}));
- (db.machines||[]).filter(x=>{const st=String(x[7]||'').toLowerCase();return st.includes('breakdown')||st.includes('maintenance')||st.includes('out of service')||st.includes('repair')}).forEach(x=>add('machine-'+String(x[0]),'bad','Machine needs attention',`${x[0]} — ${x[1]||x[2]||'Machine'} is ${x[7]}.`,'machines',{source:'Fleet',severity:'bad'}));
+ (viewMachineRows()).filter(x=>{const st=String(x[7]||'').toLowerCase();return st.includes('breakdown')||st.includes('maintenance')||st.includes('out of service')||st.includes('repair')}).forEach(x=>add('machine-'+String(x[0]),'bad','Machine needs attention',`${x[0]} — ${x[1]||x[2]||'Machine'} is ${x[7]}.`,'machines',{source:'Fleet',severity:'bad'}));
  const latest={};
- (db.maintenance||[]).forEach(x=>{const fleet=String(x[4]||'').trim();if(!fleet)return;const d=new Date(x[1]);if(!latest[fleet]||d>new Date(latest[fleet][1]))latest[fleet]=x;});
+ (viewMaintenanceRows()).forEach(x=>{const fleet=String(x[4]||'').trim();if(!fleet)return;const d=new Date(x[1]);if(!latest[fleet]||d>new Date(latest[fleet][1]))latest[fleet]=x;});
  Object.keys(latest).forEach(fleet=>{const x=latest[fleet],current=num(x[5]),next=num(x[6]);if(next>0&&current>=next)add('maint-due-'+fleet,'bad','Maintenance overdue',`${fleet} has reached ${current} hours and is due at ${next} hours.`,'mreports',{source:'Maintenance',severity:'bad',createdAt:x[1]});else if(next>0&&next-current<=100)add('maint-upcoming-'+fleet,'warn','Maintenance approaching',`${fleet} has ${Math.max(0,next-current)} hours remaining until service.`,'mreports',{source:'Maintenance',severity:'warn',createdAt:x[1]});});
  return items.sort((a,b)=>{const sa=a.severity==='bad'?0:a.severity==='warn'?1:2,sb=b.severity==='bad'?0:b.severity==='warn'?1:2;return sa-sb}).slice(0,25);
 }
@@ -1874,12 +1960,12 @@ function notificationIconType(type){return type==='bad'?'●':type==='warn'?'▲
 function globalSearchResults(q){
  const query=String(q||'').trim().toLowerCase(); if(query.length<2)return [];
  const out=[]; const add=(kind,title,detail,page,icon)=>out.push({kind,title,detail,page,icon});
- (db.machines||[]).forEach(x=>{if([x[0],x[1],x[2],x[3],x[4],x[6],x[7],x[8]].some(v=>String(v??'').toLowerCase().includes(query)))add('Machine',String(x[0]||x[2]||'Machine'),`${x[1]||''} · ${x[2]||''} · ${x[3]||''}`, 'machines','⚙')});
- (db.inventory||[]).forEach(x=>{if([x[0],x[1],x[2],x[7]].some(v=>String(v??'').toLowerCase().includes(query)))add('Part',String(x[0]||'Part'),`${x[1]||''} · ${x[2]||''} · Stock ${num(x[3])}`, 'inventory','▤')});
- (db.maintenance||[]).forEach(x=>{if([x[0],x[2],x[3],x[4],x[7],x[8],x[12]].some(v=>String(v??'').toLowerCase().includes(query)))add('Maintenance',String(x[0]||'Service'),`${x[4]||''} · ${x[2]||''} · ${x[7]||''}`, 'mlog','◇')});
- (db.issues||[]).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6]].some(v=>String(v??'').toLowerCase().includes(query)))add('Transaction',String(x[1]||'Issued part'),`${x[2]||''} · ${x[3]||''} · WO ${x[6]||'—'}`, 'issue','▣')});
- (db.receipts||[]).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6]].some(v=>String(v??'').toLowerCase().includes(query)))add('Receipt',String(x[1]||'Received part'),`${x[2]||''} · ${x[3]||''} · ${x[5]||''}`, 'receive','+')});
- (db.updates||[]).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6],x[8]].some(v=>String(v??'').toLowerCase().includes(query)))add('Parts Update',String(x[1]||'Parts update'),`${x[2]||''} · ${x[8]||''} · ${x[6]||''}`, 'updates','↻')});
+ (viewMachineRows()).forEach(x=>{if([x[0],x[1],x[2],x[3],x[4],x[6],x[7],x[8]].some(v=>String(v??'').toLowerCase().includes(query)))add('Machine',String(x[0]||x[2]||'Machine'),`${x[1]||''} · ${x[2]||''} · ${x[3]||''}`, 'machines','⚙')});
+ (viewInventoryRows()).forEach(x=>{if([x[0],x[1],x[2],x[7]].some(v=>String(v??'').toLowerCase().includes(query)))add('Part',String(x[0]||'Part'),`${x[1]||''} · ${x[2]||''} · Stock ${num(x[3])}`, 'inventory','▤')});
+ (viewMaintenanceRows()).forEach(x=>{if([x[0],x[2],x[3],x[4],x[7],x[8],x[12]].some(v=>String(v??'').toLowerCase().includes(query)))add('Maintenance',String(x[0]||'Service'),`${x[4]||''} · ${x[2]||''} · ${x[7]||''}`, 'mlog','◇')});
+ (viewIssueRows()).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6]].some(v=>String(v??'').toLowerCase().includes(query)))add('Transaction',String(x[1]||'Issued part'),`${x[2]||''} · ${x[3]||''} · WO ${x[6]||'—'}`, 'issue','▣')});
+ (viewReceiptRows()).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6]].some(v=>String(v??'').toLowerCase().includes(query)))add('Receipt',String(x[1]||'Received part'),`${x[2]||''} · ${x[3]||''} · ${x[5]||''}`, 'receive','+')});
+ (viewUpdateRows()).forEach(x=>{if([x[1],x[2],x[3],x[5],x[6],x[8]].some(v=>String(v??'').toLowerCase().includes(query)))add('Parts Update',String(x[1]||'Parts update'),`${x[2]||''} · ${x[8]||''} · ${x[6]||''}`, 'updates','↻')});
  const seen=new Set();return out.filter(x=>{const k=x.kind+'|'+x.title+'|'+x.detail;if(seen.has(k))return false;seen.add(k);return true}).slice(0,15);
 }
 function quickActionButton(page,label,icon){return canAccess(page)?`<button class="quick-action" onclick="nav('${page}')"><span class="qa-icon">${icon}</span>${label}</button>`:''}
@@ -1898,8 +1984,7 @@ function render(){
    <div class="iy-workspace-card">
     <div class="iy-workspace-company"><span class="iy-workspace-company-icon">▦</span><div class="iy-workspace-company-copy"><span class="iy-workspace-eyebrow">Workspace</span><span class="iy-workspace-company-name" title="${esc(iyCompany?.name||s.companyName||"Company workspace")}">${esc(iyCompany?.name||s.companyName||"Company workspace")}</span></div></div>
     <div class="iy-workspace-role"><span class="iy-workspace-role-label">Access level</span><span class="iy-workspace-role-value" title="${esc(roleLabel(iyMembership?.role||"employee"))}">${esc(roleLabel(iyMembership?.role||"employee"))}</span></div>
-    <div class="iy-workspace-scope"><span class="iy-workspace-scope-icon">⌖</span><div class="iy-workspace-scope-copy"><span class="iy-workspace-scope-label">Operational scope</span><span class="iy-workspace-scope-value" title="${esc(workspaceScopeLabel())}">${esc(workspaceScopeLabel())}</span></div></div>
-    ${isCompanyWideScope()?writeScopeSelectorMarkup():""}
+    ${globalViewScopeMarkup()}
    </div>
    ${navButton("dashboard","Dashboard","⌂")}
    <div class="group">PARTS</div>
@@ -1955,7 +2040,7 @@ function render(){
   </main>
   ${renderMobileNavigation()}
  </div>`;
- if(currentPage==="users"&&isCompanyAdmin())setTimeout(renderUsersTable,0);
+ if(currentPage==="users"&&canEdit("users"))setTimeout(renderUsersTable,0);
 
  initMachinePage();}
 
@@ -1994,7 +2079,7 @@ function pageHeroV23(page){
  if(page==="updates" && canEdit("updates"))action='<button class="hero-btn-v23" onclick="updateModal()">+ New Update</button>';
  if(page==="preports" && canGenerateReports())action='<button class="hero-btn-v23" onclick="openPartsReportPreview()">Preview / Export PDF</button>';
  if(page==="mreports" && canGenerateReports())action='<button class="hero-btn-v23" onclick="openReportPreview()">Preview / Export PDF</button>';
- return `<div class="page-hero-v23"><div class="hero-copy"><div class="hero-kicker">${esc(cfg[0])}</div><h2>${esc(cfg[1])}</h2><p>${esc(cfg[2])}</p><div class="hero-meta"><span class="hero-meta-dot"></span><span>${esc(iyCompany?.name||db.settings.companyName||"Company workspace")}</span></div></div>${action?`<div class="hero-action">${action}</div>`:""}</div>`;
+ return `<div class="page-hero-v23"><div class="hero-copy"><div class="hero-kicker">${esc(cfg[0])}</div><h2>${esc(cfg[1])}</h2><p>${esc(cfg[2])}</p><div class="hero-meta"><span class="hero-meta-dot"></span><span>${esc(iyCompany?.name||db.settings.companyName||"Company workspace")}</span><span class="hero-scope-meta">View: ${esc(globalViewScopeLabel())}</span></div></div>${action?`<div class="hero-action">${action}</div>`:""}</div>`;
 }
 function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
 function pageContent(){
@@ -2019,11 +2104,143 @@ function pageContent(){
  if(currentPage==="backup")return hero+backupPage();
  return dashboard();
 }
+function isDashboardScopeController(){return ["company_admin","super_admin","manager"].includes(currentRole());}
+function dashboardScopeValues(){
+ if(isDashboardScopeController())return {siteId:dashboardSiteId||"",departmentId:dashboardDepartmentId||""};
+ return {siteId:currentSiteId()||"",departmentId:currentDepartmentId()||""};
+}
+function dashboardScopeLabel(){
+ const s=dashboardScopeValues();
+ const site=iyCompanySites.find(x=>String(x.id)===String(s.siteId));
+ const dept=iyCompanyDepartments.find(x=>String(x.id)===String(s.departmentId));
+ if(site&&dept)return `${site.name} · ${dept.name}`;
+ if(site)return `${site.name} · All Departments`;
+ return "All Sites · All Departments";
+}
+function dashboardScopeMatches(siteId,departmentId){
+ const s=dashboardScopeValues();
+ if(s.siteId && String(siteId||"")!==String(s.siteId))return false;
+ if(s.departmentId && String(departmentId||"")!==String(s.departmentId))return false;
+ return true;
+}
+function dashboardScopedRows(rows,siteIndex,departmentIndex){
+ return (rows||[]).filter(r=>dashboardScopeMatches(r?.[siteIndex],r?.[departmentIndex]));
+}
+function dashboardScopeControls(){
+ if(!isDashboardScopeController())return "";
+ const selectedSite=dashboardSiteId||"";
+ const selectedDept=dashboardDepartmentId||"";
+ const siteOptions=siteOptionsMarkup(selectedSite);
+ const deptOptions=departmentOptionsMarkup(selectedSite,selectedDept);
+ return `<div class="v24-dashboard-scope">
+   <div class="v24-dashboard-scope-copy">
+     <div class="v24-dashboard-scope-kicker">Dashboard Scope</div>
+     <div class="v24-dashboard-scope-title">View a specific site or department</div>
+     <div class="v24-dashboard-scope-sub">Managers and Company Administrators can switch the dashboard between locations without changing the transaction-entry scope.</div>
+     <div class="v24-dashboard-scope-current">Showing: <b>${esc(dashboardScopeLabel())}</b></div>
+   </div>
+   <div class="v24-dashboard-scope-controls">
+     <div class="v24-dashboard-scope-field"><label for="iyDashboardSiteSelect">Site</label><select class="v24-dashboard-scope-select" id="iyDashboardSiteSelect" onchange="setDashboardSite(this.value)">${siteOptions}</select></div>
+     <div class="v24-dashboard-scope-field"><label for="iyDashboardDepartmentSelect">Department</label><select class="v24-dashboard-scope-select" id="iyDashboardDepartmentSelect" onchange="setDashboardDepartment(this.value)">${deptOptions}</select></div>
+     <button class="v24-dashboard-scope-reset" type="button" onclick="resetDashboardScope()">↺ All Locations</button>
+   </div>
+ </div>`;
+}
+function setDashboardSite(siteId){
+ dashboardSiteId=siteId||"";
+ if(dashboardDepartmentId){
+   const dept=iyCompanyDepartments.find(d=>String(d.id)===String(dashboardDepartmentId));
+   if(!dept || (dashboardSiteId && String(dept.site_id)!==String(dashboardSiteId)))dashboardDepartmentId="";
+ }
+ render();
+}
+function setDashboardDepartment(departmentId){
+ dashboardDepartmentId=departmentId||"";
+ if(dashboardDepartmentId){
+   const dept=iyCompanyDepartments.find(d=>String(d.id)===String(dashboardDepartmentId));
+   if(dept)dashboardSiteId=String(dept.site_id||dashboardSiteId||"");
+ }
+ render();
+}
+function resetDashboardScope(){dashboardSiteId="";dashboardDepartmentId="";render();}
+
+// V24.36 — Global workspace view scope. The single View Scope controls the company-wide working location.
+// Company Administrators, Super Admins and Managers can select a site and/or
+// department once in the workspace card. Every operational read-only view
+// uses the same selection; transaction-entry scope remains separate.
+function globalViewScopeValues(){
+ if(isDashboardScopeController())return {siteId:dashboardSiteId||"",departmentId:dashboardDepartmentId||""};
+ return {siteId:currentSiteId()||"",departmentId:currentDepartmentId()||""};
+}
+function globalViewScopeLabel(){
+ const s=globalViewScopeValues();
+ const site=iyCompanySites.find(x=>String(x.id)===String(s.siteId));
+ const dept=iyCompanyDepartments.find(x=>String(x.id)===String(s.departmentId));
+ if(site&&dept)return `${site.name} · ${dept.name}`;
+ if(site)return `${site.name} · All Departments`;
+ return "All Sites · All Departments";
+}
+function globalViewScopeMatches(siteId,departmentId){
+ const s=globalViewScopeValues();
+ if(s.siteId && String(siteId||"")!==String(s.siteId))return false;
+ if(s.departmentId && String(departmentId||"")!==String(s.departmentId))return false;
+ return true;
+}
+function viewScopedRows(rows,siteIndex,departmentIndex){
+ return (rows||[]).filter(r=>globalViewScopeMatches(r?.[siteIndex],r?.[departmentIndex]));
+}
+function viewInventoryRows(){return viewScopedRows(db.inventory,11,12)}
+function viewReceiptRows(){return viewScopedRows(db.receipts,10,11)}
+function viewIssueRows(){return viewScopedRows(db.issues,11,12)}
+function viewUpdateRows(){return viewScopedRows(db.updates,13,14)}
+function viewOrderRows(){return viewScopedRows(db.orders,13,14)}
+function viewMaintenanceRows(){return viewScopedRows(db.maintenance,16,17)}
+function viewMachineRows(){return viewScopedRows(db.machines,11,12)}
+function globalViewScopeMarkup(){
+ if(!isDashboardScopeController())return "";
+ const selectedSite=dashboardSiteId||"", selectedDept=dashboardDepartmentId||"";
+ return `<div class="iy-global-view-scope" title="Controls the records shown throughout the workspace">
+   <div class="iy-global-view-scope-head"><span class="iy-global-view-scope-icon">◉</span><span class="iy-global-view-scope-label">View Scope</span></div>
+   <div class="iy-global-view-scope-grid">
+    <div><label for="iyGlobalViewSite">Site</label><select class="input iy-global-view-select" id="iyGlobalViewSite" onchange="setGlobalViewSite(this.value)">${siteOptionsMarkup(selectedSite)}</select></div>
+    <div><label for="iyGlobalViewDepartment">Department</label><select class="input iy-global-view-select" id="iyGlobalViewDepartment" onchange="setGlobalViewDepartment(this.value)">${departmentOptionsMarkup(selectedSite,selectedDept)}</select></div>
+   </div>
+   <button type="button" class="iy-global-view-reset" onclick="resetGlobalViewScope()">↺ All Sites · All Departments</button>
+ </div>`;
+}
+function setGlobalViewSite(siteId){
+ dashboardSiteId=siteId||"";
+ if(isCompanyWideScope()){iyWriteSiteId=dashboardSiteId||null;iyWriteDepartmentId=null;}
+ if(dashboardDepartmentId){
+   const dept=iyCompanyDepartments.find(d=>String(d.id)===String(dashboardDepartmentId));
+   if(!dept || (dashboardSiteId && String(dept.site_id)!==String(dashboardSiteId)))dashboardDepartmentId="";
+ }
+ render();
+}
+function setGlobalViewDepartment(departmentId){
+ dashboardDepartmentId=departmentId||"";
+ if(isCompanyWideScope()){iyWriteDepartmentId=dashboardDepartmentId||null;iyWriteSiteId=dashboardSiteId||null;}
+ if(dashboardDepartmentId){
+   const dept=iyCompanyDepartments.find(d=>String(d.id)===String(dashboardDepartmentId));
+   if(dept)dashboardSiteId=String(dept.site_id||dashboardSiteId||"");
+ }
+ render();
+}
+function resetGlobalViewScope(){dashboardSiteId="";dashboardDepartmentId="";if(isCompanyWideScope()){iyWriteSiteId=null;iyWriteDepartmentId=null;}render();}
+
 function dashboard(){
- const inv=invMetrics();
  const norm=v=>String(v??"").trim().toLowerCase();
- const allMaint=db.maintenance.slice();
- const machines=db.machines.slice();
+ const scope=dashboardScopeValues();
+ const scopedInventory=dashboardScopedRows(db.inventory,11,12);
+ const scopedReceipts=dashboardScopedRows(db.receipts,10,11);
+ const scopedIssues=dashboardScopedRows(db.issues,11,12);
+ const scopedUpdates=dashboardScopedRows(db.updates,13,14);
+ const scopedOrders=dashboardScopedRows(db.orders,13,14);
+ const scopedMaintenance=dashboardScopedRows(db.maintenance,16,17);
+ const scopedMachines=dashboardScopedRows(db.machines,11,12);
+ const inv={totalItems:scopedInventory.length,totalStock:scopedInventory.reduce((a,x)=>a+num(x[3]),0),low:scopedInventory.filter(x=>num(x[3])<=num(x[6])).length,out:scopedInventory.filter(x=>num(x[3])===0).length};
+ const allMaint=scopedMaintenance.slice();
+ const machines=scopedMachines.slice();
  const now=new Date();
 
  const completed=allMaint.filter(x=>norm(x[10])==="completed").length;
@@ -2041,11 +2258,11 @@ function dashboard(){
    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
    months.push({date:d,label:d.toLocaleString(undefined,{month:"short"}),year:d.getFullYear(),received:0,issued:0,maintenance:0});
  }
- db.receipts.forEach(r=>{
+ scopedReceipts.forEach(r=>{
    const d=new Date(r[0]); if(isNaN(d))return;
    const m=months.find(z=>z.year===d.getFullYear()&&z.date.getMonth()===d.getMonth()); if(m)m.received+=num(r[4]);
  });
- db.issues.forEach(r=>{
+ scopedIssues.forEach(r=>{
    const d=new Date(r[0]); if(isNaN(d))return;
    const m=months.find(z=>z.year===d.getFullYear()&&z.date.getMonth()===d.getMonth()); if(m)m.issued+=num(r[4]);
  });
@@ -2081,11 +2298,11 @@ function dashboard(){
    return {m,x,pct,cls,status,remaining};
  }).sort((a,b)=>a.pct-b.pct);
 
- const lowRows=db.inventory.filter(x=>num(x[3])<=num(x[6])).sort((a,b)=>num(a[3])-num(b[3])).slice(0,5);
- const outCount=db.inventory.filter(x=>num(x[3])<=0).length;
+ const lowRows=scopedInventory.filter(x=>num(x[3])<=num(x[6])).sort((a,b)=>num(a[3])-num(b[3])).slice(0,5);
+ const outCount=scopedInventory.filter(x=>num(x[3])<=0).length;
  const recentActivity=[
-   ...db.receipts.slice(-4).map(x=>({date:x[0],title:"Part stock received",detail:String(x[1]||"")+(x[2]?" · "+String(x[2]):""),tag:"RECEIPT",amount:x[4]})),
-   ...db.issues.slice(-4).map(x=>({date:x[0],title:"Part issued",detail:String(x[1]||"")+(x[3]?" · "+String(x[3]):""),tag:"ISSUE",amount:x[4]})),
+   ...scopedReceipts.slice(-4).map(x=>({date:x[0],title:"Part stock received",detail:String(x[1]||"")+(x[2]?" · "+String(x[2]):""),tag:"RECEIPT",amount:x[4]})),
+   ...scopedIssues.slice(-4).map(x=>({date:x[0],title:"Part issued",detail:String(x[1]||"")+(x[3]?" · "+String(x[3]):""),tag:"ISSUE",amount:x[4]})),
    ...allMaint.slice(-4).map(x=>({date:x[1],title:"Maintenance recorded",detail:String(x[0]||"")+(x[2]?" · "+String(x[2]):""),tag:"MAINTENANCE",amount:""}))
  ].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,7);
 
@@ -2104,6 +2321,7 @@ function dashboard(){
      </div>
      <div class="v24-hero-side"><div class="v24-live"><b>Workspace status</b><span>Cloud connected operational data is being used for this dashboard.</span></div></div>
    </div>
+
 
    <div class="v24-kpis">
      <div class="v24-kpi"><div class="k-label">Total Parts</div><div class="k-value">${inv.totalItems}</div><div class="k-sub">Inventory records</div></div>
@@ -2182,12 +2400,13 @@ function simpleReceiptTable(rows){return `<div class="tablewrap"><table class="t
 function simpleIssueTable(rows){return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td></tr>`).join("")}</table></div>`}
 
 function issuePage(){
- const machines=[...new Set(db.inventory.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
- const locations=[...new Set(db.inventory.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const invRows=viewInventoryRows();
+ const machines=[...new Set(invRows.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const locations=[...new Set(invRows.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  return `<div class="panel issue-page-panel">
    <div class="issue-filter-head">
      <div><div class="issue-filter-title">Find parts</div><div class="issue-filter-sub">Search inventory and narrow results before issuing stock.</div></div>
-     <span class="issue-filter-badge">${db.inventory.length} INVENTORY ITEMS</span>
+     <span class="issue-filter-badge">${viewInventoryRows().length} INVENTORY ITEMS</span>
    </div>
    <div class="issue-filters">
      <div class="issue-filter-field issue-search-field"><label>Search</label><div class="issue-search-wrap"><span>⌕</span><input id="issueSearch" class="input" placeholder="Search part number, description or machine..." oninput="renderIssueResults()"></div></div>
@@ -2204,7 +2423,7 @@ function issueResults(q){
  const machine=(document.getElementById("issueMachineFilter")?.value||"").toLowerCase();
  const stock=document.getElementById("issueStockFilter")?.value||"";
  const location=(document.getElementById("issueLocationFilter")?.value||"").toLowerCase();
- const rows=db.inventory.filter(x=>{
+ const rows=viewInventoryRows().filter(x=>{
    const text=[x[0],x[1],x[2]].join(" ").toLowerCase();
    const stockQty=num(x[3]);
    const minQty=num(x[6]);
@@ -2220,7 +2439,7 @@ function resetIssueFilters(){
  renderIssueResults();
 }
 function issueModal(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
- const part=db.inventory.find(x=>x[0]===decodeURIComponent(p)); if(!part)return;
+ const part=viewInventoryRows().find(x=>x[0]===decodeURIComponent(p)); if(!part)return;
  openModal(`<div class="modalhead"><h2>Issue Part</h2><button class="close" onclick="closeModal()">×</button></div>
  <div class="notice"><b>${esc(part[0])}</b> — ${esc(part[1])}<br>Machine: ${esc(part[2])} &nbsp; | &nbsp; Available: <b>${part[3]}</b></div>
  <div class="formgrid">
@@ -2229,7 +2448,7 @@ function issueModal(p){if(!canEdit("issue"))return alert("You do not have permis
  <div class="field"><label>Technician</label><input id="f_tech" class="input" value=""></div>
  <div class="field"><label>Work Order</label><input id="f_wo" class="input"></div>
  <div class="field full"><label>Remarks</label><textarea id="f_rem" class="textarea"></textarea></div></div>
- <datalist id="issueMachineList">${db.machines.map(m=>`<option value="${esc(m[2])}">${esc(m[0])}</option>`).join("")}</datalist>
+ <datalist id="issueMachineList">${viewMachineRows().map(m=>`<option value="${esc(m[2])}">${esc(m[0])}</option>`).join("")}</datalist>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssue('${encodeURIComponent(part[0])}')">Issue Part</button></div>`);
 }
 async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
@@ -2280,12 +2499,12 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
 }
 
 function receivePage(){
- return `<div class="panel">${simpleReceiptTable(db.receipts.slice(-20).reverse())}</div>`;
+ return `<div class="panel">${simpleReceiptTable(viewReceiptRows().slice(-20).reverse())}</div>`;
 }
 function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts receiving access is restricted to Parts Coordinators and Administrators.");
- const order=orderId?(db.orders||[]).find(x=>String(x[11])===String(orderId)):null;
+ const order=orderId?(viewOrderRows()||[]).find(x=>String(x[11])===String(orderId)):null;
  const orderPart=order?String(order[1]||""):"";
- const part=orderPart?(db.inventory||[]).find(x=>String(x[0]).trim().toLowerCase()===orderPart.trim().toLowerCase()):null;
+ const part=orderPart?(viewInventoryRows()||[]).find(x=>String(x[0]).trim().toLowerCase()===orderPart.trim().toLowerCase()):null;
  const ref=order?String(order[5]||""):"";
  openModal(`<div class="modalhead"><h2>${order?"Receive Ordered Part":"Receive Part"}</h2><button class="close" onclick="closeModal()">×</button></div>
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
@@ -2308,10 +2527,10 @@ function autoFillReceivePart(){
  const hint=document.getElementById("r_part_hint");
  if(!lookup)return;
  const norm=v=>String(v??"").trim().toLowerCase();
- let part=db.inventory.find(x=>norm(x[0])===norm(lookup));
- let matchedOrder=(db.orders||[]).find(x=>norm(x[5])===norm(lookup));
+ let part=viewInventoryRows().find(x=>norm(x[0])===norm(lookup));
+ let matchedOrder=(viewOrderRows()||[]).find(x=>norm(x[5])===norm(lookup));
  if(matchedOrder){
-   part=db.inventory.find(x=>norm(x[0])===norm(matchedOrder[1]));
+   part=viewInventoryRows().find(x=>norm(x[0])===norm(matchedOrder[1]));
    if(part){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
@@ -2328,13 +2547,13 @@ function autoFillReceivePart(){
  }
  document.getElementById("r_desc").value=part[1]||"";
  document.getElementById("r_machine").value=part[2]||"";
- const order=(db.orders||[]).find(x=>norm(x[1])===norm(part[0]));
+ const order=(viewOrderRows()||[]).find(x=>norm(x[1])===norm(part[0]));
  if(order){
    document.getElementById("r_supplier").value=order[6]||"";
    document.getElementById("r_invoice").value=order[5]||"";
    if(hint)hint.textContent="Active order found. Supplier and J-Ref have been filled automatically.";
  }else{
-   const last=[...db.receipts].reverse().find(x=>norm(x[1])===norm(part[0]));
+   const last=[...viewReceiptRows()].reverse().find(x=>norm(x[1])===norm(part[0]));
    if(last)document.getElementById("r_supplier").value=last[5]||"";
    if(hint)hint.textContent="Existing part found. Details have been filled automatically.";
  }
@@ -2383,12 +2602,13 @@ function inventoryPage(){
  return `<div class="panel"><div class="toolbar"><input id="invSearch" class="input search" placeholder="Search inventory..." oninput="renderInventory()"></div><div id="invTable">${inventoryTable("")}</div></div>`;
 }
 function inventoryTable(q){
- q=(q||"").toLowerCase();const rows=db.inventory.filter(x=>x.slice(0,8).join(" ").toLowerCase().includes(q));
- return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventory('${encodeURIComponent(x[0])}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
+ q=(q||"").toLowerCase();const rows=viewInventoryRows().filter(x=>x.slice(0,8).join(" ").toLowerCase().includes(q));
+ return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventoryById('${encodeURIComponent(x[9]||'')}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
 }
 function statusBadge(x){return num(x[3])===0?'<span class="badge bad">OUT OF STOCK</span>':num(x[3])<=num(x[6])?'<span class="badge warn">LOW STOCK</span>':'<span class="badge ok">IN STOCK</span>'}
 function renderInventory(){document.getElementById("invTable").innerHTML=inventoryTable(document.getElementById("invSearch").value)}
-function editInventory(p){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");inventoryEditModal(db.inventory.find(x=>x[0]===decodeURIComponent(p)))}
+function editInventory(p){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");inventoryEditModal(viewInventoryRows().find(x=>x[0]===decodeURIComponent(p)))}
+function editInventoryById(id){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");const x=viewInventoryRows().find(r=>String(r[9])===String(decodeURIComponent(id)));if(!x)return alert("Inventory record not found in the selected scope.");inventoryEditModal(x)}
 function inventoryEditModal(x){
  if(!x)return;
  openModal(`<div class="modalhead"><h2>Edit Inventory Part</h2><button class="close" onclick="closeModal()">×</button></div>
@@ -2400,20 +2620,30 @@ function inventoryEditModal(x){
  <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
  <div class="field full"><label>Remarks</label><textarea id="i_rem" class="textarea">${esc(x?.[8]||"")}</textarea></div></div>
- <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveInventory('${encodeURIComponent(x?.[0]||"")}')">Save</button></div>`);
+ <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveInventoryById('${encodeURIComponent(x?.[9]||"")}')">Save</button></div>`);
 }
+async function saveInventoryById(id){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");const x=viewInventoryRows().find(r=>String(r[9])===String(decodeURIComponent(id)));if(!x)return alert("Inventory record not found in the selected scope.");await saveInventoryRecord(x);}
 async function saveInventory(old){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");
- const pn=document.getElementById("i_pn").value.trim();if(!old||!pn)return alert("Only existing inventory records can be edited. New parts must be received through Receive Parts.");
- const x=db.inventory.find(z=>z[0]===decodeURIComponent(old));
+ const x=viewInventoryRows().find(z=>z[0]===decodeURIComponent(old))||db.inventory.find(z=>z[0]===decodeURIComponent(old));
  if(!x)return alert("Inventory record not found.");
- x[1]=document.getElementById("i_desc").value.trim();x[2]=document.getElementById("i_machine").value.trim();x[3]=num(document.getElementById("i_stock").value);x[6]=num(document.getElementById("i_min").value);x[7]=document.getElementById("i_loc").value.trim();x[8]=document.getElementById("i_rem").value.trim();
+ await saveInventoryRecord(x);
+}
+async function saveInventoryRecord(x){
+ const pn=document.getElementById("i_pn").value.trim();
+ if(!pn)return alert("Part number is required.");
+ x[1]=document.getElementById("i_desc").value.trim();
+ x[2]=document.getElementById("i_machine").value.trim();
+ x[3]=num(document.getElementById("i_stock").value);
+ x[6]=num(document.getElementById("i_min").value);
+ x[7]=document.getElementById("i_loc").value.trim();
+ x[8]=document.getElementById("i_rem").value.trim();
  logActivity("Updated inventory part","Inventory record updated");
  if(iyCloudReady){try{await cloudSaveInventory(x);await cloudAudit("Updated inventory part","Inventory record updated")}catch(e){return alert(e?.message||"Inventory could not be saved to the cloud.")}}
  save();closeModal();render();toast("Inventory updated.");
 }
 
 function partsOrdersPage(){
- const rows=db.orders||[];
+ const rows=viewOrderRows();
  const machines=[...new Set(rows.map(x=>String(x[3]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  return `<div class="parts-orders-shell">
   <div class="parts-orders-filterbar">
@@ -2427,7 +2657,7 @@ function partsOrdersPage(){
 function partsOrdersTable(q){
  q=(q||"").toLowerCase().trim();
  const machine=(document.getElementById("ordersMachine")?.value||"").toLowerCase();
- const rows=(db.orders||[]).filter(x=>{const text=[x[1],x[2],x[3],x[5],x[6],x[10]].join(" ").toLowerCase();return (!q||text.includes(q))&&(!machine||String(x[3]||"").trim().toLowerCase()===machine)});
+ const rows=viewOrderRows().filter(x=>{const text=[x[1],x[2],x[3],x[5],x[6],x[10]].join(" ").toLowerCase();return (!q||text.includes(q))&&(!machine||String(x[3]||"").trim().toLowerCase()===machine)});
  if(!rows.length)return `<div class="parts-orders-empty"><div class="parts-orders-empty-icon">▤</div><b>No active parts orders</b><span>Orders appear here automatically when a Parts Update is changed to Ordered.</span></div>`;
  return `<div class="parts-orders-meta"><span><b>${rows.length}</b> active order${rows.length===1?"":"s"} awaiting receipt</span><span class="badge info">ACTIVE</span></div><div class="tablewrap"><table class="table parts-orders-table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th><th>Actions</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${fmtDate(x[8])}</td><td>${esc(x[10])}</td><td><div class="parts-orders-actions">${canEdit("orders")?`<button class="btn secondary small" onclick="editPartsOrder('${x[11]}')">Edit</button><button class="btn receive-order small" onclick="receiveOrder('${x[11]}')">Receive</button>`:'<span class="hint">View only</span>'}</div></td></tr>`).join("")}</table></div>`;
 }
@@ -2482,7 +2712,8 @@ async function savePartsOrder(orderId){
 function updatesPage(){
  return `<div class="panel">${updatesTable()}</div>`;
 }
-function updatesTable(){if(!db.updates.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO/J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite</th><th>Remarks</th><th>Action</th></tr>${db.updates.map((x,i)=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${canEdit("updates")?`<button class="btn secondary small" onclick="editUpdate(${i})">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`}
+function updatesTable(){const rows=viewUpdateRows();if(!rows.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO/J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite</th><th>Remarks</th><th>Action</th></tr>${rows.map((x)=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${canEdit("updates")?`<button class="btn secondary small" onclick="editUpdateById('${x[11]}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`}
+function editUpdateById(id){if(!canEdit("updates"))return alert("You do not have permission to edit parts updates.");const x=viewUpdateRows().find(r=>String(r[11])===String(id));if(!x)return alert("Parts update not found in the selected scope.");const idx=db.updates.findIndex(r=>String(r[11])===String(id));if(idx<0)return alert("Parts update record could not be found.");updateModal(idx)}
 function updateModal(index){if(!canEdit("updates"))return alert("Parts update editing is restricted to Parts Coordinators and Administrators.");
  const x=Number.isInteger(index)?db.updates[index]:null;
  const date=x?String(x[0]).slice(0,10):new Date().toISOString().slice(0,10);
@@ -2491,7 +2722,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="formgrid">
  ${writeScopeSelectorMarkup()}
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
- <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${(db.inventory||[]).map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
+ <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${viewInventoryRows().map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
  <div class="field"><label>Machine</label><input id="u_machine" class="input" value="${esc(x?.[3]||"")}"></div>
  <div class="field"><label>Quantity</label><input id="u_qty" class="input" type="number" min="1" value="${x?.[4]??1}"></div>
@@ -2506,7 +2737,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
 function autoFillUpdatePart(){
  const input=document.getElementById("u_part");if(!input)return;
  const value=input.value.trim().toLowerCase();if(!value)return;
- const part=(db.inventory||[]).find(v=>String(v[0]||"").trim().toLowerCase()===value);
+ const part=viewInventoryRows().find(v=>String(v[0]||"").trim().toLowerCase()===value);
  if(!part)return;
  const desc=document.getElementById("u_desc"),machine=document.getElementById("u_machine");
  if(desc&&!desc.value.trim())desc.value=part[1]||"";
@@ -2551,7 +2782,7 @@ async function saveUpdate(index){
 }
 
 function maintenanceDashboard(){
- const all=db.maintenance.slice();
+ const all=viewMaintenanceRows().slice();
  const norm=v=>String(v??"").trim().toLowerCase();
  const completed=all.filter(x=>norm(x[10])==="completed").length;
  const ongoing=all.filter(x=>["ongoing","in progress","open"].includes(norm(x[10]))).length;
@@ -2568,7 +2799,7 @@ function maintenanceDashboard(){
    if(!latest[fleet] || d>new Date(latest[fleet][1])) latest[fleet]=x;
  });
 
- const machineRows=db.machines.map(m=>{
+ const machineRows=viewMachineRows().map(m=>{
    const fleet=String(m[0]??"").trim();
    const x=latest[fleet];
    const currentHours=x?num(x[5]):0;
@@ -2595,7 +2826,7 @@ function maintenanceDashboard(){
  return `<div class="maintenance-page"><div class="hero"><div><h2>Maintenance Dashboard</h2><p>Live maintenance performance, machine service status and recent activity.</p></div></div>
  <div class="cards maintenance-kpis">${metric("TOTAL JOBS",all.length,"All maintenance records")}${metric("COMPLETED",completed,"Completed jobs")}${metric("PREVENTIVE MAINTENANCE",preventive,"Preventive / inspection jobs")}${metric("REPAIRS",repairs,"Repair jobs")}${metric("ONGOING",ongoing,"Open / in progress jobs")}${metric("PARTS REQUIRED",partsRequired,"Jobs requiring parts")}</div>
  ${alertPanel}
- <div class="grid2"><div class="panel"><h3>Service Attention</h3><div class="hint">Machines requiring the closest attention</div><div class="attention-grid"><div class="attention-card danger"><span>OVERDUE</span><b>${overdue.length}</b><small>Service hours reached</small></div><div class="attention-card warn"><span>DUE SOON</span><b>${upcoming.length}</b><small>Within 100 hours</small></div><div class="attention-card ok"><span>ACTIVE MACHINES</span><b>${db.machines.filter(m=>norm(m[7])==="running").length}</b><small>Currently running</small></div></div></div>${upcomingPanel}</div>
+ <div class="grid2"><div class="panel"><h3>Service Attention</h3><div class="hint">Machines requiring the closest attention</div><div class="attention-grid"><div class="attention-card danger"><span>OVERDUE</span><b>${overdue.length}</b><small>Service hours reached</small></div><div class="attention-card warn"><span>DUE SOON</span><b>${upcoming.length}</b><small>Within 100 hours</small></div><div class="attention-card ok"><span>ACTIVE MACHINES</span><b>${viewMachineRows().filter(m=>norm(m[7])==="running").length}</b><small>Currently running</small></div></div></div>${upcomingPanel}</div>
  <div class="panel"><h3>Machine Activity & Service Status</h3><div class="hint">Latest maintenance information for each machine</div>${machineTable}</div>
  <div class="panel"><h3>Recent Maintenance Activity</h3><div class="hint">Latest 10 maintenance records</div>${maintenanceTable(recent)}</div></div>`
 }
@@ -2715,7 +2946,7 @@ function openMaintenanceModal(existing){
 }
 
 function maintenanceLogPage(){
- const rows=db.maintenance||[];
+ const rows=viewMaintenanceRows();
  const machines=[...new Set(rows.map(x=>String(x[2]||'').trim()).filter(Boolean))].sort();
  const statuses=[...new Set(rows.map(x=>String(x[10]||'').trim()).filter(Boolean))].sort();
  const types=[...new Set(rows.map(x=>String(x[7]||'').trim()).filter(Boolean))].sort();
@@ -2749,7 +2980,7 @@ function getFilteredMaintenanceLogRows(){
  const type=document.getElementById('mlType')?.value||'';
  const from=document.getElementById('mlDateFrom')?.value||'';
  const to=document.getElementById('mlDateTo')?.value||'';
- let rows=(db.maintenance||[]).slice().reverse();
+ let rows=viewMaintenanceRows().slice().reverse();
  return rows.filter(x=>{
    const hay=x.map(v=>String(v??'')).join(' ').toLowerCase();
    const rowDate=String(x[1]||'').slice(0,10);
@@ -2915,9 +3146,9 @@ function machineProfileNav(sectionId, button){
 function machineDetailModal(id){
  const x=db.machines.find(z=>z[0]===decodeURIComponent(id)); if(!x)return;
  const fleet=String(x[0]||'').trim().toLowerCase(), model=String(x[2]||'').trim().toLowerCase();
- const jobs=db.maintenance.filter(r=>String(r[2]||'').trim().toLowerCase()===model || String(r[4]||'').trim().toLowerCase()===fleet).slice().sort((a,b)=>new Date(b[1]||0)-new Date(a[1]||0));
- const parts=db.inventory.filter(r=>String(r[2]||'').toLowerCase().split(',').map(v=>v.trim()).includes(model) || String(r[2]||'').trim().toLowerCase()===model);
- const partIssues=db.issues.filter(r=>{const issuedMachine=String(r[10]||r[3]||'').trim().toLowerCase();return issuedMachine===model||issuedMachine===fleet}).slice().sort((a,b)=>new Date(b[0]||0)-new Date(a[0]||0));
+ const jobs=viewMaintenanceRows().filter(r=>String(r[2]||'').trim().toLowerCase()===model || String(r[4]||'').trim().toLowerCase()===fleet).slice().sort((a,b)=>new Date(b[1]||0)-new Date(a[1]||0));
+ const parts=viewInventoryRows().filter(r=>String(r[2]||'').toLowerCase().split(',').map(v=>v.trim()).includes(model) || String(r[2]||'').trim().toLowerCase()===model);
+ const partIssues=viewIssueRows().filter(r=>{const issuedMachine=String(r[10]||r[3]||'').trim().toLowerCase();return issuedMachine===model||issuedMachine===fleet}).slice().sort((a,b)=>new Date(b[0]||0)-new Date(a[0]||0));
  const last=jobs[0]||null, latestHours=last?num(last[5]):null, nextService=last?num(last[6]):null, lastServiceDate=last?.[1]||'';
  const image=machineImageData(x), accent=machineStatusAccent(x[7]);
  openModal(`<div class="machine-profile-shell-v18">
@@ -2946,43 +3177,43 @@ function renderMachineRows(){
  const q=(document.getElementById("machineSearch")?.value||"").trim().toLowerCase();
  const status=(document.getElementById("machineStatusFilter")?.value||"").trim().toLowerCase();
  const dept=(document.getElementById("machineDeptFilter")?.value||"").trim().toLowerCase();
- const rows=db.machines.filter(x=>(!q||x.slice(0,9).join(" ").toLowerCase().includes(q))&&(!status||String(x[7]||"").toLowerCase()===status)&&(!dept||String(x[6]||"").toLowerCase()===dept));
+ const rows=viewMachineRows().filter(x=>(!q||x.slice(0,9).join(" ").toLowerCase().includes(q))&&(!status||String(x[7]||"").toLowerCase()===status)&&(!dept||String(x[6]||"").toLowerCase()===dept));
  const target=document.getElementById("machineRows"); if(!target)return;
  target.innerHTML=rows.length?rows.map(x=>`<tr><td><span class="machine-row-id-v19">${esc(x[0])}</span></td><td><span class="machine-machine-name-v19">${esc(x[1]||"—")}</span></td><td>${esc(x[2]||"—")}</td><td>${esc(x[3]||"—")}</td><td>${esc(x[4]||"—")}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td><span class="${machineStatusClass(x[7])}">${esc(x[7]||"Not set")}</span></td><td>${esc(x[8]||"—")}</td><td class="machine-actions-v19"><button class="btn secondary small" onclick="machineDetailModal('${encodeURIComponent(x[0])}')">View</button>${canEdit("machines")?` <button class="btn secondary small" onclick="machineModal('${encodeURIComponent(x[0])}')">Edit</button>`:""}</td></tr>`).join(""):`<tr><td colspan="10"><div class="empty">No machines match the selected filters.</div></td></tr>`;
- const count=document.getElementById("machineResultCount"); if(count)count.textContent=`Showing ${rows.length} of ${db.machines.length} machines`;
+ const count=document.getElementById("machineResultCount"); if(count)count.textContent=`Showing ${rows.length} of ${viewMachineRows().length} machines`;
 }
 function machinesPage(){
  const norm=v=>String(v??"").trim().toLowerCase();
- const statuses=[...new Set(db.machines.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort();
- const depts=[...new Set(db.machines.map(x=>String(x[6]||"").trim()).filter(Boolean))].sort();
- const countStatus=s=>db.machines.filter(x=>norm(x[7])===s).length;
- const running=db.machines.filter(x=>["running","active"].includes(norm(x[7]))).length;
- const attention=db.machines.filter(x=>{const s=norm(x[7]);return s.includes("maintenance")||s.includes("breakdown")||s.includes("repair")||s.includes("down")||s.includes("out of service")||s.includes("inactive")}).length;
- const maintenanceReady=db.machines.length?db.machines.filter(x=>!attention || !["breakdown","out of service"].some(v=>norm(x[7]).includes(v))).length:0;
+ const statuses=[...new Set(viewMachineRows().map(x=>String(x[7]||"").trim()).filter(Boolean))].sort();
+ const depts=[...new Set(viewMachineRows().map(x=>String(x[6]||"").trim()).filter(Boolean))].sort();
+ const countStatus=s=>viewMachineRows().filter(x=>norm(x[7])===s).length;
+ const running=viewMachineRows().filter(x=>["running","active"].includes(norm(x[7]))).length;
+ const attention=viewMachineRows().filter(x=>{const s=norm(x[7]);return s.includes("maintenance")||s.includes("breakdown")||s.includes("repair")||s.includes("down")||s.includes("out of service")||s.includes("inactive")}).length;
+ const maintenanceReady=viewMachineRows().length?viewMachineRows().filter(x=>!attention || !["breakdown","out of service"].some(v=>norm(x[7]).includes(v))).length:0;
  const alert=attention?`<div class="machine-attention-v19"><div class="machine-attention-icon-v19">!</div><div><b>${attention} machine${attention===1?'':'s'} require attention</b><span>Review machines under maintenance, breakdown, repair or out of service status.</span></div></div>`:`<div class="machine-attention-v19 ok"><div class="machine-attention-icon-v19">✓</div><div><b>Fleet status looks healthy</b><span>No machines are currently flagged for maintenance, breakdown or out of service attention.</span></div></div>`;
  return `<div class="machine-page-v19">
 
   <div class="machine-kpis-v19">
-   <div class="machine-kpi-v19"><div class="kpi-label">Total Fleet</div><div class="kpi-value">${db.machines.length}</div><div class="kpi-sub">Registered machines</div></div>
+   <div class="machine-kpi-v19"><div class="kpi-label">Total Fleet</div><div class="kpi-value">${viewMachineRows().length}</div><div class="kpi-sub">Registered machines</div></div>
    <div class="machine-kpi-v19 green"><div class="kpi-label">Running</div><div class="kpi-value">${running}</div><div class="kpi-sub">Currently operational</div></div>
    <div class="machine-kpi-v19 red"><div class="kpi-label">Needs Attention</div><div class="kpi-value">${attention}</div><div class="kpi-sub">Maintenance or downtime</div></div>
    <div class="machine-kpi-v19 orange"><div class="kpi-label">Locations</div><div class="kpi-value">${depts.length}</div><div class="kpi-sub">Departments / locations</div></div>
   </div>
   ${alert}
   <div class="machine-overview-grid-v19">
-   <div class="machine-panel-v19"><div class="machine-panel-head-v19"><div><h3>Fleet Overview</h3><p>Current distribution by machine status.</p></div><span class="badge info">${db.machines.length} ASSETS</span></div><div class="machine-status-list-v19">
+   <div class="machine-panel-v19"><div class="machine-panel-head-v19"><div><h3>Fleet Overview</h3><p>Current distribution by machine status.</p></div><span class="badge info">${viewMachineRows().length} ASSETS</span></div><div class="machine-status-list-v19">
     <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 running"></i>Running</span><b>${running}</b></div>
     <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 standby"></i>Standby</span><b>${countStatus("standby")}</b></div>
-    <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 maintenance"></i>Under Maintenance</span><b>${db.machines.filter(x=>norm(x[7]).includes("maintenance")).length}</b></div>
-    <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 breakdown"></i>Breakdown</span><b>${db.machines.filter(x=>norm(x[7]).includes("breakdown")||norm(x[7]).includes("repair")||norm(x[7]).includes("down")).length}</b></div>
+    <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 maintenance"></i>Under Maintenance</span><b>${viewMachineRows().filter(x=>norm(x[7]).includes("maintenance")).length}</b></div>
+    <div class="machine-status-item-v19"><span><i class="machine-status-dot-v19 breakdown"></i>Breakdown</span><b>${viewMachineRows().filter(x=>norm(x[7]).includes("breakdown")||norm(x[7]).includes("repair")||norm(x[7]).includes("down")).length}</b></div>
    </div></div>
    <div class="machine-panel-v19"><div class="machine-panel-head-v19"><div><h3>Fleet Snapshot</h3><p>Quick operational indicators.</p></div></div><div class="machine-quick-v19">
     <div class="machine-quick-row-v19"><span>Active locations</span><b>${depts.length}</b></div>
-    <div class="machine-quick-row-v19"><span>Available for operation</span><b>${Math.max(0,db.machines.length-attention)}</b></div>
+    <div class="machine-quick-row-v19"><span>Available for operation</span><b>${Math.max(0,viewMachineRows().length-attention)}</b></div>
     <div class="machine-quick-row-v19"><span>Service-ready records</span><b>${maintenanceReady}</b></div>
    </div></div>
   </div>
-  <div class="panel"><div class="toolbar" style="margin-bottom:14px"><div style="flex:1"><h3>Fleet Register</h3><div class="hint" id="machineResultCount">Showing ${db.machines.length} of ${db.machines.length} machines</div></div></div>
+  <div class="panel"><div class="toolbar" style="margin-bottom:14px"><div style="flex:1"><h3>Fleet Register</h3><div class="hint" id="machineResultCount">Showing ${viewMachineRows().length} of ${viewMachineRows().length} machines</div></div></div>
    <div class="machine-filters-v19"><input id="machineSearch" class="input search" placeholder="Search fleet ID, machine, model, serial or technician..." oninput="renderMachineRows()"><select id="machineStatusFilter" class="select" onchange="renderMachineRows()"><option value="">All statuses</option>${statuses.map(s=>`<option value="${esc(s.toLowerCase())}">${esc(s)}</option>`).join("")}</select><select id="machineDeptFilter" class="select" onchange="renderMachineRows()"><option value="">All departments / locations</option>${depts.map(s=>`<option value="${esc(s.toLowerCase())}">${esc(s)}</option>`).join("")}</select></div>
    <div class="machine-table-v19"><table class="table"><tr><th>Fleet ID</th><th>Machine</th><th>Model</th><th>Serial Number</th><th>Manufacturer</th><th>Capacity</th><th>Department / Location</th><th>Status</th><th>Assigned Technician</th><th>Actions</th></tr><tbody id="machineRows"></tbody></table></div>
   </div>
@@ -3100,10 +3331,10 @@ function runPartsReport(){
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
  let rows=[];
  if(type==="Parts Orders"){
-  (db.orders||[]).forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);});
+  viewOrderRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);});
  }else{
-  if(type!=="Parts Received")db.issues.forEach(x=>{if(dateIn(x[0],from,to)&&(!tech||String(x[5]).toLowerCase().includes(tech))&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["ISSUED",...x])});
-  if(type!=="Parts Issued")db.receipts.forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["RECEIVED",...x])});
+  if(type!=="Parts Received")viewIssueRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!tech||String(x[5]).toLowerCase().includes(tech))&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["ISSUED",...x])});
+  if(type!=="Parts Issued")viewReceiptRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["RECEIVED",...x])});
  }
  rows.sort((a,b)=>new Date(a[1])-new Date(b[1]));
  window.__partsReportData={type,tech,machine,part,from,to,rows};startFreshReportApproval("parts");
@@ -3120,51 +3351,20 @@ function runPartsReport(){
 function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
 function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
 function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
-function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};delete window.__reportApprovalUsersCache[kind];}
+function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];}
 function approvalStateForKind(kind){const id=approvalActiveId(kind);if(id){const r=reportApprovalReports.find(x=>x.id===id);const req=reportApprovalRequests.filter(x=>x.report_id===id);return {id,report:r,requests:req};}return {id:"",report:null,requests:[]};}
 function approvalSnapshotForKind(kind){
  const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;
  if(!d)return null;
- const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:db.settings.preparedBy||"",department:db.settings.department||"",reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
+ const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:db.settings.preparedBy||"",department:globalViewScopeLabel(),reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
  if(kind==="maintenance")snapshot.data.partsUpdates=Array.isArray(window.__maintenanceReportParts)?clone(window.__maintenanceReportParts):[];
  return snapshot;
 }
-function reportApprovalEligibleUsers(kind){
- const k=kind||"parts";
- const users=window.__reportApprovalUsersCache?.[k]||[];
- return users.filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id).sort((a,b)=>{
-   const order={company_admin:1,super_admin:2,manager:3,site_supervisor:4,department_supervisor:5,supervisor:5,maintenance_supervisor:5,team_lead:6,parts_coordinator:7,storekeeper:7,technician:8,maintenance:8};
-   return (order[String(a.role||"").toLowerCase()]||99)-(order[String(b.role||"").toLowerCase()]||99) || roleLabel(a.role).localeCompare(roleLabel(b.role)) || String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||""));
- });
-}
-async function loadReportApprovalUsers(kind){
- if(!iyCloudReady||!iyCompany||!iyAuthUser)return [];
- const k=kind||"parts";
- let reportId=approvalActiveId(k);
- if(!reportId){
-   try{reportId=await persistCurrentReport(k,[]);}catch(e){console.warn("Approval report could not be prepared",e?.message||e);return [];}
- }
- const {data,error}=await iySupabase.rpc("get_report_approval_users",{p_report_id:reportId});
- if(error)throw error;
- window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
- window.__reportApprovalUsersCache[k]=Array.isArray(data)?data:[];
- return window.__reportApprovalUsersCache[k];
-}
-async function ensureApprovalUsersLoaded(kind){
- if(!iyCloudReady||!iyCompany||!iyAuthUser)return;
- const k=kind||"parts";
- if(Array.isArray(window.__reportApprovalUsersCache?.[k]))return;
- try{await loadReportApprovalUsers(k);}catch(e){console.warn("Approval users could not be loaded",e?.message||e);}
-}
-async function refreshApprovalUsers(kind){
- try{
-   await loadReportApprovalUsers(kind);
-   refreshReportApprovalPreview(kind);
-   toast("Approval users refreshed.");
- }catch(e){alert(e?.message||"Approval users could not be loaded.");}
-}
+function reportApprovalEligibleUsers(){const roles=["company_admin","super_admin","manager","team_lead","parts_coordinator","storekeeper","maintenance_supervisor","supervisor","technician","maintenance"];return (iyUsersCache||[]).filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id&&roles.includes(String(u.role||"").toLowerCase())).sort((a,b)=>roleLabel(a.role).localeCompare(roleLabel(b.role))||String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||"")));}
+async function ensureApprovalUsersLoaded(){if(!iyCloudReady||!iyCompany||!iyAuthUser)return;const eligible=reportApprovalEligibleUsers();if(eligible.length)return;try{await fetchCompanyUsers();}catch(e){console.warn("Approval users could not be loaded",e?.message||e);}}
+async function refreshApprovalUsers(kind){try{await fetchCompanyUsers();refreshReportApprovalPreview(kind);toast("Approval users refreshed.");}catch(e){alert(e?.message||"Approval users could not be loaded.");}}
 function reportApprovalPanel(kind){
- const st=approvalStateForKind(kind),users=reportApprovalEligibleUsers(kind),requests=st.requests||[],requested=st.report?requests.filter(x=>x.user_id!==st.report.created_by):requests;
+ const st=approvalStateForKind(kind),users=reportApprovalEligibleUsers(),requests=st.requests||[],requested=st.report?requests.filter(x=>x.user_id!==st.report.created_by):requests;
  const signed=requested.filter(x=>x.status==="signed"),pending=requested.filter(x=>x.status==="pending");
  const mePending=requests.find(x=>x.user_id===iyAuthUser?.id&&x.status==="pending");
  const isCreator=!st.id||st.report?.created_by===iyAuthUser?.id;
@@ -3172,7 +3372,7 @@ function reportApprovalPanel(kind){
  const selectedUsers=window.__approvalSelections?.[kind]||[];
  const complete=requested.length>0&&pending.length===0;
  const status=complete?"Fully approved":signed.length?`${signed.length}/${requested.length} signed`:pending.length?`${pending.length} awaiting signature`:"No approvals requested";
- const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>`<div class="approval-chip pending"><strong>⏳ ${esc(((window.__reportApprovalUsersCache?.[kind]||[]).find(u=>u.user_id===x.user_id)||iyUsersCache.find(u=>u.user_id===x.user_id)||{}).full_name||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`)].join("");
+ const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>`<div class="approval-chip pending"><strong>⏳ ${esc((iyUsersCache.find(u=>u.user_id===x.user_id)||{}).full_name||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`)].join("");
  const userCards=users.length?users.map(u=>{const checked=selectedUsers.includes(u.user_id);return `<label class="approval-user-option ${checked?"selected":""}"><input type="checkbox" value="${esc(u.user_id)}" ${checked?"checked":""} onchange="toggleApprovalUser('${kind}',this)"><span class="approval-user-check">${checked?"✓":""}</span><span class="approval-user-main"><strong>${esc(u.full_name||u.email||"User")}</strong><small>${esc(roleLabel(u.role))}${u.user_code?` · ${esc(u.user_code)}`:""}</small></span></label>`}).join(""):`<div class="approval-no-users"><span>No other active approval users are available.</span><button type="button" class="approval-refresh-users" onclick="refreshApprovalUsers('${kind}')">↻ Refresh users</button></div>`;
  const requestBox=isCreator&&!complete?`<div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Select one or more users. They will receive this report in My Approvals.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div>`:"";
  const ownerAction=isCreator&&!mySigned?`<button class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
@@ -3201,27 +3401,6 @@ async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
  try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
-async function refreshOpenApprovalReport(kind,id){
- try{
-  if(!id)return;
-  await loadReportApprovalRecord(id);
-  await hydrateApprovalSignatureUrls(id);
-  const modalId=kind==="parts"?"partsReportPreviewModal":"reportPreviewModal";
-  const scrollId=kind==="parts"?"partsReportPreviewScroll":"reportPreviewScroll";
-  const scroll=document.getElementById(scrollId);
-  const previousTop=scroll?.scrollTop||0;
-  const html=kind==="parts"?buildPartsReportHTML():buildMaintenanceReportHTML();
-  if(scroll){
-   scroll.innerHTML=html;
-   requestAnimationFrame(()=>{try{scroll.scrollTop=previousTop;}catch(_){}});
-  }
-  return true;
- }catch(e){
-  console.warn("Open approval report refresh failed",e?.message||e);
-  refreshReportApprovalPreview(kind);
-  return false;
- }
-}
 async function signOwnCurrentReport(kind){
  try{
   let id=approvalActiveId(kind);
@@ -3229,9 +3408,8 @@ async function signOwnCurrentReport(kind){
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_own_report",{p_report_id:id});
   if(error)throw error;
-  await loadApprovalInboxFast({renderPage:false,notice:false});
-  await refreshOpenApprovalReport(kind,id);
-  toast("✓ Your signature has been applied to this report.");
+  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
+  refreshReportApprovalPreview(kind);toast("✓ Your signature has been applied to this report.");
  }catch(e){console.error(e);alert(e?.message||"Your signature could not be applied.");}
 }
 async function signCurrentReport(kind){
@@ -3241,25 +3419,16 @@ async function signCurrentReport(kind){
   const req=(reportApprovalRequests||[]).find(x=>x.report_id===id&&x.user_id===iyAuthUser?.id&&x.status==="pending");
   if(!req)throw new Error("You do not have a pending approval request for this report.");
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
-  const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});
-  if(error)throw error;
-  await loadApprovalInboxFast({renderPage:false,notice:false});
-  if(currentPage==="approvals"){
-   window.__approvalInboxTab="approved";
-   await refreshOpenApprovalReport(kind,id);
-   render();
-   toast("✓ Approval submitted. Your signature is now recorded.");
-  }else{
-   await refreshOpenApprovalReport(kind,id);
-   toast("✓ Approval submitted. Your signature has been applied to the report.");
-  }
+  const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
+  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
+  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
 async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
 function buildReportApprovalSignatureHTML(kind,prepared){const st=approvalStateForKind(kind),signed=st.requests.filter(x=>x.status==="signed");const cards=signed.map(x=>{const url=x.signature_url||window.__approvalSignatureUrls?.[st.id]?.find(y=>y.id===x.id)?.signature_url||"";return `<div class="r-sig"><div class="r-sig-space">${url?`<img class="r-sig-image" src="${esc(url)}" alt="Signature">`:``}</div><div class="r-sig-line"><strong>${esc(roleLabel(x.signer_role||"Approved By"))}</strong></div><div class="r-sig-name"><strong>${esc(x.signer_name||"")}</strong><br>${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):""}</div></div>`}).join("");return `<div class="r-signatures">${cards||`<div class="r-sig"><div class="r-sig-space"></div><div class="r-sig-line">No signatures applied</div><div class="r-sig-name">Signatures appear here only after the account signs.</div></div>`}</div>`;}
 async function openReportNotification(reportId){
  if(!reportId)return nav("mreports");
- try{const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;await hydrateApprovalSignatureUrls(reportId);window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};delete window.__reportApprovalUsersCache[r.report_kind];await ensureApprovalUsersLoaded(r.report_kind);if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
+ try{await ensureApprovalUsersLoaded();const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;await hydrateApprovalSignatureUrls(reportId);window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
 }
 function refreshReportApprovalPreview(kind){if(kind==="parts"){const m=document.getElementById("partsReportPreviewScroll");if(m)m.innerHTML=buildPartsReportHTML();}else{const m=document.getElementById("reportPreviewScroll");if(m)m.innerHTML=buildMaintenanceReportHTML();}}
 function buildPartsReportHTML(snapshotOverride){
@@ -3275,14 +3444,13 @@ function buildPartsReportHTML(snapshotOverride){
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 async function openPartsReportPreview(){
  if(!window.__partsReportData||!document.getElementById("prout")?.innerHTML)return alert("Please generate the parts report first.");
- if(!approvalActiveId("parts"))await persistCurrentReport("parts",[]);
- await ensureApprovalUsersLoaded("parts");
+ await ensureApprovalUsersLoaded();
  const html=buildPartsReportHTML();let modal=document.getElementById("partsReportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
  document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
-async function openPartsReportPreviewFromSnapshot(snapshot){if(!approvalActiveId("parts"))await persistCurrentReport("parts",[]);await ensureApprovalUsersLoaded("parts");const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded();const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
 function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,10);return `<div class="panel"><div class="formgrid"><div class="field"><label>Report Type</label><select id="mr_type" class="select" onchange="toggleMaintenanceCustomDates()"><option>DAILY</option><option>WEEKLY</option><option>MONTHLY</option><option>CUSTOM DATE</option></select></div><div class="field" id="mr_single_date_field"><label>Report Date</label><input id="mr_date" class="input" type="date" value="${today}"></div><div class="field" id="mr_from_field" style="display:none"><label>From Date</label><input id="mr_from" class="input" type="date" value="${today}"></div><div class="field" id="mr_to_field" style="display:none"><label>To Date</label><input id="mr_to" class="input" type="date" value="${today}"></div></div><div class="actions"><button class="btn primary" onclick="runMaintenanceReport()">Generate Report</button></div><div id="mrout" style="margin-top:22px"></div></div>`}
@@ -3292,8 +3460,8 @@ function reportPartsUpdateTable(rows){
  return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td></tr>`).join("")}</table></div>`;
 }
 function runMaintenanceReport(){
- if(!canGenerateReports())return toast("You do not have permission to generate reports.");const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
- const partsUpdates=db.updates.filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
+ if(!canGenerateReports())return toast("You do not have permission to generate reports.");const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=viewMaintenanceRows().filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
+ const partsUpdates=viewUpdateRows().filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
  window.__maintenanceReportParts=partsUpdates;
  startFreshReportApproval("maintenance");
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length,ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length,preventive=rows.filter(x=>["preventive maintenance","preventive","pm"].includes(String(x[7]).toLowerCase())).length,repairs=rows.filter(x=>["repair","repairs"].includes(String(x[7]).toLowerCase())).length,parts=rows.filter(x=>String(x[11]||"").trim()!=="").length;
@@ -3332,8 +3500,8 @@ function canAccess(page){
    mreports:[...operational,"parts_coordinator","viewer"],
    approvedreports:[...operational,"parts_coordinator","viewer"],
    approvals:[...operational,"parts_coordinator","viewer"],
-   settings:[],
-   users:[],
+   settings:["manager"],
+   users:["manager"],
    activity:["manager","site_supervisor","department_supervisor","team_lead","technician","parts_coordinator"],
    backup:[]
  };
@@ -3356,8 +3524,8 @@ function canEdit(area){
    orders:["department_supervisor","team_lead","technician","parts_coordinator"],
    maintenance:["department_supervisor","team_lead","technician"],
    machines:["department_supervisor","team_lead","technician"],
-   settings:["company_admin","super_admin"],
-   users:["company_admin","super_admin"]
+   settings:["company_admin","super_admin","manager"],
+   users:["company_admin","super_admin","manager"]
  };
  return (edit[area]||[]).includes(role);
 }
@@ -3392,34 +3560,18 @@ async function loadAdminLocationOptions(){
  return {sites:iyCompanySites,departments:iyCompanyDepartments};
 }
 
-function siteOptionsMarkup(selected="",role=""){
- const normalizedRole=String(role||"").toLowerCase();
- const companyWide=["company_admin","manager","super_admin"].includes(normalizedRole);
- const selectedValue=String(selected||"");
- const allSelected=!selectedValue && companyWide;
- const allLabel=companyWide?"All Sites":"All Sites";
- const allDisabled=companyWide?"":" disabled";
- return `<option value="" ${allSelected?"selected":""}${allDisabled}>${allLabel}</option>`+
-   iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===selectedValue?"selected":""}>${esc(s.name||"")}</option>`).join("");
+function siteOptionsMarkup(selected=""){
+ return `<option value="">All Sites</option>`+iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected||"")?"selected":""}>${esc(s.name)}</option>`).join("");
 }
 
-function departmentOptionsMarkup(siteId,selected="",role=""){
- const normalizedRole=String(role||"").toLowerCase();
- const companyWide=["company_admin","manager","super_admin"].includes(normalizedRole);
- const allDepartmentsAllowed=companyWide||normalizedRole==="site_supervisor";
- const selectedValue=String(selected||"");
+function departmentOptionsMarkup(siteId,selected=""){
  const list=iyCompanyDepartments.filter(d=>!siteId||String(d.site_id)===String(siteId));
- const allSelected=!selectedValue && allDepartmentsAllowed;
- const allDisabled=allDepartmentsAllowed?"":" disabled";
- const allOption=`<option value="" ${allSelected?"selected":""}${allDisabled}>All Departments</option>`;
- const emptySiteOption=(!siteId&&!allDepartmentsAllowed)?`<option value="" disabled selected>Select a site first</option>`:"";
- return allOption+emptySiteOption+
-   list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===selectedValue?"selected":""}>${esc(d.name||"")}</option>`).join("");
+ return `<option value="">All Departments</option>`+list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===String(selected||"")?"selected":""}>${esc(d.name)}</option>`).join("");
 }
 
-function refreshDepartmentSelect(selectId,siteId,selected="",role=""){
+function refreshDepartmentSelect(selectId,siteId,selected=""){
  const el=document.getElementById(selectId);
- if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected,role);
+ if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected);
 }
 
 function initializeWriteScope(){
@@ -3448,8 +3600,9 @@ function writeScopeLabel(){
  return "Select Site · Select Department";
 }
 function effectiveWriteScope(rowSiteId=null,rowDepartmentId=null){
- const siteId=rowSiteId|| (isCompanyWideScope()?iyWriteSiteId:currentSiteId());
- const departmentId=rowDepartmentId|| (isCompanyWideScope()?iyWriteDepartmentId:currentDepartmentId());
+ const globalScope=globalViewScopeValues();
+ const siteId=rowSiteId|| (isCompanyWideScope()?globalScope.siteId:currentSiteId());
+ const departmentId=rowDepartmentId|| (isCompanyWideScope()?globalScope.departmentId:currentDepartmentId());
  if((siteId&&!departmentId)||(!siteId&&departmentId))throw new Error("Select both Site and Department before saving this transaction.");
  if(!siteId||!departmentId)throw new Error("Please select the Site and Department for this transaction.");
  const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId));
@@ -3459,7 +3612,7 @@ function effectiveWriteScope(rowSiteId=null,rowDepartmentId=null){
 function writeScopeSelectorMarkup(){
  if(!isCompanyWideScope())return "";
  initializeWriteScope();
- return `<div class="iy-write-scope" title="New and edited transactions are saved to this operating location"><div class="iy-write-scope-title">Transaction scope</div><div class="iy-write-scope-grid"><select class="input iy-write-scope-select" id="iyWriteSiteSelect" onchange="setWriteSite(this.value)">${siteOptionsMarkup(iyWriteSiteId)}</select><select class="input iy-write-scope-select" id="iyWriteDepartmentSelect" onchange="setWriteDepartment(this.value)">${departmentOptionsMarkup(iyWriteSiteId,iyWriteDepartmentId)}</select></div><div class="iy-write-scope-note">${esc(writeScopeLabel())}</div></div>`;
+ return `<div class="iy-write-scope" title="New and edited transactions are saved to this operating location"><div class="iy-write-scope-title">Transaction scope</div><div class="iy-write-scope-grid"><div class="iy-write-scope-field"><label for="iyWriteSiteSelect">Site</label><select class="input iy-write-scope-select" id="iyWriteSiteSelect" onchange="setWriteSite(this.value)">${siteOptionsMarkup(iyWriteSiteId)}</select></div><div class="iy-write-scope-field"><label for="iyWriteDepartmentSelect">Department</label><select class="input iy-write-scope-select" id="iyWriteDepartmentSelect" onchange="setWriteDepartment(this.value)">${departmentOptionsMarkup(iyWriteSiteId,iyWriteDepartmentId)}</select></div></div><div class="iy-write-scope-note">${esc(writeScopeLabel())}</div></div>`;
 }
 
 function roleLabel(role){
@@ -3509,8 +3662,8 @@ function displayUserId(userOrId){
 }
 
 function usersRolesPageShell(){
- if(!isCompanyAdmin()){
-   return `<div class="modern-settings-shell"><section class="modern-card"><div class="access-denied"><div>🔒</div><h3>Administrator access required</h3><p>You do not have permission to manage users in this workspace.</p></div></section></div>`;
+ if(!canEdit("users")){
+   return `<div class="modern-settings-shell"><section class="modern-card"><div class="access-denied"><div>🔒</div><h3>Manager or Administrator access required</h3><p>You do not have permission to manage users in this workspace.</p></div></section></div>`;
  }
  return `<div class="modern-settings-shell">
   <div class="users-summary">
@@ -3542,28 +3695,20 @@ async function renderUsersTable(){
    const siteById=Object.fromEntries(iyCompanySites.map(s=>[s.id,s.name]));
    const deptById=Object.fromEntries(iyCompanyDepartments.map(d=>[d.id,d.name]));
    el.innerHTML=`<div class="users-table-wrap"><table class="users-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Site</th><th>Department</th><th>Status</th><th>Last sign in</th><th>Action</th></tr></thead><tbody>
-    ${users.map(u=>{
-      const ur=String(u.role||"").toLowerCase();
-      const isSelf=u.user_id===iyAuthUser?.id;
-      const displayEmail=u.email||(isSelf?iyAuthUser?.email:"")||"—";
-      const displaySite=["company_admin","super_admin","manager"].includes(ur)?"All Sites":(siteById[u.site_id]||"—");
-      const displayDept=["company_admin","super_admin","manager","site_supervisor"].includes(ur)?"All Departments":(deptById[u.department_id]||u.department||"—");
-      return `<tr>
-      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||displayEmail))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
-      <td>${esc(displayEmail)}</td>
+    ${users.map(u=>`<tr>
+      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||u.email))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
+      <td>${esc(u.email||"—")}</td>
       <td><span class="role-pill">${esc(roleLabel(u.role))}</span></td>
-      <td>${esc(displaySite)}</td>
-      <td>${esc(displayDept)}</td>
+      <td>${esc(["company_admin","super_admin","manager"].includes(String(u.role||"").toLowerCase())?"All Sites":(siteById[u.site_id]||"—"))}</td>
+      <td>${esc(["company_admin","super_admin","manager"].includes(String(u.role||"").toLowerCase())?"All Departments":(String(u.role||"").toLowerCase()==="site_supervisor"?"All Departments":(deptById[u.department_id]||u.department||"—")))}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${isSelf?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
-    </tr>`;
-    }).join("")}</tbody></table></div>`;
+      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
+    </tr>`).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
 
-async function openInviteUser(){if(!canEdit("users"))return alert("Company Administrator access is required to invite users.");
- if(!isCompanyAdmin())return alert("Company Administrator access is required.");
+async function openInviteUser(){if(!canEdit("users"))return alert("Manager or Company Administrator access is required to invite users.");
  try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
  openModal(`<div class="modalhead"><h2>Invite User</h2><button class="close" onclick="closeModal()">×</button></div>
   <div class="profile-note">Send a secure invitation to add a person to <strong>${esc(iyCompany?.name||"this workspace")}</strong>. Assign the user's site and department now so their operational access is scoped correctly.</div>
@@ -3571,8 +3716,8 @@ async function openInviteUser(){if(!canEdit("users"))return alert("Company Admin
    <div class="field"><label>Full name</label><input id="u_name" class="input" placeholder="Full name"></div>
    <div class="field"><label>Email address</label><input id="u_email" type="email" class="input" placeholder="user@company.com"></div>
    <div class="field"><label>Role</label><select id="u_role" class="select" onchange="toggleInviteLocationFields()">${userRoleOptions()}</select><div id="u_role_help" class="role-help"></div></div>
-   <div class="field"><label>Site</label><select id="u_site" class="select" onchange="refreshDepartmentSelect('u_department',this.value,document.getElementById('u_department')?.value,document.getElementById('u_role')?.value)">${siteOptionsMarkup("", "technician")}</select></div>
-   <div class="field"><label>Department</label><select id="u_department" class="select">${departmentOptionsMarkup("","", "technician")}</select></div>
+   <div class="field"><label>Site</label><select id="u_site" class="select" onchange="refreshDepartmentSelect('u_department',this.value)">${siteOptionsMarkup()}</select></div>
+   <div class="field"><label>Department</label><select id="u_department" class="select">${departmentOptionsMarkup("")}</select></div>
   </div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="sendUserInvitation()">Send Invitation</button></div>`);
  toggleInviteLocationFields();
@@ -3589,21 +3734,14 @@ function toggleInviteLocationFields(){
  const mode=roleScopeMode(role);
  const site=document.getElementById("u_site")?.closest(".field");
  const dept=document.getElementById("u_department")?.closest(".field");
- const siteEl=document.getElementById("u_site");
- const deptEl=document.getElementById("u_department");
  if(site)site.style.display=mode==="company"?"none":"";
- if(dept)dept.style.display=mode==="company"?"none":"";
+ if(dept)dept.style.display=mode==="department"?"":"none";
  if(mode==="company"){
-   if(siteEl)siteEl.value="";
-   if(deptEl)deptEl.value="";
+   if(document.getElementById("u_site"))document.getElementById("u_site").value="";
+   if(document.getElementById("u_department"))document.getElementById("u_department").value="";
  }else if(mode==="site"){
-   if(siteEl && !siteEl.value)siteEl.value="";
-   if(deptEl)deptEl.value="";
- }else{
-   if(siteEl && siteEl.value==="")siteEl.value="";
+   if(document.getElementById("u_department"))document.getElementById("u_department").value="";
  }
- if(siteEl && mode!=="company")siteEl.innerHTML=siteOptionsMarkup(siteEl.value,role);
- if(deptEl && mode!=="company")deptEl.innerHTML=departmentOptionsMarkup(siteEl?.value||"",deptEl.value,role);
  renderRoleHelp("u_role","u_role_help");
 }
 
@@ -3655,16 +3793,15 @@ async function openEditUser(id){
  if(!u)return;
  try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
  const self=u.user_id===iyAuthUser?.id;
- const displayEmail=u.email||(self?iyAuthUser?.email:"")||"";
  openModal(`<div class="modalhead"><h2>Edit User</h2><button class="close" onclick="closeModal()">×</button></div>
   <div class="profile-note">${self?"You are editing your own membership.":"Update this member's role, site, department or access status."}</div>
   <div class="profile-modal-grid" style="margin-top:16px">
    <div class="field"><label>Full name</label><input id="eu_name" class="input" value="${esc(u.full_name||"")}"></div>
    <div class="field"><label>User ID</label><input class="input" value="${esc(displayUserId(u))}" disabled></div>
-   <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(displayEmail)}" disabled></div>
+   <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(u.email||"")}" disabled></div>
    <div class="field"><label>Role</label><select id="eu_role" class="select" onchange="toggleEditLocationFields()">${userRoleOptions(u.role)}</select><div id="eu_role_help" class="role-help"></div></div>
-   <div class="field"><label>Site</label><select id="eu_site" class="select" onchange="refreshDepartmentSelect('eu_department',this.value,document.getElementById('eu_department')?.value,document.getElementById('eu_role')?.value)">${siteOptionsMarkup(u.site_id,u.role)}</select></div>
-   <div class="field"><label>Department</label><select id="eu_department" class="select">${departmentOptionsMarkup(u.site_id,u.department_id,u.role)}</select></div>
+   <div class="field"><label>Site</label><select id="eu_site" class="select" onchange="refreshDepartmentSelect('eu_department',this.value)">${siteOptionsMarkup(u.site_id)}</select></div>
+   <div class="field"><label>Department</label><select id="eu_department" class="select">${departmentOptionsMarkup(u.site_id,u.department_id)}</select></div>
   </div>
   <div class="field" style="margin-top:14px"><label>Access</label><select id="eu_active" class="select"><option value="true" ${u.is_active?"selected":""}>Active</option><option value="false" ${!u.is_active?"selected":""}>Inactive</option></select></div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUserMembership('${u.id}')">Save Changes</button></div>`);
@@ -3676,23 +3813,19 @@ function toggleEditLocationFields(){
  const mode=roleScopeMode(role);
  const site=document.getElementById("eu_site")?.closest(".field");
  const dept=document.getElementById("eu_department")?.closest(".field");
- const siteEl=document.getElementById("eu_site");
- const deptEl=document.getElementById("eu_department");
  if(site)site.style.display=mode==="company"?"none":"";
- if(dept)dept.style.display=mode==="company"?"none":"";
+ if(dept)dept.style.display=mode==="department"?"":"none";
  if(mode==="company"){
-   if(siteEl)siteEl.value="";
-   if(deptEl)deptEl.value="";
+   if(document.getElementById("eu_site"))document.getElementById("eu_site").value="";
+   if(document.getElementById("eu_department"))document.getElementById("eu_department").value="";
  }else if(mode==="site"){
-   if(deptEl)deptEl.value="";
+   if(document.getElementById("eu_department"))document.getElementById("eu_department").value="";
  }
- if(siteEl && mode!=="company")siteEl.innerHTML=siteOptionsMarkup(siteEl.value,role);
- if(deptEl && mode!=="company")deptEl.innerHTML=departmentOptionsMarkup(siteEl?.value||"",deptEl.value,role);
  renderRoleHelp("eu_role","eu_role_help");
 }
 
 async function deactivateUser(id){
- if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  if(u.user_id===iyAuthUser?.id)return alert("You cannot remove your own account.");
@@ -3708,7 +3841,7 @@ async function deactivateUser(id){
 }
 
 async function reactivateUser(id){
- if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  if(u.is_active)return;
@@ -3723,7 +3856,7 @@ async function reactivateUser(id){
 }
 
 async function cancelUserInvitation(id){
- if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+ if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  if(u.user_id===iyAuthUser?.id)return alert("You cannot cancel your own membership.");
@@ -3738,7 +3871,7 @@ async function cancelUserInvitation(id){
  }catch(e){alert(e?.message||"Invitation could not be cancelled.");}
 }
 
-async function saveUserMembership(id){if(!canEdit("users"))return alert("Company Administrator access is required to manage users.");
+async function saveUserMembership(id){if(!canEdit("users"))return alert("Manager or Company Administrator access is required to manage users.");
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  const name=document.getElementById("eu_name").value.trim();
@@ -4143,7 +4276,7 @@ async function completeAuthenticatedSession(user){
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
  await loadCloudData();
- db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.11";db.settings.developer="IY Digital Innovations";
+ db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.35";db.settings.developer="IY Digital Innovations";
  await migrateLegacyProfileAvatar();
  const profileAvatar=await loadProfileAvatar();
  const signatureUrl=await loadCurrentUserSignature();
@@ -4185,7 +4318,7 @@ async function loadCompanyContext(user){
   if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.24",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.35",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -4271,7 +4404,7 @@ async function loadCloudData(){
  if(approvalReports?.error&&approvalReports.error.code!=="PGRST205")console.warn("Report approval records could not be loaded.",approvalReports.error.message||approvalReports.error);
  if(approvalRequests?.error&&approvalRequests.error.code!=="PGRST205")console.warn("Report approval requests could not be loaded.",approvalRequests.error.message||approvalRequests.error);
  notificationLastRefresh=new Date();
- empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id]);
+ empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id,null,x.site_id||null,x.department_id||null]);
  try{
    const {data:machineImageFiles,error:machineImageError}=await iySupabase.storage.from("machine-images").list(iyCompany.id,{limit:1000});
    if(machineImageError)throw machineImageError;
@@ -4282,12 +4415,12 @@ async function loadCloudData(){
  const partsById={};(parts.data||[]).forEach(x=>partsById[x.id]=x);
  const resolvePartMachine=(p)=>p?.machine_model||machineModelFromPart(p||{},empty.machines)||"";
  empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id,x.site_id||null,x.department_id||null]});
- empty.receipts=(receipts.data||[]).map(x=>[x.received_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.supplier||"",x.reference||"",x.receiver_name||"",x.id,x.part_id]);
+ empty.receipts=(receipts.data||[]).map(x=>[x.received_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.supplier||"",x.reference||"",x.receiver_name||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||"",x.site_id||null,x.department_id||null]);
- empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
- empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id]);
- empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.24",developer:"IY Digital Innovations"});
+ empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
+ empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
+ empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null]);
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.35",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
@@ -4432,88 +4565,62 @@ async function cloudSaveMachine(row){
  const {data,error}=await iySupabase.from("machines").insert(payload).select("id").single();
  if(error)throw error; return data.id;
 }
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
-
-function canEditCompanyInformation(){
- const role=currentRole();
- return ["company_admin","manager","super_admin"].includes(role);
-}
+async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.31",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
 function settingsPage(){
  const s=db.settings||{};
  const canSettings=canEdit("settings");
- const canCompanyInfo=canEditCompanyInformation();
- const m=iyMembership||{};
- const u=db.user||{};
- const role=m.role||u.role||"";
- const normalizedRole=String(role||"").toLowerCase();
- const email=m.email||u.email||iyAuthUser?.email||"";
- const siteName=["company_admin","super_admin","manager"].includes(normalizedRole)?"All Sites":(iySite?.name||"Not assigned");
- const departmentName=["company_admin","super_admin","manager","site_supervisor"].includes(normalizedRole)?"All Departments":(iyDepartment?.name||"Not assigned");
- const companyName=iyCompany?.name||s.companyName||"Not assigned";
  return `<div class="modern-settings-shell">
  <div class="settings-nav-strip" id="settings-tabs">
-  <button type="button" class="settings-nav-item active" data-settings-tab="profile" onclick="switchSettingsTab('profile')"><span class="nav-icon">●</span><span>My Profile</span></button>
-  <button type="button" class="settings-nav-item" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>Company</span></button>
+  <button type="button" class="settings-nav-item active" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>General</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="branding" onclick="switchSettingsTab('branding')"><span class="nav-icon">▣</span><span>Branding</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="signatures" onclick="switchSettingsTab('signatures')"><span class="nav-icon">✎</span><span>Signatures</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="system" onclick="switchSettingsTab('system')"><span class="nav-icon">ⓘ</span><span>System</span></button>
  </div>
  <div class="modern-settings-grid">
   <section class="modern-settings-main">
-   <div id="settings-panel-profile" class="settings-tab-panel">
-    <section class="modern-card">
-     <div class="modern-card-head"><div class="head-icon blue">●</div><div><h3>My account & operational scope</h3><p>Your account identity and the company location assigned to you.</p></div></div>
-     <div class="modern-form-grid">
-      <div class="modern-field"><label>Full Name</label><input class="modern-input" value="${esc(m.full_name||u.name||"—")}" readonly disabled></div>
-      <div class="modern-field"><label>User ID</label><input class="modern-input" value="${esc(m.user_code||u.userId||"—")}" readonly disabled></div>
-      <div class="modern-field"><label>Email</label><input class="modern-input" value="${esc(email||"—")}" readonly disabled></div>
-      <div class="modern-field"><label>Role</label><input class="modern-input" value="${esc(roleLabel(role)||"—")}" readonly disabled></div>
-      <div class="modern-field"><label>Company</label><input class="modern-input" value="${esc(companyName)}" readonly disabled></div>
-      <div class="modern-field"><label>Site</label><input class="modern-input" value="${esc(siteName)}" readonly disabled></div>
-      <div class="modern-field"><label>Department</label><input class="modern-input" value="${esc(departmentName)}" readonly disabled></div>
-      <div class="modern-field"><label>Account Status</label><input class="modern-input" value="${m.is_active===false?"Inactive":"Active"}" readonly disabled></div>
-     </div>
-     <div class="modern-save-bar" style="margin-top:16px"><div><strong>Account assignment is controlled by company administration</strong><span>Your role, site and department are shown here for clarity. They are not changed from this page.</span></div><button type="button" class="modern-secondary-btn" onclick="openProfileEditor()">Edit My Profile</button></div>
-    </section>
-   </div>
-
-   <div id="settings-panel-general" class="settings-tab-panel" style="display:none">
+   <div id="settings-panel-general" class="settings-tab-panel">
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canCompanyInfo?"":"disabled"}></div>`).join("")}
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canSettings?"":"disabled"}></div>`).join("")}
      </div>
-     <div class="modern-save-bar" style="margin-top:16px"><div><strong>${canCompanyInfo?"Company information is editable":"Company information is read-only"}</strong><span>${canCompanyInfo?"Only Company Administrators, Managers and Super Admins can change company information.":"Only a Company Administrator, Manager or Super Admin can change company information."}</span></div><button class="modern-primary-btn" onclick="saveCompanyInformation()" ${canCompanyInfo?"":"disabled"}>Save Company Information</button></div>
     </section>
    </div>
-
    <div id="settings-panel-branding" class="settings-tab-panel" style="display:none">
     <section class="modern-card branding-card">
      <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your company logo appears on generated reports.</p></div></div>
      <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
      <div class="modern-meta-row"><span>PNG, JPG or WebP</span><span>Max 2 MB</span></div>
      <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}><button type="button" class="modern-secondary-btn" onclick="removeCompanyLogo()" ${(!s.logoData||!canSettings)?"disabled":""}>Remove</button></div>
-     <div class="modern-save-bar" style="margin-top:16px"><div><strong>${canSettings?"Branding administration":"Branding is read-only"}</strong><span>${canSettings?"Company Administrators can manage the company logo.":"Only Company Administrators can change company branding."}</span></div></div>
     </section>
    </div>
-
+   <div id="settings-panel-signatures" class="settings-tab-panel" style="display:none">
+    <section class="modern-card signatures-card">
+     <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
+     <div class="signature-modern-list">
+      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label class="modern-upload-link" for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}><button type="button" class="modern-link-btn" onclick="removeSignature('${k}')" ${(!s[k]||!canSettings)?"disabled":""}>Remove</button></div></div>`).join("")}
+     </div>
+    </section>
+   </div>
    <div id="settings-panel-system" class="settings-tab-panel" style="display:none">
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity is controlled by IY Digital Innovations.</p></div></div>
      <div class="modern-form-grid">
       <div class="modern-field"><label>System Name</label><input class="modern-input" value="Computerized Machines Maintenance System" readonly disabled></div>
-      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.35" readonly disabled></div>
+      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.31" readonly disabled></div>
       <div class="modern-field"><label>Developed By</label><input class="modern-input" value="IY Digital Innovations" readonly disabled></div>
      </div>
      <div class="modern-save-bar" style="margin-top:16px"><div><strong>System information is read-only</strong><span>Only IY Digital Innovations can change the system identity and application version. Company users cannot override these values.</span></div></div>
     </section>
    </div>
+   <div class="modern-save-bar" id="settings-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()" ${canSettings?"":"disabled"}>Save Settings</button></div>
   </section>
  </div>
  </div>`;
 }
 function switchSettingsTab(tab){
- const tabs=["profile","general","branding","system"];
+ const tabs=["general","branding","signatures","system"];
  tabs.forEach(t=>{
   const panel=document.getElementById("settings-panel-"+t);
   if(panel)panel.style.display=t===tab?"block":"none";
@@ -4636,22 +4743,16 @@ async function removeSignature(key){
  }catch(e){console.error("Signature removal failed",e);alert(`Could not remove the signature.\n\n${e?.message||e}`)}
 }
 
-async function saveCompanyInformation(){
- if(!canEditCompanyInformation())return alert("Only a Company Administrator, Manager or Super Admin can change company information.");
- const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter"];
+async function saveSettings(){
+ if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");
+ const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData","signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
  editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
  db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
- try{
-  if(iyCloudReady)await cloudSaveSettings();
-  if(iyCompany)iyCompany={...iyCompany,name:db.settings.companyName,address:db.settings.companyAddress,telephone:String(db.settings.telephone||""),email:db.settings.email||"",website:db.settings.website||""};
-  logActivity("Updated company information","Company information changed");
-  await cloudAudit("Updated company information","Company information changed");
-  save();render();toast("Company information saved.");
- }catch(e){alert(e?.message||"Company information could not be saved to the cloud.")}
-}
-
-async function saveSettings(){
- return saveCompanyInformation();
+ // System identity is controlled by IY Digital Innovations and is never editable by company users.
+ db.settings.systemName="Computerized Machines Maintenance System";
+ db.settings.version="V24.11";
+ db.settings.developer="IY Digital Innovations";
+ try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or report settings changed");await cloudAudit("Updated settings","Company, branding or report settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}
 }
 
 function backup(){
@@ -4793,7 +4894,7 @@ async function runRestoreJob(payload,name,options={}){
 }
 let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serviceRef=baseRef;let suffix=1;while(usedServiceRefs.has(serviceRef))serviceRef=`${baseRef}-R${suffix++}`;usedServiceRefs.add(serviceRef);const record={company_id:iyCompany.id,service_ref:serviceRef,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id};const {error}=await iySupabase.from("maintenance_records").insert(record);if(error)throw new Error(`Could not restore maintenance record ${idx+1} (${serviceRef}): ${error.message||error}`);await checkpoint("maintenance",84+((idx+1)/maintenance.length)*8,"Restoring maintenance records…",`Restored maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");}}
   await checkpoint("settings",92,"Restoring company settings…","Applying company details, report settings and configuration.","Branding and report configuration are being restored last.");
-  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
+  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.31",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
   await checkpoint("finish",97,"Finalizing restore…","Refreshing the workspace and verifying restored data.","Almost finished. Please keep this page open.");
   await cloudAudit("Restored system backup",`Company backup restored by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`);
   await loadCloudData();
@@ -4898,8 +4999,8 @@ function buildMaintenanceReportHTML(snapshotOverride){
    const type=document.getElementById("mr_type")?.value||"DAILY",date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let startDate,endDate;
    if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(from&&to){startDate=new Date(from+"T00:00:00");endDate=new Date(to+"T00:00:00")}else{startDate=new Date(date+"T00:00:00");endDate=new Date(startDate)}}else{const d=new Date(date+"T00:00:00");startDate=new Date(d);endDate=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;startDate.setDate(d.getDate()-day);endDate=new Date(startDate);endDate.setDate(startDate.getDate()+6)}if(type==="MONTHLY"){startDate=new Date(d.getFullYear(),d.getMonth(),1);endDate=new Date(d.getFullYear(),d.getMonth()+1,0)}}
    reportType=type==="WEEKLY"?"Weekly - Week "+getISOWeek_(startDate):type==="MONTHLY"?"Monthly - "+startDate.toLocaleDateString("en-GB",{month:"long",year:"numeric"}):type==="CUSTOM DATE"?"Custom Date - "+fmtDate(startDate)+" to "+fmtDate(endDate):"Daily - "+fmtDate(startDate);period=fmtDate(startDate)+" - "+fmtDate(endDate);
-   rows=db.maintenance.filter(x=>{const z=new Date(x[1]);return z>=startDate&&z<=new Date(endDate.getTime()+86399999);}).slice().reverse();
-   partsUpdates=db.updates.filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
+   rows=viewMaintenanceRows().filter(x=>{const z=new Date(x[1]);return z>=startDate&&z<=new Date(endDate.getTime()+86399999);}).slice().reverse();
+   partsUpdates=viewUpdateRows().filter(x=>dateIn(x[0],startDate.toISOString().slice(0,10),endDate.toISOString().slice(0,10))).slice().reverse();
    window.__maintenanceReportData={type,from:startDate.toISOString().slice(0,10),to:endDate.toISOString().slice(0,10),reportType,period,rows};window.__maintenanceReportParts=partsUpdates;
  }
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length;
@@ -4958,15 +5059,14 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 }
 async function openReportPreview(){
- if(!approvalActiveId("maintenance"))await persistCurrentReport("maintenance",[]);
- await ensureApprovalUsersLoaded("maintenance");
+ await ensureApprovalUsersLoaded();
  const html=buildMaintenanceReportHTML();if(!html)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
  document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){if(!approvalActiveId("maintenance"))await persistCurrentReport("maintenance",[]);await ensureApprovalUsersLoaded("maintenance");const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded();const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
