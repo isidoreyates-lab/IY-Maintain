@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.42 — Header View Scope Control -->
+<!-- IY Maintain V24.44 — Machine & Maintenance View Scope -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3009,7 +3009,7 @@ if(!window.__machineDetailWatcher){
 
 async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
  const machine=document.getElementById("m_machine").value;
- const mach=db.machines.find(x=>x[2]===machine);
+  const mach=viewMachineRows().find(x=>String(x[2])===String(machine));
  const row=[
    document.getElementById("m_ref").value.trim(),
    document.getElementById("m_date").value,
@@ -3059,15 +3059,15 @@ function maintenanceLogTable(rows){
  </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${x[6]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
 }
 function editMaintenance(id){
- if(!canEdit("maintenance"))return alert("You do not have permission to edit maintenance records.");
- const row=(db.maintenance||[]).find(x=>String(x[14]||"")===String(id||""));
- if(!row)return alert("Maintenance record could not be found.");
+  if(!canEdit("maintenance"))return alert("You do not have permission to edit maintenance records.");
+  const row=viewMaintenanceRows().find(x=>String(x[14]||"")===String(id||""));
+  if(!row)return alert("Maintenance record not found in the selected View Scope.");
  openMaintenanceModal(row);
 }
 function openMaintenanceModal(existing){
  const row=existing||null;
  const machineModel=String(row?.[2]||"");
- const machineOptions=db.machines.map(x=>`<option value="${esc(x[2])}" ${String(x[2])===machineModel?'selected':''}>${esc(x[2])} (${esc(x[0])})</option>`).join("");
+ const machineOptions=viewMachineRows().map(x=>`<option value="${esc(x[2])}" ${String(x[2])===machineModel?'selected':''}>${esc(x[2])} (${esc(x[0])})</option>`).join("");
  openModal(`<div class="modalhead"><h2>${row?'Edit Maintenance Entry':'Maintenance Entry'}</h2><button class="close" onclick="closeModal()">×</button></div>
  <div class="formgrid">
  <div class="field"><label>Service Reference</label><input id="m_ref" class="input" value="${esc(row?.[0]||`PSC${String(Math.floor(Math.random()*900)+100)}`)}"></div>
@@ -3287,7 +3287,9 @@ function machineProfileNav(sectionId, button){
  shell.querySelectorAll('.machine-profile-tabs-v18 button').forEach(b=>b.classList.toggle('active',b.dataset.profileNav===sectionId));
 }
 function machineDetailModal(id){
- const x=db.machines.find(z=>z[0]===decodeURIComponent(id)); if(!x)return;
+  const decoded=decodeURIComponent(id);
+  const x=viewMachineRows().find(z=>String(z[0])===String(decoded));
+  if(!x)return alert("Machine record not found in the selected View Scope.");
  const fleet=String(x[0]||'').trim().toLowerCase(), model=String(x[2]||'').trim().toLowerCase();
  const jobs=viewMaintenanceRows().filter(r=>String(r[2]||'').trim().toLowerCase()===model || String(r[4]||'').trim().toLowerCase()===fleet).slice().sort((a,b)=>new Date(b[1]||0)-new Date(a[1]||0));
  const parts=viewInventoryRows().filter(r=>String(r[2]||'').toLowerCase().split(',').map(v=>v.trim()).includes(model) || String(r[2]||'').trim().toLowerCase()===model);
@@ -3363,8 +3365,10 @@ function machinesPage(){
  </div>`;
 }
 function machineModal(id){
- if(!canEdit("machines"))return alert("Machine editing is restricted to Maintenance Supervisors and Administrators.");
- const x=id?db.machines.find(z=>z[0]===decodeURIComponent(id)):null;
+  if(!canEdit("machines"))return alert("You do not have permission to edit machine records.");
+  const decoded=id?decodeURIComponent(id):"";
+  const x=id?viewMachineRows().find(z=>String(z[0])===String(decoded)):null;
+  if(id&&!x)return alert("Machine record not found in the selected View Scope.");
  openModal(`<div class="machine-editor-v19">
   <div class="machine-editor-head-v19"><div><div class="machine-hero-kicker-v19">FLEET ASSET</div><h2>${x?"Edit Machine":"Add Machine"}</h2><p>${x?"Update the machine record and keep fleet information accurate.":"Register a new machine in your company fleet."}</p></div><button class="close machine-editor-close-v19" onclick="closeModal()">×</button></div>
   <div class="machine-editor-body-v19">
@@ -3386,7 +3390,7 @@ function machineModal(id){
  </div>`);
  const modal=document.getElementById("modal");if(modal){modal.classList.add("machine-editor-modal-v19");}
 }
-async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?db.machines.find(z=>z[0]===decodeURIComponent(old)):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;await cloudAudit("Added machine","Machine record created")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals);x[9]=id;await cloudAudit("Updated machine","Machine record updated")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
+async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?db.machines.find(z=>z[0]===decodeURIComponent(old)):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;await cloudAudit("Added machine","Machine record created")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals,x[11],x[12]);x[9]=id;await cloudAudit("Updated machine","Machine record updated")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
@@ -3503,11 +3507,43 @@ function approvalSnapshotForKind(kind){
  if(kind==="maintenance")snapshot.data.partsUpdates=Array.isArray(window.__maintenanceReportParts)?clone(window.__maintenanceReportParts):[];
  return snapshot;
 }
-function reportApprovalEligibleUsers(){const roles=["company_admin","super_admin","manager","team_lead","parts_coordinator","storekeeper","maintenance_supervisor","supervisor","technician","maintenance"];return (iyUsersCache||[]).filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id&&roles.includes(String(u.role||"").toLowerCase())).sort((a,b)=>roleLabel(a.role).localeCompare(roleLabel(b.role))||String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||"")));}
-async function ensureApprovalUsersLoaded(){if(!iyCloudReady||!iyCompany||!iyAuthUser)return;const eligible=reportApprovalEligibleUsers();if(eligible.length)return;try{await fetchCompanyUsers();}catch(e){console.warn("Approval users could not be loaded",e?.message||e);}}
-async function refreshApprovalUsers(kind){try{await fetchCompanyUsers();refreshReportApprovalPreview(kind);toast("Approval users refreshed.");}catch(e){alert(e?.message||"Approval users could not be loaded.");}}
+function reportApprovalEligibleUsers(kind){
+  const list=window.__reportApprovalUsersCache?.[kind]||[];
+  return [...list]
+    .filter(u=>u.is_active!==false&&u.user_id!==iyAuthUser?.id)
+    .sort((a,b)=>
+      roleLabel(a.role).localeCompare(roleLabel(b.role))||
+      String(a.full_name||a.email||"").localeCompare(String(b.full_name||b.email||""))
+    );
+}
+async function loadReportApprovalUsers(kind){
+  if(!iyCloudReady||!iyCompany||!iyAuthUser)return [];
+  const reportId=approvalActiveId(kind);
+  if(!reportId)return [];
+  window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
+  const {data,error}=await iySupabase.rpc("get_report_approval_users",{p_report_id:reportId});
+  if(error)throw error;
+  window.__reportApprovalUsersCache[kind]=Array.isArray(data)?data:[];
+  return window.__reportApprovalUsersCache[kind];
+}
+async function ensureApprovalUsersLoaded(kind){
+  if(!kind||!iyCloudReady||!iyCompany||!iyAuthUser)return;
+  window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
+  if(Object.prototype.hasOwnProperty.call(window.__reportApprovalUsersCache,kind))return;
+  try{await loadReportApprovalUsers(kind);}
+  catch(e){console.warn("Approval users could not be loaded",e?.message||e);}
+}
+async function refreshApprovalUsers(kind){
+  try{
+    window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
+    delete window.__reportApprovalUsersCache[kind];
+    await loadReportApprovalUsers(kind);
+    refreshReportApprovalPreview(kind);
+    toast("Approval users refreshed.");
+  }catch(e){alert(e?.message||"Approval users could not be loaded.");}
+}
 function reportApprovalPanel(kind){
- const st=approvalStateForKind(kind),users=reportApprovalEligibleUsers(),requests=st.requests||[],requested=st.report?requests.filter(x=>x.user_id!==st.report.created_by):requests;
+ const st=approvalStateForKind(kind),users=reportApprovalEligibleUsers(kind),requests=st.requests||[],requested=st.report?requests.filter(x=>x.user_id!==st.report.created_by):requests;
  const signed=requested.filter(x=>x.status==="signed"),pending=requested.filter(x=>x.status==="pending");
  const mePending=requests.find(x=>x.user_id===iyAuthUser?.id&&x.status==="pending");
  const isCreator=!st.id||st.report?.created_by===iyAuthUser?.id;
@@ -3515,7 +3551,7 @@ function reportApprovalPanel(kind){
  const selectedUsers=window.__approvalSelections?.[kind]||[];
  const complete=requested.length>0&&pending.length===0;
  const status=complete?"Fully approved":signed.length?`${signed.length}/${requested.length} signed`:pending.length?`${pending.length} awaiting signature`:"No approvals requested";
- const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>`<div class="approval-chip pending"><strong>⏳ ${esc((iyUsersCache.find(u=>u.user_id===x.user_id)||{}).full_name||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`)].join("");
+ const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>{const target=users.find(u=>u.user_id===x.user_id)||iyUsersCache.find(u=>u.user_id===x.user_id)||{};return `<div class="approval-chip pending"><strong>⏳ ${esc(target.full_name||target.email||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`})].join("");
  const userCards=users.length?users.map(u=>{const checked=selectedUsers.includes(u.user_id);return `<label class="approval-user-option ${checked?"selected":""}"><input type="checkbox" value="${esc(u.user_id)}" ${checked?"checked":""} onchange="toggleApprovalUser('${kind}',this)"><span class="approval-user-check">${checked?"✓":""}</span><span class="approval-user-main"><strong>${esc(u.full_name||u.email||"User")}</strong><small>${esc(roleLabel(u.role))}${u.user_code?` · ${esc(u.user_code)}`:""}</small></span></label>`}).join(""):`<div class="approval-no-users"><span>No other active approval users are available.</span><button type="button" class="approval-refresh-users" onclick="refreshApprovalUsers('${kind}')">↻ Refresh users</button></div>`;
  const requestBox=isCreator&&!complete?`<div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Select one or more users. They will receive this report in My Approvals.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div>`:"";
  const ownerAction=isCreator&&!mySigned?`<button class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
@@ -3571,7 +3607,7 @@ async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.
 function buildReportApprovalSignatureHTML(kind,prepared){const st=approvalStateForKind(kind),signed=st.requests.filter(x=>x.status==="signed");const cards=signed.map(x=>{const url=x.signature_url||window.__approvalSignatureUrls?.[st.id]?.find(y=>y.id===x.id)?.signature_url||"";return `<div class="r-sig"><div class="r-sig-space">${url?`<img class="r-sig-image" src="${esc(url)}" alt="Signature">`:``}</div><div class="r-sig-line"><strong>${esc(roleLabel(x.signer_role||"Approved By"))}</strong></div><div class="r-sig-name"><strong>${esc(x.signer_name||"")}</strong><br>${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):""}</div></div>`}).join("");return `<div class="r-signatures">${cards||`<div class="r-sig"><div class="r-sig-space"></div><div class="r-sig-line">No signatures applied</div><div class="r-sig-name">Signatures appear here only after the account signs.</div></div>`}</div>`;}
 async function openReportNotification(reportId){
  if(!reportId)return nav("mreports");
- try{await ensureApprovalUsersLoaded();const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;await hydrateApprovalSignatureUrls(reportId);window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
+ try{const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};delete window.__reportApprovalUsersCache[r.report_kind];await ensureApprovalUsersLoaded(r.report_kind);await hydrateApprovalSignatureUrls(reportId);window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};await openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};await openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
 }
 function refreshReportApprovalPreview(kind){if(kind==="parts"){const m=document.getElementById("partsReportPreviewScroll");if(m)m.innerHTML=buildPartsReportHTML();}else{const m=document.getElementById("reportPreviewScroll");if(m)m.innerHTML=buildMaintenanceReportHTML();}}
 function buildPartsReportHTML(snapshotOverride){
@@ -3593,7 +3629,7 @@ async function openPartsReportPreview(){
  document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
-async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded();const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("parts");const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
 function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,10);return `<div class="panel"><div class="formgrid"><div class="field"><label>Report Type</label><select id="mr_type" class="select" onchange="toggleMaintenanceCustomDates()"><option>DAILY</option><option>WEEKLY</option><option>MONTHLY</option><option>CUSTOM DATE</option></select></div><div class="field" id="mr_single_date_field"><label>Report Date</label><input id="mr_date" class="input" type="date" value="${today}"></div><div class="field" id="mr_from_field" style="display:none"><label>From Date</label><input id="mr_from" class="input" type="date" value="${today}"></div><div class="field" id="mr_to_field" style="display:none"><label>To Date</label><input id="mr_to" class="input" type="date" value="${today}"></div></div><div class="actions"><button class="btn primary" onclick="runMaintenanceReport()">Generate Report</button></div><div id="mrout" style="margin-top:22px"></div></div>`}
@@ -4659,12 +4695,13 @@ async function cloudSaveMaintenance(row){
    .eq("fleet_id",fleet)
    .maybeSingle();
  if(machineError)throw machineError;
- if(!machine)throw new Error("The selected machine could not be found in this company workspace.");
+  if(!machine)throw new Error("The selected machine could not be found in this company workspace.");
+  if(!globalViewScopeMatches(machine.site_id,machine.department_id))throw new Error("The selected machine is outside the active View Scope.");
 
- const payload={
-   company_id:iyCompany.id,
-   site_id:machine.site_id||currentSiteId(),
-   department_id:machine.department_id||currentDepartmentId(),
+  const payload={
+    company_id:iyCompany.id,
+    site_id:machine.site_id,
+    department_id:machine.department_id,
    service_ref:String(row[0]||"").trim(),
    job_date:row[1]||null,
    machine_id:machine.id,
@@ -4704,8 +4741,9 @@ async function cloudSaveMaintenance(row){
  if(error)throw error;
  return data.id;
 }
-async function cloudSaveMachine(row){
- const payload={company_id:iyCompany.id,site_id:currentSiteId(),department_id:currentDepartmentId(),fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
+async function cloudSaveMachine(row,existingSiteId=null,existingDepartmentId=null){
+  const scope=effectiveWriteScope(existingSiteId,existingDepartmentId);
+  const payload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
  if(!payload.site_id||!payload.department_id)throw new Error("Your account must have a Site and Department assigned before machine records can be saved.");
  let existing=null;
  if(row[9]){
@@ -5228,7 +5266,7 @@ async function openReportPreview(){
  document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded();const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
