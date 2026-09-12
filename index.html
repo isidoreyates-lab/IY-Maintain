@@ -3392,18 +3392,34 @@ async function loadAdminLocationOptions(){
  return {sites:iyCompanySites,departments:iyCompanyDepartments};
 }
 
-function siteOptionsMarkup(selected=""){
- return `<option value="">${isCompanyWideScope()?"Company-wide / No site":"Select site"}</option>`+iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(selected||"")?"selected":""}>${esc(s.name)}${s.code?` · ${esc(s.code)}`:""}</option>`).join("");
+function siteOptionsMarkup(selected="",role=""){
+ const normalizedRole=String(role||"").toLowerCase();
+ const companyWide=["company_admin","manager","super_admin"].includes(normalizedRole);
+ const selectedValue=String(selected||"");
+ const allSelected=!selectedValue && companyWide;
+ const allLabel=companyWide?"All Sites":"All Sites";
+ const allDisabled=companyWide?"":" disabled";
+ return `<option value="" ${allSelected?"selected":""}${allDisabled}>${allLabel}</option>`+
+   iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===selectedValue?"selected":""}>${esc(s.name||"")}</option>`).join("");
 }
 
-function departmentOptionsMarkup(siteId,selected=""){
+function departmentOptionsMarkup(siteId,selected="",role=""){
+ const normalizedRole=String(role||"").toLowerCase();
+ const companyWide=["company_admin","manager","super_admin"].includes(normalizedRole);
+ const allDepartmentsAllowed=companyWide||normalizedRole==="site_supervisor";
+ const selectedValue=String(selected||"");
  const list=iyCompanyDepartments.filter(d=>!siteId||String(d.site_id)===String(siteId));
- return `<option value="">${siteId?"Select department":"Select a site first"}</option>`+list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===String(selected||"")?"selected":""}>${esc(d.name)}${d.code?` · ${esc(d.code)}`:""}</option>`).join("");
+ const allSelected=!selectedValue && allDepartmentsAllowed;
+ const allDisabled=allDepartmentsAllowed?"":" disabled";
+ const allOption=`<option value="" ${allSelected?"selected":""}${allDisabled}>All Departments</option>`;
+ const emptySiteOption=(!siteId&&!allDepartmentsAllowed)?`<option value="" disabled selected>Select a site first</option>`:"";
+ return allOption+emptySiteOption+
+   list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===selectedValue?"selected":""}>${esc(d.name||"")}</option>`).join("");
 }
 
-function refreshDepartmentSelect(selectId,siteId,selected=""){
+function refreshDepartmentSelect(selectId,siteId,selected="",role=""){
  const el=document.getElementById(selectId);
- if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected);
+ if(el)el.innerHTML=departmentOptionsMarkup(siteId,selected,role);
 }
 
 function initializeWriteScope(){
@@ -3526,16 +3542,23 @@ async function renderUsersTable(){
    const siteById=Object.fromEntries(iyCompanySites.map(s=>[s.id,s.name]));
    const deptById=Object.fromEntries(iyCompanyDepartments.map(d=>[d.id,d.name]));
    el.innerHTML=`<div class="users-table-wrap"><table class="users-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Site</th><th>Department</th><th>Status</th><th>Last sign in</th><th>Action</th></tr></thead><tbody>
-    ${users.map(u=>`<tr>
-      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||u.email))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
-      <td>${esc(u.email||"—")}</td>
+    ${users.map(u=>{
+      const ur=String(u.role||"").toLowerCase();
+      const isSelf=u.user_id===iyAuthUser?.id;
+      const displayEmail=u.email||(isSelf?iyAuthUser?.email:"")||"—";
+      const displaySite=["company_admin","super_admin","manager"].includes(ur)?"All Sites":(siteById[u.site_id]||"—");
+      const displayDept=["company_admin","super_admin","manager","site_supervisor"].includes(ur)?"All Departments":(deptById[u.department_id]||u.department||"—");
+      return `<tr>
+      <td><div class="user-cell"><div class="user-avatar">${esc(userInitials(u.full_name||displayEmail))}</div><div><strong>${esc(u.full_name||"Unnamed user")}</strong><small>${esc(displayUserId(u))}</small></div></div></td>
+      <td>${esc(displayEmail)}</td>
       <td><span class="role-pill">${esc(roleLabel(u.role))}</span></td>
-      <td>${esc(["company_admin","super_admin","manager"].includes(String(u.role||"").toLowerCase())?"All Sites":(siteById[u.site_id]||"—"))}</td>
-      <td>${esc(["company_admin","super_admin","manager"].includes(String(u.role||"").toLowerCase())?"All Departments":(String(u.role||"").toLowerCase()==="site_supervisor"?"All Departments":(deptById[u.department_id]||u.department||"—")))}</td>
+      <td>${esc(displaySite)}</td>
+      <td>${esc(displayDept)}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
-    </tr>`).join("")}</tbody></table></div>`;
+      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${isSelf?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
+    </tr>`;
+    }).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
 
@@ -3548,8 +3571,8 @@ async function openInviteUser(){if(!canEdit("users"))return alert("Company Admin
    <div class="field"><label>Full name</label><input id="u_name" class="input" placeholder="Full name"></div>
    <div class="field"><label>Email address</label><input id="u_email" type="email" class="input" placeholder="user@company.com"></div>
    <div class="field"><label>Role</label><select id="u_role" class="select" onchange="toggleInviteLocationFields()">${userRoleOptions()}</select><div id="u_role_help" class="role-help"></div></div>
-   <div class="field"><label>Site</label><select id="u_site" class="select" onchange="refreshDepartmentSelect('u_department',this.value)">${siteOptionsMarkup()}</select></div>
-   <div class="field"><label>Department</label><select id="u_department" class="select">${departmentOptionsMarkup("")}</select></div>
+   <div class="field"><label>Site</label><select id="u_site" class="select" onchange="refreshDepartmentSelect('u_department',this.value,document.getElementById('u_department')?.value,document.getElementById('u_role')?.value)">${siteOptionsMarkup("", "technician")}</select></div>
+   <div class="field"><label>Department</label><select id="u_department" class="select">${departmentOptionsMarkup("","", "technician")}</select></div>
   </div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="sendUserInvitation()">Send Invitation</button></div>`);
  toggleInviteLocationFields();
@@ -3566,14 +3589,21 @@ function toggleInviteLocationFields(){
  const mode=roleScopeMode(role);
  const site=document.getElementById("u_site")?.closest(".field");
  const dept=document.getElementById("u_department")?.closest(".field");
+ const siteEl=document.getElementById("u_site");
+ const deptEl=document.getElementById("u_department");
  if(site)site.style.display=mode==="company"?"none":"";
- if(dept)dept.style.display=mode==="department"?"":"none";
+ if(dept)dept.style.display=mode==="company"?"none":"";
  if(mode==="company"){
-   if(document.getElementById("u_site"))document.getElementById("u_site").value="";
-   if(document.getElementById("u_department"))document.getElementById("u_department").value="";
+   if(siteEl)siteEl.value="";
+   if(deptEl)deptEl.value="";
  }else if(mode==="site"){
-   if(document.getElementById("u_department"))document.getElementById("u_department").value="";
+   if(siteEl && !siteEl.value)siteEl.value="";
+   if(deptEl)deptEl.value="";
+ }else{
+   if(siteEl && siteEl.value==="")siteEl.value="";
  }
+ if(siteEl && mode!=="company")siteEl.innerHTML=siteOptionsMarkup(siteEl.value,role);
+ if(deptEl && mode!=="company")deptEl.innerHTML=departmentOptionsMarkup(siteEl?.value||"",deptEl.value,role);
  renderRoleHelp("u_role","u_role_help");
 }
 
@@ -3625,15 +3655,16 @@ async function openEditUser(id){
  if(!u)return;
  try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
  const self=u.user_id===iyAuthUser?.id;
+ const displayEmail=u.email||(self?iyAuthUser?.email:"")||"";
  openModal(`<div class="modalhead"><h2>Edit User</h2><button class="close" onclick="closeModal()">×</button></div>
   <div class="profile-note">${self?"You are editing your own membership.":"Update this member's role, site, department or access status."}</div>
   <div class="profile-modal-grid" style="margin-top:16px">
    <div class="field"><label>Full name</label><input id="eu_name" class="input" value="${esc(u.full_name||"")}"></div>
    <div class="field"><label>User ID</label><input class="input" value="${esc(displayUserId(u))}" disabled></div>
-   <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(u.email||"")}" disabled></div>
+   <div class="field"><label>Email</label><input id="eu_email" class="input" value="${esc(displayEmail)}" disabled></div>
    <div class="field"><label>Role</label><select id="eu_role" class="select" onchange="toggleEditLocationFields()">${userRoleOptions(u.role)}</select><div id="eu_role_help" class="role-help"></div></div>
-   <div class="field"><label>Site</label><select id="eu_site" class="select" onchange="refreshDepartmentSelect('eu_department',this.value)">${siteOptionsMarkup(u.site_id)}</select></div>
-   <div class="field"><label>Department</label><select id="eu_department" class="select">${departmentOptionsMarkup(u.site_id,u.department_id)}</select></div>
+   <div class="field"><label>Site</label><select id="eu_site" class="select" onchange="refreshDepartmentSelect('eu_department',this.value,document.getElementById('eu_department')?.value,document.getElementById('eu_role')?.value)">${siteOptionsMarkup(u.site_id,u.role)}</select></div>
+   <div class="field"><label>Department</label><select id="eu_department" class="select">${departmentOptionsMarkup(u.site_id,u.department_id,u.role)}</select></div>
   </div>
   <div class="field" style="margin-top:14px"><label>Access</label><select id="eu_active" class="select"><option value="true" ${u.is_active?"selected":""}>Active</option><option value="false" ${!u.is_active?"selected":""}>Inactive</option></select></div>
   <div class="actionbar"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUserMembership('${u.id}')">Save Changes</button></div>`);
@@ -3645,14 +3676,18 @@ function toggleEditLocationFields(){
  const mode=roleScopeMode(role);
  const site=document.getElementById("eu_site")?.closest(".field");
  const dept=document.getElementById("eu_department")?.closest(".field");
+ const siteEl=document.getElementById("eu_site");
+ const deptEl=document.getElementById("eu_department");
  if(site)site.style.display=mode==="company"?"none":"";
- if(dept)dept.style.display=mode==="department"?"":"none";
+ if(dept)dept.style.display=mode==="company"?"none":"";
  if(mode==="company"){
-   if(document.getElementById("eu_site"))document.getElementById("eu_site").value="";
-   if(document.getElementById("eu_department"))document.getElementById("eu_department").value="";
+   if(siteEl)siteEl.value="";
+   if(deptEl)deptEl.value="";
  }else if(mode==="site"){
-   if(document.getElementById("eu_department"))document.getElementById("eu_department").value="";
+   if(deptEl)deptEl.value="";
  }
+ if(siteEl && mode!=="company")siteEl.innerHTML=siteOptionsMarkup(siteEl.value,role);
+ if(deptEl && mode!=="company")deptEl.innerHTML=departmentOptionsMarkup(siteEl?.value||"",deptEl.value,role);
  renderRoleHelp("eu_role","eu_role_help");
 }
 
@@ -4399,60 +4434,86 @@ async function cloudSaveMachine(row){
 }
 async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.24",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
+function canEditCompanyInformation(){
+ const role=currentRole();
+ return ["company_admin","manager","super_admin"].includes(role);
+}
+
 function settingsPage(){
  const s=db.settings||{};
  const canSettings=canEdit("settings");
+ const canCompanyInfo=canEditCompanyInformation();
+ const m=iyMembership||{};
+ const u=db.user||{};
+ const role=m.role||u.role||"";
+ const normalizedRole=String(role||"").toLowerCase();
+ const email=m.email||u.email||iyAuthUser?.email||"";
+ const siteName=["company_admin","super_admin","manager"].includes(normalizedRole)?"All Sites":(iySite?.name||"Not assigned");
+ const departmentName=["company_admin","super_admin","manager","site_supervisor"].includes(normalizedRole)?"All Departments":(iyDepartment?.name||"Not assigned");
+ const companyName=iyCompany?.name||s.companyName||"Not assigned";
  return `<div class="modern-settings-shell">
  <div class="settings-nav-strip" id="settings-tabs">
-  <button type="button" class="settings-nav-item active" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>General</span></button>
+  <button type="button" class="settings-nav-item active" data-settings-tab="profile" onclick="switchSettingsTab('profile')"><span class="nav-icon">●</span><span>My Profile</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>Company</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="branding" onclick="switchSettingsTab('branding')"><span class="nav-icon">▣</span><span>Branding</span></button>
-  <button type="button" class="settings-nav-item" data-settings-tab="signatures" onclick="switchSettingsTab('signatures')"><span class="nav-icon">✎</span><span>Signatures</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="system" onclick="switchSettingsTab('system')"><span class="nav-icon">ⓘ</span><span>System</span></button>
  </div>
  <div class="modern-settings-grid">
   <section class="modern-settings-main">
-   <div id="settings-panel-general" class="settings-tab-panel">
+   <div id="settings-panel-profile" class="settings-tab-panel">
+    <section class="modern-card">
+     <div class="modern-card-head"><div class="head-icon blue">●</div><div><h3>My account & operational scope</h3><p>Your account identity and the company location assigned to you.</p></div></div>
+     <div class="modern-form-grid">
+      <div class="modern-field"><label>Full Name</label><input class="modern-input" value="${esc(m.full_name||u.name||"—")}" readonly disabled></div>
+      <div class="modern-field"><label>User ID</label><input class="modern-input" value="${esc(m.user_code||u.userId||"—")}" readonly disabled></div>
+      <div class="modern-field"><label>Email</label><input class="modern-input" value="${esc(email||"—")}" readonly disabled></div>
+      <div class="modern-field"><label>Role</label><input class="modern-input" value="${esc(roleLabel(role)||"—")}" readonly disabled></div>
+      <div class="modern-field"><label>Company</label><input class="modern-input" value="${esc(companyName)}" readonly disabled></div>
+      <div class="modern-field"><label>Site</label><input class="modern-input" value="${esc(siteName)}" readonly disabled></div>
+      <div class="modern-field"><label>Department</label><input class="modern-input" value="${esc(departmentName)}" readonly disabled></div>
+      <div class="modern-field"><label>Account Status</label><input class="modern-input" value="${m.is_active===false?"Inactive":"Active"}" readonly disabled></div>
+     </div>
+     <div class="modern-save-bar" style="margin-top:16px"><div><strong>Account assignment is controlled by company administration</strong><span>Your role, site and department are shown here for clarity. They are not changed from this page.</span></div><button type="button" class="modern-secondary-btn" onclick="openProfileEditor()">Edit My Profile</button></div>
+    </section>
+   </div>
+
+   <div id="settings-panel-general" class="settings-tab-panel" style="display:none">
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canSettings?"":"disabled"}></div>`).join("")}
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canCompanyInfo?"":"disabled"}></div>`).join("")}
      </div>
+     <div class="modern-save-bar" style="margin-top:16px"><div><strong>${canCompanyInfo?"Company information is editable":"Company information is read-only"}</strong><span>${canCompanyInfo?"Only Company Administrators, Managers and Super Admins can change company information.":"Only a Company Administrator, Manager or Super Admin can change company information."}</span></div><button class="modern-primary-btn" onclick="saveCompanyInformation()" ${canCompanyInfo?"":"disabled"}>Save Company Information</button></div>
     </section>
    </div>
+
    <div id="settings-panel-branding" class="settings-tab-panel" style="display:none">
     <section class="modern-card branding-card">
      <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your company logo appears on generated reports.</p></div></div>
      <div class="modern-logo-preview">${s.logoData?`<img src="${s.logoData}" alt="Company logo">`:`<div class="modern-logo-empty"><div class="logo-placeholder-mark">P</div><strong>No logo uploaded</strong><span>Upload your company logo</span></div>`}</div>
      <div class="modern-meta-row"><span>PNG, JPG or WebP</span><span>Max 2 MB</span></div>
      <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}><button type="button" class="modern-secondary-btn" onclick="removeCompanyLogo()" ${(!s.logoData||!canSettings)?"disabled":""}>Remove</button></div>
+     <div class="modern-save-bar" style="margin-top:16px"><div><strong>${canSettings?"Branding administration":"Branding is read-only"}</strong><span>${canSettings?"Company Administrators can manage the company logo.":"Only Company Administrators can change company branding."}</span></div></div>
     </section>
    </div>
-   <div id="settings-panel-signatures" class="settings-tab-panel" style="display:none">
-    <section class="modern-card signatures-card">
-     <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
-     <div class="signature-modern-list">
-      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label class="modern-upload-link" for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}><button type="button" class="modern-link-btn" onclick="removeSignature('${k}')" ${(!s[k]||!canSettings)?"disabled":""}>Remove</button></div></div>`).join("")}
-     </div>
-    </section>
-   </div>
+
    <div id="settings-panel-system" class="settings-tab-panel" style="display:none">
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity is controlled by IY Digital Innovations.</p></div></div>
      <div class="modern-form-grid">
       <div class="modern-field"><label>System Name</label><input class="modern-input" value="Computerized Machines Maintenance System" readonly disabled></div>
-      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.11" readonly disabled></div>
+      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.35" readonly disabled></div>
       <div class="modern-field"><label>Developed By</label><input class="modern-input" value="IY Digital Innovations" readonly disabled></div>
      </div>
      <div class="modern-save-bar" style="margin-top:16px"><div><strong>System information is read-only</strong><span>Only IY Digital Innovations can change the system identity and application version. Company users cannot override these values.</span></div></div>
     </section>
    </div>
-   <div class="modern-save-bar" id="settings-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()" ${canSettings?"":"disabled"}>Save Settings</button></div>
   </section>
  </div>
  </div>`;
 }
 function switchSettingsTab(tab){
- const tabs=["general","branding","signatures","system"];
+ const tabs=["profile","general","branding","system"];
  tabs.forEach(t=>{
   const panel=document.getElementById("settings-panel-"+t);
   if(panel)panel.style.display=t===tab?"block":"none";
@@ -4575,16 +4636,22 @@ async function removeSignature(key){
  }catch(e){console.error("Signature removal failed",e);alert(`Could not remove the signature.\n\n${e?.message||e}`)}
 }
 
-async function saveSettings(){
- if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");
- const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData","signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
+async function saveCompanyInformation(){
+ if(!canEditCompanyInformation())return alert("Only a Company Administrator, Manager or Super Admin can change company information.");
+ const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter"];
  editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
  db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
- // System identity is controlled by IY Digital Innovations and is never editable by company users.
- db.settings.systemName="Computerized Machines Maintenance System";
- db.settings.version="V24.11";
- db.settings.developer="IY Digital Innovations";
- try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or report settings changed");await cloudAudit("Updated settings","Company, branding or report settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}
+ try{
+  if(iyCloudReady)await cloudSaveSettings();
+  if(iyCompany)iyCompany={...iyCompany,name:db.settings.companyName,address:db.settings.companyAddress,telephone:String(db.settings.telephone||""),email:db.settings.email||"",website:db.settings.website||""};
+  logActivity("Updated company information","Company information changed");
+  await cloudAudit("Updated company information","Company information changed");
+  save();render();toast("Company information saved.");
+ }catch(e){alert(e?.message||"Company information could not be saved to the cloud.")}
+}
+
+async function saveSettings(){
+ return saveCompanyInformation();
 }
 
 function backup(){
