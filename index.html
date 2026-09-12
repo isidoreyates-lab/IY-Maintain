@@ -3201,6 +3201,27 @@ async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
  try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
+async function refreshOpenApprovalReport(kind,id){
+ try{
+  if(!id)return;
+  await loadReportApprovalRecord(id);
+  await hydrateApprovalSignatureUrls(id);
+  const modalId=kind==="parts"?"partsReportPreviewModal":"reportPreviewModal";
+  const scrollId=kind==="parts"?"partsReportPreviewScroll":"reportPreviewScroll";
+  const scroll=document.getElementById(scrollId);
+  const previousTop=scroll?.scrollTop||0;
+  const html=kind==="parts"?buildPartsReportHTML():buildMaintenanceReportHTML();
+  if(scroll){
+   scroll.innerHTML=html;
+   requestAnimationFrame(()=>{try{scroll.scrollTop=previousTop;}catch(_){}});
+  }
+  return true;
+ }catch(e){
+  console.warn("Open approval report refresh failed",e?.message||e);
+  refreshReportApprovalPreview(kind);
+  return false;
+ }
+}
 async function signOwnCurrentReport(kind){
  try{
   let id=approvalActiveId(kind);
@@ -3208,8 +3229,9 @@ async function signOwnCurrentReport(kind){
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_own_report",{p_report_id:id});
   if(error)throw error;
-  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  refreshReportApprovalPreview(kind);toast("✓ Your signature has been applied to this report.");
+  await loadApprovalInboxFast({renderPage:false,notice:false});
+  await refreshOpenApprovalReport(kind,id);
+  toast("✓ Your signature has been applied to this report.");
  }catch(e){console.error(e);alert(e?.message||"Your signature could not be applied.");}
 }
 async function signCurrentReport(kind){
@@ -3219,9 +3241,18 @@ async function signCurrentReport(kind){
   const req=(reportApprovalRequests||[]).find(x=>x.report_id===id&&x.user_id===iyAuthUser?.id&&x.status==="pending");
   if(!req)throw new Error("You do not have a pending approval request for this report.");
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
-  const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
-  await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
+  const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});
+  if(error)throw error;
+  await loadApprovalInboxFast({renderPage:false,notice:false});
+  if(currentPage==="approvals"){
+   window.__approvalInboxTab="approved";
+   await refreshOpenApprovalReport(kind,id);
+   render();
+   toast("✓ Approval submitted. Your signature is now recorded.");
+  }else{
+   await refreshOpenApprovalReport(kind,id);
+   toast("✓ Approval submitted. Your signature has been applied to the report.");
+  }
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
 async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
