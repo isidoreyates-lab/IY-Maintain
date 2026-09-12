@@ -4640,7 +4640,8 @@ async function cloudAudit(action,details="",siteId=null,departmentId=null){if(!i
 async function cloudGetPart(pn){const {data,error}=await iySupabase.from("parts").select("*").eq("company_id",iyCompany.id).eq("part_number",pn).maybeSingle();if(error)throw error;return data}
 async function cloudUpsertPart(row){
  const [pn,desc,machine,stock,received,issued,min,loc,remarks]=row;
- const scope=effectiveWriteScope(row[12],row[13]);
+ // Inventory row structure: ... inventory_id(9), part_id(10), site_id(11), department_id(12)
+ const scope=effectiveWriteScope(row[11],row[12]);
  if(!scope.siteId||!scope.departmentId)throw new Error("A Site and Department are required to save inventory.");
  const {data,error}=await iySupabase.rpc("manage_inventory_record",{
    p_part_number:String(pn||"").trim(),
