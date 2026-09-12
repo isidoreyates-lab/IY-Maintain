@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- IY Maintain V24.19 — Visible Blue CMMS Card Icons -->
+<!-- IY Maintain V24.42 — Header View Scope Control -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -463,7 +463,44 @@ button,input,select,textarea{font-family:inherit}
 .brand-logo-img{width:46px;height:46px;border-radius:12px;background:#fff;object-fit:contain;padding:5px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
 .brand-logo-fallback{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#075fff,#1594ff);display:grid;place-items:center;font-weight:900;font-size:22px;box-shadow:0 4px 14px rgba(7,95,255,.28)}
 .profile-trigger{border:0;background:transparent;display:flex;align-items:center;gap:11px;padding:7px 9px;border-radius:10px;text-align:left;color:var(--text)}
-.notification-wrap{position:relative}.notification-trigger{width:40px;height:40px;border:1px solid #dce5ed;background:#fff;border-radius:11px;display:grid;place-items:center;color:#17324d;cursor:pointer;position:relative;transition:.18s}.notification-trigger:hover{background:#f3f7fb;border-color:#c8d7e5;transform:translateY(-1px)}.notification-bell{font-size:18px;line-height:1}.notification-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ef476f;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:grid;place-items:center}.notification-panel{position:absolute;right:0;top:50px;width:360px;max-width:calc(100vw - 28px);background:#fff;border:1px solid #dce5ed;border-radius:16px;box-shadow:0 18px 45px rgba(15,35,55,.18);overflow:hidden;display:none;z-index:120}.notification-panel.open{display:block}.notification-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid #edf1f5}.notification-head strong{font-size:14px}.notification-head span{font-size:10px;color:#71859a}.notification-list{max-height:390px;overflow:auto}.notification-item{display:flex;gap:11px;padding:13px 15px;border-bottom:1px solid #f0f3f6;text-decoration:none;color:inherit}.notification-item:hover{background:#f7faff}.notification-item:last-child{border-bottom:0}.notification-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto;background:#1769ff}.notification-dot.warn{background:#f59e0b}.notification-dot.bad{background:#ef476f}.notification-dot.ok{background:#18a566}.notification-copy{min-width:0}.notification-copy b{display:block;font-size:12px;line-height:1.35}.notification-copy span{display:block;font-size:10px;color:#6f8295;line-height:1.45;margin-top:3px}.notification-empty{padding:32px 18px;text-align:center;color:#71859a;font-size:11px}.notification-foot{padding:10px 15px;background:#f8fafc;border-top:1px solid #edf1f5;text-align:center}.notification-foot button{border:0;background:transparent;color:#1769ff;font-weight:700;font-size:11px;cursor:pointer}.top-actions{display:flex;align-items:center;gap:10px}.profile-wrap{position:relative}.profile-trigger:hover{background:#f4f7fa}.profile-avatar{width:38px;height:38px;border-radius:50%;background:#e9efff;color:#5147d9;display:grid;place-items:center;font-weight:800;font-size:14px}.profile-copy b{display:block;font-size:13px}.profile-copy small{display:block;color:var(--muted);margin-top:2px;font-size:11px}
+.notification-wrap{position:relative}.notification-trigger{width:40px;height:40px;border:1px solid #dce5ed;background:#fff;border-radius:11px;display:grid;place-items:center;color:#17324d;cursor:pointer;position:relative;transition:.18s}.notification-trigger:hover{background:#f3f7fb;border-color:#c8d7e5;transform:translateY(-1px)}.notification-bell{font-size:18px;line-height:1}.notification-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ef476f;color:#fff;border:2px solid #fff;font-size:9px;font-weight:800;display:grid;place-items:center}.notification-panel{position:absolute;right:0;top:50px;width:360px;max-width:calc(100vw - 28px);background:#fff;border:1px solid #dce5ed;border-radius:16px;box-shadow:0 18px 45px rgba(15,35,55,.18);overflow:hidden;display:none;z-index:120}.notification-panel.open{display:block}.notification-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid #edf1f5}.notification-head strong{font-size:14px}.notification-head span{font-size:10px;color:#71859a}.notification-list{max-height:390px;overflow:auto}.notification-item{display:flex;gap:11px;padding:13px 15px;border-bottom:1px solid #f0f3f6;text-decoration:none;color:inherit}.notification-item:hover{background:#f7faff}.notification-item:last-child{border-bottom:0}.notification-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto;background:#1769ff}.notification-dot.warn{background:#f59e0b}.notification-dot.bad{background:#ef476f}.notification-dot.ok{background:#18a566}.notification-copy{min-width:0}.notification-copy b{display:block;font-size:12px;line-height:1.35}.notification-copy span{display:block;font-size:10px;color:#6f8295;line-height:1.45;margin-top:3px}.notification-empty{padding:32px 18px;text-align:center;color:#71859a;font-size:11px}.notification-foot{padding:10px 15px;background:#f8fafc;border-top:1px solid #edf1f5;text-align:center}.notification-foot button{border:0;background:transparent;color:#1769ff;font-weight:700;font-size:11px;cursor:pointer}.top-actions{display:flex;align-items:center;gap:10px}/* V24.42 — Header View Scope control */
+.view-scope-wrap{position:relative;flex:0 0 auto}
+.view-scope-trigger{
+ width:40px;height:40px;border:1px solid #dce5ed;background:#fff;border-radius:11px;
+ display:grid;place-items:center;color:#17324d;cursor:pointer;position:relative;
+ transition:.18s ease;box-shadow:0 1px 2px rgba(10,37,64,.03)
+}
+.view-scope-trigger:hover,.view-scope-trigger.open{background:#f3f7ff;border-color:#bcd4f5;color:#075fff;transform:translateY(-1px)}
+.view-scope-trigger-icon{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:#eef5ff;color:#075fff;font-size:15px;font-weight:900}
+.view-scope-panel{
+ position:absolute;right:0;top:50px;width:430px;max-width:calc(100vw - 28px);
+ background:#fff;border:1px solid #dce5ed;border-radius:14px;
+ box-shadow:0 18px 48px rgba(15,35,55,.18);overflow:hidden;display:none;z-index:125
+}
+.view-scope-panel.open{display:block}
+.view-scope-panel:before{content:"";position:absolute;right:15px;top:-6px;width:11px;height:11px;background:#fff;border-left:1px solid #dce5ed;border-top:1px solid #dce5ed;transform:rotate(45deg)}
+.view-scope-panel-head{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 17px 13px;border-bottom:1px solid #edf1f5;background:linear-gradient(180deg,#fff,#fbfdff)}
+.view-scope-panel-title{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.view-scope-panel-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#edf4ff;color:#075fff;font-size:14px;font-weight:900;flex:0 0 auto}
+.view-scope-panel-title strong{display:block;color:#163552;font-size:10px;letter-spacing:.13em;line-height:1.2}
+.view-scope-panel-title small{display:block;color:#7a8da1;font-size:9px;line-height:1.4;margin-top:4px}
+.view-scope-reset-link{border:0;background:transparent;color:#075fff;font-size:9px;font-weight:850;white-space:nowrap;padding:3px 0;cursor:pointer}
+.view-scope-reset-link:hover{text-decoration:underline}
+.view-scope-panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 17px 12px}
+.view-scope-panel-field{min-width:0}
+.view-scope-panel-field label{display:block;margin:0 0 6px;color:#536b83;font-size:9px;font-weight:800}
+.view-scope-panel-field select{width:100%;height:38px;border:1px solid #d3deea;border-radius:9px;background:#fff;color:#183a5d;padding:0 10px;font-size:10px;font-weight:700;outline:none}
+.view-scope-panel-field select:hover{border-color:#a9c6e3}
+.view-scope-panel-field select:focus{border-color:#075fff;box-shadow:0 0 0 3px rgba(7,95,255,.10)}
+.view-scope-selection-note{margin:0 17px 15px;padding:9px 10px;border-radius:8px;background:linear-gradient(90deg,#f1f6ff,#f6f8fc);border:1px solid #e1eaf4;color:#6c8095;font-size:9px;line-height:1.35;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.view-scope-selection-note span{color:#19a76a;font-size:8px}
+.view-scope-selection-note b{color:#21476a;font-size:9px}
+.view-scope-selection-note em{font-style:normal;width:100%;color:#8193a5;font-size:8px}
+@media(max-width:700px){
+ .view-scope-panel{right:-44px;width:min(430px,calc(100vw - 20px))}
+ .view-scope-panel-grid{grid-template-columns:1fr}
+}
+.profile-wrap{position:relative}.profile-trigger:hover{background:#f4f7fa}.profile-avatar{width:38px;height:38px;border-radius:50%;background:#e9efff;color:#5147d9;display:grid;place-items:center;font-weight:800;font-size:14px}.profile-copy b{display:block;font-size:13px}.profile-copy small{display:block;color:var(--muted);margin-top:2px;font-size:11px}
 .profile-menu{position:absolute;right:28px;top:66px;width:285px;background:#fff;border:1px solid #dce5ed;border-radius:14px;box-shadow:0 18px 45px rgba(15,35,55,.16);padding:8px;display:none;z-index:100}.profile-menu.open{display:block}.profile-menu-head{padding:13px;border-bottom:1px solid #edf1f5;margin-bottom:5px}.profile-menu-head strong{display:block;font-size:13px}.profile-menu-head span{display:block;color:var(--muted);font-size:11px;margin-top:3px}.profile-menu-item{width:100%;border:0;background:transparent;display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;color:#26394c;font-size:12px;text-align:left}.profile-menu-item:hover{background:#f5f7fa}.profile-menu-item.danger{color:#c62828}.profile-menu-icon{width:28px;height:28px;border-radius:8px;background:#f0f3f7;display:grid;place-items:center}.profile-menu-item.danger .profile-menu-icon{background:#fdeaea}
 .profile-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.profile-modal-grid .full{grid-column:1/-1}.profile-note{padding:11px 12px;border-radius:9px;background:#f6f8fb;border:1px solid #e2e8ef;color:#617388;font-size:11px;line-height:1.45}
 .activity-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}.activity-stat{padding:14px;border:1px solid var(--line);border-radius:11px;background:#fafbfd}.activity-stat span,.activity-stat b{display:block}.activity-stat span{font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:700}.activity-stat b{font-size:22px;margin-top:5px}.activity-table{width:100%;border-collapse:collapse}.activity-table th,.activity-table td{padding:10px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.activity-table th{font-size:10px;text-transform:uppercase;color:#6c7d90;background:#f8fafc}.activity-table td small{color:var(--muted)}
@@ -933,6 +970,80 @@ button,input,select,textarea{font-family:inherit}
 .iy-workspace-scope-copy{min-width:0}
  .iy-workspace-scope-label{display:block;color:#74879b;font-size:7px;letter-spacing:.10em;text-transform:uppercase;font-weight:850;margin-bottom:3px}
  .iy-workspace-scope-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#163a5e;font-size:9px;font-weight:800;line-height:1.3}
+/* V24.43 — compact sidebar identity: role lives directly under IY Digital Innovations */
+.iy-brand-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.iy-brand-copy>b{display:block}
+.iy-brand-copy>small{display:block}
+.iy-brand-company{display:flex;align-items:center;gap:7px;margin-top:7px;min-width:0;max-width:190px;padding-top:7px;border-top:1px solid rgba(255,255,255,.10)}
+.iy-brand-company-logo{width:20px;height:20px;flex:0 0 20px;border-radius:6px;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;box-shadow:0 3px 8px rgba(0,0,0,.16)}
+.iy-brand-company-fallback{width:20px;height:20px;flex:0 0 20px;border-radius:6px;display:grid;place-items:center;background:linear-gradient(135deg,#eaf4ff,#dcecff);color:#075fff;font-size:9px;font-weight:900;box-shadow:0 3px 8px rgba(0,0,0,.12)}
+.iy-brand-company-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.90);font-size:8.5px;line-height:1.2;font-weight:800;letter-spacing:.015em}
+.iy-product-brand{margin-bottom:18px}
+
+
+/* V24.47 — enterprise/customer branding hierarchy: smaller app identity */
+.iy-product-brand.iy-enterprise-brand{
+  display:block;
+  padding:8px 7px 16px;
+  margin:0 0 16px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.iy-enterprise-company{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.iy-enterprise-logo-wrap{
+  width:50px;
+  height:50px;
+  flex:0 0 50px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:#fff;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 8px 20px rgba(0,0,0,.20);
+  overflow:hidden;
+}
+.iy-enterprise-logo{
+  width:100%;
+  height:100%;
+  padding:5px;
+  box-sizing:border-box;
+  object-fit:contain;
+}
+.iy-enterprise-logo-fallback{
+  width:100%;height:100%;display:grid;place-items:center;
+  color:#075fff;font-size:15px;font-weight:900;
+  background:linear-gradient(135deg,#eef6ff,#dcecff);
+}
+.iy-enterprise-company-copy{min-width:0;display:flex;flex-direction:column;justify-content:center}
+.iy-enterprise-company-name{
+  display:block;min-width:0;overflow:visible;text-overflow:clip;white-space:normal;
+  color:#fff;font-size:14px;line-height:1.15;font-weight:900;letter-spacing:-.02em;
+  overflow-wrap:anywhere;
+}
+.iy-enterprise-location{
+  display:block;min-width:0;overflow:visible;text-overflow:clip;white-space:normal;
+  margin-top:5px;color:#a9c8e6;font-size:8.5px;line-height:1.2;font-weight:700;
+}
+.iy-enterprise-app{
+  margin:10px 2px 0 60px;
+  min-width:0;
+}
+.iy-enterprise-app b{
+  display:block;color:rgba(255,255,255,.94);font-size:8.5px;line-height:1.2;font-weight:800;
+}
+.iy-enterprise-app small{
+  display:block;margin-top:2px;color:#7fb9e8;font-size:8.5px;line-height:1.2;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+}
+@media(max-width:1000px){
+  .iy-enterprise-company-name{font-size:13px}
+  .iy-enterprise-logo-wrap{width:46px;height:46px;flex-basis:46px}
+  .iy-enterprise-app{margin-left:56px}
+}
+
 /* V24.31 — colourful enterprise workspace / transaction scope polish */
 .iy-workspace-card{
  position:relative;overflow:visible;background:#fff;border:1px solid #dce7f4;
@@ -1862,6 +1973,7 @@ let dashboardSiteId="";
 let dashboardDepartmentId="";
 let profileOpen=false;
 let notificationOpen=false;
+let viewScopeOpen=false;
 let notificationFilter="all";
 let notificationLastRefresh=null;
 let notificationReads=[];
@@ -1943,7 +2055,21 @@ function getNotifications(){
  return items.sort((a,b)=>{const sa=a.severity==='bad'?0:a.severity==='warn'?1:2,sb=b.severity==='bad'?0:b.severity==='warn'?1:2;return sa-sb}).slice(0,25);
 }
 function notificationState(){const all=getNotifications(),reads=notificationReadSet();const isRead=n=>n.cloud?!!n.readAt:reads.has(n.id);return {all,unread:all.filter(n=>!isRead(n)),critical:all.filter(n=>n.severity==='bad').length,attention:all.filter(n=>n.severity==='warn').length};}
-function toggleNotificationMenu(e){e.stopPropagation();notificationOpen=!notificationOpen;profileOpen=false;render();}
+function toggleNotificationMenu(e){e.stopPropagation();notificationOpen=!notificationOpen;profileOpen=false;viewScopeOpen=false;render();}
+function toggleViewScopeMenu(e){
+ if(e){e.preventDefault();e.stopPropagation();}
+ if(!isDashboardScopeController())return;
+ viewScopeOpen=!viewScopeOpen;
+ notificationOpen=false;
+ profileOpen=false;
+ render();
+ /* Re-focus the newly rendered trigger without rebuilding the menu again. */
+ requestAnimationFrame(()=>{
+   const panel=document.querySelector('.view-scope-panel');
+   if(viewScopeOpen && panel)panel.classList.add('open');
+ });
+}
+
 async function markNotificationsRead(){
  const ns=getNotifications();if(!ns.length){notificationOpen=true;render();return;}
  const now=new Date().toISOString();const cloudIds=ns.filter(n=>n.cloud&&!n.readAt).map(n=>n.id.replace(/^cloud-/,'')).filter(Boolean);
@@ -1985,12 +2111,7 @@ function render(){
  document.getElementById("app").innerHTML=`
  <div class="app">
   <aside class="sidebar">
-   <div class="brand iy-product-brand"><img class="brand-logo-img iy-product-logo" src="${IY_BRAND_ICON}" alt="IY Maintain"><div><b>IY Maintain</b><small>IY Digital Innovations</small></div></div>
-   <div class="iy-workspace-card">
-    <div class="iy-workspace-company"><span class="iy-workspace-company-icon">▦</span><div class="iy-workspace-company-copy"><span class="iy-workspace-eyebrow">Workspace</span><span class="iy-workspace-company-name" title="${esc(iyCompany?.name||s.companyName||"Company workspace")}">${esc(iyCompany?.name||s.companyName||"Company workspace")}</span></div></div>
-    <div class="iy-workspace-role"><span class="iy-workspace-role-label">Access level</span><span class="iy-workspace-role-value" title="${esc(roleLabel(iyMembership?.role||"employee"))}">${esc(roleLabel(iyMembership?.role||"employee"))}</span></div>
-    ${globalViewScopeMarkup()}
-   </div>
+   <div class="brand iy-product-brand iy-enterprise-brand"><div class="iy-enterprise-company"><div class="iy-enterprise-logo-wrap">${db.settings?.logoData?`<img class="iy-enterprise-logo" src="${esc(db.settings.logoData)}" alt="${esc(iyCompany?.name||db.settings?.companyName||"Company")} logo">`:`<span class="iy-enterprise-logo-fallback">◆</span>`}</div><div class="iy-enterprise-company-copy"><b class="iy-enterprise-company-name" title="${esc(iyCompany?.name||db.settings?.companyName||"Company workspace")}">${esc(iyCompany?.name||db.settings?.companyName||"Company workspace")}</b><span class="iy-enterprise-location" title="${esc(db.settings?.companyAddress||iyCompany?.address||"")}">⌖ ${esc(db.settings?.companyAddress||iyCompany?.address||"Company location")}</span></div></div></div>
    ${navButton("dashboard","Dashboard","⌂")}
    <div class="group">PARTS</div>
    ${navButton("issue","Search & Issue Parts","▣")}
@@ -2028,6 +2149,23 @@ function render(){
         <div class="notification-foot-v22"><span>${notificationLastRefresh?`Updated ${notificationTimeLabel(notificationLastRefresh)}`:'Updates from your current workspace'}</span><button onclick="nav('activity')">View activity</button></div>
       </div>`})()}
     </div>
+    ${isDashboardScopeController()?`
+    <div class="view-scope-wrap">
+      <button class="view-scope-trigger ${viewScopeOpen?'open':''}" aria-label="View Scope" title="View Scope" onclick="toggleViewScopeMenu(event)">
+        <span class="view-scope-trigger-icon">⌖</span>
+      </button>
+      <div class="view-scope-panel ${viewScopeOpen?'open':''}" onclick="event.stopPropagation()" onmousedown="event.stopPropagation()" onpointerdown="event.stopPropagation()">
+        <div class="view-scope-panel-head">
+          <div class="view-scope-panel-title"><span class="view-scope-panel-icon">⌖</span><div><strong>VIEW SCOPE</strong><small>Choose the records shown across the entire system.</small></div></div>
+          <button type="button" class="view-scope-reset-link" onclick="event.stopPropagation();resetGlobalViewScope()">↻ Reset to All</button>
+        </div>
+        <div class="view-scope-panel-grid">
+          <div class="view-scope-panel-field"><label for="iyHeaderViewSite">▤ &nbsp;Site</label><select id="iyHeaderViewSite" onchange="setGlobalViewSite(this.value)">${siteOptionsMarkup(dashboardSiteId||"")}</select></div>
+          <div class="view-scope-panel-field"><label for="iyHeaderViewDepartment">♧ &nbsp;Department</label><select id="iyHeaderViewDepartment" onchange="setGlobalViewDepartment(this.value)">${departmentOptionsMarkup(dashboardSiteId||"",dashboardDepartmentId||"")}</select></div>
+        </div>
+        <div class="view-scope-selection-note"><span>●</span><b>${esc(globalViewScopeLabel())}</b><em>Your selection filters data across the entire system.</em></div>
+      </div>
+    </div>`:''}
     <div class="profile-wrap">
     <button class="profile-trigger" onclick="toggleProfileMenu(event)">
       <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(db.user.name))}</div>
@@ -4051,15 +4189,23 @@ async function saveProfile(){
    closeModal();render();toast("Profile updated successfully.");
  }catch(e){alert(e?.message||"Profile could not be updated.");if(btn)btn.disabled=false;}
 }
-function toggleProfileMenu(e){e.stopPropagation();profileOpen=!profileOpen;render()}
+function toggleProfileMenu(e){e.stopPropagation();profileOpen=!profileOpen;notificationOpen=false;viewScopeOpen=false;render()}
 function closeHeaderMenusOnOutsideClick(e){
+ const target=e?.target;
  const np=document.querySelector('.notification-panel');
  const pp=document.querySelector('.profile-menu');
  const nw=document.querySelector('.notification-wrap');
  const pw=document.querySelector('.profile-wrap');
- if(notificationOpen && nw && !nw.contains(e.target)){notificationOpen=false;}
- if(profileOpen && pw && !pw.contains(e.target)){profileOpen=false;}
- if((notificationOpen||profileOpen) && ((nw&&!nw.contains(e.target))||(pw&&!pw.contains(e.target)))) render();
+ const sw=document.querySelector('.view-scope-wrap');
+ const insideNotification=!!(nw&&target&&nw.contains(target));
+ const insideProfile=!!(pw&&target&&pw.contains(target));
+ const insideScope=!!(sw&&target&&sw.contains(target));
+ if(insideNotification||insideProfile||insideScope)return;
+ let changed=false;
+ if(notificationOpen){notificationOpen=false;changed=true;}
+ if(profileOpen){profileOpen=false;changed=true;}
+ if(viewScopeOpen){viewScopeOpen=false;changed=true;}
+ if(changed)render();
 }
 document.addEventListener('click', closeHeaderMenusOnOutsideClick);
 
