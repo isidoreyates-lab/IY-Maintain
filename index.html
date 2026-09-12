@@ -3540,7 +3540,13 @@ async function fetchCompanyUsers(){
    .eq("company_id",iyCompany.id)
    .order("created_at",{ascending:true});
  if(error)throw error;
- iyUsersCache=data||[];
+ iyUsersCache=(data||[]).map(u=>({
+   ...u,
+   // Older memberships may not have the email column populated.
+   // Always fall back to the authenticated account email for the
+   // currently signed-in user so the profile and Users & Roles stay consistent.
+   email:(u.email||((u.user_id===iyAuthUser?.id)?iyAuthUser?.email:""))||null
+ }));
  return iyUsersCache;
 }
 
@@ -4276,7 +4282,7 @@ async function completeAuthenticatedSession(user){
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
  await loadCloudData();
- db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.35";db.settings.developer="IY Digital Innovations";
+ db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.40";db.settings.developer="IY Digital Innovations";
  await migrateLegacyProfileAvatar();
  const profileAvatar=await loadProfileAvatar();
  const signatureUrl=await loadCurrentUserSignature();
@@ -4318,7 +4324,7 @@ async function loadCompanyContext(user){
   if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.35",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.40",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -4394,7 +4400,7 @@ async function loadCloudData(){
  ]);
  for(const r of [machines,parts,inventory,receipts,issues,updates,maintenance,settings,activity])if(r.error)throw r.error;
  if(memberships?.error)throw memberships.error;
- iyUsersCache=(memberships.data||[]).map(m=>({id:m.id,user_id:m.user_id,user_code:m.user_code,full_name:m.full_name,role:m.role,department:m.department,site_id:m.site_id||null,department_id:m.department_id||null,is_active:m.is_active,last_login_at:m.last_login_at,invited_at:m.invited_at,signature_path:m.signature_path}));
+ iyUsersCache=(memberships.data||[]).map(m=>({id:m.id,user_id:m.user_id,user_code:m.user_code,full_name:m.full_name,email:m.email||((m.user_id===iyAuthUser?.id)?iyAuthUser?.email:null),role:m.role,department:m.department,site_id:m.site_id||null,department_id:m.department_id||null,is_active:m.is_active,last_login_at:m.last_login_at,invited_at:m.invited_at,signature_path:m.signature_path}));
  if(orders?.error && orders.error.code!=="PGRST205")throw orders.error;
  if(notificationReadRows?.error){console.warn("Notification read-state table is not available yet.",notificationReadRows.error.message||notificationReadRows.error);notificationReads=[]}else{notificationReads=(notificationReadRows.data||[]).map(x=>x.notification_id);}
  cloudNotifications=notifications?.error?(notifications.error.code==="PGRST205"?[]:(() => {console.warn("Notifications table is not available yet.",notifications.error.message||notifications.error);return []})()):(notifications.data||[]);
@@ -4420,7 +4426,7 @@ async function loadCloudData(){
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.35",developer:"IY Digital Innovations"});
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.40",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
