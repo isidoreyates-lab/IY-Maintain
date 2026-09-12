@@ -288,6 +288,11 @@ content{padding:28px 34px 50px}
 @media(max-width:950px){.modern-settings-grid{grid-template-columns:1fr}.modern-settings-side{display:grid;grid-template-columns:1fr 1fr}.compact-system-card{grid-column:1/-1}}
 @media(max-width:650px){.modern-settings-header{align-items:flex-start;flex-direction:column}.modern-form-grid{grid-template-columns:1fr}.modern-settings-side{display:flex}.settings-nav-strip{overflow:auto}.modern-save-bar{align-items:flex-start;flex-direction:column}.modern-primary-btn{width:100%}}
 
+
+/* V24.41 account identity card */
+.account-scope-card .modern-input[disabled]{background:#f8fbff;color:#17324d;opacity:1;cursor:default}
+.account-scope-card .modern-field label{color:#2f4962}
+
 /* iy Settings redesign */
 .settings-shell{max-width:1180px;margin:0 auto}
 .settings-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px}
@@ -4571,7 +4576,7 @@ async function cloudSaveMachine(row){
  const {data,error}=await iySupabase.from("machines").insert(payload).select("id").single();
  if(error)throw error; return data.id;
 }
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.31",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
+async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.41",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
 
 function settingsPage(){
  const s=db.settings||{};
@@ -4580,12 +4585,25 @@ function settingsPage(){
  <div class="settings-nav-strip" id="settings-tabs">
   <button type="button" class="settings-nav-item active" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>General</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="branding" onclick="switchSettingsTab('branding')"><span class="nav-icon">▣</span><span>Branding</span></button>
-  <button type="button" class="settings-nav-item" data-settings-tab="signatures" onclick="switchSettingsTab('signatures')"><span class="nav-icon">✎</span><span>Signatures</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="system" onclick="switchSettingsTab('system')"><span class="nav-icon">ⓘ</span><span>System</span></button>
  </div>
  <div class="modern-settings-grid">
   <section class="modern-settings-main">
    <div id="settings-panel-general" class="settings-tab-panel">
+    <section class="modern-card account-scope-card">
+     <div class="modern-card-head"><div class="head-icon purple">●</div><div><h3>My account &amp; operational scope</h3><p>Your account identity and the company location assigned to you.</p></div></div>
+     <div class="modern-form-grid">
+      <div class="modern-field"><label>Full Name</label><input class="modern-input" value="${esc(iyMembership?.full_name||db.user?.name||"")}" readonly disabled></div>
+      <div class="modern-field"><label>User ID</label><input class="modern-input" value="${esc(iyMembership?.user_code||db.user?.userId||"")}" readonly disabled></div>
+      <div class="modern-field"><label>Email</label><input class="modern-input" value="${esc(iyMembership?.email||iyAuthUser?.email||"")}" readonly disabled></div>
+      <div class="modern-field"><label>Role</label><input class="modern-input" value="${esc(roleLabel(currentRole()))}" readonly disabled></div>
+      <div class="modern-field"><label>Company</label><input class="modern-input" value="${esc(iyCompany?.name||"")}" readonly disabled></div>
+      <div class="modern-field"><label>Site</label><input class="modern-input" value="${esc(["company_admin","super_admin","manager"].includes(currentRole())?"All Sites":(iySite?.name||"Not assigned"))}" readonly disabled></div>
+      <div class="modern-field"><label>Department</label><input class="modern-input" value="${esc(["company_admin","super_admin","manager","site_supervisor"].includes(currentRole())?"All Departments":(iyDepartment?.name||"Not assigned"))}" readonly disabled></div>
+      <div class="modern-field"><label>Account Status</label><input class="modern-input" value="${iyMembership?.is_active===false?"Inactive":"Active"}" readonly disabled></div>
+     </div>
+     <div class="modern-save-bar" style="margin:0 19px 19px"><div><strong>Account assignment is controlled by company administration</strong><span>Your role, site and department are shown here for clarity. They are not changed from this page.</span></div></div>
+    </section>
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
@@ -4601,26 +4619,18 @@ function settingsPage(){
      <div class="modern-button-row"><label class="modern-upload-btn" for="s_logoFile">${s.logoData?"Replace logo":"Upload logo"}</label><input id="s_logoFile" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleLogoUpload(this)" ${canSettings?"":"disabled"}><button type="button" class="modern-secondary-btn" onclick="removeCompanyLogo()" ${(!s.logoData||!canSettings)?"disabled":""}>Remove</button></div>
     </section>
    </div>
-   <div id="settings-panel-signatures" class="settings-tab-panel" style="display:none">
-    <section class="modern-card signatures-card">
-     <div class="modern-card-head"><div class="head-icon orange">✎</div><div><h3>Report signatures</h3><p>Upload once and they will automatically appear on Maintenance and Parts reports.</p></div></div>
-     <div class="signature-modern-list">
-      ${[["signaturePrepared","Prepared By"],["signatureTeamLead","Team Lead"],["signaturePartsCoordinator","Parts Coordinator"],["signatureManager","Manager"]].map(([k,l])=>`<div class="signature-modern-row"><div class="signature-modern-avatar">${s[k]?`<img src="${s[k]}" alt="${l} signature">`:`<span>✎</span>`}</div><div class="signature-modern-info"><strong>${l}</strong><span>${s[k]?"Signature uploaded":"No signature uploaded"}</span></div><div class="signature-modern-action"><label class="modern-upload-link" for="${k}_file">${s[k]?"Replace":"Upload"}</label><input id="${k}_file" type="file" accept="image/png,image/jpeg,image/webp" onchange="handleSignatureUpload('${k}',this)" ${canSettings?"":"disabled"}><button type="button" class="modern-link-btn" onclick="removeSignature('${k}')" ${(!s[k]||!canSettings)?"disabled":""}>Remove</button></div></div>`).join("")}
-     </div>
-    </section>
-   </div>
    <div id="settings-panel-system" class="settings-tab-panel" style="display:none">
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon purple">✦</div><div><h3>System information</h3><p>Application identity is controlled by IY Digital Innovations.</p></div></div>
      <div class="modern-form-grid">
       <div class="modern-field"><label>System Name</label><input class="modern-input" value="Computerized Machines Maintenance System" readonly disabled></div>
-      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.31" readonly disabled></div>
+      <div class="modern-field"><label>Version</label><input class="modern-input" value="V24.41" readonly disabled></div>
       <div class="modern-field"><label>Developed By</label><input class="modern-input" value="IY Digital Innovations" readonly disabled></div>
      </div>
      <div class="modern-save-bar" style="margin-top:16px"><div><strong>System information is read-only</strong><span>Only IY Digital Innovations can change the system identity and application version. Company users cannot override these values.</span></div></div>
     </section>
    </div>
-   <div class="modern-save-bar" id="settings-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules.</span></div><button class="modern-primary-btn" onclick="saveSettings()" ${canSettings?"":"disabled"}>Save Settings</button></div>
+   <div class="modern-save-bar" id="settings-save-bar"><div><strong>Changes are saved to your company workspace</strong><span>Company settings are stored securely in Supabase and protected by company access rules. Only Company Administrators and Managers can change company information.</span></div><button class="modern-primary-btn" onclick="saveSettings()" ${canSettings?"":"disabled"}>Save Settings</button></div>
   </section>
  </div>
  </div>`;
@@ -4750,8 +4760,8 @@ async function removeSignature(key){
 }
 
 async function saveSettings(){
- if(!canEdit("settings"))return alert("Company Administrator access is required to change settings.");
- const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData","signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"];
+ if(!canEdit("settings"))return alert("Only a Company Administrator or Manager can change company settings.");
+ const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData"];
  editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
  db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
  // System identity is controlled by IY Digital Innovations and is never editable by company users.
@@ -4900,7 +4910,7 @@ async function runRestoreJob(payload,name,options={}){
 }
 let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serviceRef=baseRef;let suffix=1;while(usedServiceRefs.has(serviceRef))serviceRef=`${baseRef}-R${suffix++}`;usedServiceRefs.add(serviceRef);const record={company_id:iyCompany.id,service_ref:serviceRef,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id};const {error}=await iySupabase.from("maintenance_records").insert(record);if(error)throw new Error(`Could not restore maintenance record ${idx+1} (${serviceRef}): ${error.message||error}`);await checkpoint("maintenance",84+((idx+1)/maintenance.length)*8,"Restoring maintenance records…",`Restored maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");}}
   await checkpoint("settings",92,"Restoring company settings…","Applying company details, report settings and configuration.","Branding and report configuration are being restored last.");
-  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.31",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
+  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.41",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
   await checkpoint("finish",97,"Finalizing restore…","Refreshing the workspace and verifying restored data.","Almost finished. Please keep this page open.");
   await cloudAudit("Restored system backup",`Company backup restored by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`);
   await loadCloudData();
