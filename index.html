@@ -3786,9 +3786,16 @@ function writeScopeLabel(){
  return "Select Site · Select Department";
 }
 function effectiveWriteScope(rowSiteId=null,rowDepartmentId=null){
- const globalScope=globalViewScopeValues();
- const siteId=rowSiteId|| (isCompanyWideScope()?globalScope.siteId:currentSiteId());
- const departmentId=rowDepartmentId|| (isCompanyWideScope()?globalScope.departmentId:currentDepartmentId());
+ const siteId=rowSiteId||(
+   isCompanyWideScope()
+     ? (iyWriteSiteId||null)
+     : currentSiteId()
+ );
+ const departmentId=rowDepartmentId||(
+   isCompanyWideScope()
+     ? (iyWriteDepartmentId||null)
+     : currentDepartmentId()
+ );
  if((siteId&&!departmentId)||(!siteId&&departmentId))throw new Error("Select both Site and Department before saving this transaction.");
  if(!siteId||!departmentId)throw new Error("Please select the Site and Department for this transaction.");
  const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId));
