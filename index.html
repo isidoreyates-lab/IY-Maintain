@@ -4704,12 +4704,33 @@ async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supp
    if(me)throw me;
    machineId=m?.id||null;
  }
- const payload={company_id:iyCompany.id,part_number:pn,description:String(description||pn).trim()||pn,machine_id:machineId,machine_model:String(machineModel||"").trim()||null,supplier:String(supplier||"").trim()||null,minimum_stock:num(db.settings?.defaultMinimumStock)||3};
- const {data:created,error:createError}=await iySupabase.from("parts").insert(payload).select("id,part_number,description,machine_id,machine_model,supplier").single();
+ const minimumStock=num(db.settings?.defaultMinimumStock)||3;
+ const rpcScope=scope||effectiveWriteScope();
+ const {data:createdResult,error:createError}=await iySupabase.rpc("manage_inventory_record",{
+   p_part_number:pn,
+   p_description:String(description||pn).trim()||pn,
+   p_machine_model:String(machineModel||"").trim()||null,
+   p_supplier:String(supplier||"").trim()||null,
+   p_location:null,
+   p_minimum_stock:minimumStock,
+   p_remarks:null,
+   p_current_stock:0,
+   p_total_received:0,
+   p_total_issued:0,
+   p_damaged_repair:0,
+   p_site_id:rpcScope?.siteId||null,
+   p_department_id:rpcScope?.departmentId||null
+ });
  if(createError)throw createError;
- const {error:inventoryError}=await iySupabase.from("inventory").insert({company_id:iyCompany.id,site_id:scope?.siteId||null,department_id:scope?.departmentId||null,part_id:created.id,current_stock:0,total_received:0,total_issued:0,damaged_repair:0});
- if(inventoryError)throw inventoryError;
- return created;
+ if(!createdResult?.success)throw new Error("The server did not confirm the part creation.");
+ return {
+   id:createdResult.part_id,
+   part_number:pn,
+   description:String(description||pn).trim()||pn,
+   machine_id:createdResult.machine_id||machineId||null,
+   machine_model:String(machineModel||"").trim()||null,
+   supplier:String(supplier||"").trim()||null
+ };
 }
 async function cloudSaveUpdate(row,index){
  if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready.");
