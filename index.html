@@ -5081,103 +5081,135 @@ async function runRestoreJob(payload,name,options={}){
  const data=payload?.data||payload;
  if(!data||typeof data!=="object")throw new Error("This file is not a valid IY Maintain system backup.");
  const key=restoreJobKey();
- // Capture the currently loaded company snapshot before any destructive operation.
- // This provides a browser-local rollback point if the restore fails after clearing data.
  const existingJob=options.resume?await iyGetRestoreJob(key):null;
- const rollbackPayload=existingJob?.rollbackPayload||options.rollbackPayload||{backupInfo:{backupType:"Automatic pre-restore rollback snapshot",backupSchemaVersion:2,scopeModel:"multi-site-department",scopeFields:["site_id","department_id"],createdAt:new Date().toISOString(),application:"iy Standalone Maintenance Management System",companyId:iyCompany?.id||null,companyName:iyCompany?.name||name,version:"V24.50"},data:clone(db)};
+ const rollbackPayload=existingJob?.rollbackPayload||options.rollbackPayload||null;
  const job={key,companyId:iyCompany.id,companyName:name,payload:payload,rollbackPayload,status:"running",isRollback:!!options.isRollback,startedAt:options.startedAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
  await iySaveRestoreJob(job);
  setRestoreBusy(true);installRestoreUnloadGuard();showRestoreProgress(options.resume?"resume":"active");
- const checkpoint=async(stage,percent,step,detail,info)=>{job.stage=stage;job.percent=percent;job.step=step;job.detail=detail;job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);setRestoreProgress(percent,step,detail,info,stage);await restoreYield();};
- try{
-  const counts={machines:Array.isArray(data.machines)?data.machines.length:0,parts:Array.isArray(data.inventory)?data.inventory.length:0,receipts:Array.isArray(data.receipts)?data.receipts.length:0,issues:Array.isArray(data.issues)?data.issues.length:0,updates:Array.isArray(data.updates)?data.updates.length:0,orders:Array.isArray(data.orders)?data.orders.length:0,maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0};
-  await checkpoint("prepare",5,"Preparing restore…","Backup verified for "+name+".","Users, passwords and Supabase authentication accounts will not be changed.");
-  const deleteTables=["maintenance_records","parts_orders","parts_updates","part_issues","part_receipts","inventory","parts","machines"];
-  for(let di=0;di<deleteTables.length;di++){
-   const table=deleteTables[di];
-   const pct=8+(di/deleteTables.length)*22;
-   await checkpoint("clear",pct,"Clearing current company data…","Removing existing "+table.replaceAll("_"," ")+".","The old records are being cleared in dependency order.");
-   const {error}=await iySupabase.from(table).delete().eq("company_id",iyCompany.id);if(error)throw new Error(`Could not clear ${table}: ${error.message||error}`);
-  }
-  await checkpoint("clear",30,"Current data cleared","Starting backup import…","The company workspace is now being rebuilt from the backup.");
 
-  const machines=Array.isArray(data.machines)?data.machines:[];const machineByFleet=new Map();
-  for(let mi=0;mi<machines.length;mi++){
-   const row=machines[mi];const pct=30+(machines.length?mi/machines.length*10:10);
-   await checkpoint("machines",pct,"Restoring machines…",`Restoring machine ${mi+1} of ${machines.length}.`,"Machine records are rebuilt first so linked parts and maintenance records can be connected correctly.");
-   const machinePayload={company_id:iyCompany.id,site_id:row[11]||null,department_id:row[12]||null,fleet_id:row[0],machine_model:row[2]||row[1]||null,machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
-    if(!machinePayload.site_id||!machinePayload.department_id)throw new Error(`Could not restore machine ${row[0]||""}: backup is missing its Site or Department scope.`);
-   const {data:created,error}=await iySupabase.from("machines").insert(machinePayload).select("id,fleet_id,machine_model").single();if(error)throw new Error(`Could not restore machine ${row[0]||""}: ${error.message||error}`);machineByFleet.set(String(row[0]||""),created.id);
-  }
-  await checkpoint("parts",40,"Restoring parts & inventory…","Preparing part and stock records.","Part master data and current inventory balances are being rebuilt together.");
-  const partByNumber=new Map();const invRows=Array.isArray(data.inventory)?data.inventory:[];
-  for(let pi=0;pi<invRows.length;pi++){
-   const row=invRows[pi];const pct=40+(invRows.length?pi/invRows.length*15:15);
-   await checkpoint("parts",pct,"Restoring parts & inventory…",`Restoring part ${pi+1} of ${invRows.length}.`,"Part master data and current inventory balances are being rebuilt.");
-   const pn=String(row[0]||"").trim();if(!pn)continue;const machineModel=String(row[2]||"").trim()||null;let machineId=null;
-   if(machineModel){const {data:m,error:me}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",machineModel).limit(1).maybeSingle();if(me)throw new Error(`Could not match machine for part ${pn}: ${me.message||me}`);machineId=m?.id||null;}
-   const partPayload={company_id:iyCompany.id,part_number:pn,description:String(row[1]||pn),machine_id:machineId,machine_model:machineModel,supplier:null,location:row[7]||null,minimum_stock:num(row[6]),remarks:row[8]||null};
-   const {data:part,error}=await iySupabase.from("parts").insert(partPayload).select("id,part_number").single();if(error)throw new Error(`Could not restore part ${pn}: ${error.message||error}`);partByNumber.set(pn,part.id);
-   const {error:ie}=await iySupabase.from("inventory").insert({company_id:iyCompany.id,site_id:row[11]||null,department_id:row[12]||null,part_id:part.id,current_stock:num(row[3]),total_received:num(row[4]),total_issued:num(row[5]),damaged_repair:0});if(ie)throw new Error(`Could not restore inventory for ${pn}: ${ie.message||ie}`);
-  }
-  await checkpoint("receipts",55,"Restoring receipt history…","Importing received-part transactions.","Receipt history is being restored without changing authentication accounts.");
-  const receipts=Array.isArray(data.receipts)?data.receipts:[];if(receipts.length){const rows=receipts.map(row=>({company_id:iyCompany.id,site_id:row[10]||null,department_id:row[11]||null,part_id:partByNumber.get(String(row[1]||"").trim()),received_at:row[0]||null,quantity:num(row[4]),supplier:row[5]||null,reference:row[6]||null,receiver_name:row[7]||null,machine_model:row[3]||null})).filter(x=>x.part_id&&x.site_id&&x.department_id);if(rows.length){const {error}=await iySupabase.from("part_receipts").insert(rows);if(error)throw new Error(`Could not restore receipt history: ${error.message||error}`)}}
-  await checkpoint("issues",64,"Restoring issue history…","Importing issued-part transactions.","Issue history is being restored and linked to the correct parts.");
-  const issues=Array.isArray(data.issues)?data.issues:[];if(issues.length){const rows=issues.map(row=>({company_id:iyCompany.id,site_id:row[11]||null,department_id:row[12]||null,part_id:partByNumber.get(String(row[1]||"").trim()),issued_at:row[0]||null,quantity:num(row[4]),technician_name:row[5]||null,work_order:row[6]||null,remarks:row[7]||null,machine_model:row[10]||row[3]||null})).filter(x=>x.part_id&&x.site_id&&x.department_id);if(rows.length){const {error}=await iySupabase.from("part_issues").insert(rows);if(error)throw new Error(`Could not restore issue history: ${error.message||error}`)}}
-  await checkpoint("updates",71,"Restoring Parts Updates…","Importing parts update records.","Parts Updates are being restored as historical records.");
-  const updates=Array.isArray(data.updates)?data.updates:[];if(updates.length){const rows=updates.map(row=>({company_id:iyCompany.id,site_id:row[13]||null,department_id:row[14]||null,part_id:partByNumber.get(String(row[1]||"").trim()),order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id})).filter(x=>x.part_id&&x.site_id&&x.department_id);if(rows.length){const {error}=await iySupabase.from("parts_updates").insert(rows);if(error)throw new Error(`Could not restore parts updates: ${error.message||error}`)}}
-  await checkpoint("orders",78,"Restoring Parts Orders…","Importing active and historical parts orders.","Parts Orders are being restored and linked to the restored parts.");
-  const orders=Array.isArray(data.orders)?data.orders:[];if(orders.length){const rows=orders.map(row=>({company_id:iyCompany.id,site_id:row[13]||null,department_id:row[14]||null,part_id:partByNumber.get(String(row[1]||"").trim()),order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:row[8]||null,onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id})).filter(x=>x.part_id&&x.site_id&&x.department_id);if(rows.length){const {error}=await iySupabase.from("parts_orders").insert(rows);if(error)throw new Error(`Could not restore parts orders: ${error.message||error}`)}}
-  await checkpoint("maintenance",84,"Restoring maintenance records…","Importing maintenance history and linking machines.","Maintenance records are being rebuilt against the restored machine list.");
-  const maintenance=Array.isArray(data.maintenance)?data.maintenance:[];if(maintenance.length){const usedServiceRefs=new Set();for(let idx=0;idx<maintenance.length;idx++){const row=maintenance[idx];const pct=84+(idx/maintenance.length)*8;await checkpoint("maintenance",pct,"Restoring maintenance records…",`Restoring maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");const fleet=String(row[4]||"").trim();let machineId=null;if(fleet)machineId=machineByFleet.get(fleet)||null;if(!machineId&&row[2]){const {data:m,error:me}=await iySupabase.from("machines").select("id").eq("company_id",iyCompany.id).eq("machine_model",row[2]).limit(1).maybeSingle();if(me)throw new Error(`Could not match machine for maintenance record ${idx+1} (${fleet||row[2]||"unknown machine"}): ${me.message||me}`);machineId=m?.id||null;}if(!machineId){
-  // Backups can contain maintenance history for a machine whose machine master
-  // record is missing from the backup. Preserve the maintenance history by
-  // rebuilding the missing machine from the maintenance row itself.
-  if(!fleet){throw new Error(`Could not restore maintenance record ${idx+1}: no matching machine was found and the maintenance record has no fleet ID.`);}
-  const fallbackMachine={company_id:iyCompany.id,site_id:row[16]||null,department_id:row[17]||null,fleet_id:fleet,machine_model:String(row[2]||"").trim()||null,machine_serial_number:String(row[3]||"").trim()||null,meter_reading:null,manufacturer:null,capacity:null,department:null,status:"Active",assigned_to:null};
-   if(!fallbackMachine.site_id||!fallbackMachine.department_id)throw new Error(`Could not restore maintenance record ${idx+1}: backup is missing its Site or Department scope.`);
-  const {data:createdFallback,error:fm}=await iySupabase.from("machines").insert(fallbackMachine).select("id,fleet_id,machine_model").single();
-  if(fm)throw new Error(`Could not rebuild missing machine ${fleet} for maintenance record ${idx+1}: ${fm.message||fm}`);
-  machineId=createdFallback.id;
-  machineByFleet.set(fleet,machineId);
-}
-let baseRef=String(row[0]||"").trim()||`RESTORE-${Date.now()}-${idx+1}`;let serviceRef=baseRef;let suffix=1;while(usedServiceRefs.has(serviceRef))serviceRef=`${baseRef}-R${suffix++}`;usedServiceRefs.add(serviceRef);const record={company_id:iyCompany.id,site_id:row[16]||null,department_id:row[17]||null,service_ref:serviceRef,job_date:row[1]||null,machine_id:machineId,machine_hours:num(row[5]),next_service_hours:num(row[6]),job_type:row[7]||null,fault_problem:row[8]||null,work_performed:row[9]||null,job_description:row[8]||null,service_status:row[10]||null,job_status:row[10]||null,parts_required:String(row[11]||"").trim().toLowerCase()==="yes",technicians:row[12]||null,remarks:row[13]||null,created_by:iyAuthUser.id};const {error}=await iySupabase.from("maintenance_records").insert(record);if(error)throw new Error(`Could not restore maintenance record ${idx+1} (${serviceRef}): ${error.message||error}`);await checkpoint("maintenance",84+((idx+1)/maintenance.length)*8,"Restoring maintenance records…",`Restored maintenance record ${idx+1} of ${maintenance.length}.`,"Maintenance history is being linked to the restored machines.");}}
-  await checkpoint("settings",92,"Restoring company settings…","Applying company details, report settings and configuration.","Branding and report configuration are being restored last.");
-  if(data.settings){const ss=data.settings;const {error:e1}=await iySupabase.from("companies").update({name:ss.companyName||iyCompany.name,address:ss.companyAddress||null,telephone:String(ss.telephone||""),email:ss.email||"",website:ss.website||""}).eq("id",iyCompany.id);if(e1)throw new Error(`Could not restore company settings: ${e1.message||e1}`);const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:ss.storeManager||null,prepared_by:ss.preparedBy||null,department:ss.department||null,default_minimum_stock:num(ss.defaultMinimumStock)||3,report_footer:ss.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.47",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw new Error(`Could not restore report settings: ${e2.message||e2}`)}
-  await checkpoint("finish",97,"Finalizing restore…","Refreshing the workspace and verifying restored data.","Almost finished. Please keep this page open.");
-  await cloudAudit("Restored system backup",`Company backup restored by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`);
-  await loadCloudData();
-  job.status="complete";job.stage="finish";job.percent=100;job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);
-  setRestoreProgress(100,"Restore complete","Your company backup has been restored successfully.","The restore is finished. It is now safe to continue using IY Maintain.","finish");
-  await restoreYield();
-  await iyDeleteRestoreJob(key);setRestoreBusy(false);clearRestoreUnloadGuard();
-  const sp=document.getElementById("iy-restore-spinner");if(sp)sp.style.display="none";
-  // After a successful restore, immediately return the user to the live Dashboard
-  // using the freshly loaded cloud data. No manual browser refresh is required.
-  currentPage="dashboard";
-  hideRestoreProgress();
-  render();
-  toast("System backup restored successfully.");
-  alert("Restore completed successfully. The current company records have been replaced with the selected backup. User accounts and passwords were not changed.");
- }catch(e){
-  console.error("Backup restore failed",e);job.status="interrupted";job.error=e?.message||"Unknown error";job.updatedAt=new Date().toISOString();await iySaveRestoreJob(job);hideRestoreProgress();clearRestoreUnloadGuard();
-  if(!options.isRollback&&job.rollbackPayload){
-   const rollbackNow=confirm(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nIY Maintain saved an automatic snapshot of the company data from before this restore began.\n\nDo you want to roll the company back to that pre-restore snapshot now?`);
-   if(rollbackNow){
-    try{
-     await runRestoreJob(job.rollbackPayload,job.companyName||iyCompany.name,{isRollback:true,rollbackPayload:job.rollbackPayload,startedAt:job.startedAt});
-     alert("Rollback completed. The company has been returned to the pre-restore state.");
-    }catch(re){
-     console.error("Automatic rollback failed",re);
-     alert(`The automatic rollback could not be completed.\n\nReason: ${re?.message||"Unknown rollback error"}\n\nDo not start another restore. The original pre-restore snapshot is still saved in this browser restore checkpoint.`);
-    }
-   }else{
-    alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nYour automatic pre-restore snapshot remains saved in this browser. You can use it to roll back before starting another restore.`);
+ const checkpoint=async(stage,percent,step,detail,info)=>{
+   job.stage=stage;job.percent=percent;job.step=step;job.detail=detail;job.updatedAt=new Date().toISOString();
+   await iySaveRestoreJob(job);
+   setRestoreProgress(percent,step,detail,info,stage);
+   await restoreYield();
+ };
+
+ try{
+   const counts={
+     machines:Array.isArray(data.machines)?data.machines.length:0,
+     parts:Array.isArray(data.inventory)?data.inventory.length:0,
+     receipts:Array.isArray(data.receipts)?data.receipts.length:0,
+     issues:Array.isArray(data.issues)?data.issues.length:0,
+     updates:Array.isArray(data.updates)?data.updates.length:0,
+     orders:Array.isArray(data.orders)?data.orders.length:0,
+     maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0
+   };
+
+   await checkpoint(
+     "prepare",
+     8,
+     "Preparing atomic restore…",
+     "Backup verified for "+name+".",
+     "Users, passwords, memberships and Supabase authentication accounts will not be changed."
+   );
+
+   await checkpoint(
+     "transaction",
+     15,
+     "Starting secure database transaction…",
+     "The restore is being handed to PostgreSQL as one atomic operation.",
+     "If any restore operation fails, PostgreSQL will automatically roll the database back."
+   );
+
+   const {data:result,error}=await iySupabase.rpc(
+     "restore_company_backup_atomic",
+     {
+       p_company_id:iyCompany.id,
+       p_payload:payload
+     }
+   );
+
+   if(error){
+     throw new Error(`Atomic restore failed: ${error.message||error}`);
    }
-  }else{
-   alert(`Restore stopped at ${Math.round(job.percent||0)}%.\n\nReason: ${job.error||"Unknown restore error"}\n\nThe restore checkpoint remains saved. Do not start another restore unless you are ready to recover from the saved snapshot.`);
-  }
-  throw e;
+
+   if(!result||result.success!==true){
+     throw new Error("Atomic restore did not return a successful completion result.");
+   }
+
+   await checkpoint(
+     "database",
+     88,
+     "Database restore committed",
+     `Restored ${result.machines??counts.machines} machines, ${result.parts_inventory??counts.parts} parts/inventory records and transaction history.`,
+     "PostgreSQL has completed the restore as a single transaction."
+   );
+
+   await checkpoint(
+     "settings",
+     93,
+     "Refreshing company workspace…",
+     "Loading the restored company data.",
+     "The database transaction has completed successfully."
+   );
+
+   await cloudAudit(
+     "Restored system backup",
+     `Company backup restored atomically by ${iyMembership?.full_name||iyAuthUser.email||"Company Administrator"}. Users and authentication accounts were not changed.`
+   );
+
+   await loadCloudData();
+
+   job.status="complete";
+   job.stage="finish";
+   job.percent=100;
+   job.updatedAt=new Date().toISOString();
+   await iySaveRestoreJob(job);
+
+   setRestoreProgress(
+     100,
+     "Restore complete",
+     "Your company backup has been restored successfully.",
+     "The PostgreSQL transaction committed successfully. It is now safe to continue using IY Maintain.",
+     "finish"
+   );
+
+   await restoreYield();
+   await iyDeleteRestoreJob(key);
+   setRestoreBusy(false);
+   clearRestoreUnloadGuard();
+
+   const sp=document.getElementById("iy-restore-spinner");
+   if(sp)sp.style.display="none";
+
+   currentPage="dashboard";
+   hideRestoreProgress();
+   render();
+
+   toast("System backup restored successfully.");
+   alert("Restore completed successfully. The company backup was restored using an atomic PostgreSQL transaction. If any database operation had failed, PostgreSQL would have rolled the entire restore back. User accounts and passwords were not changed.");
+
+ }catch(e){
+   console.error("Backup restore failed",e);
+
+   job.status="interrupted";
+   job.error=e?.message||"Unknown error";
+   job.updatedAt=new Date().toISOString();
+
+   try{await iySaveRestoreJob(job)}catch(saveErr){console.warn("Could not save restore failure checkpoint",saveErr)}
+
+   hideRestoreProgress();
+   clearRestoreUnloadGuard();
+   setRestoreBusy(false);
+
+   alert(
+     `Restore stopped at ${Math.round(job.percent||0)}%.\n\n`+
+     `Reason: ${job.error||"Unknown restore error"}\n\n`+
+     `No partial database restore should remain. PostgreSQL runs this restore as one transaction, so a failure automatically rolls the database back to the state it had before the restore began.\n\n`+
+     `The browser restore checkpoint remains saved for recovery diagnostics. Do not start another restore until the failure has been reviewed.`
+   );
+
+   throw e;
  }
 }
 
