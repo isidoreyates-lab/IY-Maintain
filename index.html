@@ -1,3 +1,4 @@
+<!-- IY Maintain V24.53: audit events now use actual machine/maintenance record scope. -->
 <!doctype html>
 <!-- IY Maintain V24.49 — Restore Preflight Safety -->
 <html lang="en">
@@ -3039,7 +3040,7 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
    try{
      const id=await cloudSaveMaintenance(row);
      row[14]=id;
-     await cloudAudit(editId?"Updated maintenance entry":"Created maintenance entry",editId?"Maintenance record updated":"Maintenance record saved");
+     await cloudAudit(editId?"Updated maintenance entry":"Created maintenance entry",editId?"Maintenance record updated":"Maintenance record saved",mach[16]||null,mach[17]||null);
    }catch(e){
      console.error("Maintenance save failed:",e);
      return alert(e?.message||"Maintenance record could not be saved to the cloud. No local record was added.");
@@ -3390,7 +3391,7 @@ function machineModal(id){
  </div>`);
  const modal=document.getElementById("modal");if(modal){modal.classList.add("machine-editor-modal-v19");}
 }
-async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?viewMachineRows().find(z=>String(z[0])===String(decodeURIComponent(old))):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;await cloudAudit("Added machine","Machine record created")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals,x[11],x[12],x[9]);x[9]=id;await cloudAudit("Updated machine","Machine record updated")}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
+async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?viewMachineRows().find(z=>String(z[0])===String(decodeURIComponent(old))):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;const scope=effectiveWriteScope();await cloudAudit("Added machine","Machine record created",scope.siteId,scope.departmentId)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals,x[11],x[12],x[9]);x[9]=id;await cloudAudit("Updated machine","Machine record updated",x[11]||null,x[12]||null)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
