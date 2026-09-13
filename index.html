@@ -4897,7 +4897,26 @@ async function cloudSaveMachine(row,existingSiteId=null,existingDepartmentId=nul
  const {data,error}=await iySupabase.from("machines").insert(payload).select("id").single();
  if(error)throw error; return data.id;
 }
-async function cloudSaveSettings(){if(!iyCloudReady)return;const s=db.settings;const {error:e1}=await iySupabase.from("companies").update({name:s.companyName,address:s.companyAddress,telephone:String(s.telephone||""),email:s.email||"",website:s.website||""}).eq("id",iyCompany.id);if(e1)throw e1;const {error:e2}=await iySupabase.from("company_settings").upsert({company_id:iyCompany.id,store_manager:s.storeManager||null,prepared_by:s.preparedBy||null,department:s.department||null,default_minimum_stock:num(s.defaultMinimumStock),report_footer:s.reportFooter||null,system_name:"Computerized Machines Maintenance System",app_version:"V24.47",developer:"IY Digital Innovations"},{onConflict:"company_id"});if(e2)throw e2}
+async function cloudSaveSettings(){
+ if(!iyCloudReady||!iyCompany)return;
+ const s=db.settings||{};
+ const {data,error}=await iySupabase.rpc("manage_company_settings",{
+  p_company_id:iyCompany.id,
+  p_company_name:s.companyName||null,
+  p_address:s.companyAddress||null,
+  p_telephone:String(s.telephone||""),
+  p_email:s.email||null,
+  p_website:s.website||null,
+  p_store_manager:s.storeManager||null,
+  p_prepared_by:s.preparedBy||null,
+  p_department:s.department||null,
+  p_default_minimum_stock:num(s.defaultMinimumStock),
+  p_report_footer:s.reportFooter||null
+ });
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the Settings change.");
+ return data;
+}
 
 function settingsPage(){
  const s=db.settings||{};
@@ -4928,7 +4947,7 @@ function settingsPage(){
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>`<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canSettings?"":"disabled"}></div>`).join("")}
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>{const canEditField=(["companyName","companyAddress","telephone","email","website"].includes(k)?isCompanyAdmin():canSettings);return `<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canEditField?"":"disabled"}></div>`}).join("")}
      </div>
     </section>
    </div>
