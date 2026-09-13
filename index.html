@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.74 — Fix approval users on fresh generated reports -->
+<!-- IY Maintain V24.75 — Approval recipients are all active company users -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3601,25 +3601,12 @@ async function loadReportApprovalUsers(kind){
   if(!iyCloudReady||!iyCompany||!iyAuthUser)return [];
   window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
 
-  const reportId=approvalActiveId(kind);
-  let rpcError=null;
-
-  // For an already-saved approval report, use the approval-specific RPC first.
-  if(reportId){
-    const {data,error}=await iySupabase.rpc("get_report_approval_users",{p_report_id:reportId});
-    rpcError=error||null;
-    if(!error && Array.isArray(data) && data.length){
-      window.__reportApprovalUsersCache[kind]=data;
-      return data;
-    }
-  }
-
-  // A freshly generated report has no report ID yet. In that case the RPC
-  // cannot return candidates because the report does not exist in the
-  // approval tables until Send for Approval is pressed. Load the current
-  // company's active memberships so the creator can select recipients first.
-  const fallback=await fetchCompanyUsers();
-  const eligible=(fallback||[])
+  // Approval recipients are company-wide. Do not restrict the selector by
+  // role, department, site, or approval-RPC eligibility. Every ACTIVE
+  // membership in the current company is a valid recipient, except the
+  // person creating the request.
+  const members=await fetchCompanyUsers();
+  const eligible=(members||[])
     .filter(u=>u.is_active!==false && u.user_id!==iyAuthUser?.id)
     .map(u=>({
       user_id:u.user_id,
@@ -3630,7 +3617,6 @@ async function loadReportApprovalUsers(kind){
       is_active:u.is_active!==false
     }));
 
-  if(rpcError)console.warn("Approval-user RPC failed; using company-membership fallback.",rpcError?.message||rpcError);
   window.__reportApprovalUsersCache[kind]=eligible;
   return eligible;
 }
