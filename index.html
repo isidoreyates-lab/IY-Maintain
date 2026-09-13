@@ -2856,7 +2856,7 @@ async function savePartsOrder(orderId){
 function updatesPage(){
  return `<div class="panel">${updatesTable()}</div>`;
 }
-function updatesTable(){const rows=viewUpdateRows();if(!rows.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO/J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite</th><th>Remarks</th><th>Action</th></tr>${rows.map((x)=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${canEdit("updates")?`<button class="btn secondary small" onclick="editUpdateById('${x[11]}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`}
+function updatesTable(){const rows=viewUpdateRows();if(!rows.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO/J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite</th><th>Remarks</th><th>Action</th></tr>${rows.map((x)=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${canEdit("updates")?`<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary small" onclick="editUpdateById('${x[11]}')">Edit</button><button class="btn danger small" onclick="deleteUpdateById('${x[11]}','${x[13]||''}','${x[14]||''}')">Delete</button></div>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`}
 function editUpdateById(id){if(!canEdit("updates"))return alert("You do not have permission to edit parts updates.");const x=viewUpdateRows().find(r=>String(r[11])===String(id));if(!x)return alert("Parts update not found in the selected scope.");const idx=db.updates.findIndex(r=>String(r[11])===String(id));if(idx<0)return alert("Parts update record could not be found.");updateModal(idx)}
 function updateModal(index){if(!canEdit("updates"))return alert("Parts update editing is restricted to Parts Coordinators and Administrators.");
  const x=Number.isInteger(index)?db.updates[index]:null;
@@ -2876,7 +2876,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="field"><label>Status</label><select id="u_status" class="select"><option ${status==="TO ORDER"?"selected":""}>TO ORDER</option><option ${status==="ORDERED"?"selected":""}>ORDERED</option><option ${status==="PARTIALLY RECEIVED"?"selected":""}>PARTIALLY RECEIVED</option><option ${status==="RECEIVED"?"selected":""}>RECEIVED</option><option ${status==="CANCELLED"?"selected":""}>CANCELLED</option></select></div>
  <div class="field"><label>Onsite Date</label><input id="u_onsite" class="input" type="date" value="${esc(x?.[9]||"").slice(0,10)}"></div>
  <div class="field full"><label>Remarks</label><textarea id="u_rem" class="textarea">${esc(x?.[10]||"")}</textarea></div></div>
- <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUpdate(${x?index:"null"})">${x?"Save Changes":"Save Update"}</button></div>`);
+ <div class="actions">${x?`<button class="btn danger" onclick="deleteUpdateById('${x[11]}','${x[13]||''}','${x[14]||''}')">Delete</button>`:""}<button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUpdate(${x?index:"null"})">${x?"Save Changes":"Save Update"}</button></div>`);
 }
 function autoFillUpdatePart(){
  const input=document.getElementById("u_part");if(!input)return;
@@ -2888,6 +2888,18 @@ function autoFillUpdatePart(){
  if(machine&&!machine.value.trim())machine.value=part[2]||"";
 } 
 function editUpdate(index){updateModal(index)}
+async function deleteUpdateById(id,siteId,departmentId){
+ if(!canEdit("updates"))return alert("You do not have permission to delete parts updates.");
+ if(!id)return alert("This Parts Update has no valid record ID.");
+ if(!confirm("Delete this Parts Update? This cannot be undone."))return;
+ try{
+   await cloudDeleteUpdate(id,siteId||null,departmentId||null);
+   await loadCloudData();
+   render();
+   await cloudAudit("Deleted parts update","Parts update deleted");
+   toast("Parts update deleted.");
+ }catch(e){console.error("Parts update delete failed",e);alert(e?.message||"Parts update could not be deleted from the cloud.");}
+}
 async function saveUpdate(index){
  if(!canEdit("updates"))return alert("You do not have permission to save parts updates.");
  const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),document.getElementById("u_machine").value.trim(),num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
@@ -2919,9 +2931,17 @@ async function saveUpdate(index){
      return;
    }
 
-   if(index===null){row[11]=id;db.updates.push(row);await cloudAudit("Created parts requisition","Parts update saved")}
-   else{db.updates[index]={...row,11:id};await cloudAudit("Edited parts update","Parts update edited for "+row[1])}
-   closeModal();render();toast(index===null?"Parts update saved.":"Parts update updated.");
+   if(index===null){await cloudAudit("Created parts requisition","Parts update saved")}
+   else{await cloudAudit("Edited parts update","Parts update edited for "+row[1])}
+
+   // The secure RPC may have updated an existing Part + Site + Department
+   // record instead of creating a duplicate. Reload cloud data so the UI
+   // immediately reflects the single canonical Parts Update record.
+   await loadCloudData();
+
+   closeModal();
+   render();
+   toast(index===null?"Parts update saved.":"Parts update updated.");
  }catch(e){console.error("Parts update save failed",e);alert(e?.message||"Parts update could not be saved to the cloud.")}
 }
 
@@ -4742,12 +4762,40 @@ async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supp
 async function cloudSaveUpdate(row,index){
  if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready.");
  const scope=effectiveWriteScope(row[13],row[14]);
- const p=await cloudEnsurePartForUpdate(row[1],row[2],row[3],row[6],scope);
- const payload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:p.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,status:row[8]||"TO ORDER",onsite_date:row[9]||null,remarks:row[10]||null,updated_by:iyAuthUser.id};
- let id=row[11];let q=iySupabase.from("parts_updates");
- if(id){const {data,error}=await q.update(payload).eq("id",id).eq("company_id",iyCompany.id).select("id").single();if(error)throw error;return data.id;}
- const {data,error}=await q.insert({...payload,created_by:iyAuthUser.id}).select("id").single();
- if(error)throw error;return data.id;
+ const existingId=row[11]||null;
+ const {data,error}=await iySupabase.rpc("manage_parts_update",{
+   p_action:"save",
+   p_update_id:existingId,
+   p_part_number:row[1]||null,
+   p_description:row[2]||null,
+   p_machine_model:row[3]||null,
+   p_quantity:num(row[4]),
+   p_po_reference:row[5]||null,
+   p_supplier:row[6]||null,
+   p_order_date:row[0]||null,
+   p_expected_date:row[7]||null,
+   p_status:row[8]||"TO ORDER",
+   p_onsite_date:row[9]||null,
+   p_remarks:row[10]||null,
+   p_site_id:scope.siteId,
+   p_department_id:scope.departmentId
+ });
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the Parts Update change.");
+ return data.update_id;
+}
+async function cloudDeleteUpdate(updateId,siteId,departmentId){
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready.");
+ const scope=effectiveWriteScope(siteId,departmentId);
+ const {data,error}=await iySupabase.rpc("manage_parts_update",{
+   p_action:"delete",
+   p_update_id:updateId,
+   p_site_id:scope.siteId,
+   p_department_id:scope.departmentId
+ });
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the Parts Update deletion.");
+ return data;
 }
 async function cloudSaveMaintenance(row){
  if(!iyCloudReady||!iyCompany||!iyAuthUser)throw new Error("Secure cloud session is not ready.");
