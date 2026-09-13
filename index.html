@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.71 — Fix machine list rendering: global norm() utility -->
+<!-- IY Maintain V24.72 — Fix approval preview refresh blank-page bug -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3690,7 +3690,22 @@ async function openReportNotification(reportId){
  if(!reportId)return nav("mreports");
  try{const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};delete window.__reportApprovalUsersCache[r.report_kind];await ensureApprovalUsersLoaded(r.report_kind);await hydrateApprovalSignatureUrls(reportId);window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};await openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};await openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
 }
-function refreshReportApprovalPreview(kind){if(kind==="parts"){const m=document.getElementById("partsReportPreviewScroll");if(m)m.innerHTML=buildPartsReportHTML();}else{const m=document.getElementById("reportPreviewScroll");if(m)m.innerHTML=buildMaintenanceReportHTML();}}
+function refreshReportApprovalPreview(kind){
+  if(kind==="parts"){
+    const m=document.getElementById("partsReportPreviewScroll");
+    if(m)m.innerHTML=buildPartsReportHTML();
+  }else{
+    const m=document.getElementById("reportPreviewScroll");
+    if(m){
+      const st=approvalStateForKind("maintenance");
+      const snapshot=st?.report?.snapshot||{
+        data:window.__maintenanceReportData||{},
+        settings:db.settings
+      };
+      m.innerHTML=buildMaintenanceReportHTML(snapshot);
+    }
+  }
+}
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
  const ss=snapshotOverride?.settings||db.settings;const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
