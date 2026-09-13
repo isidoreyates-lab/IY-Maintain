@@ -2085,7 +2085,20 @@ async function markNotificationRead(id){
  if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from("notification_reads").upsert({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()},{onConflict:"company_id,user_id,notification_id"});}catch(e){console.warn("Notification read state not saved to cloud",e)}}
 }
 async function handleNotificationClick(id,reportId,page){await markNotificationRead(id);notificationOpen=false;if(reportId)await openReportNotification(reportId);else nav(page||"dashboard");}
-async function loadApprovalNotificationsOnly(){if(!iyCloudReady||!iyAuthUser)return;try{const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);if(error)throw error;cloudNotifications=data||[];notificationLastRefresh=new Date();render();}catch(e){if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e)}}
+async function loadApprovalNotificationsOnly(options={}){
+ if(!iyCloudReady||!iyAuthUser)return false;
+ try{
+  const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);
+  if(error)throw error;
+  cloudNotifications=data||[];
+  notificationLastRefresh=new Date();
+  if(options.render!==false)render();
+  return true;
+ }catch(e){
+  if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e);
+  return false;
+ }
+}
 async function refreshNotifications(){if(notificationRefreshBusy)return;notificationRefreshBusy=true;try{await loadApprovalNotificationsOnly();}finally{notificationRefreshBusy=false;}}
 function notificationCount(){return notificationState().unread.length;}
 function notificationIconType(type){return type==='bad'?'●':type==='warn'?'▲':'●'}
@@ -2143,7 +2156,7 @@ function render(){
         <span class="notification-bell-wrap ${count?'pulse':''}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 9.5C18 6.46 15.76 4 12 4C8.24 4 6 6.46 6 9.5V14L4.5 16.5H19.5L18 14V9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 19C10.45 19.62 11.1 20 12 20C12.9 20 13.55 19.62 14 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>${count?`<span class="notification-badge">${count>99?'99+':count}</span>`:''}</button>
       <div class="notification-panel ${notificationOpen?'open':''}">
         <div class="notification-head-v22">
-          <div class="notification-head-top"><div><strong>Notifications</strong><small>Live fleet, stock and maintenance alerts</small></div><button class="profile-menu-item" style="width:auto;padding:7px 9px" onclick="markNotificationsRead()">Mark all read</button></div>
+          <div class="notification-head-top"><div><strong>Notifications</strong><small>Approval requests, signatures and system alerts</small></div><button class="profile-menu-item" style="width:auto;padding:7px 9px" onclick="markNotificationsRead()">Mark all read</button></div>
           <div class="notification-summary"><span>${ns.all.length} active</span><span class="critical">${ns.critical} critical</span><span class="attention">${ns.attention} attention</span></div>
           <div class="notification-actions-v22"><button class="notification-filter ${notificationFilter==='all'?'active':''}" onclick="event.stopPropagation();notificationFilter='all';render()">All</button><button class="notification-filter ${notificationFilter==='unread'?'active':''}" onclick="event.stopPropagation();notificationFilter='unread';render()">Unread ${ns.unread.length?`(${ns.unread.length})`:''}</button><button class="notification-refresh" onclick="event.stopPropagation();refreshNotifications()">↻ Refresh</button></div>
         </div>
@@ -3702,8 +3715,17 @@ async function notifyApprovalSigned(reportId){
  }catch(e){console.warn("Approval signature notification could not be created",e?.message||e);}
 }
 async function requestReportApproval(kind){
- const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
- try{const id=await persistCurrentReport(kind,selected);await notifyApprovalRequestRecipients(id,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
+ const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report for approval.");
+ try{
+  const id=await persistCurrentReport(kind,selected);
+  await notifyApprovalRequestRecipients(id,selected);
+  window.__approvalSelections[kind]=[];
+  await loadReportApprovalRecord(id);
+  refreshReportApprovalPreview(kind);
+  await loadApprovalNotificationsOnly();
+  await loadApprovalInboxFast({renderPage:false,notice:false});
+  toast(`✓ Report sent to ${selected.length} user${selected.length===1?"":"s"}. Approval notifications created.`);
+ }catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
 async function signOwnCurrentReport(kind){
  try{
@@ -3726,6 +3748,7 @@ async function signCurrentReport(kind){
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
   await notifyApprovalSigned(id);
   await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
+  await loadApprovalNotificationsOnly();
   if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
@@ -4656,7 +4679,7 @@ async function completeAuthenticatedSession(user){
  loggedIn=true;
  db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
- if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
+ if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},10000);
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
