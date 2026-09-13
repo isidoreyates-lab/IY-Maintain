@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.72 — Fix approval preview refresh blank-page bug -->
+<!-- IY Maintain V24.73 — Fix Refresh Users fallback and eligibility loading -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3602,10 +3602,31 @@ async function loadReportApprovalUsers(kind){
   const reportId=approvalActiveId(kind);
   if(!reportId)return [];
   window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
+
+  // Primary source: approval-specific RPC with database-side rules.
   const {data,error}=await iySupabase.rpc("get_report_approval_users",{p_report_id:reportId});
-  if(error)throw error;
-  window.__reportApprovalUsersCache[kind]=Array.isArray(data)?data:[];
-  return window.__reportApprovalUsersCache[kind];
+  if(!error && Array.isArray(data) && data.length){
+    window.__reportApprovalUsersCache[kind]=data;
+    return data;
+  }
+
+  // Fallback: active members of this company. This keeps Refresh Users
+  // functional if the approval RPC returns no rows or is unavailable.
+  const fallback=await fetchCompanyUsers();
+  const eligible=(fallback||[])
+    .filter(u=>u.is_active!==false && u.user_id!==iyAuthUser?.id)
+    .map(u=>({
+      user_id:u.user_id,
+      user_code:u.user_code||null,
+      full_name:u.full_name||null,
+      email:u.email||null,
+      role:u.role||null,
+      is_active:u.is_active!==false
+    }));
+
+  if(error)console.warn("Approval-user RPC failed; using company-membership fallback.",error?.message||error);
+  window.__reportApprovalUsersCache[kind]=eligible;
+  return eligible;
 }
 async function ensureApprovalUsersLoaded(kind){
   if(!kind||!iyCloudReady||!iyCompany||!iyAuthUser)return;
