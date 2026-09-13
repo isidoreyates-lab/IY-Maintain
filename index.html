@@ -2910,21 +2910,15 @@ async function saveUpdate(index){
    const id=await cloudSaveUpdate(row,index);
 
    // ORDERED is the hand-off from Parts Updates to Parts Orders.
-   // Create the order directly in Supabase, then remove the source update.
-   // This avoids leaving the update stuck at TO ORDER when the legacy RPC
-   // is unavailable or contains stale status logic.
+   // Use the secure server-side conversion so the order creation/update
+   // and source Parts Update deletion happen inside one privileged transaction.
    if(row[8]==="ORDERED"){
      const updateId=id||db.updates[index]?.[11]||null;
-     const part=await cloudGetPart(row[1]);
-     if(!part?.id)throw new Error("The selected part could not be resolved in this company workspace.");
-     const scope=effectiveWriteScope(db.updates[index]?.[13],db.updates[index]?.[14]);
-     const orderPayload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,part_id:part.id,order_date:row[0]||null,machine_model:row[3]||null,quantity:num(row[4]),po_reference:row[5]||null,supplier:row[6]||null,expected_date:row[7]||null,ordered_at:new Date().toISOString(),onsite_date:row[9]||null,remarks:row[10]||null,created_by:iyAuthUser.id,updated_by:iyAuthUser.id};
-     const {data:order,error:orderError}=await iySupabase.from("parts_orders").insert(orderPayload).select("id").single();
-     if(orderError)throw orderError;
-     if(updateId){
-       const {error:deleteError}=await iySupabase.from("parts_updates").delete().eq("id",updateId).eq("company_id",iyCompany.id);
-       if(deleteError)throw deleteError;
-     }
+     if(!updateId)throw new Error("The Parts Update could not be identified for order conversion.");
+     const {data:moveData,error:moveError}=await iySupabase.rpc("move_part_update_to_order",{p_update_id:updateId});
+     if(moveError)throw moveError;
+     const orderId=Array.isArray(moveData)?moveData?.[0]?.order_id:moveData?.order_id;
+     if(!orderId)throw new Error("The server did not confirm the Parts Order conversion.");
      await loadCloudData();
      await cloudAudit("Ordered part","Parts Update moved to active Parts Orders for "+row[1]+" · "+row[5]);
      closeModal();render();toast("Order placed. The Parts Update has been cleared and the order is now in Parts Orders.");
