@@ -4879,23 +4879,25 @@ async function cloudSaveMaintenance(row){
 }
 async function cloudSaveMachine(row,existingSiteId=null,existingDepartmentId=null,existingMachineId=null){
   const scope=effectiveWriteScope(existingSiteId,existingDepartmentId);
-  const payload={company_id:iyCompany.id,site_id:scope.siteId,department_id:scope.departmentId,fleet_id:row[0],machine_model:row[2],machine_serial_number:row[3]||null,meter_reading:null,manufacturer:row[4]||null,capacity:row[5]||null,department:row[6]||null,status:row[7]||null,assigned_to:row[8]||null};
- if(!payload.site_id||!payload.department_id)throw new Error("Your account must have a Site and Department assigned before machine records can be saved.");
- let existing=null;
- const editId=existingMachineId||row[9]||null;
- if(editId){
-   const {data,error}=await iySupabase.from("machines").select("id,site_id,department_id").eq("id",editId).eq("company_id",iyCompany.id).maybeSingle();
-   if(error)throw error; existing=data||null;
- }
- if(existing){
-   const {data,error}=await iySupabase.from("machines").update(payload).eq("id",existing.id).eq("company_id",iyCompany.id).select("id").single();
-   if(error)throw error; return data.id;
- }
- const {data:duplicate,error:dupError}=await iySupabase.from("machines").select("id,site_id,department_id").eq("company_id",iyCompany.id).eq("fleet_id",payload.fleet_id).maybeSingle();
- if(dupError)throw dupError;
- if(duplicate)throw new Error("Fleet ID "+payload.fleet_id+" already exists in this company. Use the existing machine record instead of creating a duplicate.");
- const {data,error}=await iySupabase.from("machines").insert(payload).select("id").single();
- if(error)throw error; return data.id;
+  const editId=existingMachineId||row[9]||null;
+  if(!scope.siteId||!scope.departmentId)throw new Error("Your account must have a Site and Department assigned before machine records can be saved.");
+  const {data,error}=await iySupabase.rpc("manage_machine",{
+   p_machine_id:editId||null,
+   p_fleet_id:row[0],
+   p_machine_name:row[1]||null,
+   p_machine_model:row[2],
+   p_serial:row[3]||null,
+   p_manufacturer:row[4]||null,
+   p_capacity:row[5]||null,
+   p_department:row[6]||null,
+   p_status:row[7]||null,
+   p_assigned_to:row[8]||null,
+   p_site_id:scope.siteId,
+   p_department_id:scope.departmentId
+  });
+  if(error)throw error;
+  if(!data?.success||!data?.machine_id)throw new Error("The server did not confirm the Machine change.");
+  return data.machine_id;
 }
 async function cloudSaveSettings(){
  if(!iyCloudReady||!iyCompany)return;
