@@ -2836,19 +2836,25 @@ async function savePartsOrder(orderId){
  const ref=document.getElementById("po_ref")?.value.trim()||"";
  const qty=num(document.getElementById("po_qty")?.value);
  if(!partNumber||!ref||qty<=0)return alert("Part number, PO / J-Ref and a valid quantity are required.");
- if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please sign in again.");
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
  try{
-  let partId=x[12]||null;
-  const {data:part,error:partError}=await iySupabase.from("parts").select("id,description").eq("company_id",iyCompany.id).eq("part_number",partNumber).maybeSingle();
-  if(partError)throw partError;
-  if(!part)throw new Error("The selected part does not exist in this company workspace.");
-  partId=part.id;
-  const scope=effectiveWriteScope(x?.[13],x?.[14]);
-  const payload={site_id:scope.siteId,department_id:scope.departmentId,part_id:partId,order_date:document.getElementById("po_date").value||null,machine_model:document.getElementById("po_machine").value.trim()||null,quantity:qty,po_reference:ref,supplier:document.getElementById("po_supplier").value.trim()||null,expected_date:document.getElementById("po_expected").value||null,onsite_date:document.getElementById("po_onsite").value||null,remarks:document.getElementById("po_remarks").value.trim()||null,updated_by:iyAuthUser?.id||null};
-  const {error}=await iySupabase.from("parts_orders").update(payload).eq("id",orderId).eq("company_id",iyCompany.id);
+  const {data,error}=await iySupabase.rpc("manage_parts_order",{
+   p_order_id:orderId,
+   p_part_number:partNumber,
+   p_order_date:document.getElementById("po_date")?.value||null,
+   p_machine_model:document.getElementById("po_machine")?.value.trim()||null,
+   p_quantity:qty,
+   p_po_reference:ref,
+   p_supplier:document.getElementById("po_supplier")?.value.trim()||null,
+   p_expected_date:document.getElementById("po_expected")?.value||null,
+   p_onsite_date:document.getElementById("po_onsite")?.value||null,
+   p_remarks:document.getElementById("po_remarks")?.value.trim()||null
+  });
   if(error)throw error;
+  const confirmedId=Array.isArray(data)?data?.[0]?.order_id:data?.order_id;
+  if(!confirmedId)throw new Error("The server did not confirm the Parts Order update.");
   await loadCloudData();
-  await cloudAudit("Edited parts order","Parts order updated for "+partNumber+" · "+ref);
+  await cloudAudit("Edited parts order","Parts order updated for "+partNumber+" · "+ref,x?.[13]||null,x?.[14]||null);
   closeModal();render();toast("Parts order updated successfully.");
  }catch(e){console.error("Parts order update failed",e);alert(e?.message||"Parts order could not be updated.");}
 }
