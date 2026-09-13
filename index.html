@@ -3687,9 +3687,23 @@ async function loadReportApprovalRecord(id){
  window.__activeReportApproval=window.__activeReportApproval||{};if(r.data)window.__activeReportApproval[r.data.report_kind]=id;
  return r.data?{report:r.data,requests:q.data||[]}:null;
 }
+async function notifyApprovalRequestRecipients(reportId,userIds){
+ if(!reportId||!Array.isArray(userIds)||!userIds.length||!iyCloudReady)return;
+ try{
+  const {error}=await iySupabase.rpc("notify_report_approval_requested",{p_report_id:reportId,p_user_ids:userIds});
+  if(error)throw error;
+ }catch(e){console.warn("Approval request notifications could not be created",e?.message||e);}
+}
+async function notifyApprovalSigned(reportId){
+ if(!reportId||!iyCloudReady)return;
+ try{
+  const {error}=await iySupabase.rpc("notify_report_approval_signed",{p_report_id:reportId});
+  if(error)throw error;
+ }catch(e){console.warn("Approval signature notification could not be created",e?.message||e);}
+}
 async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
- try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
+ try{const id=await persistCurrentReport(kind,selected);await notifyApprovalRequestRecipients(id,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
 async function signOwnCurrentReport(kind){
  try{
@@ -3710,6 +3724,7 @@ async function signCurrentReport(kind){
   if(!req)throw new Error("You do not have a pending approval request for this report.");
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
+  await notifyApprovalSigned(id);
   await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
   if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
