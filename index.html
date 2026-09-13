@@ -2021,7 +2021,7 @@ function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue
 function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`}
 function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${icon}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
 function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=false;profileOpen=false;notificationOpen=false;render()}
-function mobileBottomItem(id,label,icon){const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${icon}</span><span>${label}</span></button>`}
+function mobileBottomItem(id,label,icon){if(!canAccess(id))return "";const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${icon}</span><span>${label}</span></button>`}
 function renderMobileNavigation(){
  const menu=mobileMenuOpen?`<div class="mobile-nav-backdrop" onclick="toggleMobileMenu()"></div><div class="mobile-nav-sheet">
   <div class="mobile-nav-sheet-head"><div><b>Navigation</b><span>All IY Maintain modules</span></div><button class="mobile-nav-close" aria-label="Close navigation menu" title="Close menu" onclick="toggleMobileMenu()">Close</button></div>
@@ -3693,14 +3693,14 @@ function canAccess(page){
    inventory:[...operational,"parts_coordinator","viewer"],
    updates:[...operational,"parts_coordinator","viewer"],
    orders:[...operational,"parts_coordinator","viewer"],
-   mdashboard:[...operational,"parts_coordinator","viewer"],
-   mlog:[...operational,"parts_coordinator","viewer"],
+   mdashboard:[...operational,"viewer"],
+   mlog:[...operational,"viewer"],
    machines:[...operational,"parts_coordinator","viewer"],
    preports:[...operational,"parts_coordinator","viewer"],
    mreports:[...operational,"parts_coordinator","viewer"],
    approvedreports:[...operational,"parts_coordinator","viewer"],
    approvals:[...operational,"parts_coordinator","viewer"],
-   settings:["manager"],
+   settings:["manager","parts_coordinator"],
    users:["manager"],
    activity:["manager","site_supervisor","department_supervisor","team_lead","technician","parts_coordinator"],
    backup:[]
