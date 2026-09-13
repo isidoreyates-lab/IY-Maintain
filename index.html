@@ -3701,30 +3701,45 @@ async function loadReportApprovalRecord(id){
  return r.data?{report:r.data,requests:q.data||[]}:null;
 }
 async function notifyApprovalRequestRecipients(reportId,userIds){
- if(!reportId||!Array.isArray(userIds)||!userIds.length||!iyCloudReady)return;
+ if(!reportId||!Array.isArray(userIds)||!userIds.length||!iyCloudReady)return {success:false,skipped:true};
  try{
-  const {error}=await iySupabase.rpc("notify_report_approval_requested",{p_report_id:reportId,p_user_ids:userIds});
-  if(error)throw error;
- }catch(e){console.warn("Approval request notifications could not be created",e?.message||e);}
+  const {data,error}=await iySupabase.rpc("notify_report_approval_requested",{p_report_id:reportId,p_user_ids:userIds});
+  if(error){console.warn("Approval request notification RPC unavailable; database trigger may still create notifications.",error?.message||error);return {success:false,error};}
+  return data||{success:true};
+ }catch(e){console.warn("Approval request notification RPC unavailable; database trigger may still create notifications.",e?.message||e);return {success:false,error:e};}
 }
 async function notifyApprovalSigned(reportId){
- if(!reportId||!iyCloudReady)return;
+ if(!reportId||!iyCloudReady)return {success:false,skipped:true};
  try{
-  const {error}=await iySupabase.rpc("notify_report_approval_signed",{p_report_id:reportId});
+  const {data,error}=await iySupabase.rpc("notify_report_approval_signed",{p_report_id:reportId});
+  if(error){console.warn("Approval signature notification RPC unavailable; database trigger may still create notifications.",error?.message||error);return {success:false,error};}
+  return data||{success:true};
+ }catch(e){console.warn("Approval signature notification RPC unavailable; database trigger may still create notifications.",e?.message||e);return {success:false,error:e};}
+}
+async function verifyApprovalNotifications(reportId,recipientIds=[]){
+ if(!reportId||!iyCloudReady)return [];
+ try{
+  const q=iySupabase.from("notifications").select("id,recipient_user_id,title,report_id,created_at").eq("report_id",reportId);
+  if(Array.isArray(recipientIds)&&recipientIds.length)q.in("recipient_user_id",recipientIds);
+  const {data,error}=await q;
   if(error)throw error;
- }catch(e){console.warn("Approval signature notification could not be created",e?.message||e);}
+  return data||[];
+ }catch(e){console.warn("Approval notification verification failed",e?.message||e);return [];}
 }
 async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report for approval.");
  try{
   const id=await persistCurrentReport(kind,selected);
-  await notifyApprovalRequestRecipients(id,selected);
+  const noticeResult=await notifyApprovalRequestRecipients(id,selected);
   window.__approvalSelections[kind]=[];
   await loadReportApprovalRecord(id);
   refreshReportApprovalPreview(kind);
+  await new Promise(r=>setTimeout(r,150));
+  const created=await verifyApprovalNotifications(id,selected);
   await loadApprovalNotificationsOnly();
   await loadApprovalInboxFast({renderPage:false,notice:false});
-  toast(`✓ Report sent to ${selected.length} user${selected.length===1?"":"s"}. Approval notifications created.`);
+  if(created.length) toast(`✓ Report sent to ${selected.length} user${selected.length===1?"":"s"}. ${created.length} approval notification${created.length===1?"":"s"} recorded.`);
+  else toast(`✓ Report sent, but no approval notification was found yet. Run the V24.83 Supabase SQL migration to enable automatic notifications.`);
  }catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
 async function signOwnCurrentReport(kind){
@@ -3747,6 +3762,7 @@ async function signCurrentReport(kind){
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
   await notifyApprovalSigned(id);
+  await new Promise(r=>setTimeout(r,150));
   await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
   await loadApprovalNotificationsOnly();
   if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
