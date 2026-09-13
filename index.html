@@ -3511,6 +3511,11 @@ function userApprovedReportRows(){
 function approvalReportCard(r,mode="pending"){
  const req=approvalReportRequestSet(r.id),requested=approvalRequestedUsers(r.id),signed=requested.filter(x=>x.status==="signed").length,pending=requested.filter(x=>x.status==="pending").length;
  const creator=approvalCreator(r),mine=req.find(x=>x.user_id===iyAuthUser?.id),requester=(iyUsersCache||[]).find(u=>u.user_id===r.created_by)||((iyUsersCache||[]).find(u=>u.user_id===req[0]?.requested_by)),kind=r.report_kind==="parts"?"Parts":"Maintenance";
+ // Some approvers cannot read the creator's membership row because of RLS.
+ // The saved V24.79 snapshot already contains the report's Prepared By name,
+ // so use it as the final fallback instead of displaying "User".
+ const snapshotCreatorName=String(r?.snapshot?.settings?.preparedBy||r?.snapshot?.settings?.prepared_by||"").trim();
+ const requesterName=String(requester?.full_name||creator?.full_name||snapshotCreatorName||"User").trim();
  const fullyApproved=isApprovalReportComplete(r.id),isCreator=r.created_by===iyAuthUser?.id;
  const action=mode==="pending"?`<button class="approval-inbox-action" type="button" onclick="openApprovalWorkItem('${esc(r.id)}')">Review & Sign <span>→</span></button>`:`<button class="approval-inbox-action approved" type="button" onclick="openApprovedReport('${esc(r.id)}')">View & Export <span>→</span></button>`;
  let state="YOUR SIGNATURE REQUIRED";
@@ -3520,7 +3525,7 @@ function approvalReportCard(r,mode="pending"){
    ? (isCreator
       ? (fullyApproved?`You requested ${signed} approval${signed===1?'':'s'} and all requested users have signed.`:`You requested ${requested.length} approval${requested.length===1?'':'s'}; ${pending} still pending.`)
       : `You signed this report${fullyApproved?` · All ${signed} requested approval${signed===1?'':'s'} completed`:''}.`)
-   : `Requested by <b>${esc(requester?.full_name||creator?.full_name||'User')}</b>`;
+   : `Requested by <b>${esc(requesterName)}</b>`;
  return `<article class="approval-inbox-card ${mode==='pending'?'is-pending':'is-approved'}"><div class="approval-inbox-icon">${mode==='pending'?'✍':(isCreator&&!fullyApproved?'⏳':'✓')}</div><div class="approval-inbox-main"><div class="approval-inbox-top"><span class="approval-type-pill">${kind} REPORT</span><span class="approval-date">${esc(new Date(displayDate).toLocaleString('en-GB'))}</span></div><h3>${esc(r.title)}</h3><p>${description}</p><div class="approval-progress"><span><b>${signed}/${requested.length}</b></span><div class="approval-progress-track"><i style="width:${requested.length?Math.round((signed/requested.length)*100):0}%"></i></div><span>${fullyApproved?'Completed':`${pending} pending`}</span></div></div><div class="approval-inbox-side"><span class="${mode==='pending'?'approval-you-badge':'approval-complete-badge'}">${state}</span>${action}</div></article>`;
 }
 function setApprovalInboxTab(tab){window.__approvalInboxTab=tab==="approved"?"approved":"pending";render();}
@@ -3712,7 +3717,11 @@ async function signCurrentReport(kind){
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
   await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
+  // Refresh the open saved-report modal immediately, then refresh the approvals
+  // page behind it. Previously render() only updated the page behind the modal,
+  // so the user had to close/refresh the page before seeing the new signature.
+  refreshReportApprovalPreview(kind);
+  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
 async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
