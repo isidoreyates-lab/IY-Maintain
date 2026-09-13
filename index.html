@@ -3237,7 +3237,7 @@ function machineStatusClass(status){
  return "badge";
 }
 function machineStatusOptions(selected=""){
- const options=["Running","Standby","Under Maintenance","Breakdown","Out of Service","Decommissioned"];
+ const options=["Running","Standby","Under Maintenance","Breakdown","Out of Service","Decommissioned","Retired"];
  return options.map(v=>`<option value="${esc(v)}" ${String(selected).toLowerCase()===v.toLowerCase()?"selected":""}>${esc(v)}</option>`).join("");
 }
 function machineImageFileName(fleet){
@@ -3318,7 +3318,7 @@ function machineDetailModal(id){
  const last=jobs[0]||null, latestHours=last?num(last[5]):null, nextService=last?num(last[6]):null, lastServiceDate=last?.[1]||'';
  const image=machineImageData(x), accent=machineStatusAccent(x[7]);
  openModal(`<div class="machine-profile-shell-v18">
-  <div class="machine-profile-hero-v18"><div class="machine-profile-header-row-v18"><div><div class="machine-profile-kicker">MACHINE PROFILE · FLEET ASSET</div><h2 class="machine-profile-title-v18">${esc(x[0])} · ${esc(x[2]||x[1]||'Machine')}</h2><p class="machine-profile-subtitle-v18">${esc(x[1]||x[2]||'Machine')} · ${esc(x[4]||'Manufacturer not specified')} · ${esc(x[5]||'Capacity not specified')}</p><div class="machine-profile-status-v18"><span class="machine-profile-status-dot" style="background:${accent.dot}"></span>${esc(x[7]||'Status not set')}</div></div><div class="machine-profile-actions-v18">${canEdit('machines')?`<button class="btn primary" onclick="closeModal();machineModal('${encodeURIComponent(x[0])}')">✎ Edit</button>`:''}<button class="close machine-profile-close" onclick="closeModal()">×</button></div></div></div>
+  <div class="machine-profile-hero-v18"><div class="machine-profile-header-row-v18"><div><div class="machine-profile-kicker">MACHINE PROFILE · FLEET ASSET</div><h2 class="machine-profile-title-v18">${esc(x[0])} · ${esc(x[2]||x[1]||'Machine')}</h2><p class="machine-profile-subtitle-v18">${esc(x[1]||x[2]||'Machine')} · ${esc(x[4]||'Manufacturer not specified')} · ${esc(x[5]||'Capacity not specified')}</p><div class="machine-profile-status-v18"><span class="machine-profile-status-dot" style="background:${accent.dot}"></span>${esc(x[7]||'Status not set')}</div></div><div class="machine-profile-actions-v18">${canEdit('machines')?`<button class="btn primary" onclick="closeModal();machineModal('${encodeURIComponent(x[0])}')">✎ Edit</button>${norm(x[7])!=='retired'?`<button class="btn secondary" onclick="retireMachine('${encodeURIComponent(x[0])}')">Retire</button>`:''}`:''}${['company_admin','super_admin'].includes(currentRole())?`<button class="btn danger" onclick="deleteMachine('${encodeURIComponent(x[0])}')">Delete</button>`:''}<button class="close machine-profile-close" onclick="closeModal()">×</button></div></div></div>
   <div class="machine-profile-layout-v18">
    <div class="machine-profile-top-v18">
     <div class="machine-photo-card-v18">${image?`<img class="machine-photo-v18" src="${image}" alt="${esc(x[0])} machine image">`:`<div class="machine-photo-placeholder-v18"><div class="photo-icon">▣</div><b>No machine image</b><span>Add a clear photo of this asset.</span></div>`}<div class="machine-photo-meta-v18"><div class="machine-photo-title-v20"><b>${esc(x[0])} · ${esc(x[2]||x[1]||'Machine')}</b><span>${esc(x[6]||'Location not specified')}</span></div>${canEdit('machines')?`<div class="machine-photo-actions-v18"><button type="button" class="btn secondary small" onclick="machineImageUpload('${encodeURIComponent(x[0])}')">${image?'↻ Replace Image':'↑ Upload Image'}</button>${image?`<button type="button" class="btn danger small" onclick="removeMachineImage('${encodeURIComponent(x[0])}')">× Remove</button>`:''}</div>`:''}</div></div>
@@ -3345,7 +3345,7 @@ function renderMachineRows(){
  const dept=(document.getElementById("machineDeptFilter")?.value||"").trim().toLowerCase();
  const rows=viewMachineRows().filter(x=>(!q||x.slice(0,9).join(" ").toLowerCase().includes(q))&&(!status||String(x[7]||"").toLowerCase()===status)&&(!dept||String(x[6]||"").toLowerCase()===dept));
  const target=document.getElementById("machineRows"); if(!target)return;
- target.innerHTML=rows.length?rows.map(x=>`<tr><td><span class="machine-row-id-v19">${esc(x[0])}</span></td><td><span class="machine-machine-name-v19">${esc(x[1]||"—")}</span></td><td>${esc(x[2]||"—")}</td><td>${esc(x[3]||"—")}</td><td>${esc(x[4]||"—")}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td><span class="${machineStatusClass(x[7])}">${esc(x[7]||"Not set")}</span></td><td>${esc(x[8]||"—")}</td><td class="machine-actions-v19"><button class="btn secondary small" onclick="machineDetailModal('${encodeURIComponent(x[0])}')">View</button>${canEdit("machines")?` <button class="btn secondary small" onclick="machineModal('${encodeURIComponent(x[0])}')">Edit</button>`:""}</td></tr>`).join(""):`<tr><td colspan="10"><div class="empty">No machines match the selected filters.</div></td></tr>`;
+ target.innerHTML=rows.length?rows.map(x=>`<tr><td><span class="machine-row-id-v19">${esc(x[0])}</span></td><td><span class="machine-machine-name-v19">${esc(x[1]||"—")}</span></td><td>${esc(x[2]||"—")}</td><td>${esc(x[3]||"—")}</td><td>${esc(x[4]||"—")}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td><span class="${machineStatusClass(x[7])}">${esc(x[7]||"Not set")}</span></td><td>${esc(x[8]||"—")}</td><td class="machine-actions-v19"><button class="btn secondary small" onclick="machineDetailModal('${encodeURIComponent(x[0])}')">View</button>${canEdit("machines")?` <button class="btn secondary small" onclick="machineModal('${encodeURIComponent(x[0])}')">Edit</button>${norm(x[7])!=="retired"?` <button class="btn secondary small" onclick="retireMachine('${encodeURIComponent(x[0])}')">Retire</button>`:""}`:""}${["company_admin","super_admin"].includes(currentRole())?` <button class="btn danger small" onclick="deleteMachine('${encodeURIComponent(x[0])}')">Delete</button>`:""}</td></tr>`).join(""):`<tr><td colspan="10"><div class="empty">No machines match the selected filters.</div></td></tr>`;
  const count=document.getElementById("machineResultCount"); if(count)count.textContent=`Showing ${rows.length} of ${viewMachineRows().length} machines`;
 }
 function machinesPage(){
@@ -3411,6 +3411,65 @@ function machineModal(id){
  </div>`);
  const modal=document.getElementById("modal");if(modal){modal.classList.add("machine-editor-modal-v19");}
 }
+async function retireMachine(id){
+ const decoded=decodeURIComponent(id);
+ const x=viewMachineRows().find(z=>String(z[0])===String(decoded));
+ if(!x)return alert("Machine record not found in the selected View Scope.");
+ if(!canEdit("machines"))return alert("You do not have permission to retire machine records.");
+ if(norm(x[7])==="retired")return alert("This machine is already retired.");
+ const ok=confirm(`RETIRE MACHINE\n\nFleet ID: ${x[0]}\nMachine: ${x[1]||x[2]||"Machine"}\n\nThe machine will remain in the system and its maintenance / parts history will be preserved.\n\nContinue?`);
+ if(!ok)return;
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+   const {data,error}=await iySupabase.rpc("retire_machine",{p_machine_id:x[9]});
+   if(error)throw error;
+   if(!data?.success)throw new Error("The server did not confirm the machine retirement.");
+   x[7]="Retired";
+   await cloudAudit("Retired machine","Machine record retired",x[11]||null,x[12]||null);
+   closeModal();
+   render();
+   toast("Machine retired successfully.");
+ }catch(e){
+   console.error("Machine retirement failed",e);
+   alert(e?.message||"Machine could not be retired.");
+ }
+}
+
+async function deleteMachine(id){
+ const decoded=decodeURIComponent(id);
+ const x=viewMachineRows().find(z=>String(z[0])===String(decoded));
+ if(!x)return alert("Machine record not found in the selected View Scope.");
+ if(!["company_admin","super_admin"].includes(currentRole()))return alert("Only a Company Admin can permanently delete a machine.");
+ const ok=confirm(`PERMANENTLY DELETE MACHINE?\n\nFleet ID: ${x[0]}\nMachine: ${x[1]||x[2]||"Machine"}\nModel: ${x[2]||"—"}\n\nWARNING: This permanently removes the machine record. If the machine has linked maintenance, parts or other records, the server will block the deletion and the machine should be retired instead.\n\nThis action cannot be undone.\n\nContinue?`);
+ if(!ok)return;
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+   const machineId=x[9];
+   if(!machineId)throw new Error("This machine does not have a valid cloud record ID.");
+   const fleet=String(x[0]||"").trim();
+   const {data,error}=await iySupabase.rpc("delete_machine",{p_machine_id:machineId});
+   if(error)throw error;
+   if(!data?.success)throw new Error("The server did not confirm the machine deletion.");
+   const scopeSite=x[11]||null, scopeDept=x[12]||null;
+   db.machines=db.machines.filter(z=>String(z[0])!==String(decoded));
+   try{
+     if(iyCompany?.id&&fleet){
+       const path=machineImagePath(fleet);
+       await iySupabase.storage.from(IY_MACHINE_IMAGES_BUCKET).remove([path]);
+     }
+   }catch(imageError){
+     console.warn("Machine image cleanup failed after machine deletion",imageError);
+   }
+   await cloudAudit("Deleted machine","Machine record permanently deleted",scopeSite,scopeDept);
+   closeModal();
+   render();
+   toast("Machine deleted permanently.");
+ }catch(e){
+   console.error("Machine deletion failed",e);
+   alert(e?.message||"Machine could not be deleted.");
+ }
+}
+
 async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?viewMachineRows().find(z=>String(z[0])===String(decodeURIComponent(old))):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;const scope=effectiveWriteScope();vals[10]=null;vals[11]=scope.siteId;vals[12]=scope.departmentId;await cloudAudit("Added machine","Machine record created",scope.siteId,scope.departmentId)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals,x[11],x[12],x[9]);x[9]=id;await cloudAudit("Updated machine","Machine record updated",x[11]||null,x[12]||null)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
