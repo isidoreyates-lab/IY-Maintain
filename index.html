@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.76 — Approval recipients load all active company roles via secured RPC -->
+<!-- IY Maintain V24.77 — Show Send for Approval for fresh reports -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3655,7 +3655,7 @@ function reportApprovalPanel(kind){
  const requestBox=isCreator&&!complete?`<div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Select one or more users. They will receive this report in My Approvals.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div>`:"";
  const ownerAction=isCreator&&!mySigned?`<button class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
  const pendingAction=mePending?`<button class="success approval-sign-now" onclick="signCurrentReport('${kind}')">✍ Sign & Submit Approval</button>`:"";
- const requestAction=isCreator&&!complete&&st.id?`<button class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
+ const requestAction=isCreator&&!complete?`<button class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
  return `<div class="report-approval-panel ${complete?'is-complete':''}"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL STATUS</div><div class="report-approval-note">${isCreator?"Your signature is optional. Exporting does not sign the report. Request other users only when their approval is required.":mePending?"This report is assigned to you. Sign & submit your approval using your account signature.":"Approval status is recorded against this exact saved report."}</div></div><span class="report-approval-status ${complete?'complete':''}">${esc(status)}</span></div><div class="report-approval-chain">${chips||`<div class="approval-empty-state">No signatures have been applied yet.</div>`}</div>${requestBox}<div class="report-approval-actions">${ownerAction}${pendingAction}${requestAction}</div></div>`;
 }
 function toggleApprovalUser(kind,input){window.__approvalSelections=window.__approvalSelections||{};const list=new Set(window.__approvalSelections[kind]||[]);if(input.checked)list.add(input.value);else list.delete(input.value);window.__approvalSelections[kind]=[...list];refreshReportApprovalPreview(kind);}
