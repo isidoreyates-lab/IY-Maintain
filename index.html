@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.49 — Restore Preflight Safety -->
+<!-- IY Maintain V24.71 — Fix machine list rendering: global norm() utility -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -2004,6 +2004,7 @@ function loadDB(){return clone(INITIAL_DATA)}
 function save(){return true}
 function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function num(v){return Number(v)||0}
+function norm(v){return String(v??"").trim().toLowerCase()}
 function fmtDate(v){if(!v)return "";let d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString("en-GB")}
 function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",2800)}
 function openModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("modalBack").style.display="flex"}
