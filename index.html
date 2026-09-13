@@ -2076,27 +2076,34 @@ async function markNotificationsRead(){
  const ns=getNotifications();if(!ns.length){notificationOpen=true;render();return;}
  const now=new Date().toISOString();const cloudIds=ns.filter(n=>n.cloud&&!n.readAt).map(n=>n.id.replace(/^cloud-/,'')).filter(Boolean);
  notificationReads=[...new Set([...(notificationReads||[]),...ns.filter(n=>!n.cloud).map(n=>n.id)])];
- if(iyCloudReady&&iyCompany&&iyAuthUser){try{if(cloudIds.length)await iySupabase.from("notifications").update({read_at:now}).in("id",cloudIds);const ids=ns.filter(n=>!n.cloud).map(n=>n.id);if(ids.length)await iySupabase.from("notification_reads").upsert(ids.map(id=>({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:now})),{onConflict:"company_id,user_id,notification_id"});cloudNotifications=(cloudNotifications||[]).map(n=>cloudIds.includes(n.id)?{...n,read_at:now}:n);}catch(e){console.warn("Notification read state not saved to cloud",e)}}
+ if(iyCloudReady&&iyCompany&&iyAuthUser){try{if(cloudIds.length)await iySupabase.rpc("mark_my_notifications_read",{p_notification_ids:cloudIds});const ids=ns.filter(n=>!n.cloud).map(n=>n.id);if(ids.length)await iySupabase.from("notification_reads").upsert(ids.map(id=>({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:now})),{onConflict:"company_id,user_id,notification_id"});cloudNotifications=(cloudNotifications||[]).map(n=>cloudIds.includes(n.id)?{...n,read_at:now}:n);}catch(e){console.warn("Notification read state not saved to cloud",e)}}
  notificationOpen=true;render();
 }
 async function markNotificationRead(id){
- if(String(id).startsWith("cloud-")){const real=String(id).slice(6);const now=new Date().toISOString();cloudNotifications=(cloudNotifications||[]).map(n=>n.id===real?{...n,read_at:now}:n);if(iyCloudReady&&iyAuthUser){try{await iySupabase.from("notifications").update({read_at:now}).eq("id",real).eq("recipient_user_id",iyAuthUser.id);}catch(e){console.warn("Cloud notification read state not saved",e)}}return;}
+ if(String(id).startsWith("cloud-")){const real=String(id).slice(6);const now=new Date().toISOString();cloudNotifications=(cloudNotifications||[]).map(n=>n.id===real?{...n,read_at:now}:n);if(iyCloudReady&&iyAuthUser){try{await iySupabase.rpc("mark_my_notification_read",{p_notification_id:real});}catch(e){console.warn("Cloud notification read state not saved",e)}}return;}
  if(!notificationReads.includes(id))notificationReads.push(id);
  if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from("notification_reads").upsert({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()},{onConflict:"company_id,user_id,notification_id"});}catch(e){console.warn("Notification read state not saved to cloud",e)}}
 }
 async function handleNotificationClick(id,reportId,page){await markNotificationRead(id);notificationOpen=false;if(reportId)await openReportNotification(reportId);else nav(page||"dashboard");}
 async function loadApprovalNotificationsOnly(options={}){
- if(!iyCloudReady||!iyAuthUser)return false;
+ if(!iyCloudReady||!iyAuthUser||!iyCompany)return false;
  try{
-  const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);
-  if(error)throw error;
-  cloudNotifications=data||[];
+  const rpc=await iySupabase.rpc("get_my_notifications",{p_company_id:iyCompany.id});
+  if(rpc.error)throw rpc.error;
+  cloudNotifications=Array.isArray(rpc.data)?rpc.data:[];
   notificationLastRefresh=new Date();
   if(options.render!==false)render();
   return true;
  }catch(e){
-  if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e);
-  return false;
+  console.warn("Secure notification RPC unavailable; using direct notification query.",e?.message||e);
+  try{
+   const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);
+   if(error)throw error;
+   cloudNotifications=data||[];notificationLastRefresh=new Date();if(options.render!==false)render();return true;
+  }catch(e2){
+   if(e2?.code!=="PGRST205")console.warn("Notification refresh failed",e2?.message||e2);
+   return false;
+  }
  }
 }
 async function refreshNotifications(){if(notificationRefreshBusy)return;notificationRefreshBusy=true;try{await loadApprovalNotificationsOnly();}finally{notificationRefreshBusy=false;}}
@@ -3488,6 +3495,30 @@ async function saveMachine(old){if(!canEdit("machines"))return alert("You do not
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
+async function loadMyApprovalWorkflowData(){
+ if(!iyCloudReady||!iyAuthUser||!iyCompany)return false;
+ try{
+  const {data,error}=await iySupabase.rpc("get_my_report_approval_workflow",{p_company_id:iyCompany.id});
+  if(error)throw error;
+  const rows=Array.isArray(data)?data:[];
+  const reportMap=new Map((reportApprovalReports||[]).map(r=>[r.id,r]));
+  const requestMap=new Map((reportApprovalRequests||[]).map(q=>[q.id,q]));
+  rows.forEach(x=>{
+    if(x.report_id && x.report_kind && !reportMap.has(x.report_id)){
+      reportMap.set(x.report_id,{id:x.report_id,company_id:x.company_id,report_kind:x.report_kind,title:x.title,snapshot:x.snapshot,created_by:x.created_by,created_at:x.created_at,updated_at:x.updated_at});
+    }
+    if(x.request_id && !requestMap.has(x.request_id)){
+      requestMap.set(x.request_id,{id:x.request_id,report_id:x.report_id,company_id:x.company_id,requested_by:x.requested_by,user_id:x.user_id,status:x.status,requested_at:x.requested_at,signed_at:x.signed_at,signer_name:x.signer_name,signer_role:x.signer_role,signature_path:x.signature_path});
+    }
+  });
+  reportApprovalReports=[...reportMap.values()];
+  reportApprovalRequests=[...requestMap.values()];
+  return true;
+ }catch(e){
+  console.warn("Approval workflow RPC unavailable; using direct approval queries.",e?.message||e);
+  return false;
+ }
+}
 function pendingApprovalRows(){
  const reports=reportApprovalReports||[];
  return (reportApprovalRequests||[])
@@ -3548,19 +3579,13 @@ async function loadApprovalInboxFast({renderPage=true,notice=true}={}){
  const btns=[...document.querySelectorAll('[data-approval-refresh]')];
  btns.forEach(b=>{b.disabled=true;b.dataset.originalText=b.textContent;b.textContent="↻ Refreshing…";});
  try{
-   const [reports,requests]=await Promise.all([
-     iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,created_by,created_at,updated_at").eq("company_id",iyCompany.id).order("created_at",{ascending:false}).limit(100),
-     iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("company_id",iyCompany.id).order("requested_at",{ascending:true}).limit(500)
-   ]);
-   if(reports.error)throw reports.error;
-   if(requests.error)throw requests.error;
-   reportApprovalReports=reports.data||[];
-   reportApprovalRequests=requests.data||[];
+   const ok=await loadMyApprovalWorkflowData();
+   if(!ok)throw new Error("The approval workflow could not be refreshed securely.");
    if(renderPage&&currentPage==="approvals")render();
    if(notice)toast("✓ Approvals refreshed.");
  }catch(e){
    console.error("Fast approval refresh failed",e);
-   if(notice)toast("Approval refresh failed.");
+   if(notice)toast(e?.message||"Approval refresh failed.");
    throw e;
  }finally{
    btns.forEach(b=>{b.disabled=false;b.textContent=b.dataset.originalText||"↻ Refresh";delete b.dataset.originalText;});
@@ -3693,12 +3718,27 @@ async function persistCurrentReport(kind,userIds=[]){
 }
 async function loadReportApprovalRecord(id){
  if(!id||!iyCloudReady)return null;
- const [r,q]=await Promise.all([iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,snapshot,created_by,created_at,updated_at").eq("id",id).maybeSingle(),iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("report_id",id).order("requested_at",{ascending:true})]);
- if(r.error)throw r.error;if(q.error)throw q.error;
- const idx=reportApprovalReports.findIndex(x=>x.id===id);if(r.data){if(idx>=0)reportApprovalReports[idx]=r.data;else reportApprovalReports.unshift(r.data);window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[r.data.report_kind]=approvalDraftKey(r.data.report_kind);}
- reportApprovalRequests=reportApprovalRequests.filter(x=>x.report_id!==id).concat(q.data||[]);
- window.__activeReportApproval=window.__activeReportApproval||{};if(r.data)window.__activeReportApproval[r.data.report_kind]=id;
- return r.data?{report:r.data,requests:q.data||[]}:null;
+ try{
+  const {data,error}=await iySupabase.rpc("get_my_report_approval_workflow",{p_company_id:iyCompany.id});
+  if(error)throw error;
+  const rows=(Array.isArray(data)?data:[]).filter(x=>x.report_id===id);
+  if(!rows.length)throw new Error("The saved report is not available to your account.");
+  const x=rows[0];
+  const r={id:x.report_id,company_id:x.company_id,report_kind:x.report_kind,title:x.title,snapshot:x.snapshot,created_by:x.created_by,created_at:x.created_at,updated_at:x.updated_at};
+  const qs=rows.filter(y=>y.request_id).map(y=>({id:y.request_id,report_id:y.report_id,company_id:y.company_id,requested_by:y.requested_by,user_id:y.user_id,status:y.status,requested_at:y.requested_at,signed_at:y.signed_at,signer_name:y.signer_name,signer_role:y.signer_role,signature_path:y.signature_path}));
+  const idx=reportApprovalReports.findIndex(x=>x.id===id);if(idx>=0)reportApprovalReports[idx]=r;else reportApprovalReports.unshift(r);
+  reportApprovalRequests=reportApprovalRequests.filter(x=>x.report_id!==id).concat(qs);
+  window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=id;
+  return {report:r,requests:qs};
+ }catch(e){
+  console.warn("Secure approval report load unavailable; using direct query.",e?.message||e);
+  const [r,q]=await Promise.all([iySupabase.from("report_approval_reports").select("id,company_id,report_kind,title,snapshot,created_by,created_at,updated_at").eq("id",id).maybeSingle(),iySupabase.from("report_approval_requests").select("id,report_id,company_id,requested_by,user_id,status,requested_at,signed_at,signer_name,signer_role,signature_path").eq("report_id",id).order("requested_at",{ascending:true})]);
+  if(r.error)throw r.error;if(q.error)throw q.error;
+  const idx=reportApprovalReports.findIndex(x=>x.id===id);if(r.data){if(idx>=0)reportApprovalReports[idx]=r.data;else reportApprovalReports.unshift(r.data);}
+  reportApprovalRequests=reportApprovalRequests.filter(x=>x.report_id!==id).concat(q.data||[]);
+  window.__activeReportApproval=window.__activeReportApproval||{};if(r.data)window.__activeReportApproval[r.data.report_kind]=id;
+  return r.data?{report:r.data,requests:q.data||[]}:null;
+ }
 }
 async function notifyApprovalRequestRecipients(reportId,userIds){
  if(!reportId||!Array.isArray(userIds)||!userIds.length||!iyCloudReady)return {success:false,skipped:true};
@@ -4822,8 +4862,10 @@ async function loadCloudData(){
  if(orders?.error && orders.error.code!=="PGRST205")throw orders.error;
  if(notificationReadRows?.error){console.warn("Notification read-state table is not available yet.",notificationReadRows.error.message||notificationReadRows.error);notificationReads=[]}else{notificationReads=(notificationReadRows.data||[]).map(x=>x.notification_id);}
  cloudNotifications=notifications?.error?(notifications.error.code==="PGRST205"?[]:(() => {console.warn("Notifications table is not available yet.",notifications.error.message||notifications.error);return []})()):(notifications.data||[]);
+ await loadApprovalNotificationsOnly({render:false});
  reportApprovalReports=approvalReports?.error?(approvalReports.error.code==="PGRST205"?[]:[]):(approvalReports.data||[]);
  reportApprovalRequests=approvalRequests?.error?(approvalRequests.error.code==="PGRST205"?[]:[]):(approvalRequests.data||[]);
+ await loadMyApprovalWorkflowData();
  if(notifications?.error&&notifications.error.code!=="PGRST205")console.warn("Report notifications could not be loaded.",notifications.error.message||notifications.error);
  if(approvalReports?.error&&approvalReports.error.code!=="PGRST205")console.warn("Report approval records could not be loaded.",approvalReports.error.message||approvalReports.error);
  if(approvalRequests?.error&&approvalRequests.error.code!=="PGRST205")console.warn("Report approval requests could not be loaded.",approvalRequests.error.message||approvalRequests.error);
