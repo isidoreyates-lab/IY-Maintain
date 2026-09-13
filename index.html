@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.75 — Approval recipients are all active company users -->
+<!-- IY Maintain V24.76 — Approval recipients load all active company roles via secured RPC -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -3601,12 +3601,17 @@ async function loadReportApprovalUsers(kind){
   if(!iyCloudReady||!iyCompany||!iyAuthUser)return [];
   window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};
 
-  // Approval recipients are company-wide. Do not restrict the selector by
-  // role, department, site, or approval-RPC eligibility. Every ACTIVE
-  // membership in the current company is a valid recipient, except the
-  // person creating the request.
-  const members=await fetchCompanyUsers();
-  const eligible=(members||[])
+  // Approval recipients are COMPANY-WIDE. The browser must not depend on
+  // the normal memberships SELECT because memberships RLS can limit what a
+  // non-admin user can read. A dedicated SECURITY DEFINER RPC (created in
+  // the SQL patch supplied with V24.76) returns all ACTIVE memberships after
+  // verifying that the caller is an active member of the same company.
+  const {data,error}=await iySupabase.rpc("get_company_approval_users",{
+    p_company_id:iyCompany.id
+  });
+  if(error)throw error;
+
+  const eligible=(Array.isArray(data)?data:[])
     .filter(u=>u.is_active!==false && u.user_id!==iyAuthUser?.id)
     .map(u=>({
       user_id:u.user_id,
