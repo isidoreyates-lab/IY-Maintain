@@ -2184,7 +2184,7 @@ function render(){
   </main>
   ${renderMobileNavigation()}
  </div>`;
- if(currentPage==="users"&&canEdit("users"))setTimeout(renderUsersTable,0);
+ if(currentPage==="users"&&canAccess("users"))setTimeout(renderUsersTable,0);
 
  initMachinePage();}
 
@@ -3700,8 +3700,8 @@ function canAccess(page){
    mreports:[...operational,"parts_coordinator","viewer"],
    approvedreports:[...operational,"parts_coordinator","viewer"],
    approvals:[...operational,"parts_coordinator","viewer"],
-   settings:["manager","parts_coordinator"],
-   users:["manager"],
+   settings:["manager","site_supervisor","department_supervisor","team_lead","parts_coordinator","technician","viewer"],
+   users:["manager","site_supervisor","department_supervisor","team_lead","parts_coordinator","technician","viewer"],
    activity:["manager","site_supervisor","department_supervisor","team_lead","technician","parts_coordinator"],
    backup:[]
  };
@@ -3875,15 +3875,13 @@ function displayUserId(userOrId){
 }
 
 function usersRolesPageShell(){
- if(!canEdit("users")){
-   return `<div class="modern-settings-shell"><section class="modern-card"><div class="access-denied"><div>🔒</div><h3>Manager or Administrator access required</h3><p>You do not have permission to manage users in this workspace.</p></div></section></div>`;
- }
+ const canUsersEdit=canEdit("users");
  return `<div class="modern-settings-shell">
   <div class="users-summary">
    <div class="activity-stat"><span>Total users</span><b id="usersTotal">—</b></div>
    <div class="activity-stat"><span>Active</span><b id="usersActive">—</b></div>
    <div class="activity-stat"><span>Invited</span><b id="usersPending">—</b></div>
-   <button class="modern-primary-btn" onclick="openInviteUser()">＋ Invite User</button>
+   ${canUsersEdit?`<button class="modern-primary-btn" onclick="openInviteUser()">＋ Invite User</button>`:`<div class="profile-note" style="margin:0">View-only access · only Company Administrators and Managers can make changes.</div>`}
   </div>
   <section class="modern-card">
    <div class="modern-card-head"><div class="head-icon blue">♙</div><div><h3>Workspace users</h3><p>Only members of ${esc(iyCompany?.name||"this company")} can access its records.</p></div></div>
@@ -3916,7 +3914,7 @@ async function renderUsersTable(){
       <td>${esc(["company_admin","super_admin","manager"].includes(String(u.role||"").toLowerCase())?"All Departments":(String(u.role||"").toLowerCase()==="site_supervisor"?"All Departments":(deptById[u.department_id]||u.department||"—")))}</td>
       <td>${userStatusLabel(u)}</td>
       <td>${u.last_login_at?esc(new Date(u.last_login_at).toLocaleString("en-GB")):"Never"}</td>
-      <td><div class="user-action-group"><button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}</div></td>
+      <td><div class="user-action-group">${canEdit("users")?`<button class="table-action" onclick="openEditUser('${u.id}')">Edit</button>${u.user_id===iyAuthUser?.id?"":(u.is_active&&!u.last_login_at?`<button class="table-action danger" onclick="cancelUserInvitation('${u.id}')">Cancel Invitation</button>`:u.is_active?`<button class="table-action danger" onclick="deactivateUser('${u.id}')">Remove</button>`:`<button class="table-action" onclick="reactivateUser('${u.id}')">Reactivate</button>`)}`:`<button class="table-action" onclick="viewUser('${u.id}')">View</button>`}</div></td>
     </tr>`).join("")}</tbody></table></div>`;
  }catch(e){el.innerHTML=`<div class="empty">Could not load users: ${esc(e?.message||"Unknown error")}</div>`;}
 }
@@ -4001,7 +3999,31 @@ async function sendUserInvitation(){
  }catch(e){alert(e?.message||"Invitation could not be sent.");if(btn)btn.disabled=false;}
 }
 
+function viewUser(id){
+ const u=iyUsersCache.find(x=>x.id===id);
+ if(!u)return;
+ const siteById=Object.fromEntries(iyCompanySites.map(s=>[s.id,s.name]));
+ const deptById=Object.fromEntries(iyCompanyDepartments.map(d=>[d.id,d.name]));
+ const role=String(u.role||"").toLowerCase();
+ const site=["company_admin","super_admin","manager"].includes(role)?"All Sites":(siteById[u.site_id]||"—");
+ const dept=["company_admin","super_admin","manager","site_supervisor"].includes(role)?"All Departments":(deptById[u.department_id]||u.department||"—");
+ openModal(`<div class="modalhead"><h2>View User</h2><button class="close" onclick="closeModal()">×</button></div>
+  <div class="profile-note">View-only access. User roles, scope and access status can only be changed by a Company Administrator or Manager.</div>
+  <div class="profile-modal-grid" style="margin-top:16px">
+   <div class="field"><label>Full name</label><input class="input" value="${esc(u.full_name||"")}" disabled></div>
+   <div class="field"><label>User ID</label><input class="input" value="${esc(displayUserId(u))}" disabled></div>
+   <div class="field"><label>Email</label><input class="input" value="${esc(u.email||"")}" disabled></div>
+   <div class="field"><label>Role</label><input class="input" value="${esc(roleLabel(u.role))}" disabled></div>
+   <div class="field"><label>Site</label><input class="input" value="${esc(site)}" disabled></div>
+   <div class="field"><label>Department</label><input class="input" value="${esc(dept)}" disabled></div>
+   <div class="field"><label>Access</label><input class="input" value="${u.is_active?"Active":"Inactive"}" disabled></div>
+   <div class="field"><label>Last sign in</label><input class="input" value="${esc(u.last_login_at?new Date(u.last_login_at).toLocaleString("en-GB"):"Never")}" disabled></div>
+  </div>
+  <div class="actionbar"><button class="btn" onclick="closeModal()">Close</button></div>`);
+}
+
 async function openEditUser(id){
+ if(!canEdit("users"))return viewUser(id);
  const u=iyUsersCache.find(x=>x.id===id);
  if(!u)return;
  try{await loadAdminLocationOptions();}catch(e){return alert(`Site and department options could not be loaded: ${e?.message||"Unknown error"}`);}
