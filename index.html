@@ -5844,3 +5844,154 @@ initiyAuth();
 @media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
 @media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
 </style>
+
+<style id="iy-mobile-solid-v24-82">
+/* V24.82 Mobile Optimization — CSS/UI only. No business logic or data behavior changed. */
+@media (max-width:700px){
+  :root{--mobile-gutter:12px}
+  html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
+  body{padding-bottom:88px!important;background:#f3f6fa;}
+  .app{display:block!important;min-height:100vh!important;width:100%!important;}
+  .main{margin:0!important;width:100%!important;min-width:0!important;}
+  .content{padding:12px var(--mobile-gutter) 26px!important;width:100%!important;}
+
+  /* Header: compact, stable and touch friendly */
+  .top{height:60px!important;min-height:60px!important;padding:0 12px!important;gap:7px!important;}
+  .top>div:first-child{min-width:0!important;overflow:hidden;}
+  .top h1{font-size:18px!important;line-height:1.2!important;}
+  .top-actions{gap:6px!important;}
+  .notification-trigger,.profile-trigger{width:40px!important;height:40px!important;min-width:40px!important;border-radius:11px!important;}
+  .profile-copy{display:none!important;}
+  .profile-trigger .profile-avatar{margin:0!important;}
+
+  /* Search opens as a proper mobile search surface */
+  .global-search-wrap{width:40px!important;height:40px!important;flex:0 0 40px!important;}
+  .global-search{width:40px!important;height:40px!important;min-height:40px!important;}
+  .global-search-panel{left:10px!important;right:10px!important;top:58px!important;max-height:calc(100vh - 80px)!important;}
+  .global-search-results{max-height:55vh!important;overflow:auto!important;-webkit-overflow-scrolling:touch;}
+  .global-search-result{min-height:54px!important;padding:10px 12px!important;}
+
+  /* Cards and panels */
+  .hero{padding:20px 16px!important;border-radius:14px!important;margin-bottom:14px!important;}
+  .hero h2{font-size:21px!important;line-height:1.2!important;}
+  .hero p{font-size:12px!important;line-height:1.5!important;}
+  .hero-btn,.hero button,.hero .btn{width:100%;min-height:44px;}
+  .cards{grid-template-columns:1fr!important;gap:10px!important;margin-bottom:14px!important;}
+  .card,.panel{padding:15px!important;border-radius:12px!important;}
+  .grid2,.two-col{grid-template-columns:1fr!important;gap:12px!important;}
+  .attention-grid{grid-template-columns:1fr!important;gap:9px!important;}
+  .mini-stats{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .v24-kpis{grid-template-columns:1fr 1fr!important;gap:9px!important;}
+  .v24-kpi{padding:13px!important;border-radius:11px!important;}
+  .v24-kpi .k-value{font-size:24px!important;}
+  .v24-hero{min-height:0!important;padding:20px 17px!important;border-radius:14px!important;margin-bottom:13px!important;}
+  .v24-hero h2{font-size:22px!important;}
+  .v24-grid,.v24-grid.equal{grid-template-columns:1fr!important;gap:12px!important;}
+  .v24-panel{padding:15px!important;border-radius:12px!important;}
+  .v24-quick{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .v24-quick button{min-height:64px!important;padding:11px!important;}
+
+  /* Forms: one clean column and comfortable touch targets */
+  .toolbar{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important;}
+  .search{min-width:0!important;width:100%!important;}
+  .formgrid{grid-template-columns:1fr!important;gap:11px!important;}
+  .field.full{grid-column:auto!important;}
+  .input,.select,.textarea{min-height:44px!important;font-size:14px!important;padding:11px 12px!important;}
+  textarea.textarea{min-height:100px!important;}
+  .btn{min-height:44px!important;padding:10px 14px!important;}
+  .btn.small{min-height:38px!important;padding:8px 10px!important;}
+  .actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:14px!important;}
+  .actions .btn{width:100%!important;}
+
+  /* Tables remain fully usable through horizontal scrolling rather than squeezing text. */
+  .tablewrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;border-radius:10px!important;}
+  .table{min-width:680px!important;}
+  .table th,.table td{padding:9px 9px!important;font-size:11px!important;white-space:nowrap!important;}
+  .table th{font-size:9px!important;}
+  .maintenance-dashboard-table .table{min-width:900px!important;}
+  .v24-table .table{min-width:650px!important;}
+  .parts-orders-table{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;}
+  .parts-orders-table .table{min-width:1050px!important;}
+
+  /* Long row controls wrap instead of forcing the viewport wider. */
+  .table-action,.parts-orders-actions{display:flex!important;flex-wrap:wrap!important;gap:6px!important;white-space:normal!important;}
+  .table-action .btn,.parts-orders-actions .btn{min-height:38px!important;}
+
+  /* Modals: use nearly the entire phone screen and preserve internal scrolling. */
+  .modalback{padding:8px!important;align-items:flex-end!important;}
+  .modal{width:100%!important;max-width:none!important;max-height:94vh!important;border-radius:16px 16px 10px 10px!important;padding:17px!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+  .modal h2{font-size:19px!important;margin-bottom:13px!important;}
+  .modalhead{gap:10px!important;}
+  .close{width:40px!important;height:40px!important;min-width:40px!important;}
+
+  /* Machine profiles/editors */
+  .machine-profile-kpis-v18,.machine-profile-kpis{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .machine-service-grid-v18,.machine-service-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
+  .machine-info-grid-v18,.machine-info-grid{grid-template-columns:1fr!important;}
+  .machine-profile-top-v18{grid-template-columns:1fr!important;}
+  .machine-profile-header-row-v18{align-items:flex-start!important;gap:10px!important;}
+  .machine-profile-actions-v18{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;}
+  .machine-profile-actions-v18 .btn,.machine-profile-actions-v18 button{width:100%!important;min-height:42px!important;}
+  .machine-editor-grid-v19{grid-template-columns:1fr!important;}
+  .machine-editor-actions-v19{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
+
+  /* Settings and configuration areas */
+  .settings-grid,.modern-settings-grid{grid-template-columns:1fr!important;}
+  .settings-side,.modern-settings-side{display:flex!important;flex-direction:column!important;gap:8px!important;}
+  .signature-settings-grid{grid-template-columns:1fr!important;padding:14px!important;}
+  .settings-nav-strip{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;white-space:nowrap;}
+  .settings-nav-item{min-height:42px!important;}
+
+  /* Approval inbox and approval report controls */
+  .approval-page-hero{padding:18px!important;border-radius:14px!important;}
+  .approval-hero-stat{width:100%!important;}
+  .approval-toolbar{align-items:stretch!important;gap:8px!important;}
+  .approval-inbox-card{grid-template-columns:38px minmax(0,1fr)!important;gap:9px!important;padding:12px!important;}
+  .approval-inbox-side{grid-column:2!important;align-items:stretch!important;min-width:0!important;}
+  .approval-inbox-action{width:100%!important;min-height:42px!important;}
+  .approval-progress{grid-template-columns:auto minmax(0,1fr) auto!important;gap:7px!important;}
+  .approval-user-grid{grid-template-columns:1fr!important;}
+  .approval-user-option{min-height:52px!important;padding:10px!important;}
+  .report-approval-panel{padding:13px!important;border-radius:12px!important;}
+  .report-approval-head{flex-direction:column!important;align-items:stretch!important;}
+  .report-approval-status{align-self:flex-start!important;}
+  .report-approval-actions{grid-template-columns:1fr!important;gap:8px!important;}
+  .report-approval-actions .primary,.report-approval-actions .success{justify-self:stretch!important;width:100%!important;}
+  .approval-chip{min-width:0!important;flex:1 1 100%!important;}
+
+  /* Report preview: don't scale the report so small that it becomes unreadable. */
+  .report-preview-shell{width:100%!important;max-width:none!important;border-radius:14px!important;}
+  .report-preview-bar{height:auto!important;min-height:58px!important;padding:8px 10px!important;gap:7px!important;}
+  .report-preview-title{font-size:13px!important;min-width:0!important;}
+  .report-preview-actions{display:flex!important;gap:6px!important;}
+  .report-preview-actions button{min-height:40px!important;padding:8px 10px!important;font-size:11px!important;}
+  .report-preview-scroll{padding:8px!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+  .report-paper{transform-origin:top left!important;transform:scale(.52)!important;margin-bottom:-380px!important;}
+  .report-pdf{width:100%!important;}
+
+  /* Notifications and popovers stay inside the viewport. */
+  .notification-panel{position:fixed!important;left:10px!important;right:10px!important;top:58px!important;width:auto!important;max-width:none!important;max-height:calc(100vh - 76px)!important;border-radius:15px!important;}
+  .notification-list{max-height:calc(100vh - 190px)!important;-webkit-overflow-scrolling:touch;}
+  .profile-menu{right:10px!important;max-width:calc(100vw - 20px)!important;}
+
+  /* Mobile navigation respects notches/home indicators. */
+  .mobile-bottom-nav{left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;height:66px!important;padding:5px!important;border-radius:17px!important;}
+  .mobile-nav-item{min-height:54px!important;font-size:8px!important;}
+  .mobile-nav-item .mn-icon{width:28px!important;height:28px!important;}
+  .mobile-nav-sheet{left:8px!important;right:8px!important;bottom:82px!important;max-height:calc(100vh - 104px)!important;padding:14px!important;-webkit-overflow-scrolling:touch!important;}
+
+  /* Prevent accidental horizontal overflow from individual components. */
+  img,video,canvas,svg{max-width:100%;}
+  .panel,.card,.hero,.v24-panel,.v24-kpi,.modern-card,.parts-summary-box,.saved-approval-card,.report-approval-panel{min-width:0!important;}
+}
+@media(max-width:420px){
+  .content{padding-left:9px!important;padding-right:9px!important;}
+  .v24-kpis{grid-template-columns:1fr!important;}
+  .v24-quick{grid-template-columns:1fr!important;}
+  .machine-profile-kpis-v18,.machine-profile-kpis,.machine-service-grid-v18,.machine-service-grid{grid-template-columns:1fr!important;}
+  .machine-profile-actions-v18{grid-template-columns:1fr!important;}
+  .mini-stats{grid-template-columns:1fr!important;}
+  .report-preview-actions button{padding:7px 8px!important;font-size:10px!important;}
+}
+@media(min-width:701px){#iy-mobile-solid-v24-82{display:none;}}
+</style>
