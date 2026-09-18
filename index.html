@@ -2560,7 +2560,7 @@ function loadCommercialBillingData(){
 
   Promise.all([
     iySupabase.from("subscriptions")
-      .select("id,plan_id,status,billing_interval,currency,current_period_start,current_period_end,stripe_customer_id,stripe_subscription_id,stripe_last_invoice_id,stripe_last_invoice_paid_at,stripe_last_failed_invoice_id,stripe_last_payment_failed_at,stripe_last_payment_failure_attempt,stripe_next_payment_attempt_at,cancel_at_period_end,canceled_at")
+      .select("id,plan_id,status,billing_interval,current_period_start,current_period_end,stripe_customer_id,stripe_subscription_id,stripe_last_invoice_id,stripe_last_invoice_paid_at,stripe_last_failed_invoice_id,stripe_last_payment_failed_at,stripe_last_payment_failure_attempt,stripe_next_payment_attempt_at,cancel_at_period_end,canceled_at")
       .eq("company_id",iyCompany.id)
       .in("status",["trialing","active","past_due","suspended"])
       .maybeSingle(),
