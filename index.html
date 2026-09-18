@@ -2411,22 +2411,68 @@ function commercialPricingAction(planCode){
 /* V5.01 — Commercial Subscription UI. Read-only view using the existing status RPC. */
 let iyCommercialSubscriptionState={loaded:false,loading:false,status:null,error:null};
 
-function loadCommercialSubscriptionStatus(){
+async function loadCommercialSubscriptionStatus(){
   if(iyCommercialSubscriptionState.loaded||iyCommercialSubscriptionState.loading||!iyCompany?.id)return;
   iyCommercialSubscriptionState.loading=true;
-  iySupabase.rpc("get_company_subscription_status",{p_company_id:iyCompany.id})
-    .then(({data,error})=>{
-      if(error)throw error;
-      iyCommercialSubscriptionState.status=Array.isArray(data)?(data[0]||null):(data||null);
-      iyCommercialSubscriptionState.error=null;
-      iyCommercialSubscriptionState.loaded=true;
-    })
-    .catch(error=>{
-      console.error("Commercial subscription status load failed",error);
-      iyCommercialSubscriptionState.error=error;
-      iyCommercialSubscriptionState.loaded=true;
-    })
-    .finally(()=>{iyCommercialSubscriptionState.loading=false;if(currentPage==="subscription")render();});
+  try{
+    const [statusResult, subscriptionResult] = await Promise.all([
+      iySupabase.rpc("get_company_subscription_status",{p_company_id:iyCompany.id}),
+      iySupabase
+        .from("subscriptions")
+        .select("id,plan_id,status,billing_interval,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at")
+        .eq("company_id",iyCompany.id)
+        .in("status",["trialing","active","past_due","suspended"])
+        .maybeSingle()
+    ]);
+
+    if(statusResult.error)throw statusResult.error;
+    if(subscriptionResult.error)throw subscriptionResult.error;
+
+    const rpcStatus=Array.isArray(statusResult.data)?(statusResult.data[0]||null):(statusResult.data||null);
+    const localSubscription=subscriptionResult.data||null;
+
+    if(!rpcStatus && !localSubscription){
+      iyCommercialSubscriptionState.status=null;
+    }else{
+      iyCommercialSubscriptionState.status={
+        ...(rpcStatus||{}),
+        // The V4.04 status RPC returns subscription_status, not status.
+        status: rpcStatus?.subscription_status ?? localSubscription?.status ?? null,
+        // Pending change fields are intentionally read from the existing subscription row.
+        pending_plan_id: localSubscription?.pending_plan_id ?? null,
+        pending_billing_interval: localSubscription?.pending_billing_interval ?? null,
+        pending_change_type: localSubscription?.pending_change_type ?? null,
+        pending_change_effective_at: localSubscription?.pending_change_effective_at ?? null,
+        pending_change_request_id: localSubscription?.pending_change_request_id ?? null,
+        cancel_at_period_end: localSubscription?.cancel_at_period_end ?? rpcStatus?.cancel_at_period_end ?? false,
+        canceled_at: localSubscription?.canceled_at ?? rpcStatus?.canceled_at ?? null
+      };
+
+      // Resolve the pending target plan name/code from the same read-only plan catalogue.
+      if(localSubscription?.pending_plan_id){
+        const {data:pendingPlan,error:pendingPlanError}=await iySupabase
+          .from("subscription_plans")
+          .select("id,code,name")
+          .eq("id",localSubscription.pending_plan_id)
+          .maybeSingle();
+        if(pendingPlanError)throw pendingPlanError;
+        if(pendingPlan){
+          iyCommercialSubscriptionState.status.pending_plan_code=pendingPlan.code;
+          iyCommercialSubscriptionState.status.pending_plan_name=pendingPlan.name;
+        }
+      }
+    }
+
+    iyCommercialSubscriptionState.error=null;
+    iyCommercialSubscriptionState.loaded=true;
+  }catch(error){
+    console.error("Commercial subscription status load failed",error);
+    iyCommercialSubscriptionState.error=error;
+    iyCommercialSubscriptionState.loaded=true;
+  }finally{
+    iyCommercialSubscriptionState.loading=false;
+    if(currentPage==="subscription")render();
+  }
 }
 
 function commercialSubscriptionDate(value){
@@ -2450,13 +2496,13 @@ function commercialSubscriptionPage(){
   if(!canAccessCommercialPricing())return accessDeniedPage("Subscription","Subscription is available to Company Administrators.");
   if(!iyCommercialSubscriptionState.loaded&&!iyCommercialSubscriptionState.loading)loadCommercialSubscriptionStatus();
   if(iyCommercialSubscriptionState.loading&&!iyCommercialSubscriptionState.loaded)
-    return `<div class="iy-sub-loading"><div class="iy-pricing-spinner"></div><b>Loading subscription…</b><span>Reading your current subscription status.</span></div>`;
+    return `<div class="iy-sub-loading"><div class="iy-pricing-spinner"></div><b>Loading subscription…</b><span>Reading your current subscription and scheduled-change information.</span></div>`;
   if(iyCommercialSubscriptionState.error)
     return `<div class="iy-sub-empty"><b>Subscription information could not be loaded.</b><span>${esc(iyCommercialSubscriptionState.error.message||"Please try again.")}</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus()">Retry</button></div>`;
   const s=iyCommercialSubscriptionState.status;
   if(!s)return `<div class="iy-sub-empty"><b>No commercial subscription found.</b><span>This company does not currently have a commercial subscription record.</span></div>`;
 
-  const status=String(s.status||"").toLowerCase(), planName=s.plan_name||s.plan_code||"—";
+  const status=String(s.status||s.subscription_status||"").toLowerCase(), planName=s.plan_name||s.plan_code||"—";
   const interval=String(s.billing_interval||"").toLowerCase(), intervalLabel=interval==="annual"?"Annual":"Monthly";
   const accessAllowed=Boolean(s.is_access_allowed), isTrial=Boolean(s.is_trial);
   const pendingPlan=s.pending_plan_name||s.pending_plan_code||null;
