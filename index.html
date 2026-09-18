@@ -770,6 +770,10 @@ button,input,select,textarea{font-family:inherit}
 @keyframes iyPricingSpin{to{transform:rotate(360deg)}}
 @media(max-width:1050px){.iy-pricing-grid{grid-template-columns:1fr}.iy-pricing-intro{align-items:stretch;flex-direction:column}.iy-pricing-note{min-width:0}}
 
+
+/* V5.01 — Commercial Subscription UI. */
+.iy-sub-shell{max-width:1380px;margin:0 auto 40px}.iy-sub-overview{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px}.iy-sub-plan-card,.iy-sub-stat,.iy-sub-change-card,.iy-sub-detail-card{background:#fff;border:1px solid #d9e2ec;border-radius:15px;box-shadow:0 4px 14px rgba(16,41,67,.05)}.iy-sub-plan-card{padding:23px}.iy-sub-plan-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:13px}.iy-sub-plan-row h3{margin:0;font-size:28px;color:#122033}.iy-sub-plan-meta{margin-top:4px;color:#6d7e92;font-size:12px}.iy-sub-status{display:inline-flex;border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800}.iy-sub-status.good{background:#eaf7ef;color:#147a45}.iy-sub-status.trial{background:#edf6fd;color:#1267a7}.iy-sub-status.warning{background:#fff5df;color:#986300}.iy-sub-status.danger{background:#fdeeee;color:#a32929}.iy-sub-status.neutral{background:#eef3f7;color:#61758a}.iy-sub-access{margin-top:24px;border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:9px;font-size:12px}.iy-sub-access span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:800}.iy-sub-access.allowed{background:#f1faf5;color:#147a45}.iy-sub-access.allowed span{background:#dff3e7}.iy-sub-access.blocked{background:#fff2f2;color:#a32929}.iy-sub-access.blocked span{background:#f8dddd}.iy-sub-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.iy-sub-stat{padding:18px}.iy-sub-stat span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800;color:#8292a4}.iy-sub-stat b{display:block;margin-top:8px;color:#122033;font-size:14px;line-height:1.35}.iy-sub-stat small{display:block;margin-top:5px;color:#8190a1;font-size:10px}.iy-sub-change-card{margin-top:18px;padding:18px;display:grid;grid-template-columns:auto 1fr auto;gap:15px;align-items:center;border-color:#bcd9ee}.iy-sub-change-icon{width:40px;height:40px;border-radius:10px;background:#edf6fd;color:#1267a7;display:grid;place-items:center;font-weight:900;font-size:18px}.iy-sub-change-content h4{margin:5px 0 4px;font-size:16px;color:#122033}.iy-sub-change-content p{margin:0;color:#6d7e92;font-size:11px;line-height:1.5}.iy-sub-change-date{text-align:right}.iy-sub-change-date span{display:block;font-size:10px;color:#8292a4;text-transform:uppercase;letter-spacing:1px;font-weight:800}.iy-sub-change-date b{display:block;margin-top:5px;font-size:12px;color:#122033}.iy-sub-details{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.iy-sub-detail-card{padding:21px}.iy-sub-detail-row{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-bottom:1px solid #edf1f5;font-size:12px}.iy-sub-detail-row:last-child{border-bottom:0}.iy-sub-detail-row span{color:#6d7e92}.iy-sub-detail-row b{color:#122033;text-align:right}.iy-sub-management-copy{margin:13px 0 20px;color:#6d7e92;font-size:12px;line-height:1.65}.iy-sub-loading,.iy-sub-empty{background:#fff;border:1px solid #d9e2ec;border-radius:14px;padding:38px;display:flex;flex-direction:column;align-items:center;gap:7px;color:#6d7e92}.iy-sub-loading b,.iy-sub-empty b{color:#122033}@media(max-width:1050px){.iy-sub-overview,.iy-sub-details{grid-template-columns:1fr}.iy-sub-change-card{grid-template-columns:auto 1fr}.iy-sub-change-date{grid-column:2;text-align:left}.iy-sub-summary-grid{grid-template-columns:1fr}}
+
 </style>
 
 <style>
@@ -2047,11 +2051,11 @@ function logActivity(action,details=""){
 }
 function initials(name){return String(name||"A").trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"A"}
 function nav(page){
- if(page==="pricing" && !canAccessCommercialPricing()){toast("You do not have permission to open Pricing.");return}
+ if((page==="pricing" || page==="subscription") && !canAccessCommercialPricing()){toast("You do not have permission to open this section.");return}
  if(!canAccess(page)){toast("You do not have permission to open this section.");return}
  currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()
 }
-function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing"};return t[page]||"Dashboard"}
+function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing",subscription:"Subscription"};return t[page]||"Dashboard"}
 function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(currentRole())}
 function commercialNavButton(id,label,icon){
  if(!canAccessCommercialPricing()) return "";
@@ -2075,6 +2079,7 @@ function renderMobileNavigation(){
   ${mobileNavLink('approvals','My Approvals','✍')}
   <div class="mobile-nav-group">COMMERCIAL</div>
   ${canAccessCommercialPricing()?mobileNavLink('pricing','Pricing','$'):''}
+  ${canAccessCommercialPricing()?mobileNavLink('subscription','Subscription','◉'):''}
   <div class="mobile-nav-group">SYSTEM</div>
   ${mobileNavLink('settings','Settings','⚙')}${mobileNavLink('users','Users & Roles','♙')}${mobileNavLink('activity','User Activity','◷')}${mobileNavLink('backup','Backup Data','⇩')}
  </div>`:'';
@@ -2172,6 +2177,7 @@ function render(){
    ${navButton("approvals",`My Approvals${pendingApprovalCount()?` <span class="nav-count-badge">${pendingApprovalCount()>99?"99+":pendingApprovalCount()}</span>`:""}`,"✍")}
    <div class="group">COMMERCIAL</div>
    ${commercialNavButton("pricing","Pricing","$")}
+   ${commercialNavButton("subscription","Subscription","◉")}
    <div class="group">SYSTEM</div>
    ${navButton("settings","Settings","⚙")}
    ${navButton("users","Users & Roles","♙")}
@@ -2257,7 +2263,8 @@ function pageHeroV23(page){
   users:["TEAM & ACCESS","Users & Roles","Manage workspace members, roles, departments and access."],
   activity:["AUDIT","User Activity","Review recent user actions and important workspace activity."],
   backup:["DATA MANAGEMENT","Backup & Restore","Protect your system data with complete backup and restore tools."],
-  pricing:["COMMERCIAL","Pricing","Compare available IY Maintain plans, capacity limits and billing options."]
+  pricing:["COMMERCIAL","Pricing","Compare available IY Maintain plans, capacity limits and billing options."],
+  subscription:["COMMERCIAL","Subscription","View your current IY Maintain subscription, billing period and scheduled changes."]
  }[page];
  if(!cfg || page==="dashboard")return "";
  let action="";
@@ -2400,6 +2407,93 @@ function commercialPricingAction(planCode){
   toast(`${String(planCode||"").toUpperCase()} plan options will be connected to the Subscription page in the next commercial UI step.`);
 }
 
+
+/* V5.01 — Commercial Subscription UI. Read-only view using the existing status RPC. */
+let iyCommercialSubscriptionState={loaded:false,loading:false,status:null,error:null};
+
+function loadCommercialSubscriptionStatus(){
+  if(iyCommercialSubscriptionState.loaded||iyCommercialSubscriptionState.loading||!iyCompany?.id)return;
+  iyCommercialSubscriptionState.loading=true;
+  iySupabase.rpc("get_company_subscription_status",{p_company_id:iyCompany.id})
+    .then(({data,error})=>{
+      if(error)throw error;
+      iyCommercialSubscriptionState.status=Array.isArray(data)?(data[0]||null):(data||null);
+      iyCommercialSubscriptionState.error=null;
+      iyCommercialSubscriptionState.loaded=true;
+    })
+    .catch(error=>{
+      console.error("Commercial subscription status load failed",error);
+      iyCommercialSubscriptionState.error=error;
+      iyCommercialSubscriptionState.loaded=true;
+    })
+    .finally(()=>{iyCommercialSubscriptionState.loading=false;if(currentPage==="subscription")render();});
+}
+
+function commercialSubscriptionDate(value){
+  if(!value)return "—";
+  const d=new Date(value); if(Number.isNaN(d.getTime()))return "—";
+  return d.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+}
+function commercialSubscriptionDateTime(value){
+  if(!value)return "—";
+  const d=new Date(value); if(Number.isNaN(d.getTime()))return "—";
+  return d.toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});
+}
+function commercialSubscriptionStatusLabel(status){
+  return ({trialing:"Trial",active:"Active",past_due:"Past due",suspended:"Suspended",canceled:"Canceled",expired:"Expired"})[String(status||"").toLowerCase()]||String(status||"Unknown");
+}
+function commercialSubscriptionStatusClass(status){
+  const s=String(status||"").toLowerCase();
+  return s==="active"?"good":s==="trialing"?"trial":s==="past_due"?"warning":["suspended","canceled","expired"].includes(s)?"danger":"neutral";
+}
+function commercialSubscriptionPage(){
+  if(!canAccessCommercialPricing())return accessDeniedPage("Subscription","Subscription is available to Company Administrators.");
+  if(!iyCommercialSubscriptionState.loaded&&!iyCommercialSubscriptionState.loading)loadCommercialSubscriptionStatus();
+  if(iyCommercialSubscriptionState.loading&&!iyCommercialSubscriptionState.loaded)
+    return `<div class="iy-sub-loading"><div class="iy-pricing-spinner"></div><b>Loading subscription…</b><span>Reading your current subscription status.</span></div>`;
+  if(iyCommercialSubscriptionState.error)
+    return `<div class="iy-sub-empty"><b>Subscription information could not be loaded.</b><span>${esc(iyCommercialSubscriptionState.error.message||"Please try again.")}</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus()">Retry</button></div>`;
+  const s=iyCommercialSubscriptionState.status;
+  if(!s)return `<div class="iy-sub-empty"><b>No commercial subscription found.</b><span>This company does not currently have a commercial subscription record.</span></div>`;
+
+  const status=String(s.status||"").toLowerCase(), planName=s.plan_name||s.plan_code||"—";
+  const interval=String(s.billing_interval||"").toLowerCase(), intervalLabel=interval==="annual"?"Annual":"Monthly";
+  const accessAllowed=Boolean(s.is_access_allowed), isTrial=Boolean(s.is_trial);
+  const pendingPlan=s.pending_plan_name||s.pending_plan_code||null;
+  const hasPending=Boolean(pendingPlan||s.pending_change_type||s.pending_change_effective_at);
+  const cancelPending=Boolean(s.cancel_at_period_end);
+
+  return `<div class="iy-sub-shell">
+    <div class="iy-sub-overview">
+      <div class="iy-sub-plan-card">
+        <div class="iy-sub-eyebrow">CURRENT SUBSCRIPTION</div>
+        <div class="iy-sub-plan-row"><div><h3>${esc(planName)}</h3><div class="iy-sub-plan-meta">${esc(intervalLabel)} billing${s.currency?` · ${esc(String(s.currency).toUpperCase())}`:""}</div></div><span class="iy-sub-status ${commercialSubscriptionStatusClass(status)}">${esc(commercialSubscriptionStatusLabel(status))}</span></div>
+        <div class="iy-sub-access ${accessAllowed?"allowed":"blocked"}"><span>${accessAllowed?"✓":"!"}</span><b>${accessAllowed?"Subscription access is active":"Subscription access is currently restricted"}</b></div>
+      </div>
+      <div class="iy-sub-summary-grid">
+        ${isTrial?`<div class="iy-sub-stat"><span>Trial</span><b>${s.trial_days_remaining==null?"—":`${commercialLimit(s.trial_days_remaining)} days remaining`}</b><small>Trial period</small></div>`:""}
+        <div class="iy-sub-stat"><span>Current period</span><b>${commercialSubscriptionDate(s.current_period_start)} – ${commercialSubscriptionDate(s.current_period_end)}</b><small>Current billing period</small></div>
+        <div class="iy-sub-stat"><span>Subscription started</span><b>${commercialSubscriptionDate(s.started_at||s.trial_started_at)}</b><small>Subscription start date</small></div>
+        <div class="iy-sub-stat"><span>Renewal</span><b>${cancelPending?"Cancellation scheduled":commercialSubscriptionDate(s.current_period_end)}</b><small>${cancelPending?"Ends at period end":"Next period boundary"}</small></div>
+      </div>
+    </div>
+
+    ${hasPending?`<div class="iy-sub-change-card"><div class="iy-sub-change-icon">↗</div><div class="iy-sub-change-content"><div class="iy-sub-eyebrow">SCHEDULED CHANGE</div><h4>${esc(s.pending_change_type==="downgrade"?"Downgrade":"Plan change")} to ${esc(pendingPlan||"target plan")}</h4><p>The current ${esc(planName)} subscription remains active until the scheduled effective date.</p></div><div class="iy-sub-change-date"><span>Effective</span><b>${commercialSubscriptionDateTime(s.pending_change_effective_at)}</b></div></div>`:""}
+
+    <div class="iy-sub-details">
+      <div class="iy-sub-detail-card"><div class="iy-sub-eyebrow">BILLING DETAILS</div>
+        <div class="iy-sub-detail-row"><span>Plan</span><b>${esc(planName)}</b></div>
+        <div class="iy-sub-detail-row"><span>Billing interval</span><b>${esc(intervalLabel)}</b></div>
+        <div class="iy-sub-detail-row"><span>Status</span><b>${esc(commercialSubscriptionStatusLabel(status))}</b></div>
+        <div class="iy-sub-detail-row"><span>Current period starts</span><b>${commercialSubscriptionDateTime(s.current_period_start)}</b></div>
+        <div class="iy-sub-detail-row"><span>Current period ends</span><b>${commercialSubscriptionDateTime(s.current_period_end)}</b></div>
+        ${s.canceled_at?`<div class="iy-sub-detail-row"><span>Canceled</span><b>${commercialSubscriptionDateTime(s.canceled_at)}</b></div>`:""}
+      </div>
+      <div class="iy-sub-detail-card"><div class="iy-sub-eyebrow">PLAN MANAGEMENT</div><p class="iy-sub-management-copy">Plan changes and billing actions will be connected to the existing Stripe billing workflow in the next commercial UI steps.</p><button class="iy-pricing-action" type="button" onclick="nav('pricing')">View available plans</button></div>
+    </div>
+  </div>`;
+}
+
 function pageContent(){
  if(!canAccess(currentPage))return accessDeniedPage(pageTitleFor(currentPage),"Your current role does not have access to this section.");
  const hero=pageHeroV23(currentPage);
@@ -2421,6 +2515,7 @@ function pageContent(){
  if(currentPage==="activity")return hero+activityPage();
  if(currentPage==="backup")return hero+backupPage();
  if(currentPage==="pricing")return hero+commercialPricingPage();
+ if(currentPage==="subscription")return hero+commercialSubscriptionPage();
  return dashboard();
 }
 function isDashboardScopeController(){return ["company_admin","super_admin","manager"].includes(currentRole());}
