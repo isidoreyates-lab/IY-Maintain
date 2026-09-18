@@ -1997,6 +1997,9 @@ const IY_BRAND_COMPANY = "IY Digital Innovations";
 let iyAuthUser = null;
 let iyCompany = null;
 let iyMembership = null;
+let iyEffectiveRole = null;
+let iyEffectiveRoleStatus = null;
+let effectiveRoleRefreshTimer = null;
 let iySite = null;
 let iyDepartment = null;
 let iyCompanySites = [];
@@ -2067,7 +2070,7 @@ function nav(page){
  currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()
 }
 function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing",subscription:"Subscription",billing:"Billing"};return t[page]||"Dashboard"}
-function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(currentRole())}
+function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(storedRole())}
 function commercialNavButton(id,label,icon){
  if(!canAccessCommercialPricing()) return "";
  return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`;
@@ -2232,7 +2235,7 @@ function render(){
     <div class="profile-wrap">
     <button class="profile-trigger" onclick="toggleProfileMenu(event)">
       <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(db.user.name))}</div>
-      <div class="profile-copy"><b>${esc(db.user.name||"admin")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
+      <div class="profile-copy"><b>${esc(db.user.name||"admin")}</b><small>${esc(roleLabel(currentRole()||"viewer"))}</small></div>
     </button>
     <div id="profileMenu" class="profile-menu ${profileOpen?"open":""}">
       <div class="profile-menu-head"><strong>${esc(db.user.name||"admin")}</strong><span>${esc(db.user.email||"No email set")} · ${esc(db.user.userId||"ADMIN-001")}</span></div>
@@ -4263,7 +4266,7 @@ function runPartsReport(){
  const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
  toast("Parts report generated.");
 }
-function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
+function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:currentRole()||"viewer",signature:iyMembership?.signature_path||""};}
 function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
 function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
 function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];}
@@ -4461,13 +4464,20 @@ function runMaintenanceReport(){
 
 let iyUsersCache=[];
 
+function storedRole(){return String(iyMembership?.role||"").toLowerCase();}
+
+function currentRole(){
+ return String(iyEffectiveRole||storedRole()||"").toLowerCase();
+}
+
 function isCompanyAdmin(){
- const role=String(iyMembership?.role||"").toLowerCase();
+ const role=currentRole();
  return role==="company_admin"||role==="super_admin";
 }
 
-// IY Maintain role based access control. UI permissions mirror the database RLS model.
-function currentRole(){return String(iyMembership?.role||"").toLowerCase();}
+// V6.02: Application permissions use the subscription-aware effective role.
+// memberships.role remains the permanent source role and is never modified here.
+
 function currentSiteId(){return iyMembership?.site_id||null;}
 function currentDepartmentId(){return iyMembership?.department_id||null;}
 function isCompanyWideScope(){return ["company_admin","super_admin"].includes(currentRole());}
@@ -5100,12 +5110,52 @@ function closeHeaderMenusOnOutsideClick(e){
 }
 document.addEventListener('click', closeHeaderMenusOnOutsideClick);
 
+async function refreshEffectiveRole(options={}){
+ if(!iyCloudReady||!iyCompany||!iyAuthUser)return null;
+ const rerender=options.rerender!==false;
+ const previous=String(iyEffectiveRole||storedRole()||"").toLowerCase();
+ try{
+  const {data,error}=await iySupabase.rpc("get_my_company_effective_role",{p_company_id:iyCompany.id});
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row)throw new Error("Effective role could not be resolved.");
+  iyEffectiveRole=String(row.effective_role||storedRole()||"viewer").toLowerCase();
+  iyEffectiveRoleStatus={
+   subscriptionStatus:row.subscription_status||null,
+   isAccessAllowed:row.is_access_allowed===true,
+   accessReason:row.access_reason||""
+  };
+  db.user={...db.user,role:iyEffectiveRole};
+  if(previous!==iyEffectiveRole&&rerender&&loggedIn){
+   toast(iyEffectiveRole==="viewer"?"Subscription access changed. Your workspace is now in Viewer mode.":"Subscription access restored. Your previous role is active again.");
+   render();
+  }
+  return row;
+ }catch(e){
+  console.warn("Effective application role could not be refreshed:",e?.message||e);
+  // Fail closed at the UI layer if subscription state cannot be resolved.
+  // Database/RLS enforcement remains authoritative.
+  iyEffectiveRole="viewer";
+  iyEffectiveRoleStatus={subscriptionStatus:null,isAccessAllowed:false,accessReason:"Subscription access could not be verified."};
+  db.user={...db.user,role:iyEffectiveRole};
+  if(previous!==iyEffectiveRole&&rerender&&loggedIn)render();
+  return null;
+ }
+}
+
+function startEffectiveRoleRefresh(){
+ if(effectiveRoleRefreshTimer)clearInterval(effectiveRoleRefreshTimer);
+ effectiveRoleRefreshTimer=setInterval(()=>{
+  if(iyCloudReady&&iyCompany&&iyAuthUser)refreshEffectiveRole({rerender:true});
+ },60000);
+}
+
 async function logoutUser(){
  try{
   await cloudAudit("Logged out","User signed out");
   await iySupabase.auth.signOut();
  }catch(e){console.warn("Logout audit/signout warning",e)}
- iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
+ iyAuthUser=null;iyCompany=null;iyMembership=null;iyEffectiveRole=null;iyEffectiveRoleStatus=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}if(effectiveRoleRefreshTimer){clearInterval(effectiveRoleRefreshTimer);effectiveRoleRefreshTimer=null;}
  renderLogin("signedout");
 }
 
@@ -5324,14 +5374,16 @@ async function completeAuthenticatedSession(user){
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
  await loadCloudData();
+ await refreshEffectiveRole({rerender:false});
  db.settings.systemName="Computerized Machines Maintenance System";db.settings.version="V24.47";db.settings.developer="IY Digital Innovations";
  await migrateLegacyProfileAvatar();
  const profileAvatar=await loadProfileAvatar();
  const signatureUrl=await loadCurrentUserSignature();
  loggedIn=true;
- db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
+ db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:currentRole()||"viewer",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
  if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
+ startEffectiveRoleRefresh();
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
@@ -6349,9 +6401,11 @@ async function initiyAuth(){
   else renderLogin("signin");
  }catch(e){console.error(e);renderLogin("signin");authMessage("error",e?.message||"Unable to initialize secure sign in.")}
  iySupabase.auth.onAuthStateChange(async(event,session)=>{
-  if(event==="SIGNED_OUT"){iyAuthUser=null;iyCompany=null;iyMembership=null;iyCloudReady=false;loggedIn=false;renderLogin("signin");}
+  if(event==="SIGNED_OUT"){iyAuthUser=null;iyCompany=null;iyMembership=null;iyEffectiveRole=null;iyEffectiveRoleStatus=null;if(effectiveRoleRefreshTimer){clearInterval(effectiveRoleRefreshTimer);effectiveRoleRefreshTimer=null;}iyCloudReady=false;loggedIn=false;renderLogin("signin");}
  });
 }
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&iyCloudReady&&iyCompany&&iyAuthUser)refreshEffectiveRole({rerender:true});});
+window.addEventListener("focus",()=>{if(iyCloudReady&&iyCompany&&iyAuthUser)refreshEffectiveRole({rerender:true});});
 initiyAuth();
 </script>
 </body>
