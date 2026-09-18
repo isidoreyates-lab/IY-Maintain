@@ -2517,8 +2517,8 @@ const iyCommercialCapacityDefinitions=[
   {key:"departments",label:"Departments",rpc:"get_company_department_limit_status",currentKeys:["current_departments","current_count","current_usage","usage_count"],maxKeys:["max_departments","max_limit","max_allowed"],statusKeys:["status","limit_status"]},
   {key:"employees",label:"Employees",rpc:"get_company_employee_limit_status",currentKeys:["current_employees","current_count","current_usage","usage_count"],maxKeys:["max_employees","max_limit","max_allowed"],statusKeys:["status","limit_status"]},
   {key:"machines",label:"Machines",rpc:"get_company_machine_limit_status",currentKeys:["current_machines","current_count","current_usage","usage_count"],maxKeys:["max_machines","max_limit","max_allowed"],statusKeys:["status","limit_status"]},
-  {key:"parts",label:"Parts",rpc:"get_company_parts_limit_status",currentKeys:["current_parts","current_count","current_usage","usage_count"],maxKeys:["max_parts","max_limit","max_allowed"],statusKeys:["status","limit_status"]},
-  {key:"suppliers",label:"Suppliers",rpc:"get_company_supplier_limit_status",currentKeys:["current_suppliers","current_count","current_usage","usage_count"],maxKeys:["max_suppliers","max_limit","max_allowed"],statusKeys:["status","limit_status"]}
+  {key:"parts",label:"Parts",rpc:"get_company_part_limit_status",currentKeys:["current_parts","current_count","current_usage","usage_count"],maxKeys:["max_parts","max_limit","max_allowed"],statusKeys:["limit_status","status"]},
+  {key:"suppliers",label:"Suppliers",rpc:"get_company_supplier_limit_status",currentKeys:["current_suppliers","current_count","current_usage","usage_count"],maxKeys:["max_suppliers","max_limit","max_allowed"],statusKeys:["limit_status","status"]}
 ];
 
 function iyFirstNumeric(obj,keys){
@@ -2548,7 +2548,8 @@ function iyNormalizeCapacity(def,payload){
     else if(percentage>=80)level="warning";
     else level="normal";
   }
-  const canCreate=row.can_create==null?!(level==="limit_reached"||level==="suspended"):Boolean(row.can_create);
+  const canCreateValue=row.can_create ?? row[`can_create_${def.key.slice(0,-1)}`];
+  const canCreate=canCreateValue==null?!(level==="limit_reached"||level==="suspended"):Boolean(canCreateValue);
   return {key:def.key,label:def.label,current,max,percentage,level,canCreate};
 }
 
