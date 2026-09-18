@@ -1,7 +1,6 @@
-<!-- IY Maintain V3.04 PATCH2: company-scoped location loading; existing no-arg resolver untouched. -->
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V24.77 — Show Send for Approval for fresh reports -->
+<!-- IY Maintain V24.81 — Refresh company logo URLs for generated/approval reports -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -742,7 +741,36 @@ button,input,select,textarea{font-family:inherit}
 
 /* V24.36 global workspace view scope — transaction scope card removed */
 .iy-global-view-scope{margin:10px 0 12px;padding:11px 11px 10px;border-radius:13px;background:linear-gradient(135deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);border:1px solid rgba(255,255,255,.16);box-shadow:0 8px 18px rgba(6,26,79,.20);color:#fff}.iy-global-view-scope-head{display:flex;gap:8px;align-items:center;margin-bottom:10px}.iy-global-view-scope-icon{width:25px;height:25px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.15);font-size:12px;flex:0 0 auto}.iy-global-view-scope-label{font-size:9px;font-weight:850;letter-spacing:.12em;text-transform:uppercase;color:#fff}.iy-global-view-scope-grid{display:grid;grid-template-columns:1fr;gap:8px}.iy-global-view-scope-grid>div{min-width:0}.iy-global-view-scope-grid label{display:block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.72);margin:0 0 4px}.iy-global-view-select{width:100%;height:32px!important;padding:0 9px!important;border-radius:8px!important;border:1px solid rgba(255,255,255,.18)!important;background:#fff!important;color:#163a6a!important;font-size:10px!important;font-weight:700}.iy-global-view-reset{width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:rgba(255,255,255,.84);border-radius:8px;padding:6px 7px;font-size:8px;font-weight:700;cursor:pointer}.iy-global-view-reset:hover{background:rgba(255,255,255,.15);color:#fff}
-.hero-scope-meta{margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,.28);font-weight:700;color:rgba(255,255,255,.88)}</style>
+.hero-scope-meta{margin-left:8px;padding-left:8px;border-left:1px solid rgba(255,255,255,.28);font-weight:700;color:rgba(255,255,255,.88)}
+/* V5.00 — Commercial Pricing UI. Isolated styles; existing operational styles remain unchanged. */
+.iy-pricing-shell{max-width:1380px;margin:0 auto 40px}
+.iy-pricing-intro{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin-bottom:22px}
+.iy-pricing-eyebrow{font-size:11px;letter-spacing:1.6px;font-weight:800;color:#1976bd;margin-bottom:7px}
+.iy-pricing-intro h3{margin:0;font-size:28px;line-height:1.2;color:#122033}
+.iy-pricing-intro p{margin:9px 0 0;max-width:760px;color:#6d7e92;font-size:14px;line-height:1.6}
+.iy-pricing-note{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #d9e2ec;border-radius:12px;padding:12px 15px;min-width:280px;box-shadow:0 2px 8px rgba(16,41,67,.04)}
+.iy-pricing-note-icon{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eaf7ef;color:#147a45;font-weight:800}
+.iy-pricing-note b{display:block;font-size:13px;color:#122033}.iy-pricing-note small{display:block;color:#6d7e92;margin-top:2px;font-size:11px;line-height:1.4}
+.iy-pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.iy-pricing-card{position:relative;background:#fff;border:1px solid #d9e2ec;border-radius:16px;padding:22px;box-shadow:0 4px 14px rgba(16,41,67,.05);min-width:0}
+.iy-pricing-card.current{border-color:#1976bd;box-shadow:0 7px 22px rgba(25,118,189,.11)}
+.iy-pricing-current-badge{position:absolute;top:0;right:22px;transform:translateY(-50%);background:#1976bd;color:#fff;border-radius:999px;padding:5px 10px;font-size:9px;font-weight:800;letter-spacing:1px}
+.iy-pricing-plan-name{font-size:21px;font-weight:800;color:#122033}.iy-pricing-plan-description{font-size:12px;color:#6d7e92;margin-top:5px;min-height:34px;line-height:1.45}
+.iy-pricing-price-row{display:flex;align-items:baseline;gap:5px;margin-top:20px}.iy-pricing-price{font-size:34px;font-weight:800;color:#122033;letter-spacing:-.8px}.iy-pricing-period{font-size:12px;color:#6d7e92}
+.iy-pricing-annual{margin-top:4px;font-size:12px;color:#52667b}.iy-pricing-annual span{display:block;color:#147a45;font-weight:700;margin-top:3px}
+.iy-pricing-trial{margin-top:13px;background:#f3f8fc;border-radius:8px;padding:8px 10px;color:#1267a7;font-size:11px;font-weight:700}
+.iy-pricing-divider{height:1px;background:#e7edf3;margin:19px 0}
+.iy-pricing-section-title{font-size:10px;letter-spacing:1.1px;text-transform:uppercase;font-weight:800;color:#8292a4;margin-bottom:9px}
+.iy-pricing-limits,.iy-pricing-included{list-style:none;padding:0;margin:0}.iy-pricing-limits li,.iy-pricing-included li{display:flex;justify-content:space-between;gap:12px;padding:6px 0;font-size:12px;color:#52667b}.iy-pricing-limits b{color:#122033}
+.iy-pricing-included li{justify-content:flex-start;position:relative;padding-left:18px}.iy-pricing-included li:before{content:"✓";position:absolute;left:0;color:#147a45;font-weight:800}
+.iy-pricing-action{width:100%;margin-top:19px;border:0;border-radius:9px;background:#1976bd;color:#fff;padding:11px 14px;font-weight:700;font-size:13px}.iy-pricing-action:hover{background:#1267a7}
+.iy-pricing-action.secondary,.iy-pricing-action:disabled{background:#eef3f7;color:#61758a;cursor:default}
+.iy-pricing-footnote{margin-top:18px;background:#fff;border:1px solid #d9e2ec;border-radius:12px;padding:14px 16px;display:flex;gap:8px;align-items:center;font-size:12px;color:#6d7e92}.iy-pricing-footnote b{color:#122033}
+.iy-pricing-loading,.iy-pricing-empty{background:#fff;border:1px solid #d9e2ec;border-radius:14px;padding:38px;display:flex;flex-direction:column;align-items:center;gap:7px;color:#6d7e92}.iy-pricing-loading b,.iy-pricing-empty b{color:#122033}.iy-pricing-spinner{width:24px;height:24px;border:3px solid #d9e2ec;border-top-color:#1976bd;border-radius:50%;animation:iyPricingSpin .8s linear infinite;margin-bottom:6px}
+@keyframes iyPricingSpin{to{transform:rotate(360deg)}}
+@media(max-width:1050px){.iy-pricing-grid{grid-template-columns:1fr}.iy-pricing-intro{align-items:stretch;flex-direction:column}.iy-pricing-note{min-width:0}}
+
+</style>
 
 <style>
 .iy-auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,520px);background:#f6f8fb;color:#111827}
@@ -2018,8 +2046,17 @@ function logActivity(action,details=""){
  save();
 }
 function initials(name){return String(name||"A").trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"A"}
-function nav(page){if(!canAccess(page)){toast("You do not have permission to open this section.");return}currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()}
-function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports"};return t[page]||"Dashboard"}
+function nav(page){
+ if(page==="pricing" && !canAccessCommercialPricing()){toast("You do not have permission to open Pricing.");return}
+ if(!canAccess(page)){toast("You do not have permission to open this section.");return}
+ currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()
+}
+function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing"};return t[page]||"Dashboard"}
+function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(currentRole())}
+function commercialNavButton(id,label,icon){
+ if(!canAccessCommercialPricing()) return "";
+ return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`;
+}
 function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`}
 function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${icon}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
 function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=false;profileOpen=false;notificationOpen=false;render()}
@@ -2036,6 +2073,8 @@ function renderMobileNavigation(){
   ${mobileNavLink('preports','Parts Reports','▥')}${mobileNavLink('mreports','Maintenance Reports','▥')}
   <div class="mobile-nav-group">APPROVALS</div>
   ${mobileNavLink('approvals','My Approvals','✍')}
+  <div class="mobile-nav-group">COMMERCIAL</div>
+  ${canAccessCommercialPricing()?mobileNavLink('pricing','Pricing','$'):''}
   <div class="mobile-nav-group">SYSTEM</div>
   ${mobileNavLink('settings','Settings','⚙')}${mobileNavLink('users','Users & Roles','♙')}${mobileNavLink('activity','User Activity','◷')}${mobileNavLink('backup','Backup Data','⇩')}
  </div>`:'';
@@ -2131,6 +2170,8 @@ function render(){
    ${navButton("mreports","Maintenance Reports","▥")}
    <div class="group">APPROVALS</div>
    ${navButton("approvals",`My Approvals${pendingApprovalCount()?` <span class="nav-count-badge">${pendingApprovalCount()>99?"99+":pendingApprovalCount()}</span>`:""}`,"✍")}
+   <div class="group">COMMERCIAL</div>
+   ${commercialNavButton("pricing","Pricing","$")}
    <div class="group">SYSTEM</div>
    ${navButton("settings","Settings","⚙")}
    ${navButton("users","Users & Roles","♙")}
@@ -2215,7 +2256,8 @@ function pageHeroV23(page){
   settings:["SYSTEM","Settings","Configure your company, branding, reports and approval signatures."],
   users:["TEAM & ACCESS","Users & Roles","Manage workspace members, roles, departments and access."],
   activity:["AUDIT","User Activity","Review recent user actions and important workspace activity."],
-  backup:["DATA MANAGEMENT","Backup & Restore","Protect your system data with complete backup and restore tools."]
+  backup:["DATA MANAGEMENT","Backup & Restore","Protect your system data with complete backup and restore tools."],
+  pricing:["COMMERCIAL","Pricing","Compare available IY Maintain plans, capacity limits and billing options."]
  }[page];
  if(!cfg || page==="dashboard")return "";
  let action="";
@@ -2228,6 +2270,136 @@ function pageHeroV23(page){
  return `<div class="page-hero-v23"><div class="hero-copy"><div class="hero-kicker">${esc(cfg[0])}</div><h2>${esc(cfg[1])}</h2><p>${esc(cfg[2])}</p><div class="hero-meta"><span class="hero-meta-dot"></span><span>${esc(iyCompany?.name||db.settings.companyName||"Company workspace")}</span><span class="hero-scope-meta">View: ${esc(globalViewScopeLabel())}</span></div></div>${action?`<div class="hero-action">${action}</div>`:""}</div>`;
 }
 function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
+
+/* V5.00 — Commercial Pricing UI. Uses the existing read-only subscription_plans catalogue. */
+let iyCommercialPricingState = {
+  plans: null,
+  currentPlanCode: "",
+  loading: false
+};
+
+function loadCommercialPricingPlans(){
+  if(iyCommercialPricingState.plans || iyCommercialPricingState.loading) return;
+  iyCommercialPricingState.loading=true;
+
+  Promise.all([
+    iySupabase
+      .from("subscription_plans")
+      .select("id,code,name,description,max_sites,max_departments,max_employees,max_machines,max_parts,max_suppliers,monthly_price,annual_price,currency,trial_days,is_active,display_order")
+      .eq("is_active",true)
+      .order("display_order",{ascending:true}),
+    iySupabase
+      .from("subscriptions")
+      .select("plan_id,status")
+      .eq("company_id",iyCompany?.id||"")
+      .in("status",["trialing","active","past_due","suspended"])
+      .maybeSingle()
+  ]).then(([plansResult,subscriptionResult])=>{
+    if(plansResult.error) throw plansResult.error;
+    if(subscriptionResult.error) throw subscriptionResult.error;
+
+    const plans=Array.isArray(plansResult.data)?plansResult.data:[];
+    const subscription=subscriptionResult.data||null;
+
+    iyCommercialPricingState.plans=plans;
+    iyCommercialPricingState.currentPlanCode=String(
+      plans.find(p=>String(p.id)===String(subscription?.plan_id||""))?.code||""
+    ).toUpperCase();
+  }).catch(error=>{
+    console.error("Commercial pricing load failed",error);
+    iyCommercialPricingState.plans=[];
+  }).finally(()=>{
+    iyCommercialPricingState.loading=false;
+    if(currentPage==="pricing") render();
+  });
+}
+
+function commercialMoney(value,currency){
+  const n=Number(value||0);
+  try{
+    return new Intl.NumberFormat("en-US",{style:"currency",currency:currency||"USD",minimumFractionDigits:0,maximumFractionDigits:2}).format(n);
+  }catch{
+    return `${currency||"USD"} ${n.toFixed(2)}`;
+  }
+}
+
+function commercialLimit(value){
+  const n=Number(value);
+  return Number.isFinite(n)?n.toLocaleString("en-US"):"—";
+}
+
+function commercialPlanCard(plan,currentPlanCode){
+  const isCurrent=String(plan.code||"")===String(currentPlanCode||"");
+  const annualSaving=Math.max(0,(Number(plan.monthly_price||0)*12)-Number(plan.annual_price||0));
+  const trialDays=Number(plan.trial_days||0);
+  const description=plan.description||(
+    plan.code==="BASIC"?"For smaller maintenance operations."
+    :plan.code==="PROFESSIONAL"?"For growing teams and multi-site operations."
+    :plan.code==="BUSINESS"?"For larger maintenance organizations."
+    :"Custom commercial arrangement."
+  );
+
+  return `<article class="iy-pricing-card ${isCurrent?'current':''}">
+    ${isCurrent?'<div class="iy-pricing-current-badge">CURRENT PLAN</div>':''}
+    <div class="iy-pricing-plan-name">${esc(plan.name||plan.code)}</div>
+    <div class="iy-pricing-plan-description">${esc(description)}</div>
+    <div class="iy-pricing-price-row"><span class="iy-pricing-price">${commercialMoney(plan.monthly_price,plan.currency)}</span><span class="iy-pricing-period">/ month</span></div>
+    <div class="iy-pricing-annual">${commercialMoney(plan.annual_price,plan.currency)} / year${annualSaving>0?`<span>Save ${commercialMoney(annualSaving,plan.currency)} / year</span>`:""}</div>
+    ${trialDays>0?`<div class="iy-pricing-trial">✓ ${commercialLimit(trialDays)}-day free trial</div>`:""}
+    <div class="iy-pricing-divider"></div>
+    <div class="iy-pricing-section-title">Workspace capacity</div>
+    <ul class="iy-pricing-limits">
+      <li><span>Sites</span><b>${commercialLimit(plan.max_sites)}</b></li>
+      <li><span>Departments</span><b>${commercialLimit(plan.max_departments)}</b></li>
+      <li><span>Employees</span><b>${commercialLimit(plan.max_employees)}</b></li>
+      <li><span>Machines</span><b>${commercialLimit(plan.max_machines)}</b></li>
+      <li><span>Parts</span><b>${commercialLimit(plan.max_parts)}</b></li>
+      <li><span>Suppliers</span><b>${commercialLimit(plan.max_suppliers)}</b></li>
+    </ul>
+    <div class="iy-pricing-divider"></div>
+    <div class="iy-pricing-section-title">Included</div>
+    <ul class="iy-pricing-included">
+      <li>All roles</li>
+      <li>Unlimited maintenance records</li>
+      <li>Unlimited parts transactions</li>
+      <li>Unlimited procurement</li>
+      <li>Unlimited reports</li>
+      <li>Approvals &amp; machine images</li>
+    </ul>
+    <button class="iy-pricing-action ${isCurrent?'secondary':''}" type="button" ${isCurrent?'disabled':''} onclick="commercialPricingAction('${esc(plan.code)}')">${isCurrent?"Current plan":"View plan options"}</button>
+  </article>`;
+}
+
+function commercialPricingPage(){
+  if(!canAccessCommercialPricing()) return accessDeniedPage("Pricing","Pricing is available to Company Administrators.");
+
+  if(!iyCommercialPricingState.plans && !iyCommercialPricingState.loading){
+    loadCommercialPricingPlans();
+  }
+
+  if(iyCommercialPricingState.loading && !iyCommercialPricingState.plans){
+    return `<div class="iy-pricing-loading"><div class="iy-pricing-spinner"></div><b>Loading plans…</b><span>Reading the current commercial plan catalogue.</span></div>`;
+  }
+
+  const plans=iyCommercialPricingState.plans||[];
+  if(!plans.length){
+    return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;loadCommercialPricingPlans()">Retry</button></div>`;
+  }
+
+  return `<div class="iy-pricing-shell">
+    <div class="iy-pricing-intro">
+      <div><div class="iy-pricing-eyebrow">IY MAINTAIN PLANS</div><h3>Choose the capacity that fits your operation</h3><p>Every paid plan includes the core maintenance, parts, procurement, reporting and approval capabilities. Plans differ primarily by workspace capacity.</p></div>
+      <div class="iy-pricing-note"><span class="iy-pricing-note-icon">✓</span><div><b>14-day free trial</b><small>Available on the active paid plans. No payment is required to start the trial.</small></div></div>
+    </div>
+    <div class="iy-pricing-grid">${plans.map(p=>commercialPlanCard(p,iyCommercialPricingState.currentPlanCode)).join("")}</div>
+    <div class="iy-pricing-footnote"><b>Need a custom deployment?</b><span>Enterprise arrangements can use custom capacity, onboarding and commercial terms.</span></div>
+  </div>`;
+}
+
+function commercialPricingAction(planCode){
+  toast(`${String(planCode||"").toUpperCase()} plan options will be connected to the Subscription page in the next commercial UI step.`);
+}
+
 function pageContent(){
  if(!canAccess(currentPage))return accessDeniedPage(pageTitleFor(currentPage),"Your current role does not have access to this section.");
  const hero=pageHeroV23(currentPage);
@@ -2248,6 +2420,7 @@ function pageContent(){
  if(currentPage==="users")return hero+usersRolesPageShell();
  if(currentPage==="activity")return hero+activityPage();
  if(currentPage==="backup")return hero+backupPage();
+ if(currentPage==="pricing")return hero+commercialPricingPage();
  return dashboard();
 }
 function isDashboardScopeController(){return ["company_admin","super_admin","manager"].includes(currentRole());}
@@ -2718,15 +2891,8 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const now=new Date().toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
- let scope;
  try{
-   scope=effectiveWriteScope();
- }catch(e){
-   return alert(e?.message||"Please select a valid Site and Department before receiving parts.");
- }
-
- try{
-   const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
+   const {data,error}=await iySupabase.rpc("receive_part_transaction",{
      p_part_number:pn,
      p_description:desc||null,
      p_machine_model:machine||null,
@@ -2734,9 +2900,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_supplier:supplier||null,
      p_reference:reference||null,
      p_receiver_name:receiver||null,
-     p_received_at:now,
-     p_site_id:scope.siteId,
-     p_department_id:scope.departmentId
+     p_received_at:now
    });
    if(error)throw error;
 
@@ -3520,23 +3684,17 @@ function userApprovedReportRows(){
 }
 function approvalReportCard(r,mode="pending"){
  const req=approvalReportRequestSet(r.id),requested=approvalRequestedUsers(r.id),signed=requested.filter(x=>x.status==="signed").length,pending=requested.filter(x=>x.status==="pending").length;
- const creator=approvalCreator(r),mine=req.find(x=>x.user_id===iyAuthUser?.id),requester=(iyUsersCache||[]).find(u=>u.user_id===r.created_by)||((iyUsersCache||[]).find(u=>u.user_id===req[0]?.requested_by)),kind=r.report_kind==="parts"?"Parts":"Maintenance";
- // Some approvers cannot read the creator's membership row because of RLS.
- // The saved V24.79 snapshot already contains the report's Prepared By name,
- // so use it as the final fallback instead of displaying "User".
- const snapshotCreatorName=String(r?.snapshot?.settings?.preparedBy||r?.snapshot?.settings?.prepared_by||"").trim();
- const requesterName=String(requester?.full_name||creator?.full_name||snapshotCreatorName||"User").trim();
+ const creator=approvalCreator(r),mine=req.find(x=>x.user_id===iyAuthUser?.id),kind=r.report_kind==="parts"?"Parts":"Maintenance";
  const fullyApproved=isApprovalReportComplete(r.id),isCreator=r.created_by===iyAuthUser?.id;
  const action=mode==="pending"?`<button class="approval-inbox-action" type="button" onclick="openApprovalWorkItem('${esc(r.id)}')">Review & Sign <span>→</span></button>`:`<button class="approval-inbox-action approved" type="button" onclick="openApprovedReport('${esc(r.id)}')">View & Export <span>→</span></button>`;
  let state="YOUR SIGNATURE REQUIRED";
  if(mode==="approved") state=isCreator?(fullyApproved?"APPROVED":"PENDING APPROVAL"):(fullyApproved?"FULLY APPROVED":"SIGNED BY YOU");
- const displayDate=mode==="pending" ? (mine?.requested_at||r.created_at) : r.created_at;
  const description=mode==="approved"
    ? (isCreator
       ? (fullyApproved?`You requested ${signed} approval${signed===1?'':'s'} and all requested users have signed.`:`You requested ${requested.length} approval${requested.length===1?'':'s'}; ${pending} still pending.`)
       : `You signed this report${fullyApproved?` · All ${signed} requested approval${signed===1?'':'s'} completed`:''}.`)
-   : `Requested by <b>${esc(requesterName)}</b>`;
- return `<article class="approval-inbox-card ${mode==='pending'?'is-pending':'is-approved'}"><div class="approval-inbox-icon">${mode==='pending'?'✍':(isCreator&&!fullyApproved?'⏳':'✓')}</div><div class="approval-inbox-main"><div class="approval-inbox-top"><span class="approval-type-pill">${kind} REPORT</span><span class="approval-date">${esc(new Date(displayDate).toLocaleString('en-GB'))}</span></div><h3>${esc(r.title)}</h3><p>${description}</p><div class="approval-progress"><span><b>${signed}/${requested.length}</b></span><div class="approval-progress-track"><i style="width:${requested.length?Math.round((signed/requested.length)*100):0}%"></i></div><span>${fullyApproved?'Completed':`${pending} pending`}</span></div></div><div class="approval-inbox-side"><span class="${mode==='pending'?'approval-you-badge':'approval-complete-badge'}">${state}</span>${action}</div></article>`;
+   : `Requested by <b>${esc(creator?.full_name||'User')}</b>`;
+ return `<article class="approval-inbox-card ${mode==='pending'?'is-pending':'is-approved'}"><div class="approval-inbox-icon">${mode==='pending'?'✍':(isCreator&&!fullyApproved?'⏳':'✓')}</div><div class="approval-inbox-main"><div class="approval-inbox-top"><span class="approval-type-pill">${kind} REPORT</span><span class="approval-date">${esc(new Date(r.created_at).toLocaleString('en-GB'))}</span></div><h3>${esc(r.title)}</h3><p>${description}</p><div class="approval-progress"><span><b>${signed}/${requested.length}</b></span><div class="approval-progress-track"><i style="width:${requested.length?Math.round((signed/requested.length)*100):0}%"></i></div><span>${fullyApproved?'Completed':`${pending} pending`}</span></div></div><div class="approval-inbox-side"><span class="${mode==='pending'?'approval-you-badge':'approval-complete-badge'}">${state}</span>${action}</div></article>`;
 }
 function setApprovalInboxTab(tab){window.__approvalInboxTab=tab==="approved"?"approved":"pending";render();}
 function myApprovalsPage(){
@@ -3577,7 +3735,7 @@ async function refreshApprovalInbox(){
 async function openApprovalWorkItem(reportId){await openReportNotification(reportId);}
 async function openApprovedReport(reportId){await openReportNotification(reportId);}
 
-function savedApprovalReportsList(kind){const rows=(reportApprovalReports||[]).filter(r=>r.report_kind===kind).slice(0,12);if(!rows.length)return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Reports shared for approval and their current signature status.</span></div></div><div class="saved-approval-empty">No saved approval reports yet.</div></section>`;return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Open any saved report to view the exact snapshot and export its applied signatures.</span></div><span>${rows.length} recent</span></div><div class="saved-approval-list">${rows.map(r=>{const req=(reportApprovalRequests||[]).filter(x=>x.report_id===r.id),signed=req.filter(x=>x.status==='signed').length,pending=req.filter(x=>x.status==='pending').length,creator=iyUsersCache.find(u=>u.user_id===r.created_by);return `<button class="saved-approval-row" type="button" onclick="openReportNotification('${esc(r.id)}')"><span class="saved-approval-icon">▤</span><span class="saved-approval-main"><strong>${esc(r.title)}</strong><small>${creator?esc(creator.full_name||creator.email||'User'):'User'} · ${esc(new Date(displayDate).toLocaleString('en-GB'))}</small></span><span class="saved-approval-status"><b>${signed} signed</b><small>${pending} pending</small></span><span class="saved-approval-open">Open ›</span></button>`}).join('')}</div></section>`;}
+function savedApprovalReportsList(kind){const rows=(reportApprovalReports||[]).filter(r=>r.report_kind===kind).slice(0,12);if(!rows.length)return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Reports shared for approval and their current signature status.</span></div></div><div class="saved-approval-empty">No saved approval reports yet.</div></section>`;return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Open any saved report to view the exact snapshot and export its applied signatures.</span></div><span>${rows.length} recent</span></div><div class="saved-approval-list">${rows.map(r=>{const req=(reportApprovalRequests||[]).filter(x=>x.report_id===r.id),signed=req.filter(x=>x.status==='signed').length,pending=req.filter(x=>x.status==='pending').length,creator=iyUsersCache.find(u=>u.user_id===r.created_by);return `<button class="saved-approval-row" type="button" onclick="openReportNotification('${esc(r.id)}')"><span class="saved-approval-icon">▤</span><span class="saved-approval-main"><strong>${esc(r.title)}</strong><small>${creator?esc(creator.full_name||creator.email||'User'):'User'} · ${esc(new Date(r.created_at).toLocaleString('en-GB'))}</small></span><span class="saved-approval-status"><b>${signed} signed</b><small>${pending} pending</small></span><span class="saved-approval-open">Open ›</span></button>`}).join('')}</div></section>`;}
 function partsReportsPage(){return `<div class="panel">
  <div class="formgrid"><div class="field"><label>Report Type</label><select id="pr_type" class="select"><option>All Transactions</option><option>Parts Issued</option><option>Parts Received</option><option>Parts Orders</option></select></div><div class="field"><label>Technician</label><input id="pr_tech" class="input"></div><div class="field"><label>Machine</label><input id="pr_machine" class="input"></div><div class="field"><label>Part Number</label><input id="pr_part" class="input"></div><div class="field"><label>Date From</label><input id="pr_from" class="input" type="date"></div><div class="field"><label>Date To</label><input id="pr_to" class="input" type="date"></div></div>
  <div class="actions"><button class="btn primary" onclick="runPartsReport()">Generate Report</button></div><div id="prout" style="margin-top:22px"></div></div>`}
@@ -3703,9 +3861,23 @@ async function loadReportApprovalRecord(id){
  window.__activeReportApproval=window.__activeReportApproval||{};if(r.data)window.__activeReportApproval[r.data.report_kind]=id;
  return r.data?{report:r.data,requests:q.data||[]}:null;
 }
+async function notifyApprovalRequestRecipients(reportId,userIds){
+ if(!reportId||!Array.isArray(userIds)||!userIds.length||!iyCloudReady)return;
+ try{
+  const {error}=await iySupabase.rpc("notify_report_approval_requested",{p_report_id:reportId,p_user_ids:userIds});
+  if(error)throw error;
+ }catch(e){console.warn("Approval request notifications could not be created",e?.message||e);}
+}
+async function notifyApprovalSigned(reportId){
+ if(!reportId||!iyCloudReady)return;
+ try{
+  const {error}=await iySupabase.rpc("notify_report_approval_signed",{p_report_id:reportId});
+  if(error)throw error;
+ }catch(e){console.warn("Approval signature notification could not be created",e?.message||e);}
+}
 async function requestReportApproval(kind){
  const selected=[...(window.__approvalSelections?.[kind]||[])];if(!selected.length)return alert("Select at least one user to receive this report.");
- try{await persistCurrentReport(kind,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
+ try{const id=await persistCurrentReport(kind,selected);await notifyApprovalRequestRecipients(id,selected);window.__approvalSelections[kind]=[];refreshReportApprovalPreview(kind);toast(`Report sent to ${selected.length} user${selected.length===1?"":"s"} for approval.`);await loadApprovalInboxFast({renderPage:false,notice:false});}catch(e){console.error(e);alert(e?.message||"The approval request could not be sent.");}
 }
 async function signOwnCurrentReport(kind){
  try{
@@ -3726,12 +3898,9 @@ async function signCurrentReport(kind){
   if(!req)throw new Error("You do not have a pending approval request for this report.");
   if(!currentReportActor().signature)return alert("Upload your account signature in Edit Profile before signing a report.");
   const {error}=await iySupabase.rpc("sign_report_approval",{p_report_id:id});if(error)throw error;
+  await notifyApprovalSigned(id);
   await loadApprovalInboxFast({renderPage:false,notice:false});await loadReportApprovalRecord(id);await hydrateApprovalSignatureUrls(id);
-  // Refresh the open saved-report modal immediately, then refresh the approvals
-  // page behind it. Previously render() only updated the page behind the modal,
-  // so the user had to close/refresh the page before seeing the new signature.
-  refreshReportApprovalPreview(kind);
-  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{toast("✓ Approval submitted. Your signature has been applied to the report.");}
+  if(currentPage==="approvals"){window.__approvalInboxTab="approved";render();toast("✓ Approval submitted. Your signature is now recorded.");}else{refreshReportApprovalPreview(kind);toast("✓ Approval submitted. Your signature has been applied to the report.");}
  }catch(e){console.error(e);alert(e?.message||"The report could not be signed.");}
 }
 async function hydrateApprovalSignatureUrls(id){const st=reportApprovalRequests.filter(x=>x.report_id===id&&x.status==="signed");for(const x of st){if(x.signature_path){try{x.signature_url=await signedStorageUrl(IY_SIGNATURE_BUCKET,x.signature_path,3600);}catch(e){console.warn("Approval signature could not be loaded",e?.message||e);}}}window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};window.__approvalSignatureUrls[id]=st;}
@@ -3740,21 +3909,16 @@ async function openReportNotification(reportId){
  if(!reportId)return nav("mreports");
  try{const loaded=await loadReportApprovalRecord(reportId);if(!loaded?.report)throw new Error("The saved report could not be found.");const r=loaded.report;window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[r.report_kind]=reportId;window.__reportApprovalUsersCache=window.__reportApprovalUsersCache||{};delete window.__reportApprovalUsersCache[r.report_kind];await ensureApprovalUsersLoaded(r.report_kind);await hydrateApprovalSignatureUrls(reportId);window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[r.report_kind]=[];if(r.report_kind==="parts"){window.__partsReportData=r.snapshot?.data||{};await openPartsReportPreviewFromSnapshot(r.snapshot);}else{window.__maintenanceReportData=r.snapshot?.data||{};await openReportPreviewFromSnapshot(r.snapshot);} }catch(e){console.error(e);alert(e?.message||"The saved report could not be opened.");}
 }
-function refreshReportApprovalPreview(kind){
+async function refreshReportApprovalPreview(kind){
+ try{
   if(kind==="parts"){
-    const m=document.getElementById("partsReportPreviewScroll");
-    if(m)m.innerHTML=buildPartsReportHTML();
+   const m=document.getElementById("partsReportPreviewScroll");
+   if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }else{
-    const m=document.getElementById("reportPreviewScroll");
-    if(m){
-      const st=approvalStateForKind("maintenance");
-      const snapshot=st?.report?.snapshot||{
-        data:window.__maintenanceReportData||{},
-        settings:db.settings
-      };
-      m.innerHTML=buildMaintenanceReportHTML(snapshot);
-    }
+   const m=document.getElementById("reportPreviewScroll");
+   if(m){const st=approvalStateForKind("maintenance");const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};m.innerHTML=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }
+ }catch(e){console.warn("Report preview branding refresh failed",e?.message||e);}
 }
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
@@ -3770,12 +3934,13 @@ function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${es
 async function openPartsReportPreview(){
  if(!window.__partsReportData||!document.getElementById("prout")?.innerHTML)return alert("Please generate the parts report first.");
  await ensureApprovalUsersLoaded();
- const html=buildPartsReportHTML();let modal=document.getElementById("partsReportPreviewModal");
+ await loadCloudAssets(db.settings);
+ const html=buildPartsReportHTML(await prepareReportSnapshotForPreview({data:window.__partsReportData,settings:db.settings}));let modal=document.getElementById("partsReportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
  document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
-async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("parts");const html=buildPartsReportHTML(snapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("parts");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildPartsReportHTML(preparedSnapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
 function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,10);return `<div class="panel"><div class="formgrid"><div class="field"><label>Report Type</label><select id="mr_type" class="select" onchange="toggleMaintenanceCustomDates()"><option>DAILY</option><option>WEEKLY</option><option>MONTHLY</option><option>CUSTOM DATE</option></select></div><div class="field" id="mr_single_date_field"><label>Report Date</label><input id="mr_date" class="input" type="date" value="${today}"></div><div class="field" id="mr_from_field" style="display:none"><label>From Date</label><input id="mr_from" class="input" type="date" value="${today}"></div><div class="field" id="mr_to_field" style="display:none"><label>To Date</label><input id="mr_to" class="input" type="date" value="${today}"></div></div><div class="actions"><button class="btn primary" onclick="runMaintenanceReport()">Generate Report</button></div><div id="mrout" style="margin-top:22px"></div></div>`}
@@ -3877,7 +4042,7 @@ async function fetchCompanyUsers(){
 
 async function loadAdminLocationOptions(){
  if(!iyCompany)throw new Error("Company workspace is not ready.");
- const {data,error}=await iySupabase.rpc("get_my_company_locations",{p_company_id:iyCompany.id});
+ const {data,error}=await iySupabase.rpc("get_my_company_locations");
  if(error)throw error;
  const rows=data||[];
  const siteMap=new Map();
@@ -4665,8 +4830,7 @@ async function completeAuthenticatedSession(user){
  loggedIn=true;
  db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
- // V24.82: Removed the automatic 60-second notification refresh.
- // This prevents background render() calls from resetting page filters/search state.
+ if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
@@ -4732,6 +4896,18 @@ async function loadCloudAssets(settings){
      }
      settings[key]=sigUrl?`${sigUrl}&v=${Date.now()}`:"";
    }
+}
+async function resolveReportLogoUrl(settings){
+ const ss=settings||{};const raw=String(ss.logoData||"").trim();
+ if(raw.startsWith("data:image/") || (raw && !raw.includes("/storage/v1/object/")))return raw;
+ const storedPath=assetPathFromStoredUrl(raw,IY_COMPANY_ASSETS_BUCKET);
+ if(storedPath){const fresh=await assetSignedUrlOrEmpty(storedPath);if(fresh)return `${fresh}&v=${Date.now()}`;}
+ if(iyCompany){const folder=String(iyCompany.id);for(const path of [`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]){const fresh=await assetSignedUrlOrEmpty(path);if(fresh)return `${fresh}&v=${Date.now()}`;}}
+ return raw;
+}
+async function prepareReportSnapshotForPreview(snapshot){
+ const base=snapshot&&typeof snapshot==="object"?snapshot:{};const settings={...(base.settings||db.settings||{})};
+ settings.logoData=await resolveReportLogoUrl(settings);return {...base,settings};
 }
 async function loadProfileAvatar(){
  if(!iyAuthUser?.id)return "";
@@ -4840,7 +5016,7 @@ async function cloudUpsertPart(row){
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
 async function cloudInsertReceipt(row){
  const scope=effectiveWriteScope(row[10],row[11]);
- const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
+ const {data,error}=await iySupabase.rpc("receive_part_transaction",{
    p_part_number:String(row[1]),
    p_description:row[2]||null,
    p_machine_model:row[3]||null,
@@ -4848,14 +5024,11 @@ async function cloudInsertReceipt(row){
    p_supplier:row[5]||null,
    p_reference:row[6]||null,
    p_receiver_name:row[7]||null,
-   p_received_at:row[0]||new Date().toISOString(),
-   p_site_id:scope.siteId,
-   p_department_id:scope.departmentId
+   p_received_at:row[0]||new Date().toISOString()
  });
  if(error)throw error;
  return data?.receipt_id||data;
 }
-
 async function cloudInsertIssue(row){
  const scope=effectiveWriteScope(row[11],row[12]);
  const {data,error}=await iySupabase.rpc("issue_part_transaction",{
@@ -5642,13 +5815,14 @@ function buildMaintenanceReportHTML(snapshotOverride){
 }
 async function openReportPreview(){
  await ensureApprovalUsersLoaded();
- const html=buildMaintenanceReportHTML();if(!html)return alert("Generate the report first.");
+ await loadCloudAssets(db.settings);
+ const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings}));if(!html)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
  document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const html=buildMaintenanceReportHTML(snapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
@@ -5856,155 +6030,4 @@ initiyAuth();
 .issue-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7f93;gap:7px}.issue-empty-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#edf4fb;color:#1769d2;font-size:23px;margin-bottom:5px}.issue-empty b{font-size:15px;color:#16324b}.issue-empty span{font-size:12px;margin-bottom:7px}
 @media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
 @media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
-</style>
-
-<style id="iy-mobile-solid-v24-82">
-/* V24.82 Mobile Optimization — CSS/UI only. No business logic or data behavior changed. */
-@media (max-width:700px){
-  :root{--mobile-gutter:12px}
-  html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
-  body{padding-bottom:88px!important;background:#f3f6fa;}
-  .app{display:block!important;min-height:100vh!important;width:100%!important;}
-  .main{margin:0!important;width:100%!important;min-width:0!important;}
-  .content{padding:12px var(--mobile-gutter) 26px!important;width:100%!important;}
-
-  /* Header: compact, stable and touch friendly */
-  .top{height:60px!important;min-height:60px!important;padding:0 12px!important;gap:7px!important;}
-  .top>div:first-child{min-width:0!important;overflow:hidden;}
-  .top h1{font-size:18px!important;line-height:1.2!important;}
-  .top-actions{gap:6px!important;}
-  .notification-trigger,.profile-trigger{width:40px!important;height:40px!important;min-width:40px!important;border-radius:11px!important;}
-  .profile-copy{display:none!important;}
-  .profile-trigger .profile-avatar{margin:0!important;}
-
-  /* Search opens as a proper mobile search surface */
-  .global-search-wrap{width:40px!important;height:40px!important;flex:0 0 40px!important;}
-  .global-search{width:40px!important;height:40px!important;min-height:40px!important;}
-  .global-search-panel{left:10px!important;right:10px!important;top:58px!important;max-height:calc(100vh - 80px)!important;}
-  .global-search-results{max-height:55vh!important;overflow:auto!important;-webkit-overflow-scrolling:touch;}
-  .global-search-result{min-height:54px!important;padding:10px 12px!important;}
-
-  /* Cards and panels */
-  .hero{padding:20px 16px!important;border-radius:14px!important;margin-bottom:14px!important;}
-  .hero h2{font-size:21px!important;line-height:1.2!important;}
-  .hero p{font-size:12px!important;line-height:1.5!important;}
-  .hero-btn,.hero button,.hero .btn{width:100%;min-height:44px;}
-  .cards{grid-template-columns:1fr!important;gap:10px!important;margin-bottom:14px!important;}
-  .card,.panel{padding:15px!important;border-radius:12px!important;}
-  .grid2,.two-col{grid-template-columns:1fr!important;gap:12px!important;}
-  .attention-grid{grid-template-columns:1fr!important;gap:9px!important;}
-  .mini-stats{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  .v24-kpis{grid-template-columns:1fr 1fr!important;gap:9px!important;}
-  .v24-kpi{padding:13px!important;border-radius:11px!important;}
-  .v24-kpi .k-value{font-size:24px!important;}
-  .v24-hero{min-height:0!important;padding:20px 17px!important;border-radius:14px!important;margin-bottom:13px!important;}
-  .v24-hero h2{font-size:22px!important;}
-  .v24-grid,.v24-grid.equal{grid-template-columns:1fr!important;gap:12px!important;}
-  .v24-panel{padding:15px!important;border-radius:12px!important;}
-  .v24-quick{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  .v24-quick button{min-height:64px!important;padding:11px!important;}
-
-  /* Forms: one clean column and comfortable touch targets */
-  .toolbar{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important;}
-  .search{min-width:0!important;width:100%!important;}
-  .formgrid{grid-template-columns:1fr!important;gap:11px!important;}
-  .field.full{grid-column:auto!important;}
-  .input,.select,.textarea{min-height:44px!important;font-size:14px!important;padding:11px 12px!important;}
-  textarea.textarea{min-height:100px!important;}
-  .btn{min-height:44px!important;padding:10px 14px!important;}
-  .btn.small{min-height:38px!important;padding:8px 10px!important;}
-  .actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:14px!important;}
-  .actions .btn{width:100%!important;}
-
-  /* Tables remain fully usable through horizontal scrolling rather than squeezing text. */
-  .tablewrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain;border-radius:10px!important;}
-  .table{min-width:680px!important;}
-  .table th,.table td{padding:9px 9px!important;font-size:11px!important;white-space:nowrap!important;}
-  .table th{font-size:9px!important;}
-  .maintenance-dashboard-table .table{min-width:900px!important;}
-  .v24-table .table{min-width:650px!important;}
-  .parts-orders-table{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;}
-  .parts-orders-table .table{min-width:1050px!important;}
-
-  /* Long row controls wrap instead of forcing the viewport wider. */
-  .table-action,.parts-orders-actions{display:flex!important;flex-wrap:wrap!important;gap:6px!important;white-space:normal!important;}
-  .table-action .btn,.parts-orders-actions .btn{min-height:38px!important;}
-
-  /* Modals: use nearly the entire phone screen and preserve internal scrolling. */
-  .modalback{padding:8px!important;align-items:flex-end!important;}
-  .modal{width:100%!important;max-width:none!important;max-height:94vh!important;border-radius:16px 16px 10px 10px!important;padding:17px!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
-  .modal h2{font-size:19px!important;margin-bottom:13px!important;}
-  .modalhead{gap:10px!important;}
-  .close{width:40px!important;height:40px!important;min-width:40px!important;}
-
-  /* Machine profiles/editors */
-  .machine-profile-kpis-v18,.machine-profile-kpis{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  .machine-service-grid-v18,.machine-service-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;}
-  .machine-info-grid-v18,.machine-info-grid{grid-template-columns:1fr!important;}
-  .machine-profile-top-v18{grid-template-columns:1fr!important;}
-  .machine-profile-header-row-v18{align-items:flex-start!important;gap:10px!important;}
-  .machine-profile-actions-v18{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;}
-  .machine-profile-actions-v18 .btn,.machine-profile-actions-v18 button{width:100%!important;min-height:42px!important;}
-  .machine-editor-grid-v19{grid-template-columns:1fr!important;}
-  .machine-editor-actions-v19{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
-
-  /* Settings and configuration areas */
-  .settings-grid,.modern-settings-grid{grid-template-columns:1fr!important;}
-  .settings-side,.modern-settings-side{display:flex!important;flex-direction:column!important;gap:8px!important;}
-  .signature-settings-grid{grid-template-columns:1fr!important;padding:14px!important;}
-  .settings-nav-strip{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;white-space:nowrap;}
-  .settings-nav-item{min-height:42px!important;}
-
-  /* Approval inbox and approval report controls */
-  .approval-page-hero{padding:18px!important;border-radius:14px!important;}
-  .approval-hero-stat{width:100%!important;}
-  .approval-toolbar{align-items:stretch!important;gap:8px!important;}
-  .approval-inbox-card{grid-template-columns:38px minmax(0,1fr)!important;gap:9px!important;padding:12px!important;}
-  .approval-inbox-side{grid-column:2!important;align-items:stretch!important;min-width:0!important;}
-  .approval-inbox-action{width:100%!important;min-height:42px!important;}
-  .approval-progress{grid-template-columns:auto minmax(0,1fr) auto!important;gap:7px!important;}
-  .approval-user-grid{grid-template-columns:1fr!important;}
-  .approval-user-option{min-height:52px!important;padding:10px!important;}
-  .report-approval-panel{padding:13px!important;border-radius:12px!important;}
-  .report-approval-head{flex-direction:column!important;align-items:stretch!important;}
-  .report-approval-status{align-self:flex-start!important;}
-  .report-approval-actions{grid-template-columns:1fr!important;gap:8px!important;}
-  .report-approval-actions .primary,.report-approval-actions .success{justify-self:stretch!important;width:100%!important;}
-  .approval-chip{min-width:0!important;flex:1 1 100%!important;}
-
-  /* Report preview: don't scale the report so small that it becomes unreadable. */
-  .report-preview-shell{width:100%!important;max-width:none!important;border-radius:14px!important;}
-  .report-preview-bar{height:auto!important;min-height:58px!important;padding:8px 10px!important;gap:7px!important;}
-  .report-preview-title{font-size:13px!important;min-width:0!important;}
-  .report-preview-actions{display:flex!important;gap:6px!important;}
-  .report-preview-actions button{min-height:40px!important;padding:8px 10px!important;font-size:11px!important;}
-  .report-preview-scroll{padding:8px!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
-  .report-paper{transform-origin:top left!important;transform:scale(.52)!important;margin-bottom:-380px!important;}
-  .report-pdf{width:100%!important;}
-
-  /* Notifications and popovers stay inside the viewport. */
-  .notification-panel{position:fixed!important;left:10px!important;right:10px!important;top:58px!important;width:auto!important;max-width:none!important;max-height:calc(100vh - 76px)!important;border-radius:15px!important;}
-  .notification-list{max-height:calc(100vh - 190px)!important;-webkit-overflow-scrolling:touch;}
-  .profile-menu{right:10px!important;max-width:calc(100vw - 20px)!important;}
-
-  /* Mobile navigation respects notches/home indicators. */
-  .mobile-bottom-nav{left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;height:66px!important;padding:5px!important;border-radius:17px!important;}
-  .mobile-nav-item{min-height:54px!important;font-size:8px!important;}
-  .mobile-nav-item .mn-icon{width:28px!important;height:28px!important;}
-  .mobile-nav-sheet{left:8px!important;right:8px!important;bottom:82px!important;max-height:calc(100vh - 104px)!important;padding:14px!important;-webkit-overflow-scrolling:touch!important;}
-
-  /* Prevent accidental horizontal overflow from individual components. */
-  img,video,canvas,svg{max-width:100%;}
-  .panel,.card,.hero,.v24-panel,.v24-kpi,.modern-card,.parts-summary-box,.saved-approval-card,.report-approval-panel{min-width:0!important;}
-}
-@media(max-width:420px){
-  .content{padding-left:9px!important;padding-right:9px!important;}
-  .v24-kpis{grid-template-columns:1fr!important;}
-  .v24-quick{grid-template-columns:1fr!important;}
-  .machine-profile-kpis-v18,.machine-profile-kpis,.machine-service-grid-v18,.machine-service-grid{grid-template-columns:1fr!important;}
-  .machine-profile-actions-v18{grid-template-columns:1fr!important;}
-  .mini-stats{grid-template-columns:1fr!important;}
-  .report-preview-actions button{padding:7px 8px!important;font-size:10px!important;}
-}
-@media(min-width:701px){#iy-mobile-solid-v24-82{display:none;}}
 </style>
