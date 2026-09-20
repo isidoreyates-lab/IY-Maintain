@@ -2311,24 +2311,11 @@ function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
 let iyCommercialPricingState = {
   plans: null,
   currentPlanCode: "",
-  loading: false,
-  loadedCompanyId: ""
+  loading: false
 };
 
-function loadCommercialPricingPlans(force=false){
-  const companyId=String(iyCompany?.id||"").trim();
-
-  // Do not cache a Pricing result while company context is unavailable.
-  if(!companyId)return;
-
-  if(
-    !force &&
-    iyCommercialPricingState.plans &&
-    iyCommercialPricingState.loadedCompanyId===companyId
-  )return;
-
-  if(iyCommercialPricingState.loading)return;
-
+function loadCommercialPricingPlans(){
+  if(iyCommercialPricingState.plans || iyCommercialPricingState.loading) return;
   iyCommercialPricingState.loading=true;
 
   Promise.all([
@@ -2337,16 +2324,15 @@ function loadCommercialPricingPlans(force=false){
       .select("id,code,name,description,max_sites,max_departments,max_employees,max_machines,max_parts,max_suppliers,monthly_price,annual_price,currency,trial_days,is_active,display_order")
       .eq("is_active",true)
       .order("display_order",{ascending:true}),
-
     iySupabase
       .from("subscriptions")
-      .select("id,plan_id,status,billing_interval")
-      .eq("company_id",companyId)
+      .select("plan_id,status")
+      .eq("company_id",iyCompany?.id||"")
       .in("status",["trialing","active","past_due","suspended"])
       .maybeSingle()
   ]).then(([plansResult,subscriptionResult])=>{
-    if(plansResult.error)throw plansResult.error;
-    if(subscriptionResult.error)throw subscriptionResult.error;
+    if(plansResult.error) throw plansResult.error;
+    if(subscriptionResult.error) throw subscriptionResult.error;
 
     const plans=Array.isArray(plansResult.data)?plansResult.data:[];
     const subscription=subscriptionResult.data||null;
@@ -2355,30 +2341,12 @@ function loadCommercialPricingPlans(force=false){
     iyCommercialPricingState.currentPlanCode=String(
       plans.find(p=>String(p.id)===String(subscription?.plan_id||""))?.code||""
     ).toUpperCase();
-    iyCommercialPricingState.loadedCompanyId=companyId;
-
-    // Keep the shared subscription state synchronized with the same company
-    // and the same local subscription row used by this Pricing view.
-    if(subscription){
-      iyCommercialSubscriptionState.status={
-        ...(iyCommercialSubscriptionState.status||{}),
-        subscription_id:subscription.id,
-        plan_id:subscription.plan_id,
-        status:subscription.status,
-        subscription_status:subscription.status,
-        billing_interval:subscription.billing_interval
-      };
-      iyCommercialSubscriptionState.loadedCompanyId=companyId;
-    }
   }).catch(error=>{
     console.error("Commercial pricing load failed",error);
     iyCommercialPricingState.plans=[];
-    iyCommercialPricingState.currentPlanCode="";
-    iyCommercialPricingState.loadedCompanyId="";
-    iyCommercialPricingState.loadedCompanyId=companyId;
   }).finally(()=>{
     iyCommercialPricingState.loading=false;
-    if(currentPage==="pricing")render();
+    if(currentPage==="pricing") render();
   });
 }
 
@@ -2441,15 +2409,7 @@ function commercialPlanCard(plan,currentPlanCode){
 function commercialPricingPage(){
   if(!canAccessCommercialPricing()) return accessDeniedPage("Pricing","Pricing is available to Company Administrators.");
 
-  const companyId=String(iyCompany?.id||"").trim();
-  if(!companyId){
-    return `<div class="iy-pricing-loading"><div class="iy-pricing-spinner"></div><b>Loading company workspace…</b><span>Preparing your commercial subscription context.</span></div>`;
-  }
-
-  if(
-    !iyCommercialPricingState.plans ||
-    iyCommercialPricingState.loadedCompanyId!==companyId
-  ){
+  if(!iyCommercialPricingState.plans && !iyCommercialPricingState.loading){
     loadCommercialPricingPlans();
   }
 
@@ -2459,7 +2419,7 @@ function commercialPricingPage(){
 
   const plans=iyCommercialPricingState.plans||[];
   if(!plans.length){
-    return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;iyCommercialPricingState.loadedCompanyId='';loadCommercialPricingPlans(true)">Retry</button></div>`;
+    return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;loadCommercialPricingPlans()">Retry</button></div>`;
   }
 
   return `<div class="iy-pricing-shell">
@@ -2484,19 +2444,14 @@ async function commercialPricingAction(planCode){
   iyCommercialSubscriptionState.checkoutError=null;
 
   if(!iyCompany?.id){
-    toast("Company workspace is still loading. Please try again in a moment.");
+    nav("subscription");
     return;
   }
 
   try{
-    // V6.06.3 — A Pricing button click always refreshes the local subscription
-    // row for the current company before deciding between Checkout, upgrade,
-    // or downgrade. This prevents cached/null state from routing to Subscription.
-    iyCommercialSubscriptionState.loaded=false;
-    iyCommercialSubscriptionState.status=null;
-    iyCommercialSubscriptionState.error=null;
-
-    await loadCommercialSubscriptionStatus(true);
+    if(!iyCommercialSubscriptionState.loaded){
+      await loadCommercialSubscriptionStatus();
+    }
 
     const status=String(
       iyCommercialSubscriptionState.status?.status
@@ -2514,19 +2469,14 @@ async function commercialPricingAction(planCode){
       return;
     }
 
-    throw new Error(
-      "The current commercial subscription could not be confirmed for this company. Please refresh the page and try again."
-    );
+    nav("subscription");
+    toast("Plan changes are currently available for active subscriptions and trial subscriptions.");
   }catch(error){
     console.error("Pricing plan action failed",error);
     iyCommercialSubscriptionState.checkoutError=error;
-    // Stay on Pricing; never send the user to a misleading empty Subscription
-    // page when plan-change preparation cannot resolve the current subscription.
-    render();
-    toast(error?.message||"The plan change could not be prepared.");
+    nav("subscription");
   }
 }
-
 
 
 /* V5.01 — Commercial Subscription UI. Read-only view using the existing status RPC. */
@@ -2539,111 +2489,54 @@ let iyCommercialSubscriptionState={
   checkoutLoading:false,
   checkoutError:null,
   checkoutPlans:null,
-  selectedBillingInterval:"monthly",
-  loadedCompanyId:""
+  selectedBillingInterval:"monthly"
 };
 
-async function loadCommercialSubscriptionStatus(force=false){
-  const companyId=String(iyCompany?.id||"").trim();
-  if(!companyId)return;
-
-  if(
-    !force &&
-    iyCommercialSubscriptionState.loaded &&
-    iyCommercialSubscriptionState.loadedCompanyId===companyId
-  )return;
-
-  if(iyCommercialSubscriptionState.loading){
-    await new Promise(resolve=>{
-      const started=Date.now();
-      const wait=()=>{
-        if(!iyCommercialSubscriptionState.loading || Date.now()-started>8000){
-          resolve();
-          return;
-        }
-        setTimeout(wait,80);
-      };
-      wait();
-    });
-
-    if(
-      !force &&
-      iyCommercialSubscriptionState.loaded &&
-      iyCommercialSubscriptionState.loadedCompanyId===companyId
-    )return;
-  }
-
+async function loadCommercialSubscriptionStatus(){
+  if(iyCommercialSubscriptionState.loaded||iyCommercialSubscriptionState.loading||!iyCompany?.id)return;
   iyCommercialSubscriptionState.loading=true;
   try{
-    /*
-     * V6.06.4 — Use only subscription columns already proven to exist in the
-     * application. The previous version requested trial_started_at/trial_ends_at
-     * from subscriptions; those fields are not part of the established frontend
-     * subscription query and caused PostgREST to fail the entire row lookup.
-     */
-    const {data:localSubscription,error:subscriptionError}=await iySupabase
-      .from("subscriptions")
-      .select("id,plan_id,status,billing_interval,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at,current_period_start,current_period_end,stripe_customer_id,stripe_subscription_id")
-      .eq("company_id",companyId)
-      .in("status",["trialing","active","past_due","suspended"])
-      .maybeSingle();
+    const [statusResult, subscriptionResult] = await Promise.all([
+      iySupabase.rpc("get_company_subscription_status",{p_company_id:iyCompany.id}),
+      iySupabase
+        .from("subscriptions")
+        .select("id,plan_id,status,billing_interval,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at")
+        .eq("company_id",iyCompany.id)
+        .in("status",["trialing","active","past_due","suspended"])
+        .maybeSingle()
+    ]);
 
-    if(subscriptionError)throw subscriptionError;
+    if(statusResult.error)throw statusResult.error;
+    if(subscriptionResult.error)throw subscriptionResult.error;
 
-    let rpcStatus=null;
-    try{
-      const {data,error}=await iySupabase.rpc(
-        "get_company_subscription_status",
-        {p_company_id:companyId}
-      );
+    const rpcStatus=Array.isArray(statusResult.data)?(statusResult.data[0]||null):(statusResult.data||null);
+    const localSubscription=subscriptionResult.data||null;
 
-      if(error){
-        console.warn(
-          "Commercial subscription status RPC failed; using local subscription row.",
-          error
-        );
-      }else{
-        rpcStatus=Array.isArray(data)?(data[0]||null):(data||null);
-      }
-    }catch(rpcError){
-      console.warn(
-        "Commercial subscription status RPC exception; using local subscription row.",
-        rpcError
-      );
-    }
-
-    if(!localSubscription && !rpcStatus){
+    if(!rpcStatus && !localSubscription){
       iyCommercialSubscriptionState.status=null;
     }else{
       iyCommercialSubscriptionState.status={
         ...(rpcStatus||{}),
-        subscription_id:localSubscription?.id ?? rpcStatus?.subscription_id ?? null,
-        plan_id:localSubscription?.plan_id ?? rpcStatus?.plan_id ?? null,
-        status:localSubscription?.status ?? rpcStatus?.subscription_status ?? null,
-        subscription_status:localSubscription?.status ?? rpcStatus?.subscription_status ?? null,
-        billing_interval:localSubscription?.billing_interval ?? rpcStatus?.billing_interval ?? null,
-        current_period_start:localSubscription?.current_period_start ?? rpcStatus?.current_period_start ?? null,
-        current_period_end:localSubscription?.current_period_end ?? rpcStatus?.current_period_end ?? null,
-        pending_plan_id:localSubscription?.pending_plan_id ?? null,
-        pending_billing_interval:localSubscription?.pending_billing_interval ?? null,
-        pending_change_type:localSubscription?.pending_change_type ?? null,
-        pending_change_effective_at:localSubscription?.pending_change_effective_at ?? null,
-        pending_change_request_id:localSubscription?.pending_change_request_id ?? null,
-        cancel_at_period_end:localSubscription?.cancel_at_period_end ?? rpcStatus?.cancel_at_period_end ?? false,
-        canceled_at:localSubscription?.canceled_at ?? rpcStatus?.canceled_at ?? null,
-        stripe_customer_id:localSubscription?.stripe_customer_id ?? rpcStatus?.stripe_customer_id ?? null,
-        stripe_subscription_id:localSubscription?.stripe_subscription_id ?? rpcStatus?.stripe_subscription_id ?? null
+        // The V4.04 status RPC returns subscription_status, not status.
+        status: rpcStatus?.subscription_status ?? localSubscription?.status ?? null,
+        // Pending change fields are intentionally read from the existing subscription row.
+        pending_plan_id: localSubscription?.pending_plan_id ?? null,
+        pending_billing_interval: localSubscription?.pending_billing_interval ?? null,
+        pending_change_type: localSubscription?.pending_change_type ?? null,
+        pending_change_effective_at: localSubscription?.pending_change_effective_at ?? null,
+        pending_change_request_id: localSubscription?.pending_change_request_id ?? null,
+        cancel_at_period_end: localSubscription?.cancel_at_period_end ?? rpcStatus?.cancel_at_period_end ?? false,
+        canceled_at: localSubscription?.canceled_at ?? rpcStatus?.canceled_at ?? null
       };
 
+      // Resolve the pending target plan name/code from the same read-only plan catalogue.
       if(localSubscription?.pending_plan_id){
         const {data:pendingPlan,error:pendingPlanError}=await iySupabase
           .from("subscription_plans")
           .select("id,code,name")
           .eq("id",localSubscription.pending_plan_id)
           .maybeSingle();
-
         if(pendingPlanError)throw pendingPlanError;
-
         if(pendingPlan){
           iyCommercialSubscriptionState.status.pending_plan_code=pendingPlan.code;
           iyCommercialSubscriptionState.status.pending_plan_name=pendingPlan.name;
@@ -2653,12 +2546,10 @@ async function loadCommercialSubscriptionStatus(force=false){
 
     iyCommercialSubscriptionState.error=null;
     iyCommercialSubscriptionState.loaded=true;
-    iyCommercialSubscriptionState.loadedCompanyId=companyId;
   }catch(error){
     console.error("Commercial subscription status load failed",error);
     iyCommercialSubscriptionState.error=error;
     iyCommercialSubscriptionState.loaded=true;
-    iyCommercialSubscriptionState.loadedCompanyId=companyId;
   }finally{
     iyCommercialSubscriptionState.loading=false;
     if(currentPage==="subscription")render();
@@ -2775,61 +2666,7 @@ async function startCommercialCheckout(){
   }
 }
 
-/* V6.06 — Active subscription upgrade + period-end downgrade flow.
-   Trial subscriptions continue to use the existing Stripe Checkout flow.
-   Active upgrades use the existing V6.05 payment checkout flow.
-   Active downgrades are capacity-validated and scheduled for the current
-   billing-period end; no payment checkout is used for a downgrade. */
-async function ensureCommercialDowngradeCapacityData(){
-  if(iyCommercialUpgradeState.loaded)return;
-  if(!iyCompany?.id)return;
-
-  if(!iyCommercialUpgradeState.loading){
-    loadCommercialUpgradePrompts();
-  }
-
-  await new Promise(resolve=>{
-    const started=Date.now();
-    const wait=()=>{
-      if(iyCommercialUpgradeState.loaded||Date.now()-started>6000){resolve();return;}
-      setTimeout(wait,80);
-    };
-    wait();
-  });
-}
-
-function commercialDowngradeCapacityRows(targetPlan){
-  const resources=iyCommercialUpgradeState.resources||[];
-  const maxMap={
-    sites:targetPlan.max_sites,
-    departments:targetPlan.max_departments,
-    employees:targetPlan.max_employees,
-    machines:targetPlan.max_machines,
-    parts:targetPlan.max_parts,
-    suppliers:targetPlan.max_suppliers
-  };
-
-  if(!resources.length)return `<div class="iy-plan-change-note"><b>Capacity check</b><span>Your current workspace will be checked against the ${esc(targetPlan.name||targetPlan.code)} capacity before the downgrade is scheduled. The downgrade is allowed only when every current resource fits within the target plan.</span></div>`;
-
-  return `<div class="iy-downgrade-capacity-box">
-    <div class="iy-downgrade-capacity-head"><b>Capacity check</b><span>All current usage must fit within the ${esc(targetPlan.name||targetPlan.code)} limits.</span></div>
-    <div class="iy-downgrade-capacity-table">
-      <div class="iy-downgrade-capacity-row header"><span>Resource</span><span>Current</span><span>Target limit</span><span>Result</span></div>
-      ${resources.map(r=>{
-        const targetMax=Number(maxMap[r.key]);
-        const current=Number(r.current);
-        const fits=Number.isFinite(targetMax)&&Number.isFinite(current)&&current<=targetMax;
-        return `<div class="iy-downgrade-capacity-row">
-          <span>${esc(r.label)}</span>
-          <b>${Number.isFinite(current)?commercialLimit(current):"—"}</b>
-          <b>${Number.isFinite(targetMax)?commercialLimit(targetMax):"—"}</b>
-          <strong class="${fits?'fit':'not-fit'}">${fits?'✓ Fits':'! Exceeds'}</strong>
-        </div>`;
-      }).join("")}
-    </div>
-  </div>`;
-}
-
+/* V6.05 — Active subscription upgrade payment flow. */
 async function openCommercialPlanChangeModal(targetPlanCode){
   const code=String(targetPlanCode||"").trim().toUpperCase();
   if(!code)return;
@@ -2878,26 +2715,12 @@ async function openCommercialPlanChangeModal(targetPlanCode){
 
   const targetAmount=interval==="annual"?targetPlan.annual_price:targetPlan.monthly_price;
   const currentAmount=interval==="annual"?currentPlan.annual_price:currentPlan.monthly_price;
-  const effectiveAt=iyCommercialSubscriptionState.status?.current_period_end||null;
-
-  if(changeType==="downgrade"){
-    await ensureCommercialDowngradeCapacityData();
-  }
-
-  const isDowngrade=changeType==="downgrade";
-  const title=isDowngrade?"Downgrade":"Upgrade";
-  const subtitle=isDowngrade
-    ? `No payment is required. Your ${esc(currentPlan.name||currentCode)} subscription remains active until ${effectiveAt?esc(commercialSubscriptionDateTime(effectiveAt)):"the end of the current billing period"}. The downgrade will take effect at renewal.`
-    : "You will be redirected to Stripe Checkout. Your existing subscription changes only after the upgrade payment succeeds.";
-
-  const note=isDowngrade
-    ? `<b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b><span>Your current usage must fit within the target plan limits. The current subscription stays active through ${effectiveAt?esc(commercialSubscriptionDateTime(effectiveAt)):"the current billing period"}; the downgrade is scheduled for period end.</span>`
-    : `<b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b><span>Stripe will calculate the applicable prorated upgrade amount and collect it securely in Checkout. Your existing subscription is updated only after successful payment.</span>`;
+  const verb=changeType==="upgrade"?"Upgrade":"Change plan";
 
   openModal(`<div class="modalhead">
       <div>
-        <h2 style="margin-bottom:6px">${esc(title)} to ${esc(targetPlan.name||code)}</h2>
-        <div style="color:#6d7e92;font-size:13px">${subtitle}</div>
+        <h2 style="margin-bottom:6px">${esc(verb)} to ${esc(targetPlan.name||code)}</h2>
+        <div style="color:#6d7e92;font-size:13px">You will be redirected to Stripe Checkout. Your existing subscription changes only after the upgrade payment succeeds.</div>
       </div>
       <button class="close" type="button" onclick="closeModal()">×</button>
     </div>
@@ -2907,13 +2730,15 @@ async function openCommercialPlanChangeModal(targetPlanCode){
         <div class="iy-plan-change-arrow">→</div>
         <div><span>New plan</span><b>${esc(targetPlan.name||code)}</b><small>${commercialMoney(targetAmount,targetPlan.currency||"USD")} / ${interval==="annual"?"year":"month"}</small></div>
       </div>
-      <div class="iy-plan-change-note">${note}</div>
-      ${isDowngrade?commercialDowngradeCapacityRows(targetPlan):""}
+      <div class="iy-plan-change-note">
+        <b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b>
+        <span>Stripe will calculate the applicable prorated upgrade amount and collect it securely in Checkout. Your existing subscription is updated only after successful payment.</span>
+      </div>
       <div id="iyPlanChangeError" class="iy-plan-change-error" style="display:none"></div>
     </div>
     <div class="actions">
       <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
-      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">${isDowngrade?"Schedule downgrade":"Continue to payment"}</button>
+      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">Continue to payment</button>
     </div>`);
 }
 
@@ -2936,12 +2761,16 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
     if(errorBox){errorBox.style.display="block";errorBox.textContent="The requested plan change type is not valid.";}
     return;
   }
+  if(type!=="upgrade"){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Payment checkout is currently available for upgrades. Downgrades remain on the existing change-management path.";}
+    return;
+  }
   if(!iyCompany?.id){
     if(errorBox){errorBox.style.display="block";errorBox.textContent="Company context is not ready. Please refresh and try again.";}
     return;
   }
 
-  if(button){button.disabled=true;button.textContent=type==="downgrade"?"Checking capacity…":"Preparing payment…";}
+  if(button){button.disabled=true;button.textContent="Preparing payment…";}
   if(errorBox){errorBox.style.display="none";errorBox.textContent="";}
 
   try{
@@ -2954,81 +2783,7 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
       "Content-Type":"application/json"
     };
 
-    if(type==="downgrade"){
-      // Capacity is validated server-side before the downgrade request is created.
-      const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-downgrade`,{
-        method:"POST",
-        headers:authHeaders,
-        body:JSON.stringify({
-          company_id:iyCompany.id,
-          target_plan_code:code,
-          target_billing_interval:interval
-        })
-      });
-
-      const requestPayload=await requestRes.json().catch(()=>({}));
-
-      if(!requestRes.ok){
-        const failures=Array.isArray(requestPayload?.capacity_failures)?requestPayload.capacity_failures:[];
-        if(errorBox){
-          errorBox.style.display="block";
-          errorBox.innerHTML=`<b>${esc(requestPayload?.error||"The downgrade could not be scheduled.")}</b>${failures.length?`<div style="margin-top:8px">${failures.map(item=>`<div>• ${esc(item.label)}: ${commercialLimit(item.current)} / ${commercialLimit(item.max)} allowed</div>`).join("")}</div>`:""}`;
-        }
-        if(button){button.disabled=false;button.textContent="Schedule downgrade";}
-        return;
-      }
-
-      const requestId=String(requestPayload?.request_id||"").trim();
-      if(!requestId)throw new Error("The downgrade request ID was not returned by the server.");
-
-      if(button){button.textContent="Scheduling downgrade…";}
-
-      const scheduleRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/schedule-subscription-change`,{
-        method:"POST",
-        headers:authHeaders,
-        body:JSON.stringify({
-          company_id:iyCompany.id,
-          request_id:requestId
-        })
-      });
-
-      const schedulePayload=await scheduleRes.json().catch(()=>({}));
-      if(!scheduleRes.ok){
-        throw new Error(schedulePayload?.details||schedulePayload?.error||"The downgrade could not be scheduled.");
-      }
-      if(schedulePayload?.success!==true){
-        throw new Error(schedulePayload?.error||"The downgrade schedule was not confirmed.");
-      }
-
-      closeModal();
-      const effectiveAt=schedulePayload?.effective_at||requestPayload?.effective_at;
-      toast(`Downgrade scheduled${effectiveAt?` for ${commercialSubscriptionDateTime(effectiveAt)}`:" for the end of the current billing period"}. Your current plan remains active until then.`);
-
-      iyCommercialSubscriptionState.loaded=false;
-      iyCommercialSubscriptionState.status=null;
-      iyCommercialSubscriptionState.error=null;
-      iyCommercialSubscriptionState.checkoutError=null;
-      iyCommercialUpgradeState.loaded=false;
-      iyCommercialUpgradeState.resources=[];
-      iyCommercialUpgradeState.nextPlan=null;
-      iyCommercialPricingState.plans=null;
-      iyCommercialPricingState.currentPlanCode="";
-      iyCommercialPricingState.loadedCompanyId="";
-
-      if(currentPage==="subscription"||currentPage==="pricing"){
-        render();
-        setTimeout(()=>{
-          loadCommercialSubscriptionStatus();
-          loadCommercialPricingPlans();
-        },250);
-      }
-      return;
-    }
-
-    // Upgrade path — unchanged from V6.05: create the change request first,
-    // then collect the prorated amount through Stripe Checkout.
-    if(button){button.textContent="Preparing payment…";}
-
+    // Create or reuse the existing pending subscription-change request.
     const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-change`,{
       method:"POST",
       headers:authHeaders,
@@ -3050,6 +2805,8 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
 
     if(button){button.textContent="Opening Stripe Checkout…";}
 
+    // Create a Stripe payment-mode Checkout Session for the exact prorated
+    // upgrade amount. The existing subscription is not changed until payment succeeds.
     const checkoutRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-upgrade-checkout`,{
       method:"POST",
       headers:authHeaders,
@@ -3070,12 +2827,12 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
 
     window.location.href=checkoutPayload.checkout_url;
   }catch(error){
-    console.error("Commercial plan change failed",error);
+    console.error("Commercial upgrade checkout failed",error);
     if(errorBox){
       errorBox.style.display="block";
-      errorBox.textContent=error?.message||"The subscription plan change could not be completed.";
+      errorBox.textContent=error?.message||"The upgrade payment checkout could not be started.";
     }
-    if(button){button.disabled=false;button.textContent=type==="downgrade"?"Schedule downgrade":"Continue to payment";}
+    if(button){button.disabled=false;button.textContent="Continue to payment";}
   }
 }
 
@@ -3370,7 +3127,7 @@ function commercialSubscriptionPage(){
   if(iyCommercialSubscriptionState.error)
     return `<div class="iy-sub-empty"><b>Subscription information could not be loaded.</b><span>${esc(iyCommercialSubscriptionState.error.message||"Please try again.")}</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus()">Retry</button></div>`;
   const s=iyCommercialSubscriptionState.status;
-  if(!s)return `<div class="iy-sub-empty"><b>Subscription record could not be resolved.</b><span>The company context loaded, but the current commercial subscription could not be read yet.</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.loadedCompanyId='';iyCommercialSubscriptionState.status=null;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus(true)">Retry</button></div>`;
+  if(!s)return `<div class="iy-sub-empty"><b>No commercial subscription found.</b><span>This company does not currently have a commercial subscription record.</span></div>`;
 
   const status=String(s.status||s.subscription_status||"").toLowerCase(), planName=s.plan_name||s.plan_code||"—";
   const interval=String(s.billing_interval||"").toLowerCase(), intervalLabel=interval==="annual"?"Annual":"Monthly";
@@ -7250,18 +7007,4 @@ initiyAuth();
 .issue-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7f93;gap:7px}.issue-empty-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#edf4fb;color:#1769d2;font-size:23px;margin-bottom:5px}.issue-empty b{font-size:15px;color:#16324b}.issue-empty span{font-size:12px;margin-bottom:7px}
 @media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
 @media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
-
-/* V6.06 — downgrade confirmation and capacity check */
-.iy-downgrade-capacity-box{margin-top:12px;border:1px solid #dce7ef;border-radius:12px;background:#fbfdff;overflow:hidden}
-.iy-downgrade-capacity-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid #e7eef4}
-.iy-downgrade-capacity-head b{font-size:11px;color:#23435d}
-.iy-downgrade-capacity-head span{font-size:9px;color:#718398;text-align:right}
-.iy-downgrade-capacity-table{display:grid}
-.iy-downgrade-capacity-row{display:grid;grid-template-columns:minmax(0,1.5fr) .7fr .9fr .8fr;gap:9px;align-items:center;padding:9px 12px;border-bottom:1px solid #edf1f5;font-size:9px;color:#536b83}
-.iy-downgrade-capacity-row:last-child{border-bottom:0}
-.iy-downgrade-capacity-row.header{font-size:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#8191a2;background:#f7fafc}
-.iy-downgrade-capacity-row b{font-size:10px;color:#20384f}
-.iy-downgrade-capacity-row strong.fit{color:#17743a}
-.iy-downgrade-capacity-row strong.not-fit{color:#c62828}
-@media(max-width:700px){.iy-downgrade-capacity-row{grid-template-columns:minmax(0,1.4fr) .7fr .8fr .8fr;font-size:8px}.iy-downgrade-capacity-head{flex-direction:column}.iy-downgrade-capacity-head span{text-align:left}}
 </style>
