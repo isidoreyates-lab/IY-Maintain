@@ -1924,6 +1924,41 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 .role-help{margin-top:7px;padding:9px 11px;border:1px solid #e2eaf2;background:#f7fafd;border-radius:10px}.role-help-title{font-size:11px;font-weight:800;color:#183653;display:flex;justify-content:space-between;gap:10px}.role-help-title span{font-weight:700;color:#5c7892}.role-help-desc{margin-top:3px;font-size:10px;line-height:1.45;color:#70879b}
 </style>
 
+<style id="iy-settings-gradient-v6-06-9">
+/* V6.06.9 — Consistent IY blue-gradient section headers across Settings. */
+.modern-settings-main .modern-card{overflow:hidden}
+.modern-settings-main .modern-card > .modern-card-head{
+  margin:0;
+  background:linear-gradient(115deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);
+  border-bottom:1px solid rgba(255,255,255,.16);
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.modern-settings-main .modern-card > .modern-card-head h3{color:#fff}
+.modern-settings-main .modern-card > .modern-card-head p{color:rgba(255,255,255,.76)}
+.modern-settings-main .modern-card > .modern-card-head .head-icon{
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 4px 10px rgba(0,0,0,.10);
+}
+.iy-workspace-card .workspace-head{
+  background:linear-gradient(115deg,#061a4f 0%,#0b3e8c 58%,#075fff 100%);
+  border-bottom:1px solid rgba(255,255,255,.16);
+  color:#fff;
+  margin:-15px -13px 0;
+  padding:16px 18px;
+  border-radius:16px 16px 0 0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.iy-workspace-card .workspace-head h3{color:#fff!important}
+.iy-workspace-card .workspace-head p{color:rgba(255,255,255,.76)!important}
+.iy-workspace-card .iy-workspace-capacity{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;
+}
+</style>
 <style id="iy-scope-header-v24-32">
 /* V24.33 — fixed scope CSS rendering; match Operational Scope + Transaction Scope to the IY header */
 .iy-workspace-scope{
@@ -1971,7 +2006,7 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 }
 </style>
 
-<meta name="iy-version" content="V24.37 — Clean View Scope"><!-- V24.37 — removed Operational Scope card and moved View Scope selections into clear stacked rows. -->
+<meta name="iy-version" content="V6.06.9 — Settings & Report Identity"><!-- V24.37 — removed Operational Scope card and moved View Scope selections into clear stacked rows. -->
 <style>
 /* V6.04 — Active subscription plan-change UI */
 .iy-plan-change-summary{margin-top:18px}
@@ -4865,7 +4900,21 @@ function runPartsReport(){
  const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
  toast("Parts report generated.");
 }
-function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
+function reportPreparedByName(){
+ const name=iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||db.user?.name||iyAuthUser?.email?.split("@")[0]||"User";
+ return String(name).trim()||"User";
+}
+function reportActiveSiteName(){
+ const scope=globalViewScopeValues();
+ const siteId=scope?.siteId||"";
+ if(siteId){
+   const site=iyCompanySites.find(x=>String(x.id)===String(siteId));
+   if(site?.name)return String(site.name);
+ }
+ if(iySite?.name)return String(iySite.name);
+ return "All Sites";
+}
+function currentReportActor(){return {userId:iyAuthUser?.id||"",name:reportPreparedByName(),role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
 function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
 function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
 function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];}
@@ -4873,7 +4922,7 @@ function approvalStateForKind(kind){const id=approvalActiveId(kind);if(id){const
 function approvalSnapshotForKind(kind){
  const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;
  if(!d)return null;
- const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:db.settings.preparedBy||"",department:globalViewScopeLabel(),reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
+ const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:reportPreparedByName(),siteName:reportActiveSiteName(),reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
  if(kind==="maintenance")snapshot.data.partsUpdates=Array.isArray(window.__maintenanceReportParts)?clone(window.__maintenanceReportParts):[];
  return snapshot;
 }
@@ -5025,13 +5074,13 @@ async function refreshReportApprovalPreview(kind){
 }
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
- const ss=snapshotOverride?.settings||db.settings;const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
+ const ss=snapshotOverride?.settings||db.settings;const legacySnapshotSite=snapshotOverride&&ss.department?String(ss.department).split(" · ")[0].trim():"";const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||reportPreparedByName()),siteName=esc(ss.siteName||legacySnapshotSite||reportActiveSiteName()),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
  const rows=data.rows,issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const table=isOrders?(rows.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active parts orders match the selected filters.</div>`):(rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`);
  const kpis=isOrders?`${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("TOTAL QUANTITY",total,"Units on order")}${metricReportKpi("SUPPLIERS",new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,"Suppliers")}${metricReportKpi("MACHINES",new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size,"Machines")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
  const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Active Parts Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
- return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>DEPARTMENT</span><b>${department}</b></div></div><div class="r-kpis">${kpis}</div>${summary}<div class="r-section">${isOrders?"ACTIVE PARTS ORDERS":"PARTS TRANSACTIONS"}</div>${table}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
+ return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>SITE</span><b>${siteName}</b></div></div><div class="r-kpis">${kpis}</div>${summary}<div class="r-section">${isOrders?"ACTIVE PARTS ORDERS":"PARTS TRANSACTIONS"}</div>${table}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
 }
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 async function openPartsReportPreview(){
@@ -7021,10 +7070,11 @@ function settingsPage(){
      <div class="modern-save-bar" style="margin:0 19px 19px"><div><strong>Account assignment is controlled by company administration</strong><span>Your role, site and department are shown here for clarity. They are not changed from this page.</span></div></div>
     </section>
     <section class="modern-card">
-     <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
+     <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Company identity used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>{const canEditField=(["companyName","companyAddress","telephone","email","website"].includes(k)?isCompanyAdmin():canSettings);return `<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canEditField?"":"disabled"}></div>`}).join("")}
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"]].map(([k,l])=>{const canEditField=isCompanyAdmin();return `<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canEditField?"":"disabled"}></div>`}).join("")}
      </div>
+     <div class="modern-save-bar" style="margin:0 19px 19px"><div><strong>Report identity is automatic</strong><span>Prepared By uses the signed-in user's name. Report Site uses the user's active or selected Site.</span></div></div>
     </section>
    </div>
    <div id="settings-panel-workspace" class="settings-tab-panel" style="display:none">
@@ -7184,9 +7234,8 @@ async function removeSignature(key){
 
 async function saveSettings(){
  if(!canEdit("settings"))return alert("Only a Company Administrator or Manager can change company settings.");
- const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData"];
+ const editableKeys=["companyName","companyAddress","telephone","email","website"];
  editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
- db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
  // System identity is controlled by IY Digital Innovations and is never editable by company users.
  db.settings.systemName="Computerized Machines Maintenance System";
  db.settings.version="V24.47";
@@ -7524,7 +7573,8 @@ function buildMaintenanceReportHTML(snapshotOverride){
  if(!snapshotOverride&&(!out||!out.innerHTML))return "";
  const ss=snapshotOverride?.settings||db.settings;
  const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System");
- const prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||"");
+ const legacySnapshotSite=snapshotOverride&&ss.department?String(ss.department).split(" · ")[0].trim():"";
+ const prepared=esc(ss.preparedBy||reportPreparedByName()),siteName=esc(ss.siteName||legacySnapshotSite||reportActiveSiteName()),footer=esc(ss.reportFooter||"");
  const logo=ss.logoData||"";
  let reportType,period,rows,partsUpdates;
  if(snapshotOverride?.data){
@@ -7574,7 +7624,7 @@ function buildMaintenanceReportHTML(snapshotOverride){
  return `<div class="report-document">
   <section class="report-paper report-page">
    <div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">MAINTENANCE REPORT</p></div>
-   <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared||"—"}</b></div><div><span>DEPARTMENT</span><b>${department||"—"}</b></div></div>
+   <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared||"—"}</b></div><div><span>SITE</span><b>${siteName||"—"}</b></div></div>
    ${kpis}
    <div class="r-section">MAINTENANCE ACTIVITIES <small>${rows.length} job(s)</small></div>
    ${maintenance}
@@ -7583,7 +7633,7 @@ function buildMaintenanceReportHTML(snapshotOverride){
   </section>
   <section class="report-paper report-page report-page-parts">
    <div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS UPDATES — ${esc(reportType)}</p></div>
-   <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PARTS UPDATES</span><b>${partsUpdates.length} record(s)</b></div><div><span>DEPARTMENT</span><b>${department||"—"}</b></div></div>
+   <div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PARTS UPDATES</span><b>${partsUpdates.length} record(s)</b></div><div><span>SITE</span><b>${siteName||"—"}</b></div></div>
    <div class="r-section">PARTS UPDATE <small>${partsUpdates.length} update(s)</small></div>
    ${parts}
    ${reportApprovalPanel("maintenance")}
