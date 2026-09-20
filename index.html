@@ -2022,6 +2022,416 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 .iy-plan-change-error{margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #efb5b5;color:#9b1c1c;font-size:12px;line-height:1.5}
 @media(max-width:650px){.iy-plan-change-flow{grid-template-columns:1fr}.iy-plan-change-arrow{transform:rotate(90deg)}}
 </style>
+
+<style id="iy-settings-only-gradient-spacing">
+/* V6.09 — SETTINGS PAGE ONLY: blue-gradient section headers + tidy spacing.
+   No selectors outside .modern-settings-shell are introduced here. */
+.modern-settings-shell{
+  --iy-settings-gradient:linear-gradient(110deg,#0b1f55 0%,#123e93 48%,#1769f5 100%);
+}
+.modern-settings-shell .modern-settings-grid{
+  gap:18px;
+}
+.modern-settings-shell .modern-settings-main,
+.modern-settings-shell .modern-settings-side{
+  gap:16px;
+}
+.modern-settings-shell .settings-tab-panel{
+  margin:0;
+}
+.modern-settings-shell .modern-card,
+.modern-settings-shell .iy-workspace-card{
+  margin:0;
+}
+.modern-settings-shell .modern-card-head,
+.modern-settings-shell .iy-workspace-card .workspace-head,
+.modern-settings-shell .settings-card-head,
+.modern-settings-shell .logo-card-head{
+  position:relative;
+  background:var(--iy-settings-gradient);
+  color:#fff;
+  border-bottom:0;
+  padding:17px 20px;
+  min-height:68px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.modern-settings-shell .modern-card-head h3,
+.modern-settings-shell .iy-workspace-card .workspace-head h3,
+.modern-settings-shell .settings-card-head h3,
+.modern-settings-shell .logo-card-head h3{
+  color:#fff;
+  margin:1px 0 4px;
+  font-size:15px;
+  line-height:1.25;
+}
+.modern-settings-shell .modern-card-head p,
+.modern-settings-shell .iy-workspace-card .workspace-head p,
+.modern-settings-shell .settings-card-head p,
+.modern-settings-shell .logo-card-head p{
+  color:rgba(255,255,255,.82);
+  margin:0;
+  font-size:11px;
+  line-height:1.45;
+}
+.modern-settings-shell .modern-card-head .head-icon{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.modern-settings-shell .iy-workspace-card .workspace-head .iy-workspace-capacity{
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  border-color:rgba(255,255,255,.24);
+}
+.modern-settings-shell .modern-form-grid{
+  gap:15px;
+  padding:18px 20px;
+}
+.modern-settings-shell .modern-save-bar{
+  margin-left:18px !important;
+  margin-right:18px !important;
+  margin-bottom:18px !important;
+}
+.modern-settings-shell .iy-workspace-list{
+  padding:7px 20px 4px;
+}
+.modern-settings-shell .iy-workspace-add{
+  padding:12px 20px 16px;
+}
+.modern-settings-shell .iy-workspace-note{
+  margin:0 0 4px;
+}
+.modern-settings-shell .modern-logo-preview{
+  margin:17px 20px 11px;
+}
+.modern-settings-shell .modern-meta-row{
+  padding-bottom:11px;
+}
+@media(max-width:650px){
+  .modern-settings-shell .modern-settings-main,
+  .modern-settings-shell .modern-settings-side{
+    gap:14px;
+  }
+  .modern-settings-shell .modern-card-head,
+  .modern-settings-shell .iy-workspace-card .workspace-head,
+  .modern-settings-shell .settings-card-head,
+  .modern-settings-shell .logo-card-head{
+    padding:15px 16px;
+  }
+  .modern-settings-shell .modern-form-grid{
+    gap:13px;
+    padding:16px;
+  }
+}
+</style>
+
+
+<style id="iy-mobile-optimization-v6-10">
+/* V6.10 — Mobile-only UX optimization. Desktop behavior remains unchanged. */
+@media (max-width:700px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
+  body{padding-bottom:calc(84px + env(safe-area-inset-bottom));background:var(--bg);}
+  .app{width:100%;min-height:100dvh;display:block;}
+  .main{margin-left:0!important;width:100%!important;min-width:0!important;padding-top:calc(64px + env(safe-area-inset-top))!important;}
+
+  /* Keep the application header visible below mobile browser/PWA safe-area space. */
+  .top{
+    position:fixed!important;
+    left:0!important;right:0!important;
+    top:env(safe-area-inset-top)!important;
+    height:64px!important;
+    min-height:64px!important;
+    padding:8px 12px!important;
+    z-index:310!important;
+    display:flex!important;
+    align-items:center!important;
+    background:rgba(255,255,255,.97)!important;
+    border-bottom:1px solid #dfe7ef!important;
+    box-shadow:0 4px 18px rgba(9,37,66,.08)!important;
+  }
+  .top>div:first-child{min-width:0;flex:1;}
+  .top h1{font-size:18px!important;line-height:1.15!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .top-actions{gap:6px!important;flex:0 0 auto;}
+  .notification-trigger,.profile-trigger,.view-scope-trigger{width:40px!important;height:40px!important;}
+  .profile-trigger{padding:0!important;min-width:40px!important;}
+  .profile-copy{display:none!important;}
+  .profile-avatar{width:40px!important;height:40px!important;border-radius:12px!important;}
+  .notification-panel,.profile-menu,.view-scope-panel{max-width:calc(100vw - 24px)!important;}
+  .notification-panel{right:-2px!important;top:48px!important;width:min(350px,calc(100vw - 24px))!important;}
+  .view-scope-panel{right:-2px!important;top:48px!important;width:min(360px,calc(100vw - 24px))!important;}
+
+  .content{width:100%!important;max-width:100%!important;padding:16px 12px 28px!important;}
+  .content>*{min-width:0!important;max-width:100%!important;}
+  .content .hero,.content .page-hero-v23{margin-left:0!important;margin-right:0!important;}
+  .hero,.page-hero-v23{flex-direction:column!important;align-items:flex-start!important;gap:14px!important;min-height:0!important;padding:18px!important;}
+  .hero h2,.page-hero-v23 h2{font-size:21px!important;line-height:1.15!important;}
+  .hero p,.page-hero-v23 p{font-size:11px!important;line-height:1.45!important;}
+  .hero-action,.hero-btn,.hero-btn-v23{width:100%!important;}
+
+  /* Convert multi-column layouts into comfortable single-column mobile layouts. */
+  .cards,.grid2,.two-col,.formgrid,
+  .settings-grid,.settings-fields,
+  .modern-settings-grid,.modern-form-grid,
+  .iy-workspace-grid,
+  .iy-billing-top,.iy-billing-grid,
+  .iy-sub-overview,.iy-sub-details,
+  .parts-main-grid,.parts-transactions-grid,
+  .parts-extra-grid,
+  .quick-grid,.data-quality,
+  .v24-kpis,.v24-dashboard-kpis,
+  .attention-grid,
+  .settings-side{grid-template-columns:1fr!important;}
+  .cards{gap:10px!important;margin-bottom:14px!important;}
+  .grid2,.two-col{gap:12px!important;}
+  .formgrid,.settings-fields,.modern-form-grid{gap:12px!important;}
+  .card,.panel,.settings-card,.modern-card,.iy-workspace-card,.iy-billing-card,.iy-sub-card{width:100%!important;}
+  .panel{padding:15px!important;}
+
+  /* Tables: keep the page readable while allowing deliberate horizontal table scrolling. */
+  .tablewrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;}
+  .table{min-width:680px!important;}
+  .maintenance-dashboard-table{min-width:760px!important;}
+  .table th,.table td{font-size:11px!important;padding:8px 9px!important;}
+  .toolbar{width:100%!important;display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-bottom:12px!important;}
+  .toolbar>*{width:100%!important;min-width:0!important;}
+  .search{min-width:0!important;width:100%!important;}
+  .input,.select,.textarea,.modern-input{min-height:42px!important;font-size:13px!important;}
+  .btn,.modern-primary-btn,.modern-upload-btn,.logo-upload{min-height:42px!important;}
+
+  /* KPI/summary blocks should breathe without becoming oversized. */
+  .metric{padding:15px!important;}
+  .metric .value{font-size:25px!important;}
+  .metric-icon{width:38px!important;height:38px!important;font-size:18px!important;}
+  .section-head{align-items:flex-start!important;flex-direction:column!important;gap:8px!important;margin-bottom:10px!important;}
+
+  /* Pricing/subscription/billing: stack controls and cards naturally. */
+  .iy-pricing-shell,.iy-sub-shell,.iy-billing-shell{width:100%!important;max-width:100%!important;}
+  .iy-pricing-cards,.pricing-grid{grid-template-columns:1fr!important;}
+  .iy-pricing-toggle,.iy-pricing-billing-toggle{width:100%!important;justify-content:center!important;}
+  .iy-pricing-card{width:100%!important;}
+
+  /* Settings, workspace and forms get compact but touch-friendly spacing. */
+  .modern-settings-shell{width:100%!important;max-width:100%!important;padding-bottom:20px!important;}
+  .modern-settings-header{align-items:flex-start!important;flex-direction:column!important;gap:10px!important;margin-bottom:12px!important;}
+  .modern-settings-heading h2{font-size:25px!important;}
+  .settings-nav-strip{width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;gap:0!important;}
+  .settings-nav-item{white-space:nowrap;padding:9px 11px 10px!important;font-size:11px!important;}
+  .modern-settings-main,.modern-settings-side{gap:12px!important;}
+  .modern-card-head{padding:14px 15px!important;}
+  .modern-card-head h3{font-size:14px!important;}
+  .modern-card-head p{font-size:10px!important;}
+  .modern-form-grid{padding:14px!important;}
+  .settings-form{padding:14px!important;}
+  .settings-info-card{padding:14px 15px!important;}
+  .iy-workspace-card .workspace-head{padding:14px 15px!important;}
+  .iy-workspace-list{padding:6px 15px 2px!important;}
+  .iy-workspace-add{padding:11px 15px 15px!important;}
+  .iy-workspace-add-grid{grid-template-columns:1fr!important;}
+  .iy-workspace-add-grid .full{grid-column:auto!important;}
+
+  /* Logo/branding area. */
+  .settings-logo-panel{flex-direction:column!important;align-items:stretch!important;gap:14px!important;}
+  .settings-logo-actions{width:100%!important;min-width:0!important;}
+  .logo-preview-large{height:140px!important;}
+  .branding-card{padding-bottom:14px!important;}
+
+  /* Mobile menu: keep the application header visible; drawer begins below it. */
+  .mobile-nav-backdrop{
+    position:fixed!important;
+    left:0!important;right:0!important;
+    top:calc(64px + env(safe-area-inset-top))!important;
+    bottom:calc(80px + env(safe-area-inset-bottom))!important;
+    z-index:320!important;
+    background:rgba(3,16,38,.50)!important;
+    backdrop-filter:blur(2px)!important;
+  }
+  .mobile-nav-sheet{
+    left:8px!important;right:8px!important;
+    top:calc(72px + env(safe-area-inset-top))!important;
+    bottom:calc(82px + env(safe-area-inset-bottom))!important;
+    max-height:none!important;
+    height:auto!important;
+    overflow:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:12px!important;
+    border-radius:18px!important;
+    z-index:330!important;
+    box-shadow:0 24px 70px rgba(5,25,55,.28)!important;
+  }
+  .mobile-nav-sheet-head{
+    position:sticky!important;top:0!important;
+    margin-bottom:7px!important;
+    padding:2px 2px 11px!important;
+    background:#fff!important;
+    border-bottom:1px solid #edf1f5!important;
+    z-index:3!important;
+  }
+  .mobile-nav-link{min-height:46px!important;padding:9px 10px!important;font-size:12px!important;}
+  .mobile-nav-group{margin:12px 4px 5px!important;font-size:9px!important;}
+  .mobile-nav-close{min-width:82px!important;height:36px!important;}
+
+  /* Bottom navigation respects device safe areas and stays thumb-friendly. */
+  .mobile-bottom-nav{
+    left:8px!important;right:8px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    height:62px!important;
+    padding:5px!important;
+    border-radius:16px!important;
+    z-index:340!important;
+  }
+  .mobile-nav-item{min-width:0!important;gap:2px!important;font-size:8px!important;border-radius:11px!important;}
+  .mobile-nav-item .mn-icon{width:26px!important;height:26px!important;border-radius:8px!important;font-size:13px!important;}
+
+  /* Full-width mobile modals and action areas. */
+  .modalback{padding:8px!important;align-items:flex-start!important;}
+  .modal{width:100%!important;max-width:100%!important;max-height:calc(100dvh - 16px)!important;border-radius:14px!important;padding:16px!important;}
+  .modalhead{gap:10px!important;}
+  .actions{flex-direction:column!important;align-items:stretch!important;gap:8px!important;}
+  .actions>*{width:100%!important;}
+
+  /* Prevent fixed headers / notices from becoming visually detached on narrow screens. */
+  .notice,.danger-notice,.success-notice{margin-bottom:10px!important;padding:10px 11px!important;font-size:11px!important;}
+  .iy-billing-history-row{grid-template-columns:1fr!important;gap:6px!important;}
+  .iy-billing-history-row .iy-sub-status{grid-column:auto!important;justify-self:start!important;}
+
+  /* On very narrow phones, reduce horizontal chrome further. */
+  @media(max-width:390px){
+    .top{padding-left:9px!important;padding-right:9px!important;}
+    .top h1{font-size:17px!important;}
+    .content{padding-left:9px!important;padding-right:9px!important;}
+    .mobile-bottom-nav{left:5px!important;right:5px!important;}
+    .mobile-nav-sheet{left:5px!important;right:5px!important;}
+    .hero,.page-hero-v23{padding:15px!important;}
+  }
+}
+</style>
+
+<style id="iy-mobile-dashboard-nav-fix-v6-11">
+/* V6.11 — mobile dashboard KPI two-column layout + navigation layering only. */
+@media (max-width:700px){
+  /* Dashboard KPI cards: two balanced columns on phones. */
+  .v24-kpis,
+  .v24-dashboard-kpis{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+    margin-bottom:14px !important;
+  }
+  .v24-kpi{
+    min-width:0 !important;
+    padding:13px !important;
+    border-radius:12px !important;
+  }
+  .v24-kpi .k-label{font-size:9px !important;letter-spacing:.55px !important;}
+  .v24-kpi .k-value{font-size:24px !important;margin:6px 0 3px !important;}
+  .v24-kpi .k-sub{font-size:9px !important;}
+
+  /* Mobile navigation opens above page content, below the fixed app header. */
+  .mobile-nav-backdrop{
+    top:64px !important;
+    bottom:calc(80px + env(safe-area-inset-bottom)) !important;
+    z-index:345 !important;
+  }
+  .mobile-nav-sheet{
+    top:64px !important;
+    bottom:calc(80px + env(safe-area-inset-bottom)) !important;
+    left:8px !important;
+    right:8px !important;
+    max-height:none !important;
+    height:auto !important;
+    overflow:auto !important;
+    z-index:350 !important;
+    border-radius:0 0 18px 18px !important;
+    background:#fff !important;
+    box-shadow:0 24px 70px rgba(5,25,55,.28) !important;
+  }
+  .mobile-nav-sheet-head{
+    background:#fff !important;
+    border-radius:0 !important;
+  }
+  .mobile-bottom-nav{z-index:360 !important;}
+}
+</style>
+
+
+<style id="iy-mobile-menu-header-fix-v6-11-2">
+/* V6.11.2 — mobile navigation header only. Keep header first, clean close label. */
+@media (max-width:700px){
+  .mobile-nav-sheet{
+    display:flex!important;
+    flex-direction:column!important;
+    padding:0!important;
+    top:64px!important;
+    bottom:calc(80px + env(safe-area-inset-bottom))!important;
+    height:calc(100dvh - 144px - env(safe-area-inset-bottom))!important;
+    max-height:calc(100dvh - 144px - env(safe-area-inset-bottom))!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y!important;
+    border-radius:0 0 18px 18px!important;
+  }
+  .mobile-nav-sheet-head{
+    order:0!important;
+    position:sticky!important;
+    top:0!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-height:58px!important;
+    box-sizing:border-box!important;
+    padding:10px 12px!important;
+    margin:0!important;
+    background:#fff!important;
+    border-bottom:1px solid #dfe7ef!important;
+    box-shadow:0 3px 10px rgba(9,37,66,.07)!important;
+    z-index:5!important;
+  }
+  .mobile-nav-sheet-head > div{min-width:0!important;}
+  .mobile-nav-sheet-head b{font-size:16px!important;line-height:1.1!important;}
+  .mobile-nav-sheet-head span{font-size:10px!important;margin-top:3px!important;}
+  .mobile-nav-sheet > .mobile-nav-link{
+    order:1!important;
+    flex:0 0 auto!important;
+  }
+  .mobile-nav-group{order:1!important;flex:0 0 auto!important;}
+  .mobile-nav-close{
+    min-width:82px!important;
+    height:36px!important;
+    padding:0 11px!important;
+    font-size:0!important;
+  }
+  .mobile-nav-close::before{content:none!important;display:none!important;}
+  .mobile-nav-close::after{
+    content:'× Close'!important;
+    font-size:11px!important;
+    line-height:1!important;
+    font-weight:900!important;
+  }
+  .mobile-nav-sheet > .mobile-nav-group:first-of-type{margin-top:10px!important;}
+}
+</style>
+
+<style id="iy-mobile-menu-scroll-fix-v6-11-3">
+/* V6.11.3 — allow the mobile navigation drawer to scroll through all modules. */
+@media (max-width:700px){
+  .mobile-nav-sheet{
+    height:calc(100dvh - 144px - env(safe-area-inset-bottom))!important;
+    max-height:calc(100dvh - 144px - env(safe-area-inset-bottom))!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    touch-action:pan-y!important;
+  }
+  .mobile-nav-sheet-head{
+    position:sticky!important;
+    top:0!important;
+    z-index:10!important;
+    flex:0 0 auto!important;
+  }
+}
+</style>
 </head>
 
 <style>
@@ -2296,7 +2706,6 @@ function renderGlobalSearchPanel(){const p=document.getElementById('globalSearch
 function render(){
  if(iyOnboardingState?.active){renderGuidedOnboarding();return;}
  const s=db.settings;
- if(iyCloudReady&&!document.getElementById("iyCloudBanner")){const b=document.createElement("div");b.id="iyCloudBanner";b.className="iy-cloud-banner";b.textContent="☁ Connected • "+(iyCompany?.name||"Company");document.body.appendChild(b);setTimeout(()=>b.remove(),2600)}
  document.getElementById("app").innerHTML=`
  <div class="app">
   <aside class="sidebar">
@@ -7860,3 +8269,27 @@ initiyAuth();
 @media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
 @media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
 </style>
+<style id="v6-11-1-mobile-maintenance-dashboard-2col">
+/* V6.11.1 — Maintenance Dashboard KPI cards: two columns on mobile only. */
+@media (max-width:700px){
+  .maintenance-page .maintenance-kpis{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .maintenance-page .maintenance-kpis .metric{
+    min-width:0!important;
+    min-height:110px!important;
+    padding:12px 12px 11px!important;
+  }
+  .maintenance-page .maintenance-kpis .metric-icon{
+    width:34px!important;
+    height:34px!important;
+    margin-bottom:9px!important;
+    font-size:16px!important;
+  }
+  .maintenance-page .maintenance-kpis .metric .label{font-size:8px!important;line-height:1.2!important;}
+  .maintenance-page .maintenance-kpis .metric .value{font-size:24px!important;margin:5px 0 2px!important;}
+  .maintenance-page .maintenance-kpis .metric .sub{font-size:8px!important;line-height:1.3!important;white-space:normal!important;}
+}
+</style>
+
