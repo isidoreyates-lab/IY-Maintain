@@ -2666,7 +2666,7 @@ async function startCommercialCheckout(){
   }
 }
 
-/* V6.04 — Active subscription upgrade/change flow. */
+/* V6.05 — Active subscription upgrade payment flow. */
 async function openCommercialPlanChangeModal(targetPlanCode){
   const code=String(targetPlanCode||"").trim().toUpperCase();
   if(!code)return;
@@ -2720,7 +2720,7 @@ async function openCommercialPlanChangeModal(targetPlanCode){
   openModal(`<div class="modalhead">
       <div>
         <h2 style="margin-bottom:6px">${esc(verb)} to ${esc(targetPlan.name||code)}</h2>
-        <div style="color:#6d7e92;font-size:13px">Your existing Stripe subscription will be updated. No second subscription will be created.</div>
+        <div style="color:#6d7e92;font-size:13px">You will be redirected to Stripe Checkout. Your existing subscription changes only after the upgrade payment succeeds.</div>
       </div>
       <button class="close" type="button" onclick="closeModal()">×</button>
     </div>
@@ -2732,13 +2732,13 @@ async function openCommercialPlanChangeModal(targetPlanCode){
       </div>
       <div class="iy-plan-change-note">
         <b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b>
-        <span>The change is applied to the existing Stripe subscription. Stripe will calculate the applicable prorated amount and invoice the change immediately.</span>
+        <span>Stripe will calculate the applicable prorated upgrade amount and collect it securely in Checkout. Your existing subscription is updated only after successful payment.</span>
       </div>
       <div id="iyPlanChangeError" class="iy-plan-change-error" style="display:none"></div>
     </div>
     <div class="actions">
       <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
-      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">Confirm ${esc(changeType)}</button>
+      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">Continue to payment</button>
     </div>`);
 }
 
@@ -2761,12 +2761,16 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
     if(errorBox){errorBox.style.display="block";errorBox.textContent="The requested plan change type is not valid.";}
     return;
   }
+  if(type!=="upgrade"){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Payment checkout is currently available for upgrades. Downgrades remain on the existing change-management path.";}
+    return;
+  }
   if(!iyCompany?.id){
     if(errorBox){errorBox.style.display="block";errorBox.textContent="Company context is not ready. Please refresh and try again.";}
     return;
   }
 
-  if(button){button.disabled=true;button.textContent="Preparing change…";}
+  if(button){button.disabled=true;button.textContent="Preparing payment…";}
   if(errorBox){errorBox.style.display="none";errorBox.textContent="";}
 
   try{
@@ -2779,6 +2783,7 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
       "Content-Type":"application/json"
     };
 
+    // Create or reuse the existing pending subscription-change request.
     const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-change`,{
       method:"POST",
       headers:authHeaders,
@@ -2798,9 +2803,11 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
     const requestId=String(requestPayload?.request_id||"").trim();
     if(!requestId)throw new Error("The subscription change request ID was not returned by the server.");
 
-    if(button){button.textContent="Applying change…";}
+    if(button){button.textContent="Opening Stripe Checkout…";}
 
-    const applyRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/apply-subscription-change`,{
+    // Create a Stripe payment-mode Checkout Session for the exact prorated
+    // upgrade amount. The existing subscription is not changed until payment succeeds.
+    const checkoutRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-upgrade-checkout`,{
       method:"POST",
       headers:authHeaders,
       body:JSON.stringify({
@@ -2809,42 +2816,91 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
       })
     });
 
-    const applyPayload=await applyRes.json().catch(()=>({}));
-    if(!applyRes.ok){
-      throw new Error(applyPayload?.details||applyPayload?.error||"Stripe could not apply the subscription change.");
-    }
-    if(applyPayload?.success!==true){
-      throw new Error(applyPayload?.error||"Stripe did not confirm the subscription change.");
+    const checkoutPayload=await checkoutRes.json().catch(()=>({}));
+    if(!checkoutRes.ok){
+      throw new Error(checkoutPayload?.error||"Stripe upgrade checkout could not be created.");
     }
 
-    closeModal();
-    toast(`${type==="upgrade"?"Upgrade":"Plan change"} submitted successfully. Refreshing subscription status…`);
+    if(!checkoutPayload?.checkout_url){
+      throw new Error("Stripe upgrade checkout URL was not returned.");
+    }
 
+    window.location.href=checkoutPayload.checkout_url;
+  }catch(error){
+    console.error("Commercial upgrade checkout failed",error);
+    if(errorBox){
+      errorBox.style.display="block";
+      errorBox.textContent=error?.message||"The upgrade payment checkout could not be started.";
+    }
+    if(button){button.disabled=false;button.textContent="Continue to payment";}
+  }
+}
+
+async function handleSubscriptionUpgradeReturn(){
+  const params=new URLSearchParams(window.location.search);
+  const state=params.get("subscription_upgrade");
+  const requestId=String(params.get("request_id")||"").trim();
+  const sessionId=String(params.get("session_id")||"").trim();
+  if(!state)return;
+
+  if(state==="canceled"){
+    window.history.replaceState({},document.title,window.location.pathname);
+    nav("subscription");
+    toast("Upgrade payment was canceled. Your current subscription was not changed.");
+    return;
+  }
+
+  if(state!=="success"||!requestId||!sessionId)return;
+
+  toast("Payment received. Confirming your subscription upgrade…");
+
+  try{
+    const {data:{session},error:sessionError}=await iySupabase.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!session?.access_token)throw new Error("Your secure session has expired. Please sign in again.");
+
+    const res=await fetch(`${iy_SUPABASE_URL}/functions/v1/complete-subscription-upgrade-checkout`,{
+      method:"POST",
+      headers:{
+        Authorization:`Bearer ${session.access_token}`,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        company_id:iyCompany?.id,
+        request_id:requestId,
+        session_id:sessionId
+      })
+    });
+
+    const payload=await res.json().catch(()=>({}));
+    if(!res.ok){
+      throw new Error(payload?.error||"The upgrade payment was received, but the subscription could not be updated yet.");
+    }
+
+    window.history.replaceState({},document.title,window.location.pathname);
     iyCommercialSubscriptionState.loaded=false;
     iyCommercialSubscriptionState.status=null;
-    iyCommercialSubscriptionState.checkoutError=null;
+    iyCommercialSubscriptionState.error=null;
     iyCommercialUpgradeState.loaded=false;
     iyCommercialUpgradeState.resources=[];
     iyCommercialUpgradeState.nextPlan=null;
     iyCommercialPricingState.plans=null;
     iyCommercialPricingState.currentPlanCode="";
 
-    if(currentPage==="subscription"||currentPage==="pricing"){
-      render();
-      setTimeout(()=>{
-        loadCommercialSubscriptionStatus();
-        loadCommercialPricingPlans();
-      },250);
-    }
+    nav("subscription");
+    render();
+    toast("✓ Upgrade payment confirmed. Your subscription has been updated.");
+
+    setTimeout(()=>{
+      loadCommercialSubscriptionStatus();
+      loadCommercialPricingPlans();
+    },200);
   }catch(error){
-    console.error("Commercial plan change failed",error);
-    if(errorBox){
-      errorBox.style.display="block";
-      errorBox.textContent=error?.message||"The subscription plan change could not be completed.";
-    }
-    if(button){button.disabled=false;button.textContent=`Confirm ${type}`;}
+    console.error("Subscription upgrade return handling failed",error);
+    toast(error?.message||"Upgrade payment confirmation could not be completed.");
   }
 }
+
 
 function commercialCheckoutPanel(){
   if(!iyCommercialSubscriptionState.loaded)return "";
@@ -6765,7 +6821,7 @@ async function initiyAuth(){
  try{
   if(checkForInviteLink()) return;
   const {data:{session}}=await iySupabase.auth.getSession();
-  if(session?.user){await completeAuthenticatedSession(session.user);}
+  if(session?.user){await completeAuthenticatedSession(session.user);await handleSubscriptionUpgradeReturn();}
   else renderLogin("signin");
  }catch(e){console.error(e);renderLogin("signin");authMessage("error",e?.message||"Unable to initialize secure sign in.")}
  iySupabase.auth.onAuthStateChange(async(event,session)=>{
