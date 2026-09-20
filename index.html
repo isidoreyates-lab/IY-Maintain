@@ -2575,9 +2575,15 @@ async function loadCommercialSubscriptionStatus(force=false){
 
   iyCommercialSubscriptionState.loading=true;
   try{
+    /*
+     * V6.06.4 — Use only subscription columns already proven to exist in the
+     * application. The previous version requested trial_started_at/trial_ends_at
+     * from subscriptions; those fields are not part of the established frontend
+     * subscription query and caused PostgREST to fail the entire row lookup.
+     */
     const {data:localSubscription,error:subscriptionError}=await iySupabase
       .from("subscriptions")
-      .select("id,plan_id,status,billing_interval,current_period_start,current_period_end,trial_started_at,trial_ends_at,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at,stripe_customer_id,stripe_subscription_id")
+      .select("id,plan_id,status,billing_interval,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at,current_period_start,current_period_end,stripe_customer_id,stripe_subscription_id")
       .eq("company_id",companyId)
       .in("status",["trialing","active","past_due","suspended"])
       .maybeSingle();
@@ -2606,7 +2612,7 @@ async function loadCommercialSubscriptionStatus(force=false){
       );
     }
 
-    if(!rpcStatus&&!localSubscription){
+    if(!localSubscription && !rpcStatus){
       iyCommercialSubscriptionState.status=null;
     }else{
       iyCommercialSubscriptionState.status={
@@ -2618,8 +2624,6 @@ async function loadCommercialSubscriptionStatus(force=false){
         billing_interval:localSubscription?.billing_interval ?? rpcStatus?.billing_interval ?? null,
         current_period_start:localSubscription?.current_period_start ?? rpcStatus?.current_period_start ?? null,
         current_period_end:localSubscription?.current_period_end ?? rpcStatus?.current_period_end ?? null,
-        trial_started_at:localSubscription?.trial_started_at ?? rpcStatus?.trial_started_at ?? null,
-        trial_ends_at:localSubscription?.trial_ends_at ?? rpcStatus?.trial_ends_at ?? null,
         pending_plan_id:localSubscription?.pending_plan_id ?? null,
         pending_billing_interval:localSubscription?.pending_billing_interval ?? null,
         pending_change_type:localSubscription?.pending_change_type ?? null,
