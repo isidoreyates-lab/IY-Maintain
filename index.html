@@ -1914,6 +1914,21 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 </style>
 
 <meta name="iy-version" content="V24.37 — Clean View Scope"><!-- V24.37 — removed Operational Scope card and moved View Scope selections into clear stacked rows. -->
+<style>
+/* V6.04 — Active subscription plan-change UI */
+.iy-plan-change-summary{margin-top:18px}
+.iy-plan-change-flow{display:grid;grid-template-columns:1fr 48px 1fr;gap:12px;align-items:center;padding:16px;border:1px solid #dbe5ee;border-radius:14px;background:#f8fafc}
+.iy-plan-change-flow>div:not(.iy-plan-change-arrow){background:#fff;border:1px solid #e3eaf1;border-radius:12px;padding:14px}
+.iy-plan-change-flow span,.iy-plan-change-flow b,.iy-plan-change-flow small{display:block}
+.iy-plan-change-flow span{font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:800;color:#6d7e92}
+.iy-plan-change-flow b{font-size:17px;margin-top:5px;color:#122033}
+.iy-plan-change-flow small{font-size:12px;color:#6d7e92;margin-top:4px}
+.iy-plan-change-arrow{text-align:center;font-size:24px;font-weight:800;color:#1976bd}
+.iy-plan-change-note{margin-top:14px;padding:13px 14px;border-radius:12px;background:#edf5ff;border:1px solid #d5e8fa;color:#17466d;display:flex;flex-direction:column;gap:5px}
+.iy-plan-change-note b{font-size:12px}.iy-plan-change-note span{font-size:12px;line-height:1.55}
+.iy-plan-change-error{margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff0f0;border:1px solid #efb5b5;color:#9b1c1c;font-size:12px;line-height:1.5}
+@media(max-width:650px){.iy-plan-change-flow{grid-template-columns:1fr}.iy-plan-change-arrow{transform:rotate(90deg)}}
+</style>
 </head>
 
 <style>
@@ -2417,10 +2432,10 @@ function commercialPricingPage(){
   </div>`;
 }
 
-/* V6.03 — Pricing → Stripe Checkout flow.
-   During the trial period, selecting a plan on Pricing starts the existing
-   create-checkout flow directly. Active subscriptions still use the existing
-   subscription/billing path; no plan-change backend behavior is added here. */
+/* V6.04 — Active subscription plan changes.
+   Trial subscriptions continue to use the existing Stripe Checkout flow.
+   Active subscriptions use the existing V4.09.2 immediate subscription-change
+   foundation instead of creating a second Stripe subscription. */
 async function commercialPricingAction(planCode){
   const code=String(planCode||"").trim().toUpperCase();
   if(!code)return;
@@ -2449,10 +2464,15 @@ async function commercialPricingAction(planCode){
       return;
     }
 
+    if(status==="active"){
+      await openCommercialPlanChangeModal(code);
+      return;
+    }
+
     nav("subscription");
-    toast("Your current subscription is active. Plan changes are not part of the current trial checkout flow.");
+    toast("Plan changes are currently available for active subscriptions and trial subscriptions.");
   }catch(error){
-    console.error("Pricing checkout action failed",error);
+    console.error("Pricing plan action failed",error);
     iyCommercialSubscriptionState.checkoutError=error;
     nav("subscription");
   }
@@ -2646,6 +2666,186 @@ async function startCommercialCheckout(){
   }
 }
 
+/* V6.04 — Active subscription upgrade/change flow. */
+async function openCommercialPlanChangeModal(targetPlanCode){
+  const code=String(targetPlanCode||"").trim().toUpperCase();
+  if(!code)return;
+
+  if(!iyCommercialPricingState.plans||!iyCommercialPricingState.plans.length){
+    if(!iyCommercialPricingState.loading) loadCommercialPricingPlans();
+    await new Promise(resolve=>{
+      const started=Date.now();
+      const wait=()=>{
+        if(iyCommercialPricingState.plans||Date.now()-started>8000){resolve();return;}
+        setTimeout(wait,80);
+      };
+      wait();
+    });
+  }
+
+  const plans=iyCommercialPricingState.plans||[];
+  const currentCode=String(
+    iyCommercialPricingState.currentPlanCode
+    || iyCommercialSubscriptionState.status?.plan_code
+    || ""
+  ).toUpperCase();
+  const targetPlan=plans.find(p=>String(p.code||"").toUpperCase()===code);
+  const currentPlan=plans.find(p=>String(p.code||"").toUpperCase()===currentCode);
+
+  if(!targetPlan||!currentPlan){
+    throw new Error("The selected subscription plan could not be resolved.");
+  }
+
+  const currentOrder=Number(currentPlan.display_order||0);
+  const targetOrder=Number(targetPlan.display_order||0);
+  if(targetOrder===currentOrder){
+    toast("This is already your current plan.");
+    return;
+  }
+
+  const changeType=targetOrder>currentOrder?"upgrade":"downgrade";
+  const interval=String(
+    iyCommercialSubscriptionState.status?.billing_interval
+    || "monthly"
+  ).toLowerCase();
+
+  if(!["monthly","annual"].includes(interval)){
+    throw new Error("The current billing interval is not supported for plan changes.");
+  }
+
+  const targetAmount=interval==="annual"?targetPlan.annual_price:targetPlan.monthly_price;
+  const currentAmount=interval==="annual"?currentPlan.annual_price:currentPlan.monthly_price;
+  const verb=changeType==="upgrade"?"Upgrade":"Change plan";
+
+  openModal(`<div class="modalhead">
+      <div>
+        <h2 style="margin-bottom:6px">${esc(verb)} to ${esc(targetPlan.name||code)}</h2>
+        <div style="color:#6d7e92;font-size:13px">Your existing Stripe subscription will be updated. No second subscription will be created.</div>
+      </div>
+      <button class="close" type="button" onclick="closeModal()">×</button>
+    </div>
+    <div class="iy-plan-change-summary">
+      <div class="iy-plan-change-flow">
+        <div><span>Current plan</span><b>${esc(currentPlan.name||currentCode)}</b><small>${commercialMoney(currentAmount,currentPlan.currency||"USD")} / ${interval==="annual"?"year":"month"}</small></div>
+        <div class="iy-plan-change-arrow">→</div>
+        <div><span>New plan</span><b>${esc(targetPlan.name||code)}</b><small>${commercialMoney(targetAmount,targetPlan.currency||"USD")} / ${interval==="annual"?"year":"month"}</small></div>
+      </div>
+      <div class="iy-plan-change-note">
+        <b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b>
+        <span>The change is applied to the existing Stripe subscription. Stripe will calculate the applicable prorated amount and invoice the change immediately.</span>
+      </div>
+      <div id="iyPlanChangeError" class="iy-plan-change-error" style="display:none"></div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">Confirm ${esc(changeType)}</button>
+    </div>`);
+}
+
+async function confirmCommercialPlanChange(targetPlanCode,billingInterval,changeType){
+  const code=String(targetPlanCode||"").trim().toUpperCase();
+  const interval=String(billingInterval||"").trim().toLowerCase();
+  const type=String(changeType||"").trim().toLowerCase();
+  const button=document.getElementById("iyPlanChangeConfirm");
+  const errorBox=document.getElementById("iyPlanChangeError");
+
+  if(!["BASIC","PROFESSIONAL","BUSINESS"].includes(code)){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Please select a valid subscription plan.";}
+    return;
+  }
+  if(!["monthly","annual"].includes(interval)){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Please select a valid billing interval.";}
+    return;
+  }
+  if(!["upgrade","downgrade"].includes(type)){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="The requested plan change type is not valid.";}
+    return;
+  }
+  if(!iyCompany?.id){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Company context is not ready. Please refresh and try again.";}
+    return;
+  }
+
+  if(button){button.disabled=true;button.textContent="Preparing change…";}
+  if(errorBox){errorBox.style.display="none";errorBox.textContent="";}
+
+  try{
+    const {data:{session},error:sessionError}=await iySupabase.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!session?.access_token)throw new Error("Your secure session has expired. Please sign in again.");
+
+    const authHeaders={
+      Authorization:`Bearer ${session.access_token}`,
+      "Content-Type":"application/json"
+    };
+
+    const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-change`,{
+      method:"POST",
+      headers:authHeaders,
+      body:JSON.stringify({
+        company_id:iyCompany.id,
+        target_plan_code:code,
+        target_billing_interval:interval,
+        effective_mode:"immediate"
+      })
+    });
+
+    const requestPayload=await requestRes.json().catch(()=>({}));
+    if(!requestRes.ok){
+      throw new Error(requestPayload?.error||"The subscription change request could not be created.");
+    }
+
+    const requestId=String(requestPayload?.request_id||"").trim();
+    if(!requestId)throw new Error("The subscription change request ID was not returned by the server.");
+
+    if(button){button.textContent="Applying change…";}
+
+    const applyRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/apply-subscription-change`,{
+      method:"POST",
+      headers:authHeaders,
+      body:JSON.stringify({
+        company_id:iyCompany.id,
+        request_id:requestId
+      })
+    });
+
+    const applyPayload=await applyRes.json().catch(()=>({}));
+    if(!applyRes.ok){
+      throw new Error(applyPayload?.details||applyPayload?.error||"Stripe could not apply the subscription change.");
+    }
+    if(applyPayload?.success!==true){
+      throw new Error(applyPayload?.error||"Stripe did not confirm the subscription change.");
+    }
+
+    closeModal();
+    toast(`${type==="upgrade"?"Upgrade":"Plan change"} submitted successfully. Refreshing subscription status…`);
+
+    iyCommercialSubscriptionState.loaded=false;
+    iyCommercialSubscriptionState.status=null;
+    iyCommercialSubscriptionState.checkoutError=null;
+    iyCommercialUpgradeState.loaded=false;
+    iyCommercialUpgradeState.resources=[];
+    iyCommercialUpgradeState.nextPlan=null;
+    iyCommercialPricingState.plans=null;
+    iyCommercialPricingState.currentPlanCode="";
+
+    if(currentPage==="subscription"||currentPage==="pricing"){
+      render();
+      setTimeout(()=>{
+        loadCommercialSubscriptionStatus();
+        loadCommercialPricingPlans();
+      },250);
+    }
+  }catch(error){
+    console.error("Commercial plan change failed",error);
+    if(errorBox){
+      errorBox.style.display="block";
+      errorBox.textContent=error?.message||"The subscription plan change could not be completed.";
+    }
+    if(button){button.disabled=false;button.textContent=`Confirm ${type}`;}
+  }
+}
+
 function commercialCheckoutPanel(){
   if(!iyCommercialSubscriptionState.loaded)return "";
 
@@ -2661,11 +2861,20 @@ function commercialCheckoutPanel(){
   const status=String(iyCommercialSubscriptionState.status?.status||iyCommercialSubscriptionState.status?.subscription_status||"").toLowerCase();
   const canStartCheckout=status==="trialing";
 
+  if(status==="active"){
+    return `<div class="iy-billing-card">
+      <div class="iy-sub-eyebrow">PLAN MANAGEMENT</div>
+      <h3 style="margin:6px 0">Change your plan</h3>
+      <p class="iy-sub-management-copy">Your subscription is active. Select another plan from Pricing to update the existing Stripe subscription without creating a second subscription.</p>
+      <button class="iy-pricing-action" type="button" onclick="nav('pricing')">View plan options</button>
+    </div>`;
+  }
+
   if(!canStartCheckout){
     return `<div class="iy-billing-card">
       <div class="iy-sub-eyebrow">PLAN MANAGEMENT</div>
       <h3 style="margin:6px 0">Current subscription</h3>
-      <p class="iy-sub-management-copy">Stripe checkout is currently available for the active trial flow. Your current subscription is <b>${esc(commercialSubscriptionStatusLabel(status))}</b>.</p>
+      <p class="iy-sub-management-copy">Plan changes are not currently available for subscription status <b>${esc(commercialSubscriptionStatusLabel(status))}</b>.</p>
       <button class="iy-pricing-action secondary" type="button" onclick="nav('billing')">View billing</button>
     </div>`;
   }
