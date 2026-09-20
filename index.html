@@ -2666,7 +2666,61 @@ async function startCommercialCheckout(){
   }
 }
 
-/* V6.05 — Active subscription upgrade payment flow. */
+/* V6.06 — Active subscription upgrade + period-end downgrade flow.
+   Trial subscriptions continue to use the existing Stripe Checkout flow.
+   Active upgrades use the existing V6.05 payment checkout flow.
+   Active downgrades are capacity-validated and scheduled for the current
+   billing-period end; no payment checkout is used for a downgrade. */
+async function ensureCommercialDowngradeCapacityData(){
+  if(iyCommercialUpgradeState.loaded)return;
+  if(!iyCompany?.id)return;
+
+  if(!iyCommercialUpgradeState.loading){
+    loadCommercialUpgradePrompts();
+  }
+
+  await new Promise(resolve=>{
+    const started=Date.now();
+    const wait=()=>{
+      if(iyCommercialUpgradeState.loaded||Date.now()-started>6000){resolve();return;}
+      setTimeout(wait,80);
+    };
+    wait();
+  });
+}
+
+function commercialDowngradeCapacityRows(targetPlan){
+  const resources=iyCommercialUpgradeState.resources||[];
+  const maxMap={
+    sites:targetPlan.max_sites,
+    departments:targetPlan.max_departments,
+    employees:targetPlan.max_employees,
+    machines:targetPlan.max_machines,
+    parts:targetPlan.max_parts,
+    suppliers:targetPlan.max_suppliers
+  };
+
+  if(!resources.length)return `<div class="iy-plan-change-note"><b>Capacity check</b><span>Your current workspace will be checked against the ${esc(targetPlan.name||targetPlan.code)} capacity before the downgrade is scheduled. The downgrade is allowed only when every current resource fits within the target plan.</span></div>`;
+
+  return `<div class="iy-downgrade-capacity-box">
+    <div class="iy-downgrade-capacity-head"><b>Capacity check</b><span>All current usage must fit within the ${esc(targetPlan.name||targetPlan.code)} limits.</span></div>
+    <div class="iy-downgrade-capacity-table">
+      <div class="iy-downgrade-capacity-row header"><span>Resource</span><span>Current</span><span>Target limit</span><span>Result</span></div>
+      ${resources.map(r=>{
+        const targetMax=Number(maxMap[r.key]);
+        const current=Number(r.current);
+        const fits=Number.isFinite(targetMax)&&Number.isFinite(current)&&current<=targetMax;
+        return `<div class="iy-downgrade-capacity-row">
+          <span>${esc(r.label)}</span>
+          <b>${Number.isFinite(current)?commercialLimit(current):"—"}</b>
+          <b>${Number.isFinite(targetMax)?commercialLimit(targetMax):"—"}</b>
+          <strong class="${fits?'fit':'not-fit'}">${fits?'✓ Fits':'! Exceeds'}</strong>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
 async function openCommercialPlanChangeModal(targetPlanCode){
   const code=String(targetPlanCode||"").trim().toUpperCase();
   if(!code)return;
@@ -2715,12 +2769,26 @@ async function openCommercialPlanChangeModal(targetPlanCode){
 
   const targetAmount=interval==="annual"?targetPlan.annual_price:targetPlan.monthly_price;
   const currentAmount=interval==="annual"?currentPlan.annual_price:currentPlan.monthly_price;
-  const verb=changeType==="upgrade"?"Upgrade":"Change plan";
+  const effectiveAt=iyCommercialSubscriptionState.status?.current_period_end||null;
+
+  if(changeType==="downgrade"){
+    await ensureCommercialDowngradeCapacityData();
+  }
+
+  const isDowngrade=changeType==="downgrade";
+  const title=isDowngrade?"Downgrade":"Upgrade";
+  const subtitle=isDowngrade
+    ? `No payment is required. Your ${esc(currentPlan.name||currentCode)} subscription remains active until ${effectiveAt?esc(commercialSubscriptionDateTime(effectiveAt)):"the end of the current billing period"}. The downgrade will take effect at renewal.`
+    : "You will be redirected to Stripe Checkout. Your existing subscription changes only after the upgrade payment succeeds.";
+
+  const note=isDowngrade
+    ? `<b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b><span>Your current usage must fit within the target plan limits. The current subscription stays active through ${effectiveAt?esc(commercialSubscriptionDateTime(effectiveAt)):"the current billing period"}; the downgrade is scheduled for period end.</span>`
+    : `<b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b><span>Stripe will calculate the applicable prorated upgrade amount and collect it securely in Checkout. Your existing subscription is updated only after successful payment.</span>`;
 
   openModal(`<div class="modalhead">
       <div>
-        <h2 style="margin-bottom:6px">${esc(verb)} to ${esc(targetPlan.name||code)}</h2>
-        <div style="color:#6d7e92;font-size:13px">You will be redirected to Stripe Checkout. Your existing subscription changes only after the upgrade payment succeeds.</div>
+        <h2 style="margin-bottom:6px">${esc(title)} to ${esc(targetPlan.name||code)}</h2>
+        <div style="color:#6d7e92;font-size:13px">${subtitle}</div>
       </div>
       <button class="close" type="button" onclick="closeModal()">×</button>
     </div>
@@ -2730,15 +2798,13 @@ async function openCommercialPlanChangeModal(targetPlanCode){
         <div class="iy-plan-change-arrow">→</div>
         <div><span>New plan</span><b>${esc(targetPlan.name||code)}</b><small>${commercialMoney(targetAmount,targetPlan.currency||"USD")} / ${interval==="annual"?"year":"month"}</small></div>
       </div>
-      <div class="iy-plan-change-note">
-        <b>Billing interval: ${esc(interval==="annual"?"Annual":"Monthly")}</b>
-        <span>Stripe will calculate the applicable prorated upgrade amount and collect it securely in Checkout. Your existing subscription is updated only after successful payment.</span>
-      </div>
+      <div class="iy-plan-change-note">${note}</div>
+      ${isDowngrade?commercialDowngradeCapacityRows(targetPlan):""}
       <div id="iyPlanChangeError" class="iy-plan-change-error" style="display:none"></div>
     </div>
     <div class="actions">
       <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
-      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">Continue to payment</button>
+      <button class="btn primary" type="button" id="iyPlanChangeConfirm" onclick="confirmCommercialPlanChange('${esc(code)}','${esc(interval)}','${esc(changeType)}')">${isDowngrade?"Schedule downgrade":"Continue to payment"}</button>
     </div>`);
 }
 
@@ -2761,16 +2827,12 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
     if(errorBox){errorBox.style.display="block";errorBox.textContent="The requested plan change type is not valid.";}
     return;
   }
-  if(type!=="upgrade"){
-    if(errorBox){errorBox.style.display="block";errorBox.textContent="Payment checkout is currently available for upgrades. Downgrades remain on the existing change-management path.";}
-    return;
-  }
   if(!iyCompany?.id){
     if(errorBox){errorBox.style.display="block";errorBox.textContent="Company context is not ready. Please refresh and try again.";}
     return;
   }
 
-  if(button){button.disabled=true;button.textContent="Preparing payment…";}
+  if(button){button.disabled=true;button.textContent=type==="downgrade"?"Checking capacity…":"Preparing payment…";}
   if(errorBox){errorBox.style.display="none";errorBox.textContent="";}
 
   try{
@@ -2783,7 +2845,80 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
       "Content-Type":"application/json"
     };
 
-    // Create or reuse the existing pending subscription-change request.
+    if(type==="downgrade"){
+      // Capacity is validated server-side before the downgrade request is created.
+      const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-downgrade`,{
+        method:"POST",
+        headers:authHeaders,
+        body:JSON.stringify({
+          company_id:iyCompany.id,
+          target_plan_code:code,
+          target_billing_interval:interval
+        })
+      });
+
+      const requestPayload=await requestRes.json().catch(()=>({}));
+
+      if(!requestRes.ok){
+        const failures=Array.isArray(requestPayload?.capacity_failures)?requestPayload.capacity_failures:[];
+        if(errorBox){
+          errorBox.style.display="block";
+          errorBox.innerHTML=`<b>${esc(requestPayload?.error||"The downgrade could not be scheduled.")}</b>${failures.length?`<div style="margin-top:8px">${failures.map(item=>`<div>• ${esc(item.label)}: ${commercialLimit(item.current)} / ${commercialLimit(item.max)} allowed</div>`).join("")}</div>`:""}`;
+        }
+        if(button){button.disabled=false;button.textContent="Schedule downgrade";}
+        return;
+      }
+
+      const requestId=String(requestPayload?.request_id||"").trim();
+      if(!requestId)throw new Error("The downgrade request ID was not returned by the server.");
+
+      if(button){button.textContent="Scheduling downgrade…";}
+
+      const scheduleRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/schedule-subscription-change`,{
+        method:"POST",
+        headers:authHeaders,
+        body:JSON.stringify({
+          company_id:iyCompany.id,
+          request_id:requestId
+        })
+      });
+
+      const schedulePayload=await scheduleRes.json().catch(()=>({}));
+      if(!scheduleRes.ok){
+        throw new Error(schedulePayload?.details||schedulePayload?.error||"The downgrade could not be scheduled.");
+      }
+      if(schedulePayload?.success!==true){
+        throw new Error(schedulePayload?.error||"The downgrade schedule was not confirmed.");
+      }
+
+      closeModal();
+      const effectiveAt=schedulePayload?.effective_at||requestPayload?.effective_at;
+      toast(`Downgrade scheduled${effectiveAt?` for ${commercialSubscriptionDateTime(effectiveAt)}`:" for the end of the current billing period"}. Your current plan remains active until then.`);
+
+      iyCommercialSubscriptionState.loaded=false;
+      iyCommercialSubscriptionState.status=null;
+      iyCommercialSubscriptionState.error=null;
+      iyCommercialSubscriptionState.checkoutError=null;
+      iyCommercialUpgradeState.loaded=false;
+      iyCommercialUpgradeState.resources=[];
+      iyCommercialUpgradeState.nextPlan=null;
+      iyCommercialPricingState.plans=null;
+      iyCommercialPricingState.currentPlanCode="";
+
+      if(currentPage==="subscription"||currentPage==="pricing"){
+        render();
+        setTimeout(()=>{
+          loadCommercialSubscriptionStatus();
+          loadCommercialPricingPlans();
+        },250);
+      }
+      return;
+    }
+
+    // Upgrade path — unchanged from V6.05: create the change request first,
+    // then collect the prorated amount through Stripe Checkout.
+    if(button){button.textContent="Preparing payment…";}
+
     const requestRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-change`,{
       method:"POST",
       headers:authHeaders,
@@ -2805,8 +2940,6 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
 
     if(button){button.textContent="Opening Stripe Checkout…";}
 
-    // Create a Stripe payment-mode Checkout Session for the exact prorated
-    // upgrade amount. The existing subscription is not changed until payment succeeds.
     const checkoutRes=await fetch(`${iy_SUPABASE_URL}/functions/v1/create-subscription-upgrade-checkout`,{
       method:"POST",
       headers:authHeaders,
@@ -2827,12 +2960,12 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
 
     window.location.href=checkoutPayload.checkout_url;
   }catch(error){
-    console.error("Commercial upgrade checkout failed",error);
+    console.error("Commercial plan change failed",error);
     if(errorBox){
       errorBox.style.display="block";
-      errorBox.textContent=error?.message||"The upgrade payment checkout could not be started.";
+      errorBox.textContent=error?.message||"The subscription plan change could not be completed.";
     }
-    if(button){button.disabled=false;button.textContent="Continue to payment";}
+    if(button){button.disabled=false;button.textContent=type==="downgrade"?"Schedule downgrade":"Continue to payment";}
   }
 }
 
@@ -7007,4 +7140,18 @@ initiyAuth();
 .issue-empty{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6b7f93;gap:7px}.issue-empty-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#edf4fb;color:#1769d2;font-size:23px;margin-bottom:5px}.issue-empty b{font-size:15px;color:#16324b}.issue-empty span{font-size:12px;margin-bottom:7px}
 @media(max-width:900px){.issue-filters{grid-template-columns:1fr 1fr}.issue-search-field{grid-column:1/-1}.issue-reset-btn{width:100%}}
 @media(max-width:560px){.issue-page-panel{padding:14px!important}.issue-filter-head{align-items:flex-start}.issue-filter-badge{display:none}.issue-filters{grid-template-columns:1fr;padding:12px}.issue-search-field{grid-column:auto}.issue-filter-field .input,.issue-reset-btn{height:44px}}
+
+/* V6.06 — downgrade confirmation and capacity check */
+.iy-downgrade-capacity-box{margin-top:12px;border:1px solid #dce7ef;border-radius:12px;background:#fbfdff;overflow:hidden}
+.iy-downgrade-capacity-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 14px;border-bottom:1px solid #e7eef4}
+.iy-downgrade-capacity-head b{font-size:11px;color:#23435d}
+.iy-downgrade-capacity-head span{font-size:9px;color:#718398;text-align:right}
+.iy-downgrade-capacity-table{display:grid}
+.iy-downgrade-capacity-row{display:grid;grid-template-columns:minmax(0,1.5fr) .7fr .9fr .8fr;gap:9px;align-items:center;padding:9px 12px;border-bottom:1px solid #edf1f5;font-size:9px;color:#536b83}
+.iy-downgrade-capacity-row:last-child{border-bottom:0}
+.iy-downgrade-capacity-row.header{font-size:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#8191a2;background:#f7fafc}
+.iy-downgrade-capacity-row b{font-size:10px;color:#20384f}
+.iy-downgrade-capacity-row strong.fit{color:#17743a}
+.iy-downgrade-capacity-row strong.not-fit{color:#c62828}
+@media(max-width:700px){.iy-downgrade-capacity-row{grid-template-columns:minmax(0,1.4fr) .7fr .8fr .8fr;font-size:8px}.iy-downgrade-capacity-head{flex-direction:column}.iy-downgrade-capacity-head span{text-align:left}}
 </style>
