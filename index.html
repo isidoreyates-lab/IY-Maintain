@@ -1,6 +1,6 @@
 <!-- IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!doctype html>
-<!-- IY Maintain V6.06.4 — Guided Onboarding logo preview persistence + checkout selection return fix -->
+<!-- IY Maintain V6.06.5 — Guided Onboarding site/department add UX + persistent company logo -->
 <!-- IY Maintain V24.81 — Refresh company logo URLs for generated/approval reports -->
 <html lang="en">
 <head>
@@ -289,6 +289,33 @@ content{padding:28px 34px 50px}
 .signature-modern-list{padding:6px 20px 12px}.signature-modern-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #edf2f6}.signature-modern-row:last-child{border-bottom:0}.signature-modern-avatar{width:62px;height:46px;border:1px solid #dce6ee;border-radius:9px;background:#fafcfe;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 62px}.signature-modern-avatar img{max-width:90%;max-height:38px;object-fit:contain}.signature-modern-avatar span{color:#9aaaba;font-size:15px}.signature-modern-info{min-width:0;flex:1}.signature-modern-info strong{display:block;color:#263b50;font-size:11px}.signature-modern-info span{display:block;color:#8191a2;font-size:9px;margin-top:3px}.signature-modern-action{display:flex;align-items:center;gap:5px}.signature-modern-action label{color:#1769aa;font-size:10px;font-weight:800;cursor:pointer;padding:6px 8px;border-radius:7px}.signature-modern-action label:hover{background:#edf6fc}.signature-modern-action button{width:auto;min-width:62px;height:30px;padding:0 10px;border:1px solid #f0c7c7;border-radius:7px;background:#fff5f5;color:#c53939;font-size:10px;font-weight:800;line-height:1;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}.signature-modern-action button:hover{background:#ffe9e9;border-color:#e7a8a8}.signature-modern-action{flex:0 0 auto;display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:118px}.signature-modern-action label{white-space:nowrap}.modern-info-list{padding:4px 20px 14px}.modern-info-list>div{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid #edf2f6}.modern-info-list>div:last-child{border-bottom:0}.modern-info-list span{font-size:10px;color:#7b8d9f}.modern-info-list strong{font-size:10px;color:#2c4054;text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:950px){.modern-settings-grid{grid-template-columns:1fr}.modern-settings-side{display:grid;grid-template-columns:1fr 1fr}.compact-system-card{grid-column:1/-1}}
 @media(max-width:650px){.modern-settings-header{align-items:flex-start;flex-direction:column}.modern-form-grid{grid-template-columns:1fr}.modern-settings-side{display:flex}.settings-nav-strip{overflow:auto}.modern-save-bar{align-items:flex-start;flex-direction:column}.modern-primary-btn{width:100%}}
+/* V6.06.7 — post-upgrade workspace management */
+.iy-workspace-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:0}
+.iy-workspace-card{background:#fff;border:1px solid #dfe7ef;border-radius:14px;box-shadow:0 2px 7px rgba(16,36,58,.035);overflow:hidden}
+.iy-workspace-card .workspace-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px;border-bottom:1px solid #edf2f6}
+.iy-workspace-card .workspace-head h3{margin:1px 0 4px;font-size:15px;color:#12243a}
+.iy-workspace-card .workspace-head p{margin:0;color:#71839a;font-size:11px;line-height:1.45}
+.iy-workspace-capacity{white-space:nowrap;border:1px solid #dce6ef;background:#f8fbfe;border-radius:9px;padding:8px 10px;color:#456077;font-size:9px;font-weight:800}
+.iy-workspace-list{padding:8px 20px 4px}
+.iy-workspace-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf2f6}
+.iy-workspace-row:last-child{border-bottom:0}
+.iy-workspace-row-main{min-width:0}
+.iy-workspace-row-main strong{display:block;color:#263b50;font-size:11px}
+.iy-workspace-row-main span{display:block;color:#8191a2;font-size:9px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iy-workspace-badge{flex:0 0 auto;font-size:9px;font-weight:800;color:#18845a;background:#eaf8f1;border:1px solid #ccebdc;border-radius:999px;padding:5px 8px}
+.iy-workspace-add{padding:12px 20px 18px;border-top:1px solid #f0f3f6;background:#fbfdff}
+.iy-workspace-add-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.iy-workspace-add-grid .full{grid-column:1/-1}
+.iy-workspace-add label{display:block;font-size:9px;font-weight:800;color:#536b83;margin:0 0 5px}
+.iy-workspace-add input,.iy-workspace-add select,.iy-workspace-add textarea{width:100%;box-sizing:border-box;border:1px solid #d5e0e9;border-radius:8px;background:#fff;color:#183a5d;padding:9px 10px;font-size:11px;outline:none}
+.iy-workspace-add textarea{min-height:70px;resize:vertical}
+.iy-workspace-add input:focus,.iy-workspace-add select:focus,.iy-workspace-add textarea:focus{border-color:#5d9dcb;box-shadow:0 0 0 3px rgba(23,105,170,.10)}
+.iy-workspace-add-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.iy-workspace-empty{padding:18px 20px;color:#7b8d9f;font-size:10px}
+.iy-workspace-note{margin:0 20px 16px;padding:10px 12px;border-radius:9px;border:1px solid #e0e8ef;background:#f8fbfd;color:#6f8295;font-size:10px;line-height:1.4}
+@media(max-width:900px){.iy-workspace-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.iy-workspace-add-grid{grid-template-columns:1fr}.iy-workspace-add-grid .full{grid-column:auto}}
+
 
 
 /* V24.41 account identity card */
@@ -2361,6 +2388,8 @@ function pageHeroV23(page){
 function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
 
 /* V5.00 — Commercial Pricing UI. Uses the existing read-only subscription_plans catalogue. */
+let iyWorkspaceCapacityState={sites:null,departments:null};
+
 let iyCommercialPricingState = {
   plans: null,
   currentPlanCode: "",
@@ -3295,7 +3324,8 @@ function commercialSubscriptionPage(){
         ${s.canceled_at?`<div class="iy-sub-detail-row"><span>Canceled</span><b>${commercialSubscriptionDateTime(s.canceled_at)}</b></div>`:""}
       </div>
       ${commercialCheckoutPanel()}
-      <div class="iy-sub-detail-card"><div class="iy-sub-eyebrow">PLAN MANAGEMENT</div><p class="iy-sub-management-copy">Use the plan selector above to start the existing Stripe Checkout flow during the trial period.</p><button class="iy-pricing-action secondary" type="button" onclick="nav('pricing')">View available plans</button></div>
+      <div class="iy-sub-detail-card"><div class="iy-sub-eyebrow">PLAN MANAGEMENT</div><p class="iy-sub-management-copy">Use Pricing to review your available plans and upgrade within the supported upgrade flow.</p><button class="iy-pricing-action secondary" type="button" onclick="nav('pricing')">View available plans</button></div>
+      <div class="iy-sub-detail-card"><div class="iy-sub-eyebrow">WORKSPACE MANAGEMENT</div><p class="iy-sub-management-copy">Add additional Sites and Departments as your operation grows. Your current plan capacity is enforced automatically.</p><button class="iy-pricing-action" type="button" onclick="openWorkspaceManagement()">Manage Sites &amp; Departments</button></div>
     </div>
   </div>`;
 }
@@ -5922,7 +5952,9 @@ async function onboardingLogoRemove(){
    try{
      const folder=String(iyCompany.id);
      await removeKnownAssetPaths([`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]);
-     if(db.settings)db.settings.logoData="";
+     const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:null}).eq("company_id",iyCompany.id);
+     if(pathError)throw pathError;
+     if(db.settings){db.settings.logoData="";db.settings.logo_path="";}
      toast("Company logo removed.");
    }catch(e){
      console.error("Onboarding logo removal failed",e);
@@ -5955,7 +5987,10 @@ function onboardingSiteDraftInput(index,key,value){
 }
 function addOnboardingSiteDraft(){
  const max=onboardingSelectedMax("max_sites",1),existing=(iyOnboardingState.sites||[]).length,drafts=(iyOnboardingState.siteDrafts||[]).length;
- if(existing+drafts>=max){onboardingSetError(`Your ${onboardingSelectedPlan()?.name||"selected"} plan allows up to ${max} site${max===1?"":"s"}.`);render();return;}
+ if(existing+drafts>=max){
+   iyOnboardingState.error=`Your ${onboardingSelectedPlan()?.name||"selected"} plan allows up to ${max} site${max===1?"":"s"}. Upgrade your plan to add another site.`;
+   render();return;
+ }
  iyOnboardingState.siteDrafts.push({name:"",code:"",address:""});
  iyOnboardingState.error="";render();
 }
@@ -6006,7 +6041,10 @@ function onboardingDepartmentDraftInput(index,key,value){
 }
 function addOnboardingDepartmentDraft(){
  const max=onboardingSelectedMax("max_departments",1),existing=(iyOnboardingState.departments||[]).length,drafts=(iyOnboardingState.departmentDrafts||[]).length;
- if(existing+drafts>=max){onboardingSetError(`Your ${onboardingSelectedPlan()?.name||"selected"} plan allows up to ${max} department${max===1?"":"s"}.`);render();return;}
+ if(existing+drafts>=max){
+   iyOnboardingState.error=`Your ${onboardingSelectedPlan()?.name||"selected"} plan allows up to ${max} department${max===1?"":"s"}. Upgrade your plan to add another department.`;
+   render();return;
+ }
  iyOnboardingState.departmentDrafts.push({name:"",code:"",siteId:iyOnboardingState.sites?.[0]?.id||""});iyOnboardingState.error="";render();
 }
 function removeOnboardingDepartmentDraft(index){
@@ -6074,8 +6112,10 @@ async function uploadOnboardingCompanyLogo(){
  await removeKnownAssetPaths([
    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`
  ].filter(p=>p!==newPath));
- const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:file.type,cacheControl:"3600"});
+ const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:true,contentType:file.type,cacheControl:"3600"});
  if(error)throw error;
+ const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:newPath}).eq("company_id",iyCompany.id);
+ if(pathError)throw pathError;
  await loadCloudAssets(db.settings);
  const persisted=await loadOnboardingExistingLogo(iyCompany.id);
  if(persisted)iyOnboardingState.company.logoPreview=persisted;
@@ -6253,13 +6293,13 @@ function renderGuidedOnboarding(){
    title="Set up your sites";subtitle="Add one or several operating locations now. Enter your own site code for each location; more sites can be added later within your plan capacity.";
    const existingHtml=existing.map((s,i)=>`<div class="iy-onboarding-saved-row"><div class="iy-onboarding-saved-mark">✓</div><div><b>${esc(s.name||"Site")}</b><span>${esc(s.code||"No code supplied")} · ${esc(s.address||"No address supplied")}</span></div><strong>Saved</strong></div>`).join("");
    const draftHtml=drafts.map((d,i)=>`<div class="iy-onboarding-site-draft"><div class="iy-onboarding-draft-head"><div><b>Operating site ${existing.length+i+1}</b><span>${i===0&&existing.length===0?"Required to start your workspace":"Additional site"}</span></div>${drafts.length>1?`<button type="button" class="iy-onboarding-remove" onclick="removeOnboardingSiteDraft(${i})">Remove</button>`:""}</div><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Site name *</label><input id="iyOnboardSiteName_${i}" value="${esc(d.name||"")}" placeholder="e.g. Ahafo Mine" oninput="onboardingSiteDraftInput(${i},'name',this.value)"></div><div class="iy-onboarding-field"><label>Site code</label><input id="iyOnboardSiteCode_${i}" value="${esc(d.code||"")}" placeholder="e.g. AHAFO" oninput="onboardingSiteDraftInput(${i},'code',this.value)"></div><div class="iy-onboarding-field full"><label>Site address</label><textarea id="iyOnboardSiteAddress_${i}" oninput="onboardingSiteDraftInput(${i},'address',this.value)" placeholder="Site address or location">${esc(d.address||"")}</textarea></div></div></div>`).join("");
-   content=`<div class="iy-onboarding-card"><div class="iy-onboarding-capacity-head"><div><h3>Operating sites</h3><p class="iy-onboarding-card-sub">Create the locations your company operates. Enter the site code you use internally for each location so it matches your existing operating structure.</p></div><div class="iy-onboarding-capacity-count">${existing.length+drafts.filter(d=>String(d.name||"").trim()).length} / ${max} sites</div></div>${existingHtml?`<div class="iy-onboarding-saved-list">${existingHtml}</div>`:""}<div class="iy-onboarding-drafts">${draftHtml}</div><button type="button" class="iy-onboarding-add" onclick="addOnboardingSiteDraft()" ${existing.length+drafts.length>=max?"disabled":""}>＋ Add another site</button></div>`;
+   content=`<div class="iy-onboarding-card"><div class="iy-onboarding-capacity-head"><div><h3>Operating sites</h3><p class="iy-onboarding-card-sub">Create the locations your company operates. Enter the site code you use internally for each location so it matches your existing operating structure.</p></div><div class="iy-onboarding-capacity-count">${existing.length+drafts.filter(d=>String(d.name||"").trim()).length} / ${max} sites</div></div>${existingHtml?`<div class="iy-onboarding-saved-list">${existingHtml}</div>`:""}<div class="iy-onboarding-drafts">${draftHtml}</div><button type="button" class="iy-onboarding-add" onclick="addOnboardingSiteDraft()">＋ Add another site</button></div>`;
  }else{
    ensureOnboardingDepartmentDrafts();const max=onboardingSelectedMax("max_departments",1),existing=iyOnboardingState.departments||[],drafts=iyOnboardingState.departmentDrafts||[],sites=iyOnboardingState.sites||[];
    title="Set up your departments";subtitle="Create the departments your teams will work in and connect each department to its operating site.";
    const existingHtml=existing.map(d=>{const site=sites.find(s=>String(s.id)===String(d.site_id));return `<div class="iy-onboarding-saved-row"><div class="iy-onboarding-saved-mark">✓</div><div><b>${esc(d.name||"Department")}</b><span>${esc(site?.name||"Site")} · ${esc(d.code||"No code")}</span></div><strong>Saved</strong></div>`}).join("");
    const draftHtml=drafts.map((d,i)=>`<div class="iy-onboarding-site-draft"><div class="iy-onboarding-draft-head"><div><b>Department ${existing.length+i+1}</b><span>${i===0&&existing.length===0?"Required to start your workspace":"Additional department"}</span></div>${drafts.length>1?`<button type="button" class="iy-onboarding-remove" onclick="removeOnboardingDepartmentDraft(${i})">Remove</button>`:""}</div><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Department name *</label><input value="${esc(d.name||"")}" placeholder="e.g. Mobile Maintenance" oninput="onboardingDepartmentDraftInput(${i},'name',this.value)"></div><div class="iy-onboarding-field"><label>Department code</label><input value="${esc(d.code||"")}" placeholder="Optional code" oninput="onboardingDepartmentDraftInput(${i},'code',this.value)"></div><div class="iy-onboarding-field full"><label>Site</label><select onchange="onboardingDepartmentDraftInput(${i},'siteId',this.value)">${sites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(d.siteId||"")?"selected":""}>${esc(s.name)}</option>`).join("")}</select></div></div></div>`).join("");
-   content=`<div class="iy-onboarding-card"><div class="iy-onboarding-capacity-head"><div><h3>Operating departments</h3><p class="iy-onboarding-card-sub">Departments belong to a site. Add the departments you need to start working; more can be added later within your plan capacity.</p></div><div class="iy-onboarding-capacity-count">${existing.length+drafts.filter(d=>String(d.name||"").trim()).length} / ${max} departments</div></div>${existingHtml?`<div class="iy-onboarding-saved-list">${existingHtml}</div>`:""}<div class="iy-onboarding-drafts">${draftHtml}</div><button type="button" class="iy-onboarding-add" onclick="addOnboardingDepartmentDraft()" ${existing.length+drafts.length>=max?"disabled":""}>＋ Add another department</button></div>`;
+   content=`<div class="iy-onboarding-card"><div class="iy-onboarding-capacity-head"><div><h3>Operating departments</h3><p class="iy-onboarding-card-sub">Departments belong to a site. Add the departments you need to start working; more can be added later within your plan capacity.</p></div><div class="iy-onboarding-capacity-count">${existing.length+drafts.filter(d=>String(d.name||"").trim()).length} / ${max} departments</div></div>${existingHtml?`<div class="iy-onboarding-saved-list">${existingHtml}</div>`:""}<div class="iy-onboarding-drafts">${draftHtml}</div><button type="button" class="iy-onboarding-add" onclick="addOnboardingDepartmentDraft()">＋ Add another department</button></div>`;
  }
  const primaryLabel=step===3?(iyOnboardingState.paymentConfirmed?"Continue to Sites":"Pay & Continue"):iyOnboardingState.loading?"Saving…":"Continue";
  const backButton=step>1?`<button type="button" class="iy-onboarding-btn" onclick="onboardingBack()">Back</button>`:"";
@@ -6336,6 +6376,8 @@ async function handleAuthSubmit(event){
    const password=document.getElementById("auth_password").value;
    const {data,error}=await iySupabase.auth.signInWithPassword({email,password});
    if(error)throw error;
+   authMessage("success","Login successful. Loading your workspace…");
+   await new Promise(resolve=>setTimeout(resolve,900));
    await completeAuthenticatedSession(data.user);
   }
  }catch(e){authMessage("error",e?.message||"Authentication failed. Please try again.");}
@@ -6487,7 +6529,7 @@ async function loadCompanyContext(user){
  return {needsOnboarding:false,company,subscription:null,sites:locations.sites,departments:locations.departments};
 }
 
-function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
+function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",logo_path:"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
 
 async function storageListSafe(bucket,prefix=""){
  try{const {data,error}=await iySupabase.storage.from(bucket).list(prefix,{limit:1000});if(error)throw error;return data||[]}catch(e){console.warn(`Storage list failed for ${bucket}/${prefix}`,e?.message||e);return []}
@@ -6503,12 +6545,13 @@ async function assetSignedUrlOrEmpty(path){
 async function loadCloudAssets(settings){
  if(!iyCompany)return;
  const folder=String(iyCompany.id);
- const candidates=[
-   `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,
-   `${folder}/logo.svg`
+ const persistedPath=String(settings?.logo_path||"").trim();
+ const candidates=persistedPath?[persistedPath,`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]:[
+   `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`
  ];
-   let logoUrl="";
-   for(const path of candidates){logoUrl=await assetSignedUrlOrEmpty(path);if(logoUrl)break;}
+   let logoUrl="",resolvedLogoPath="";
+   for(const path of [...new Set(candidates)]){logoUrl=await assetSignedUrlOrEmpty(path);if(logoUrl){resolvedLogoPath=path;break;}}
+   settings.logo_path=resolvedLogoPath;
    settings.logoData=logoUrl?`${logoUrl}&v=${Date.now()}`:"";
    for(const key of ["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"]){
      let sigUrl="";
@@ -6844,12 +6887,119 @@ async function cloudSaveSettings(){
  return data;
 }
 
+async function loadWorkspaceCapacityStatus(){
+  if(!iyCompany?.id) return {sites:null,departments:null};
+  const [sitesRes,deptRes]=await Promise.all([
+    iySupabase.rpc("get_company_site_limit_status",{p_company_id:iyCompany.id}),
+    iySupabase.rpc("get_company_department_limit_status",{p_company_id:iyCompany.id})
+  ]);
+  if(sitesRes.error)throw sitesRes.error;
+  if(deptRes.error)throw deptRes.error;
+  return {
+    sites:Array.isArray(sitesRes.data)?(sitesRes.data[0]||null):(sitesRes.data||null),
+    departments:Array.isArray(deptRes.data)?(deptRes.data[0]||null):(deptRes.data||null)
+  };
+}
+
+function workspaceManagementPanel(){
+  const role=currentRole();
+  const isAdmin=["company_admin","super_admin"].includes(role);
+  const sites=Array.isArray(iyCompanySites)?iyCompanySites:[];
+  const depts=Array.isArray(iyCompanyDepartments)?iyCompanyDepartments:[];
+  const capacitySites=iyWorkspaceCapacityState?.sites||null;
+  const capacityDepts=iyWorkspaceCapacityState?.departments||null;
+  const siteMax=capacitySites?.max_sites ?? "—";
+  const deptMax=capacityDepts?.max_departments ?? "—";
+  const siteRemaining=capacitySites?.remaining_sites ?? null;
+  const deptRemaining=capacityDepts?.remaining_departments ?? null;
+  const siteRows=sites.length?sites.map(s=>`<div class="iy-workspace-row"><div class="iy-workspace-row-main"><strong>${esc(s.name||"Unnamed site")}</strong><span>${esc(s.code||"No code")}${s.address?` · ${esc(s.address)}`:""}</span></div><span class="iy-workspace-badge">Active</span></div>`).join(""):`<div class="iy-workspace-empty">No active sites have been created for this company.</div>`;
+  const deptRows=depts.length?depts.map(d=>{const site=sites.find(x=>String(x.id)===String(d.site_id));return `<div class="iy-workspace-row"><div class="iy-workspace-row-main"><strong>${esc(d.name||"Unnamed department")}</strong><span>${esc(d.code||"No code")} · ${esc(site?.name||"Unassigned site")}</span></div><span class="iy-workspace-badge">Active</span></div>`}).join(""):`<div class="iy-workspace-empty">No active departments have been created for this company.</div>`;
+  const adminNote=isAdmin?"Add additional operating locations and departments here as your operation grows. Plan limits are enforced by the server.":"Only a Company Administrator can create or manage company Sites and Departments.";
+  const disabled=!isAdmin;
+  return `<div class="iy-workspace-grid">
+    <section class="iy-workspace-card">
+      <div class="workspace-head"><div><h3>Sites</h3><p>Operating locations available across your company workspace.</p></div><div class="iy-workspace-capacity">${sites.length} / ${siteMax} sites</div></div>
+      <div class="iy-workspace-list">${siteRows}</div>
+      <div class="iy-workspace-add">
+        <div class="iy-workspace-add-grid">
+          <div><label for="wm_site_name">Site name *</label><input id="wm_site_name" placeholder="e.g. Ahafo South Mine" ${disabled?"disabled":""}></div>
+          <div><label for="wm_site_code">Site code *</label><input id="wm_site_code" placeholder="e.g. AHS" ${disabled?"disabled":""}></div>
+          <div class="full"><label for="wm_site_address">Site address</label><textarea id="wm_site_address" placeholder="Site address or location" ${disabled?"disabled":""}></textarea></div>
+        </div>
+        <div class="iy-workspace-add-actions"><button type="button" class="modern-primary-btn" onclick="createManagedSite()" ${disabled||siteRemaining===0?"disabled":""}>Add Site</button></div>
+      </div>
+    </section>
+    <section class="iy-workspace-card">
+      <div class="workspace-head"><div><h3>Departments</h3><p>Departments linked to the operating sites you manage.</p></div><div class="iy-workspace-capacity">${depts.length} / ${deptMax} departments</div></div>
+      <div class="iy-workspace-list">${deptRows}</div>
+      <div class="iy-workspace-add">
+        <div class="iy-workspace-add-grid">
+          <div><label for="wm_dept_name">Department name *</label><input id="wm_dept_name" placeholder="e.g. Mobile Maintenance" ${disabled?"disabled":""}></div>
+          <div><label for="wm_dept_code">Department code</label><input id="wm_dept_code" placeholder="e.g. MNT" ${disabled?"disabled":""}></div>
+          <div class="full"><label for="wm_dept_site">Site *</label><select id="wm_dept_site" ${disabled?"disabled":""}><option value="">Select a site</option>${sites.map(site=>`<option value="${esc(site.id)}">${esc(site.name)}</option>`).join("")}</select></div>
+        </div>
+        <div class="iy-workspace-add-actions"><button type="button" class="modern-primary-btn" onclick="createManagedDepartment()" ${disabled||deptRemaining===0||!sites.length?"disabled":""}>Add Department</button></div>
+      </div>
+    </section>
+  </div>
+  <div class="iy-workspace-note">${esc(adminNote)} ${siteRemaining!=null&&deptRemaining!=null?`Remaining capacity: ${siteRemaining} site${Number(siteRemaining)===1?"":"s"} and ${deptRemaining} department${Number(deptRemaining)===1?"":"s"}.`:""}</div>`;
+}
+
+async function openWorkspaceManagement(){
+  nav("settings");
+  setTimeout(async()=>{
+    try{
+      await loadAdminLocationOptions();
+      iyWorkspaceCapacityState=await loadWorkspaceCapacityStatus();
+      render();
+      setTimeout(()=>switchSettingsTab("workspace"),0);
+    }catch(e){console.error("Workspace management load failed",e);alert(e?.message||"Workspace management could not be loaded.");}
+  },0);
+}
+
+async function createManagedSite(){
+  if(!["company_admin","super_admin"].includes(currentRole()))return alert("Only a Company Administrator can create Sites.");
+  const name=document.getElementById("wm_site_name")?.value.trim()||"";
+  const code=document.getElementById("wm_site_code")?.value.trim()||"";
+  const address=document.getElementById("wm_site_address")?.value.trim()||"";
+  if(name.length<2)return alert("Please enter a valid site name.");
+  if(!code)return alert("Please enter a site code.");
+  try{
+    await iySupabase.rpc("create_company_site",{p_company_id:iyCompany.id,p_site_name:name,p_site_code:code,p_site_address:address||null}).then(({error})=>{if(error)throw error;});
+    await loadAdminLocationOptions();
+    iyWorkspaceCapacityState=await loadWorkspaceCapacityStatus();
+    render();
+    setTimeout(()=>switchSettingsTab("workspace"),0);
+    toast("Site added successfully.");
+  }catch(e){console.error("Create site failed",e);alert(e?.message||"The site could not be created.");}
+}
+
+async function createManagedDepartment(){
+  if(!["company_admin","super_admin"].includes(currentRole()))return alert("Only a Company Administrator can create Departments.");
+  const name=document.getElementById("wm_dept_name")?.value.trim()||"";
+  const code=document.getElementById("wm_dept_code")?.value.trim()||"";
+  const siteId=document.getElementById("wm_dept_site")?.value||"";
+  if(name.length<2)return alert("Please enter a valid department name.");
+  if(!siteId)return alert("Please select the Site for this Department.");
+  try{
+    const {error}=await iySupabase.rpc("create_company_department",{p_company_id:iyCompany.id,p_site_id:siteId,p_department_name:name,p_department_code:code||null});
+    if(error)throw error;
+    await loadAdminLocationOptions();
+    iyWorkspaceCapacityState=await loadWorkspaceCapacityStatus();
+    render();
+    setTimeout(()=>switchSettingsTab("workspace"),0);
+    toast("Department added successfully.");
+  }catch(e){console.error("Create department failed",e);alert(e?.message||"The department could not be created.");}
+}
+
 function settingsPage(){
  const s=db.settings||{};
  const canSettings=canEdit("settings");
+ if(iyCompany?.id && (!iyWorkspaceCapacityState.sites||!iyWorkspaceCapacityState.departments))loadWorkspaceCapacityStatus().then(x=>{iyWorkspaceCapacityState=x;if(currentPage==="settings")render();}).catch(e=>console.warn("Workspace capacity load failed",e?.message||e));
  return `<div class="modern-settings-shell">
  <div class="settings-nav-strip" id="settings-tabs">
   <button type="button" class="settings-nav-item active" data-settings-tab="general" onclick="switchSettingsTab('general')"><span class="nav-icon">⚙</span><span>General</span></button>
+  <button type="button" class="settings-nav-item" data-settings-tab="workspace" onclick="switchSettingsTab('workspace')"><span class="nav-icon">⌂</span><span>Workspace</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="branding" onclick="switchSettingsTab('branding')"><span class="nav-icon">▣</span><span>Branding</span></button>
   <button type="button" class="settings-nav-item" data-settings-tab="system" onclick="switchSettingsTab('system')"><span class="nav-icon">ⓘ</span><span>System</span></button>
  </div>
@@ -6877,6 +7027,9 @@ function settingsPage(){
      </div>
     </section>
    </div>
+   <div id="settings-panel-workspace" class="settings-tab-panel" style="display:none">
+    ${workspaceManagementPanel()}
+   </div>
    <div id="settings-panel-branding" class="settings-tab-panel" style="display:none">
     <section class="modern-card branding-card">
      <div class="modern-card-head"><div class="head-icon green">◆</div><div><h3>Company branding</h3><p>Your company logo appears on generated reports.</p></div></div>
@@ -6902,7 +7055,7 @@ function settingsPage(){
  </div>`;
 }
 function switchSettingsTab(tab){
- const tabs=["general","branding","signatures","system"];
+ const tabs=["general","workspace","branding","signatures","system"];
  tabs.forEach(t=>{
   const panel=document.getElementById("settings-panel-"+t);
   if(panel)panel.style.display=t===tab?"block":"none";
@@ -6910,7 +7063,7 @@ function switchSettingsTab(tab){
   if(btn)btn.classList.toggle("active",t===tab);
  });
  const saveBar=document.getElementById("settings-save-bar");
- if(saveBar)saveBar.style.display=tab==="system"?"none":"flex";
+ if(saveBar)saveBar.style.display=(tab==="system"||tab==="workspace")?"none":"flex";
 }
 function signatureImage(key){const src=db.settings&&db.settings[key];return src?`<img class="r-sig-image" src="${src}" alt="Signature">`:``}
 
@@ -6954,8 +7107,10 @@ async function handleLogoUpload(input){
     restoredPath,
     `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`
   ].filter(p=>p&&p!==newPath));
-  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:false,contentType:uploadMime,cacheControl:"3600"});
+  const {error:uploadError}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:true,contentType:uploadMime,cacheControl:"3600"});
   if(uploadError)throw uploadError;
+  const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:newPath}).eq("company_id",iyCompany.id);
+  if(pathError)throw pathError;
   await loadCloudAssets(db.settings);
   save();
   render();
@@ -6972,7 +7127,9 @@ async function removeCompanyLogo(){
     `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`,
     `${folder}/logo.jpg`,`${folder}/logo.png`
   ]);
-  db.settings.logoData="";
+  const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:null}).eq("company_id",iyCompany.id);
+  if(pathError)throw pathError;
+  db.settings.logoData="";db.settings.logo_path="";
   await loadCloudAssets(db.settings);
   save();render();toast("Company logo removed.");
  }catch(e){console.error("Logo removal failed",e);alert(`Could not remove the company logo.\n\n${e?.message||e}`)}
