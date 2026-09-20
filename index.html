@@ -2417,11 +2417,45 @@ function commercialPricingPage(){
   </div>`;
 }
 
-function commercialPricingAction(planCode){
+/* V6.03 — Pricing → Stripe Checkout flow.
+   During the trial period, selecting a plan on Pricing starts the existing
+   create-checkout flow directly. Active subscriptions still use the existing
+   subscription/billing path; no plan-change backend behavior is added here. */
+async function commercialPricingAction(planCode){
   const code=String(planCode||"").trim().toUpperCase();
   if(!code)return;
+
   iyCommercialSubscriptionState.requestedPlanCode=code;
-  nav("subscription");
+  iyCommercialSubscriptionState.checkoutError=null;
+
+  if(!iyCompany?.id){
+    nav("subscription");
+    return;
+  }
+
+  try{
+    if(!iyCommercialSubscriptionState.loaded){
+      await loadCommercialSubscriptionStatus();
+    }
+
+    const status=String(
+      iyCommercialSubscriptionState.status?.status
+      ?? iyCommercialSubscriptionState.status?.subscription_status
+      ?? ""
+    ).toLowerCase();
+
+    if(status==="trialing"){
+      await startCommercialCheckout();
+      return;
+    }
+
+    nav("subscription");
+    toast("Your current subscription is active. Plan changes are not part of the current trial checkout flow.");
+  }catch(error){
+    console.error("Pricing checkout action failed",error);
+    iyCommercialSubscriptionState.checkoutError=error;
+    nav("subscription");
+  }
 }
 
 
