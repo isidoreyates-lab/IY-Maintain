@@ -2499,10 +2499,7 @@ let iyCommercialSubscriptionState={
 async function loadCommercialSubscriptionStatus(){
   if(iyCommercialSubscriptionState.loaded||!iyCompany?.id)return;
 
-  // V6.06.1 — If another part of the UI is already loading the subscription
-  // state, wait for that request instead of returning immediately with a null
-  // status. This prevents Pricing -> plan selection from incorrectly routing
-  // to Subscription while the background status request is still in flight.
+  // V6.06.2 — Wait for an existing load instead of returning an empty state.
   if(iyCommercialSubscriptionState.loading){
     await new Promise(resolve=>{
       const started=Date.now();
@@ -2520,47 +2517,79 @@ async function loadCommercialSubscriptionStatus(){
 
   iyCommercialSubscriptionState.loading=true;
   try{
-    const [statusResult, subscriptionResult] = await Promise.all([
-      iySupabase.rpc("get_company_subscription_status",{p_company_id:iyCompany.id}),
-      iySupabase
-        .from("subscriptions")
-        .select("id,plan_id,status,billing_interval,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at")
-        .eq("company_id",iyCompany.id)
-        .in("status",["trialing","active","past_due","suspended"])
-        .maybeSingle()
-    ]);
+    /*
+     * The local subscriptions row is the authoritative source for whether the
+     * company has an active/trialing commercial subscription. The status RPC is
+     * enrichment only. A failure in that RPC must not erase a valid subscription
+     * that the user can already read through the normal RLS-protected table.
+     */
+    const {data:localSubscription,error:subscriptionError}=await iySupabase
+      .from("subscriptions")
+      .select("id,plan_id,status,billing_interval,current_period_start,current_period_end,trial_started_at,trial_ends_at,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at,stripe_customer_id,stripe_subscription_id")
+      .eq("company_id",iyCompany.id)
+      .in("status",["trialing","active","past_due","suspended"])
+      .maybeSingle();
 
-    if(statusResult.error)throw statusResult.error;
-    if(subscriptionResult.error)throw subscriptionResult.error;
+    if(subscriptionError)throw subscriptionError;
 
-    const rpcStatus=Array.isArray(statusResult.data)?(statusResult.data[0]||null):(statusResult.data||null);
-    const localSubscription=subscriptionResult.data||null;
+    let rpcStatus=null;
+    try{
+      const {data,error}=await iySupabase.rpc(
+        "get_company_subscription_status",
+        {p_company_id:iyCompany.id}
+      );
+      if(error){
+        console.warn(
+          "Commercial subscription status RPC failed; using local subscription row.",
+          error
+        );
+      }else{
+        rpcStatus=Array.isArray(data)?(data[0]||null):(data||null);
+      }
+    }catch(rpcError){
+      console.warn(
+        "Commercial subscription status RPC exception; using local subscription row.",
+        rpcError
+      );
+    }
 
-    if(!rpcStatus && !localSubscription){
+    if(!rpcStatus&&!localSubscription){
       iyCommercialSubscriptionState.status=null;
     }else{
       iyCommercialSubscriptionState.status={
         ...(rpcStatus||{}),
-        // The V4.04 status RPC returns subscription_status, not status.
-        status: rpcStatus?.subscription_status ?? localSubscription?.status ?? null,
-        // Pending change fields are intentionally read from the existing subscription row.
-        pending_plan_id: localSubscription?.pending_plan_id ?? null,
-        pending_billing_interval: localSubscription?.pending_billing_interval ?? null,
-        pending_change_type: localSubscription?.pending_change_type ?? null,
-        pending_change_effective_at: localSubscription?.pending_change_effective_at ?? null,
-        pending_change_request_id: localSubscription?.pending_change_request_id ?? null,
-        cancel_at_period_end: localSubscription?.cancel_at_period_end ?? rpcStatus?.cancel_at_period_end ?? false,
-        canceled_at: localSubscription?.canceled_at ?? rpcStatus?.canceled_at ?? null
+
+        // Local subscription values take precedence because they are the
+        // current database record already visible to this signed-in company user.
+        subscription_id:localSubscription?.id ?? rpcStatus?.subscription_id ?? null,
+        plan_id:localSubscription?.plan_id ?? rpcStatus?.plan_id ?? null,
+        status:localSubscription?.status ?? rpcStatus?.subscription_status ?? null,
+        subscription_status:localSubscription?.status ?? rpcStatus?.subscription_status ?? null,
+        billing_interval:localSubscription?.billing_interval ?? rpcStatus?.billing_interval ?? null,
+        current_period_start:localSubscription?.current_period_start ?? rpcStatus?.current_period_start ?? null,
+        current_period_end:localSubscription?.current_period_end ?? rpcStatus?.current_period_end ?? null,
+        trial_started_at:localSubscription?.trial_started_at ?? rpcStatus?.trial_started_at ?? null,
+        trial_ends_at:localSubscription?.trial_ends_at ?? rpcStatus?.trial_ends_at ?? null,
+        pending_plan_id:localSubscription?.pending_plan_id ?? null,
+        pending_billing_interval:localSubscription?.pending_billing_interval ?? null,
+        pending_change_type:localSubscription?.pending_change_type ?? null,
+        pending_change_effective_at:localSubscription?.pending_change_effective_at ?? null,
+        pending_change_request_id:localSubscription?.pending_change_request_id ?? null,
+        cancel_at_period_end:localSubscription?.cancel_at_period_end ?? rpcStatus?.cancel_at_period_end ?? false,
+        canceled_at:localSubscription?.canceled_at ?? rpcStatus?.canceled_at ?? null,
+        stripe_customer_id:localSubscription?.stripe_customer_id ?? rpcStatus?.stripe_customer_id ?? null,
+        stripe_subscription_id:localSubscription?.stripe_subscription_id ?? rpcStatus?.stripe_subscription_id ?? null
       };
 
-      // Resolve the pending target plan name/code from the same read-only plan catalogue.
       if(localSubscription?.pending_plan_id){
         const {data:pendingPlan,error:pendingPlanError}=await iySupabase
           .from("subscription_plans")
           .select("id,code,name")
           .eq("id",localSubscription.pending_plan_id)
           .maybeSingle();
+
         if(pendingPlanError)throw pendingPlanError;
+
         if(pendingPlan){
           iyCommercialSubscriptionState.status.pending_plan_code=pendingPlan.code;
           iyCommercialSubscriptionState.status.pending_plan_name=pendingPlan.name;
