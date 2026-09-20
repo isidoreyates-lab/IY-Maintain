@@ -2474,7 +2474,11 @@ async function commercialPricingAction(planCode){
   }catch(error){
     console.error("Pricing plan action failed",error);
     iyCommercialSubscriptionState.checkoutError=error;
-    nav("subscription");
+    // Stay on Pricing so the user does not get sent to a misleading empty
+    // Subscription page when the status/plan-change preparation fails.
+    if(currentPage!=="pricing")nav("pricing");
+    render();
+    toast(error?.message||"The plan change could not be prepared.");
   }
 }
 
@@ -2493,7 +2497,27 @@ let iyCommercialSubscriptionState={
 };
 
 async function loadCommercialSubscriptionStatus(){
-  if(iyCommercialSubscriptionState.loaded||iyCommercialSubscriptionState.loading||!iyCompany?.id)return;
+  if(iyCommercialSubscriptionState.loaded||!iyCompany?.id)return;
+
+  // V6.06.1 — If another part of the UI is already loading the subscription
+  // state, wait for that request instead of returning immediately with a null
+  // status. This prevents Pricing -> plan selection from incorrectly routing
+  // to Subscription while the background status request is still in flight.
+  if(iyCommercialSubscriptionState.loading){
+    await new Promise(resolve=>{
+      const started=Date.now();
+      const wait=()=>{
+        if(!iyCommercialSubscriptionState.loading || Date.now()-started>8000){
+          resolve();
+          return;
+        }
+        setTimeout(wait,80);
+      };
+      wait();
+    });
+    return;
+  }
+
   iyCommercialSubscriptionState.loading=true;
   try{
     const [statusResult, subscriptionResult] = await Promise.all([
