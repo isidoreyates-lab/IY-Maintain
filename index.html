@@ -2311,11 +2311,24 @@ function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
 let iyCommercialPricingState = {
   plans: null,
   currentPlanCode: "",
-  loading: false
+  loading: false,
+  loadedCompanyId: ""
 };
 
-function loadCommercialPricingPlans(){
-  if(iyCommercialPricingState.plans || iyCommercialPricingState.loading) return;
+function loadCommercialPricingPlans(force=false){
+  const companyId=String(iyCompany?.id||"").trim();
+
+  // Do not cache a Pricing result while company context is unavailable.
+  if(!companyId)return;
+
+  if(
+    !force &&
+    iyCommercialPricingState.plans &&
+    iyCommercialPricingState.loadedCompanyId===companyId
+  )return;
+
+  if(iyCommercialPricingState.loading)return;
+
   iyCommercialPricingState.loading=true;
 
   Promise.all([
@@ -2324,15 +2337,16 @@ function loadCommercialPricingPlans(){
       .select("id,code,name,description,max_sites,max_departments,max_employees,max_machines,max_parts,max_suppliers,monthly_price,annual_price,currency,trial_days,is_active,display_order")
       .eq("is_active",true)
       .order("display_order",{ascending:true}),
+
     iySupabase
       .from("subscriptions")
-      .select("plan_id,status")
-      .eq("company_id",iyCompany?.id||"")
+      .select("id,plan_id,status,billing_interval")
+      .eq("company_id",companyId)
       .in("status",["trialing","active","past_due","suspended"])
       .maybeSingle()
   ]).then(([plansResult,subscriptionResult])=>{
-    if(plansResult.error) throw plansResult.error;
-    if(subscriptionResult.error) throw subscriptionResult.error;
+    if(plansResult.error)throw plansResult.error;
+    if(subscriptionResult.error)throw subscriptionResult.error;
 
     const plans=Array.isArray(plansResult.data)?plansResult.data:[];
     const subscription=subscriptionResult.data||null;
@@ -2341,12 +2355,30 @@ function loadCommercialPricingPlans(){
     iyCommercialPricingState.currentPlanCode=String(
       plans.find(p=>String(p.id)===String(subscription?.plan_id||""))?.code||""
     ).toUpperCase();
+    iyCommercialPricingState.loadedCompanyId=companyId;
+
+    // Keep the shared subscription state synchronized with the same company
+    // and the same local subscription row used by this Pricing view.
+    if(subscription){
+      iyCommercialSubscriptionState.status={
+        ...(iyCommercialSubscriptionState.status||{}),
+        subscription_id:subscription.id,
+        plan_id:subscription.plan_id,
+        status:subscription.status,
+        subscription_status:subscription.status,
+        billing_interval:subscription.billing_interval
+      };
+      iyCommercialSubscriptionState.loadedCompanyId=companyId;
+    }
   }).catch(error=>{
     console.error("Commercial pricing load failed",error);
     iyCommercialPricingState.plans=[];
+    iyCommercialPricingState.currentPlanCode="";
+    iyCommercialPricingState.loadedCompanyId="";
+    iyCommercialPricingState.loadedCompanyId=companyId;
   }).finally(()=>{
     iyCommercialPricingState.loading=false;
-    if(currentPage==="pricing") render();
+    if(currentPage==="pricing")render();
   });
 }
 
@@ -2409,7 +2441,15 @@ function commercialPlanCard(plan,currentPlanCode){
 function commercialPricingPage(){
   if(!canAccessCommercialPricing()) return accessDeniedPage("Pricing","Pricing is available to Company Administrators.");
 
-  if(!iyCommercialPricingState.plans && !iyCommercialPricingState.loading){
+  const companyId=String(iyCompany?.id||"").trim();
+  if(!companyId){
+    return `<div class="iy-pricing-loading"><div class="iy-pricing-spinner"></div><b>Loading company workspace…</b><span>Preparing your commercial subscription context.</span></div>`;
+  }
+
+  if(
+    !iyCommercialPricingState.plans ||
+    iyCommercialPricingState.loadedCompanyId!==companyId
+  ){
     loadCommercialPricingPlans();
   }
 
@@ -2419,7 +2459,7 @@ function commercialPricingPage(){
 
   const plans=iyCommercialPricingState.plans||[];
   if(!plans.length){
-    return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;loadCommercialPricingPlans()">Retry</button></div>`;
+    return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;iyCommercialPricingState.loadedCompanyId='';loadCommercialPricingPlans(true)">Retry</button></div>`;
   }
 
   return `<div class="iy-pricing-shell">
@@ -2444,14 +2484,19 @@ async function commercialPricingAction(planCode){
   iyCommercialSubscriptionState.checkoutError=null;
 
   if(!iyCompany?.id){
-    nav("subscription");
+    toast("Company workspace is still loading. Please try again in a moment.");
     return;
   }
 
   try{
-    if(!iyCommercialSubscriptionState.loaded){
-      await loadCommercialSubscriptionStatus();
-    }
+    // V6.06.3 — A Pricing button click always refreshes the local subscription
+    // row for the current company before deciding between Checkout, upgrade,
+    // or downgrade. This prevents cached/null state from routing to Subscription.
+    iyCommercialSubscriptionState.loaded=false;
+    iyCommercialSubscriptionState.status=null;
+    iyCommercialSubscriptionState.error=null;
+
+    await loadCommercialSubscriptionStatus(true);
 
     const status=String(
       iyCommercialSubscriptionState.status?.status
@@ -2469,18 +2514,19 @@ async function commercialPricingAction(planCode){
       return;
     }
 
-    nav("subscription");
-    toast("Plan changes are currently available for active subscriptions and trial subscriptions.");
+    throw new Error(
+      "The current commercial subscription could not be confirmed for this company. Please refresh the page and try again."
+    );
   }catch(error){
     console.error("Pricing plan action failed",error);
     iyCommercialSubscriptionState.checkoutError=error;
-    // Stay on Pricing so the user does not get sent to a misleading empty
-    // Subscription page when the status/plan-change preparation fails.
-    if(currentPage!=="pricing")nav("pricing");
+    // Stay on Pricing; never send the user to a misleading empty Subscription
+    // page when plan-change preparation cannot resolve the current subscription.
     render();
     toast(error?.message||"The plan change could not be prepared.");
   }
 }
+
 
 
 /* V5.01 — Commercial Subscription UI. Read-only view using the existing status RPC. */
@@ -2493,13 +2539,20 @@ let iyCommercialSubscriptionState={
   checkoutLoading:false,
   checkoutError:null,
   checkoutPlans:null,
-  selectedBillingInterval:"monthly"
+  selectedBillingInterval:"monthly",
+  loadedCompanyId:""
 };
 
-async function loadCommercialSubscriptionStatus(){
-  if(iyCommercialSubscriptionState.loaded||!iyCompany?.id)return;
+async function loadCommercialSubscriptionStatus(force=false){
+  const companyId=String(iyCompany?.id||"").trim();
+  if(!companyId)return;
 
-  // V6.06.2 — Wait for an existing load instead of returning an empty state.
+  if(
+    !force &&
+    iyCommercialSubscriptionState.loaded &&
+    iyCommercialSubscriptionState.loadedCompanyId===companyId
+  )return;
+
   if(iyCommercialSubscriptionState.loading){
     await new Promise(resolve=>{
       const started=Date.now();
@@ -2512,21 +2565,20 @@ async function loadCommercialSubscriptionStatus(){
       };
       wait();
     });
-    return;
+
+    if(
+      !force &&
+      iyCommercialSubscriptionState.loaded &&
+      iyCommercialSubscriptionState.loadedCompanyId===companyId
+    )return;
   }
 
   iyCommercialSubscriptionState.loading=true;
   try{
-    /*
-     * The local subscriptions row is the authoritative source for whether the
-     * company has an active/trialing commercial subscription. The status RPC is
-     * enrichment only. A failure in that RPC must not erase a valid subscription
-     * that the user can already read through the normal RLS-protected table.
-     */
     const {data:localSubscription,error:subscriptionError}=await iySupabase
       .from("subscriptions")
       .select("id,plan_id,status,billing_interval,current_period_start,current_period_end,trial_started_at,trial_ends_at,pending_plan_id,pending_billing_interval,pending_change_type,pending_change_effective_at,pending_change_request_id,cancel_at_period_end,canceled_at,stripe_customer_id,stripe_subscription_id")
-      .eq("company_id",iyCompany.id)
+      .eq("company_id",companyId)
       .in("status",["trialing","active","past_due","suspended"])
       .maybeSingle();
 
@@ -2536,8 +2588,9 @@ async function loadCommercialSubscriptionStatus(){
     try{
       const {data,error}=await iySupabase.rpc(
         "get_company_subscription_status",
-        {p_company_id:iyCompany.id}
+        {p_company_id:companyId}
       );
+
       if(error){
         console.warn(
           "Commercial subscription status RPC failed; using local subscription row.",
@@ -2558,9 +2611,6 @@ async function loadCommercialSubscriptionStatus(){
     }else{
       iyCommercialSubscriptionState.status={
         ...(rpcStatus||{}),
-
-        // Local subscription values take precedence because they are the
-        // current database record already visible to this signed-in company user.
         subscription_id:localSubscription?.id ?? rpcStatus?.subscription_id ?? null,
         plan_id:localSubscription?.plan_id ?? rpcStatus?.plan_id ?? null,
         status:localSubscription?.status ?? rpcStatus?.subscription_status ?? null,
@@ -2599,10 +2649,12 @@ async function loadCommercialSubscriptionStatus(){
 
     iyCommercialSubscriptionState.error=null;
     iyCommercialSubscriptionState.loaded=true;
+    iyCommercialSubscriptionState.loadedCompanyId=companyId;
   }catch(error){
     console.error("Commercial subscription status load failed",error);
     iyCommercialSubscriptionState.error=error;
     iyCommercialSubscriptionState.loaded=true;
+    iyCommercialSubscriptionState.loadedCompanyId=companyId;
   }finally{
     iyCommercialSubscriptionState.loading=false;
     if(currentPage==="subscription")render();
@@ -2957,6 +3009,7 @@ async function confirmCommercialPlanChange(targetPlanCode,billingInterval,change
       iyCommercialUpgradeState.nextPlan=null;
       iyCommercialPricingState.plans=null;
       iyCommercialPricingState.currentPlanCode="";
+      iyCommercialPricingState.loadedCompanyId="";
 
       if(currentPage==="subscription"||currentPage==="pricing"){
         render();
@@ -3313,7 +3366,7 @@ function commercialSubscriptionPage(){
   if(iyCommercialSubscriptionState.error)
     return `<div class="iy-sub-empty"><b>Subscription information could not be loaded.</b><span>${esc(iyCommercialSubscriptionState.error.message||"Please try again.")}</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus()">Retry</button></div>`;
   const s=iyCommercialSubscriptionState.status;
-  if(!s)return `<div class="iy-sub-empty"><b>No commercial subscription found.</b><span>This company does not currently have a commercial subscription record.</span></div>`;
+  if(!s)return `<div class="iy-sub-empty"><b>Subscription record could not be resolved.</b><span>The company context loaded, but the current commercial subscription could not be read yet.</span><button class="hero-btn-v23" onclick="iyCommercialSubscriptionState.loaded=false;iyCommercialSubscriptionState.loadedCompanyId='';iyCommercialSubscriptionState.status=null;iyCommercialSubscriptionState.error=null;loadCommercialSubscriptionStatus(true)">Retry</button></div>`;
 
   const status=String(s.status||s.subscription_status||"").toLowerCase(), planName=s.plan_name||s.plan_code||"—";
   const interval=String(s.billing_interval||"").toLowerCase(), intervalLabel=interval==="annual"?"Annual":"Monthly";
