@@ -751,6 +751,12 @@ button,input,select,textarea{font-family:inherit}
 .iy-pricing-note{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #d9e2ec;border-radius:12px;padding:12px 15px;min-width:280px;box-shadow:0 2px 8px rgba(16,41,67,.04)}
 .iy-pricing-note-icon{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#eaf7ef;color:#147a45;font-weight:800}
 .iy-pricing-note b{display:block;font-size:13px;color:#122033}.iy-pricing-note small{display:block;color:#6d7e92;margin-top:2px;font-size:11px;line-height:1.4}
+.iy-pricing-billing-wrap{display:flex;justify-content:center;margin:0 0 22px}
+.iy-pricing-billing-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;background:#eef3f7;border:1px solid #d9e2ec;border-radius:999px;box-shadow:0 2px 8px rgba(16,41,67,.04)}
+.iy-pricing-billing-option{border:0;border-radius:999px;background:transparent;color:#52667b;padding:9px 18px;font-size:12px;font-weight:800;cursor:pointer;transition:.15s ease}
+.iy-pricing-billing-option:hover{color:#122033}
+.iy-pricing-billing-option.selected{background:#1976bd;color:#fff;box-shadow:0 2px 7px rgba(25,118,189,.18)}
+.iy-pricing-billing-note{margin:9px 0 0;text-align:center;font-size:11px;color:#6d7e92}
 .iy-pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
 .iy-pricing-card{position:relative;background:#fff;border:1px solid #d9e2ec;border-radius:16px;padding:22px;box-shadow:0 4px 14px rgba(16,41,67,.05);min-width:0}
 .iy-pricing-card.current{border-color:#1976bd;box-shadow:0 7px 22px rgba(25,118,189,.11)}
@@ -2311,6 +2317,7 @@ function issueQuickAction(){if(canEdit("issue")){nav("issue")}}
 let iyCommercialPricingState = {
   plans: null,
   currentPlanCode: "",
+  billingInterval: "monthly",
   loading: false
 };
 
@@ -2366,8 +2373,14 @@ function commercialLimit(value){
 
 function commercialPlanCard(plan,currentPlanCode){
   const isCurrent=String(plan.code||"")===String(currentPlanCode||"");
-  const annualSaving=Math.max(0,(Number(plan.monthly_price||0)*12)-Number(plan.annual_price||0));
+  const billingInterval=String(iyCommercialPricingState.billingInterval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
+  const monthly=Number(plan.monthly_price||0);
+  const annual=Number(plan.annual_price||0);
+  const annualSaving=Math.max(0,(monthly*12)-annual);
   const trialDays=Number(plan.trial_days||0);
+  const currency=plan.currency||"USD";
+  const selectedAmount=billingInterval==="annual"?annual:monthly;
+  const selectedPeriod=billingInterval==="annual"?"year":"month";
   const description=plan.description||(
     plan.code==="BASIC"?"For smaller maintenance operations."
     :plan.code==="PROFESSIONAL"?"For growing teams and multi-site operations."
@@ -2379,8 +2392,11 @@ function commercialPlanCard(plan,currentPlanCode){
     ${isCurrent?'<div class="iy-pricing-current-badge">CURRENT PLAN</div>':''}
     <div class="iy-pricing-plan-name">${esc(plan.name||plan.code)}</div>
     <div class="iy-pricing-plan-description">${esc(description)}</div>
-    <div class="iy-pricing-price-row"><span class="iy-pricing-price">${commercialMoney(plan.monthly_price,plan.currency)}</span><span class="iy-pricing-period">/ month</span></div>
-    <div class="iy-pricing-annual">${commercialMoney(plan.annual_price,plan.currency)} / year${annualSaving>0?`<span>Save ${commercialMoney(annualSaving,plan.currency)} / year</span>`:""}</div>
+    <div class="iy-pricing-price-row"><span class="iy-pricing-price">${commercialMoney(selectedAmount,currency)}</span><span class="iy-pricing-period">/ ${selectedPeriod}</span></div>
+    ${billingInterval==="annual"
+      ? `<div class="iy-pricing-annual">${commercialMoney(monthly,currency)} / month equivalent${annualSaving>0?`<span>Save ${commercialMoney(annualSaving,currency)} / year</span>`:""}</div>`
+      : `<div class="iy-pricing-annual">${commercialMoney(annual,currency)} / year${annualSaving>0?`<span>Save ${commercialMoney(annualSaving,currency)} / year</span>`:""}</div>`
+    }
     ${trialDays>0?`<div class="iy-pricing-trial">✓ ${commercialLimit(trialDays)}-day free trial</div>`:""}
     <div class="iy-pricing-divider"></div>
     <div class="iy-pricing-section-title">Workspace capacity</div>
@@ -2402,7 +2418,7 @@ function commercialPlanCard(plan,currentPlanCode){
       <li>Unlimited reports</li>
       <li>Approvals &amp; machine images</li>
     </ul>
-    <button class="iy-pricing-action ${isCurrent?'secondary':''}" type="button" ${isCurrent?'disabled':''} onclick="commercialPricingAction('${esc(plan.code)}')">${isCurrent?"Current plan":"View plan options"}</button>
+    <button class="iy-pricing-action ${isCurrent?'secondary':''}" type="button" ${isCurrent?'disabled':''} onclick="commercialPricingAction('${esc(plan.code)}')">${isCurrent?"Current plan":billingInterval==="annual"?"Choose annual plan":"Choose monthly plan"}</button>
   </article>`;
 }
 
@@ -2422,10 +2438,25 @@ function commercialPricingPage(){
     return `<div class="iy-pricing-empty"><b>No active plans are available.</b><span>The commercial plan catalogue could not be loaded.</span><button class="hero-btn-v23" onclick="iyCommercialPricingState.plans=null;loadCommercialPricingPlans()">Retry</button></div>`;
   }
 
+  const billingInterval=String(iyCommercialPricingState.billingInterval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
+  const currentBillingInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"").toLowerCase();
+  const activeIntervalNotice=String(iyCommercialSubscriptionState.status?.status||"").toLowerCase()==="active"
+    ? `Your current subscription remains on ${currentBillingInterval==="annual"?"annual":"monthly"} billing. The selector below controls the interval for a new subscription/trial or a compatible plan change.`
+    : "Choose how you want the selected plan billed. You can switch between monthly and annual before continuing.";
+
   return `<div class="iy-pricing-shell">
     <div class="iy-pricing-intro">
       <div><div class="iy-pricing-eyebrow">IY MAINTAIN PLANS</div><h3>Choose the capacity that fits your operation</h3><p>Every paid plan includes the core maintenance, parts, procurement, reporting and approval capabilities. Plans differ primarily by workspace capacity.</p></div>
       <div class="iy-pricing-note"><span class="iy-pricing-note-icon">✓</span><div><b>14-day free trial</b><small>Available on the active paid plans. No payment is required to start the trial.</small></div></div>
+    </div>
+    <div class="iy-pricing-billing-wrap">
+      <div>
+        <div class="iy-pricing-billing-toggle" role="group" aria-label="Billing frequency">
+          <button type="button" class="iy-pricing-billing-option ${billingInterval==="monthly"?"selected":""}" aria-pressed="${billingInterval==="monthly"}" onclick="selectCommercialPricingBillingInterval('monthly')">Monthly</button>
+          <button type="button" class="iy-pricing-billing-option ${billingInterval==="annual"?"selected":""}" aria-pressed="${billingInterval==="annual"}" onclick="selectCommercialPricingBillingInterval('annual')">Annual</button>
+        </div>
+        <div class="iy-pricing-billing-note">${esc(activeIntervalNotice)}</div>
+      </div>
     </div>
     <div class="iy-pricing-grid">${plans.map(p=>commercialPlanCard(p,iyCommercialPricingState.currentPlanCode)).join("")}</div>
     <div class="iy-pricing-footnote"><b>Need a custom deployment?</b><span>Enterprise arrangements can use custom capacity, onboarding and commercial terms.</span></div>
@@ -2458,14 +2489,21 @@ async function commercialPricingAction(planCode){
       ?? iyCommercialSubscriptionState.status?.subscription_status
       ?? ""
     ).toLowerCase();
+    const selectedInterval=String(iyCommercialPricingState.billingInterval||"monthly").toLowerCase();
 
     if(status==="trialing"){
+      iyCommercialSubscriptionState.selectedBillingInterval=selectedInterval;
       await startCommercialCheckout();
       return;
     }
 
     if(status==="active"){
-      await openCommercialPlanChangeModal(code);
+      const currentInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"monthly").toLowerCase();
+      if(selectedInterval!==currentInterval){
+        toast(`Your current subscription is billed ${currentInterval}. Billing interval changes are not part of the active upgrade flow yet.`);
+        return;
+      }
+      await openCommercialPlanChangeModal(code,selectedInterval);
       return;
     }
 
@@ -2476,6 +2514,15 @@ async function commercialPricingAction(planCode){
     iyCommercialSubscriptionState.checkoutError=error;
     nav("subscription");
   }
+}
+
+function selectCommercialPricingBillingInterval(interval){
+  const value=String(interval||"").toLowerCase();
+  if(!["monthly","annual"].includes(value))return;
+  iyCommercialPricingState.billingInterval=value;
+  iyCommercialSubscriptionState.selectedBillingInterval=value;
+  iyCommercialSubscriptionState.checkoutError=null;
+  render();
 }
 
 
@@ -2667,7 +2714,7 @@ async function startCommercialCheckout(){
 }
 
 /* V6.05 — Active subscription upgrade payment flow. */
-async function openCommercialPlanChangeModal(targetPlanCode){
+async function openCommercialPlanChangeModal(targetPlanCode,targetBillingInterval){
   const code=String(targetPlanCode||"").trim().toUpperCase();
   if(!code)return;
 
@@ -2705,7 +2752,8 @@ async function openCommercialPlanChangeModal(targetPlanCode){
 
   const changeType=targetOrder>currentOrder?"upgrade":"downgrade";
   const interval=String(
-    iyCommercialSubscriptionState.status?.billing_interval
+    targetBillingInterval
+    || iyCommercialSubscriptionState.status?.billing_interval
     || "monthly"
   ).toLowerCase();
 
@@ -2886,6 +2934,7 @@ async function handleSubscriptionUpgradeReturn(){
     iyCommercialUpgradeState.nextPlan=null;
     iyCommercialPricingState.plans=null;
     iyCommercialPricingState.currentPlanCode="";
+    iyCommercialPricingState.billingInterval="monthly";
 
     nav("subscription");
     render();
