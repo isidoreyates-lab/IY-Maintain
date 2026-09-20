@@ -2488,6 +2488,81 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
   .top{z-index:400!important}
 }
 </style>
+
+<style id="iy-mobile-search-fixed-v6-11-5">
+/* V6.11.5 — keep mobile search as a normal fixed header control; prevent iOS input zoom */
+@media (max-width:700px){
+  .global-search-wrap{
+    position:relative!important;
+    width:42px!important;
+    height:42px!important;
+    display:block!important;
+    flex:0 0 42px!important;
+  }
+  .global-search{
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    padding:0!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+    line-height:1!important;
+    text-indent:-9999px!important;
+    background:#f6f9fc!important;
+    border-color:#dbe5ee!important;
+    cursor:pointer!important;
+    -webkit-appearance:none!important;
+    appearance:none!important;
+    transform:none!important;
+  }
+  .global-search::placeholder{font-size:0!important;color:transparent!important}
+  .global-search:focus{
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    font-size:16px!important;
+    text-indent:-9999px!important;
+    transform:none!important;
+  }
+  /* Never expand the search control to the viewport on focus. */
+  .global-search-wrap:focus-within{
+    position:relative!important;
+    top:auto!important;left:auto!important;right:auto!important;
+    width:42px!important;height:42px!important;
+    z-index:410!important;
+  }
+  .global-search-wrap:focus-within .global-search{
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    padding:0!important;
+    font-size:16px!important;
+    text-indent:-9999px!important;
+    transform:none!important;
+    box-shadow:none!important;
+  }
+  .global-search-wrap:focus-within .global-search-icon{
+    left:0!important;
+    top:0!important;
+    width:42px!important;
+    height:42px!important;
+    display:grid!important;
+    place-items:center!important;
+    font-size:17px!important;
+  }
+  .global-search-wrap:focus-within .global-search-panel{
+    position:fixed!important;
+    top:calc(64px + env(safe-area-inset-top) + 8px)!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    max-width:none!important;
+    z-index:360!important;
+  }
+}
+</style>
 </head>
 
 <style>
