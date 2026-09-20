@@ -791,6 +791,27 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:900px){.iy-capacity-mini-grid{grid-template-columns:repeat(3,1fr)}.iy-upgrade-capacity-head{align-items:flex-start;flex-direction:column}.iy-capacity-row{grid-template-columns:120px 1fr 42px}}
 @media(max-width:560px){.iy-capacity-mini-grid{grid-template-columns:repeat(2,1fr)}.iy-capacity-row{grid-template-columns:1fr}.iy-capacity-row>strong{text-align:left}}
 
+
+
+/* V6.06 — Guided Customer Onboarding & Workspace Setup */
+.iy-onboarding-shell{min-height:100vh;background:linear-gradient(180deg,#f4f8fc 0%,#eef4fa 100%);display:flex;align-items:stretch;justify-content:center;padding:28px}
+.iy-onboarding-wrap{width:min(1180px,100%);display:grid;grid-template-columns:310px minmax(0,1fr);background:#fff;border:1px solid #d9e4ee;border-radius:22px;overflow:hidden;box-shadow:0 24px 80px rgba(18,49,78,.12)}
+.iy-onboarding-side{background:linear-gradient(155deg,#0b2d60 0%,#10478d 58%,#0b76ba 100%);color:#fff;padding:30px 24px;display:flex;flex-direction:column;min-height:720px}
+.iy-onboarding-brand{display:flex;align-items:center;gap:10px;margin-bottom:30px}.iy-onboarding-brand img{width:42px;height:42px;border-radius:11px;background:#fff;object-fit:contain}.iy-onboarding-brand-copy b{display:block;font-size:17px}.iy-onboarding-brand-copy span{display:block;font-size:10px;color:#bbd5ef;margin-top:2px}
+.iy-onboarding-eyebrow{font-size:9px;letter-spacing:.16em;font-weight:800;color:#a8c9ed;margin-bottom:9px}.iy-onboarding-side h2{font-size:27px;line-height:1.08;margin:0 0 10px;letter-spacing:-.03em}.iy-onboarding-side>p{font-size:11px;line-height:1.55;color:#d4e5f4;margin:0 0 26px}
+.iy-onboarding-progress{display:flex;flex-direction:column;gap:7px}.iy-onboarding-step{display:flex;align-items:center;gap:11px;padding:10px;border-radius:11px;color:#d8e7f5}.iy-onboarding-step.current{background:rgba(255,255,255,.13);color:#fff}.iy-onboarding-step.done{color:#d4f7e7}.iy-onboarding-step .num{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;border:1px solid rgba(255,255,255,.32);background:rgba(255,255,255,.07);flex:0 0 25px}.iy-onboarding-step.current .num{background:#fff;color:#0b4f8f;border-color:#fff}.iy-onboarding-step.done .num{background:#1bb77d;color:#fff;border-color:#1bb77d}.iy-onboarding-step-copy b{display:block;font-size:10px}.iy-onboarding-step-copy span{display:block;font-size:9px;color:#a9c5df;margin-top:2px}.iy-onboarding-step.current .iy-onboarding-step-copy span{color:#d9ebfa}
+.iy-onboarding-side-note{margin-top:auto;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);border-radius:13px;padding:12px;font-size:9px;line-height:1.5;color:#c8dcef}.iy-onboarding-side-note b{display:block;color:#fff;font-size:10px;margin-bottom:3px}
+.iy-onboarding-main{padding:34px 36px 30px;min-width:0}.iy-onboarding-main-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}.iy-onboarding-kicker{font-size:9px;letter-spacing:.16em;color:#1769d2;font-weight:800;margin-bottom:7px}.iy-onboarding-main-head h1{font-size:26px;line-height:1.08;margin:0;color:#112d47;letter-spacing:-.03em}.iy-onboarding-main-head p{font-size:11px;color:#72869a;line-height:1.5;margin:7px 0 0;max-width:650px}.iy-onboarding-account{display:flex;align-items:center;gap:8px;background:#f6f9fc;border:1px solid #e0e8ef;border-radius:10px;padding:8px 10px;white-space:nowrap}.iy-onboarding-avatar{width:30px;height:30px;border-radius:50%;background:#e7f1ff;color:#1268bd;display:grid;place-items:center;font-size:10px;font-weight:800}.iy-onboarding-account span{font-size:9px;color:#657d93}.iy-onboarding-account b{display:block;color:#1d344d;font-size:10px;margin-bottom:1px}
+.iy-onboarding-card{border:1px solid #dce6ef;border-radius:16px;background:#fbfdff;padding:22px;box-shadow:0 7px 22px rgba(22,49,75,.045)}.iy-onboarding-card h3{margin:0;color:#173650;font-size:17px}.iy-onboarding-card-sub{font-size:11px;color:#7a8da0;line-height:1.5;margin:5px 0 18px}.iy-onboarding-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.iy-onboarding-field{min-width:0}.iy-onboarding-field.full{grid-column:1/-1}.iy-onboarding-field label{display:block;font-size:10px;font-weight:800;color:#4e657b;margin:0 0 6px 2px}.iy-onboarding-field input,.iy-onboarding-field select{width:100%;height:42px;border:1px solid #d5e1eb;background:#fff;border-radius:9px;padding:0 11px;font-size:11px;color:#21384f;outline:none}.iy-onboarding-field textarea{width:100%;min-height:90px;border:1px solid #d5e1eb;background:#fff;border-radius:9px;padding:10px 11px;font-size:11px;color:#21384f;resize:vertical}.iy-onboarding-field input:focus,.iy-onboarding-field select:focus,.iy-onboarding-field textarea:focus{border-color:#6aa5d8;box-shadow:0 0 0 3px rgba(23,105,210,.08)}.iy-onboarding-field small{display:block;margin-top:4px;color:#8496a7;font-size:9px;line-height:1.4}
+.iy-onboarding-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}.iy-onboarding-summary-item{background:#fff;border:1px solid #e0e8ef;border-radius:11px;padding:11px}.iy-onboarding-summary-item span{display:block;color:#8496a6;font-size:9px}.iy-onboarding-summary-item b{display:block;color:#173650;font-size:12px;margin-top:3px}
+.iy-onboarding-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.iy-onboarding-plan{position:relative;text-align:left;border:1px solid #d9e4ed;background:#fff;border-radius:13px;padding:15px;cursor:pointer;transition:.16s ease}.iy-onboarding-plan:hover{border-color:#9dbedc;transform:translateY(-1px)}.iy-onboarding-plan.selected{border-color:#1976bd;box-shadow:0 0 0 3px rgba(25,118,189,.10);background:#f7fbff}.iy-onboarding-plan .plan-code{font-size:8px;letter-spacing:.12em;font-weight:800;color:#71869a}.iy-onboarding-plan h4{margin:5px 0 4px;font-size:15px;color:#173650}.iy-onboarding-plan p{font-size:9px;line-height:1.45;color:#7a8da0;min-height:28px;margin:0 0 10px}.iy-onboarding-price{font-size:23px;font-weight:850;color:#0f2941;letter-spacing:-.03em}.iy-onboarding-price span{font-size:10px;color:#76899b;font-weight:600}.iy-onboarding-annual{font-size:9px;color:#667c91;margin-top:3px}.iy-onboarding-save{color:#0a8a5f;font-weight:800;margin-left:3px}.iy-onboarding-current{position:absolute;top:10px;right:10px;font-size:8px;font-weight:800;letter-spacing:.08em;color:#1769d2}
+.iy-onboarding-toggle{display:flex;gap:5px;background:#eef4fa;border:1px solid #dbe5ee;border-radius:10px;padding:4px;width:max-content;margin:2px 0 15px}.iy-onboarding-toggle button{border:0;background:transparent;color:#587089;border-radius:7px;padding:8px 15px;font-size:10px;font-weight:800}.iy-onboarding-toggle button.active{background:#1976bd;color:#fff;box-shadow:0 3px 9px rgba(25,118,189,.18)}
+.iy-onboarding-location-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px}.iy-onboarding-location-box{background:#fff;border:1px solid #e0e8ef;border-radius:12px;padding:13px}.iy-onboarding-location-box b{display:block;color:#193650;font-size:11px}.iy-onboarding-location-box span{display:block;color:#8092a2;font-size:9px;line-height:1.45;margin-top:4px}
+.iy-onboarding-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px;padding-top:18px;border-top:1px solid #e8eef3}.iy-onboarding-footer-note{font-size:9px;color:#8396a7;line-height:1.45}.iy-onboarding-actions{display:flex;gap:8px}.iy-onboarding-btn{border:1px solid #d2e0eb;background:#fff;color:#4d657c;border-radius:9px;padding:10px 15px;font-size:10px;font-weight:800;cursor:pointer}.iy-onboarding-btn.primary{border-color:#1976bd;background:#1976bd;color:#fff;box-shadow:0 5px 14px rgba(25,118,189,.15)}.iy-onboarding-btn.primary:hover{background:#1468a8}.iy-onboarding-btn:disabled{opacity:.55;cursor:not-allowed}.iy-onboarding-alert{display:none;margin-bottom:15px;padding:11px 13px;border:1px solid #efc8c8;background:#fff6f6;color:#9f3030;border-radius:10px;font-size:10px;line-height:1.45}.iy-onboarding-success{margin-bottom:15px;padding:11px 13px;border:1px solid #c9eadb;background:#f3fbf7;color:#176b4c;border-radius:10px;font-size:10px;line-height:1.45}
+.iy-onboarding-complete{display:flex;flex-direction:column;align-items:center;text-align:center;padding:35px 15px}.iy-onboarding-complete-mark{width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:#e8f8f1;color:#12805a;font-size:30px;font-weight:900;margin-bottom:15px}.iy-onboarding-complete h2{font-size:24px;color:#153650;margin:0}.iy-onboarding-complete p{font-size:11px;color:#71869a;line-height:1.55;max-width:580px;margin:8px 0 0}.iy-onboarding-complete-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;max-width:700px;margin-top:20px}.iy-onboarding-complete-stat{border:1px solid #e0e8ef;background:#fff;border-radius:11px;padding:12px}.iy-onboarding-complete-stat span{display:block;font-size:9px;color:#8395a6}.iy-onboarding-complete-stat b{display:block;font-size:12px;color:#173650;margin-top:3px}
+@media(max-width:900px){.iy-onboarding-shell{padding:12px}.iy-onboarding-wrap{grid-template-columns:1fr}.iy-onboarding-side{min-height:auto;padding:20px}.iy-onboarding-side h2{font-size:23px}.iy-onboarding-progress{display:grid;grid-template-columns:repeat(5,1fr)}.iy-onboarding-step{padding:8px;justify-content:center}.iy-onboarding-step-copy{display:none}.iy-onboarding-side-note{margin-top:15px}.iy-onboarding-main{padding:22px 18px}.iy-onboarding-plans{grid-template-columns:1fr}.iy-onboarding-summary,.iy-onboarding-complete-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.iy-onboarding-shell{padding:0}.iy-onboarding-wrap{border-radius:0;min-height:100vh}.iy-onboarding-side{padding:18px 15px}.iy-onboarding-progress{gap:4px}.iy-onboarding-step .num{width:22px;height:22px;flex-basis:22px}.iy-onboarding-main{padding:18px 14px}.iy-onboarding-main-head{flex-direction:column}.iy-onboarding-account{width:100%}.iy-onboarding-form-grid,.iy-onboarding-location-preview,.iy-onboarding-summary,.iy-onboarding-complete-grid{grid-template-columns:1fr}.iy-onboarding-field.full{grid-column:auto}.iy-onboarding-footer{align-items:flex-start;flex-direction:column}.iy-onboarding-actions{width:100%}.iy-onboarding-actions .iy-onboarding-btn{flex:1}.iy-onboarding-main-head h1{font-size:23px}}
+
 </style>
 
 <style>
@@ -2063,6 +2084,20 @@ let globalSearchOpen=false;
 let globalSearchQuery="";
 let mobileMenuOpen=false;
 
+let iyOnboardingState={
+  active:false,
+  step:1,
+  loading:false,
+  error:"",
+  profile:{full_name:""},
+  company:{name:"",address:"",telephone:"",email:"",website:""},
+  planCode:"BASIC",
+  billingInterval:"monthly",
+  sites:[],
+  departments:[],
+  created:false
+};
+
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function loadDB(){return clone(INITIAL_DATA)}
 // Supabase is the production source of truth. No operational data is persisted in browser storage.
@@ -2083,6 +2118,7 @@ function logActivity(action,details=""){
 }
 function initials(name){return String(name||"A").trim().split(/\\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"A"}
 function nav(page){
+ if(iyOnboardingState?.active){toast("Please complete your workspace setup first.");return}
  if((page==="pricing" || page==="subscription" || page==="billing") && !canAccessCommercialPricing()){toast("You do not have permission to open this section.");return}
  if(!canAccess(page)){toast("You do not have permission to open this section.");return}
  currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()
@@ -2186,6 +2222,7 @@ function renderGlobalSearch(){
 }
 function renderGlobalSearchPanel(){const p=document.getElementById('globalSearchPanel');if(p){const q=globalSearchQuery.trim(),results=globalSearchResults(q);p.style.display=globalSearchOpen?'block':'none';p.innerHTML=q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`;}}
 function render(){
+ if(iyOnboardingState?.active){renderGuidedOnboarding();return;}
  const s=db.settings;
  if(iyCloudReady&&!document.getElementById("iyCloudBanner")){const b=document.createElement("div");b.id="iyCloudBanner";b.className="iy-cloud-banner";b.textContent="☁ Connected • "+(iyCompany?.name||"Company");document.body.appendChild(b);setTimeout(()=>b.remove(),2600)}
  document.getElementById("app").innerHTML=`
@@ -5630,7 +5667,7 @@ async function logoutUser(){
   await cloudAudit("Logged out","User signed out");
   await iySupabase.auth.signOut();
  }catch(e){console.warn("Logout audit/signout warning",e)}
- iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
+ iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;iyOnboardingState={active:false,step:1,loading:false,error:"",profile:{full_name:""},company:{name:"",address:"",telephone:"",email:"",website:""},planCode:"BASIC",billingInterval:"monthly",sites:[],departments:[],created:false};profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
  renderLogin("signedout");
 }
 
@@ -5767,6 +5804,229 @@ function checkForInviteLink(){
  return false;
 }
 
+
+function onboardingStepMeta(){
+ return [
+  {label:"Profile",desc:"Complete your identity"},
+  {label:"Company",desc:"Set up company details"},
+  {label:"Plan",desc:"Choose plan & billing"},
+  {label:"Site",desc:"Create your first site"},
+  {label:"Department",desc:"Create your first department"}
+ ];
+}
+function onboardingStepLabel(){
+ const meta=onboardingStepMeta();
+ return meta[Math.max(1,Math.min(meta.length,Number(iyOnboardingState.step)||1))-1]?.label||"Setup";
+}
+function onboardingEsc(v){return esc(v)}
+function onboardingField(value){return String(value??"")}
+function onboardingPlans(){return iyOnboardingState._plans||[]}
+async function loadOnboardingPlans(){
+ if(iyOnboardingState._plans||iyOnboardingState.loading)return;
+ iyOnboardingState.loading=true;
+ try{
+  const {data,error}=await iySupabase.from("subscription_plans").select("id,code,name,description,monthly_price,annual_price,currency,trial_days,max_sites,max_departments,max_employees,max_machines,max_parts,max_suppliers,is_active,display_order").eq("is_active",true).order("display_order",{ascending:true});
+  if(error)throw error;
+  iyOnboardingState._plans=Array.isArray(data)?data:[];
+  if(!iyOnboardingState._plans.length)throw new Error("No active subscription plans are available.");
+ }catch(e){iyOnboardingState.error=e?.message||"Plans could not be loaded.";}
+ finally{iyOnboardingState.loading=false;render();}
+}
+function onboardingPlanCard(plan){
+ const code=String(plan?.code||"").toUpperCase();
+ const selected=code===String(iyOnboardingState.planCode||"").toUpperCase();
+ const monthly=Number(plan?.monthly_price||0),annual=Number(plan?.annual_price||0),saving=Math.max(0,monthly*12-annual);
+ const interval=String(iyOnboardingState.billingInterval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
+ const amount=interval==="annual"?annual:monthly;
+ const secondary=interval==="annual"
+   ? `${commercialMoney(annual,plan?.currency||"USD")} billed yearly`
+   : `${commercialMoney(annual,plan?.currency||"USD")} / year${saving>0?` <span class="iy-onboarding-save">Save ${commercialMoney(saving,plan?.currency||"USD")}/year</span>`:""}`;
+ return `<button type="button" class="iy-onboarding-plan ${selected?"selected":""}" onclick="selectOnboardingPlan('${esc(code)}')">
+   ${selected?'<span class="iy-onboarding-current">SELECTED</span>':''}
+   <div class="plan-code">${esc(code)}</div>
+   <h4>${esc(plan?.name||code)}</h4>
+   <p>${esc(plan?.description||"")}</p>
+   <div class="iy-onboarding-price">${commercialMoney(amount,plan?.currency||"USD")} <span>/ ${interval==="annual"?"year":"month"}</span></div>
+   <div class="iy-onboarding-annual">${secondary}</div>
+   <div class="iy-onboarding-location-preview" style="margin-top:10px;grid-template-columns:1fr 1fr">
+    <div><span style="font-size:8px;color:#8295a6">SITES</span><b style="font-size:10px;color:#173650">${commercialLimit(plan?.max_sites)}</b></div>
+    <div><span style="font-size:8px;color:#8295a6">EMPLOYEES</span><b style="font-size:10px;color:#173650">${commercialLimit(plan?.max_employees)}</b></div>
+   </div>
+  </button>`;
+}
+function selectOnboardingPlan(code){
+ iyOnboardingState.planCode=String(code||"BASIC").toUpperCase();
+ iyOnboardingState.error="";
+ render();
+}
+function selectOnboardingBilling(interval){
+ const value=String(interval||"").toLowerCase();
+ if(!["monthly","annual"].includes(value))return;
+ iyOnboardingState.billingInterval=value;
+ iyOnboardingState.error="";
+ render();
+}
+function onboardingProfileComplete(){return String(iyOnboardingState.profile.full_name||"").trim().length>=2}
+function onboardingCompanyComplete(){const c=iyOnboardingState.company||{};return String(c.name||"").trim().length>=2}
+function onboardingCanContinue(){
+ const step=Number(iyOnboardingState.step)||1;
+ if(step===1)return onboardingProfileComplete();
+ if(step===2)return onboardingCompanyComplete();
+ if(step===3)return !!String(iyOnboardingState.planCode||"")&&["monthly","annual"].includes(String(iyOnboardingState.billingInterval||""));
+ if(step===4)return String(document.getElementById("iyOnboardSiteName")?.value||"").trim().length>=2;
+ if(step===5)return String(document.getElementById("iyOnboardDeptName")?.value||"").trim().length>=2;
+ return true;
+}
+function onboardingSetError(message){iyOnboardingState.error=message||"";const el=document.getElementById("iyOnboardingError");if(el){el.textContent=message||"";el.style.display=message?"block":"none";}}
+function onboardingReadForm(){
+ const get=id=>document.getElementById(id)?.value??"";
+ if(iyOnboardingState.step===1)iyOnboardingState.profile.full_name=get("iyOnboardFullName").trim();
+ if(iyOnboardingState.step===2){iyOnboardingState.company.name=get("iyOnboardCompanyName").trim();iyOnboardingState.company.address=get("iyOnboardCompanyAddress").trim();iyOnboardingState.company.telephone=get("iyOnboardCompanyTelephone").trim();iyOnboardingState.company.email=get("iyOnboardCompanyEmail").trim();iyOnboardingState.company.website=get("iyOnboardCompanyWebsite").trim();}
+}
+async function saveOnboardingProfile(){
+ const name=String(iyOnboardingState.profile.full_name||"").trim();
+ if(name.length<2)throw new Error("Please enter your full name.");
+ const {data,error}=await iySupabase.auth.updateUser({data:{...(iyAuthUser?.user_metadata||{}),full_name:name}});
+ if(error)throw error;
+ iyAuthUser=data?.user||iyAuthUser;
+}
+async function createOnboardingWorkspace(){
+ const company=iyOnboardingState.company||{};
+ const planCode=String(iyOnboardingState.planCode||"BASIC").toUpperCase();
+ const interval=String(iyOnboardingState.billingInterval||"monthly").toLowerCase();
+ const {data,error}=await iySupabase.rpc("create_company_workspace",{p_company_name:company.name,p_plan_code:planCode,p_billing_interval:interval});
+ if(error)throw error;
+ const created=Array.isArray(data)?(data[0]||null):(data||null);
+ const companyId=created?.company_id, membershipId=created?.membership_id, subscriptionId=created?.subscription_id;
+ if(!companyId||!membershipId||!subscriptionId)throw new Error("The workspace could not be created. The server did not return a complete onboarding result.");
+
+ const {data:companyRow,error:companyError}=await iySupabase.from("companies").select("*").eq("id",companyId).single();
+ if(companyError)throw companyError;
+ iyCompany=companyRow;
+ iyOnboardingState.created=true;
+ const settingsPayload={
+  p_company_id:companyId,
+  p_company_name:company.name||null,
+  p_address:company.address||null,
+  p_telephone:String(company.telephone||""),
+  p_email:company.email||iyAuthUser?.email||null,
+  p_website:company.website||null,
+  p_store_manager:null,
+  p_prepared_by:null,
+  p_department:null,
+  p_default_minimum_stock:3,
+  p_report_footer:null
+ };
+ const {data:settingsResult,error:settingsError}=await iySupabase.rpc("manage_company_settings",settingsPayload);
+ if(settingsError)throw settingsError;
+ if(!settingsResult?.success)throw new Error("The company was created, but its company details could not be saved.");
+
+ const {data:member,error:memberError}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,site_id,department_id,is_active,last_login_at,signature_path").eq("id",membershipId).maybeSingle();
+ if(memberError)throw memberError;
+ iyMembership=member;
+ iyOnboardingState.created=true;
+ const locations=await loadAdminLocationOptions();
+ iyOnboardingState.sites=locations.sites;
+ iyOnboardingState.departments=locations.departments;
+ return created;
+}
+async function createOnboardingSite(){
+ const name=String(document.getElementById("iyOnboardSiteName")?.value||"").trim();
+ const code=String(document.getElementById("iyOnboardSiteCode")?.value||"").trim();
+ const address=String(document.getElementById("iyOnboardSiteAddress")?.value||"").trim();
+ if(name.length<2)throw new Error("Please enter a site name.");
+ if(!iyCompany?.id)throw new Error("Your company workspace is not ready.");
+ const {data,error}=await iySupabase.rpc("create_company_site",{p_company_id:iyCompany.id,p_site_name:name,p_site_code:code||null,p_site_address:address||null});
+ if(error)throw error;
+ const row=Array.isArray(data)?(data[0]||null):(data||null);
+ if(!row?.site_id)throw new Error("The site was not created.");
+ await loadAdminLocationOptions();
+ return row;
+}
+async function createOnboardingDepartment(){
+ const name=String(document.getElementById("iyOnboardDeptName")?.value||"").trim();
+ const code=String(document.getElementById("iyOnboardDeptCode")?.value||"").trim();
+ const siteId=iyOnboardingState.sites?.[0]?.id||null;
+ if(name.length<2)throw new Error("Please enter a department name.");
+ if(!siteId)throw new Error("Create a site before creating the department.");
+ const {data,error}=await iySupabase.rpc("create_company_department",{p_company_id:iyCompany.id,p_site_id:siteId,p_department_name:name,p_department_code:code||null});
+ if(error)throw error;
+ const row=Array.isArray(data)?(data[0]||null):(data||null);
+ if(!row?.department_id)throw new Error("The department was not created.");
+ await loadAdminLocationOptions();
+ return row;
+}
+async function onboardingNext(){
+ if(iyOnboardingState.loading)return;
+ onboardingReadForm();onboardingSetError("");
+ try{
+  const step=Number(iyOnboardingState.step)||1;
+  if(step===1){await saveOnboardingProfile();iyOnboardingState.step=2;}
+  else if(step===2){if(!onboardingCompanyComplete())throw new Error("Please enter your company name.");iyOnboardingState.step=3;}
+  else if(step===3){
+   iyOnboardingState.loading=true;render();
+   if(!iyOnboardingState.created || !iyCompany?.id){
+     await createOnboardingWorkspace();
+   }else{
+     await loadAdminLocationOptions();
+   }
+   iyOnboardingState.loading=false;iyOnboardingState.step=4;
+  }
+  else if(step===4){iyOnboardingState.loading=true;render();await createOnboardingSite();iyOnboardingState.loading=false;iyOnboardingState.step=5;}
+  else if(step===5){iyOnboardingState.loading=true;render();await createOnboardingDepartment();iyOnboardingState.loading=false;iyOnboardingState.step=6;}
+  else if(step===6){return finishOnboarding();}
+  iyOnboardingState.loading=false;render();
+ }catch(e){iyOnboardingState.loading=false;onboardingSetError(e?.message||"Onboarding could not continue. Please try again.");render();}
+}
+function onboardingBack(){
+ if(iyOnboardingState.loading)return;
+ const step=Number(iyOnboardingState.step)||1;
+ if(step<=1)return;
+ iyOnboardingState.step=Math.max(1,step-1);iyOnboardingState.error="";render();
+}
+async function finishOnboarding(){
+ if(iyOnboardingState.loading)return;
+ if(!iyCompany||!iyMembership)return alert("Workspace setup is incomplete. Please refresh and continue setup.");
+ iyOnboardingState.loading=true;render();
+ try{
+  await loadCompanyContext(iyAuthUser);
+  iySite=iyCompanySites.find(s=>true)||null;
+  const firstSite=iyCompanySites[0]||null;
+  iyDepartment=firstSite?(iyCompanyDepartments.find(d=>String(d.site_id)===String(firstSite.id))||null):null;
+  if(!firstSite||!iyDepartment)throw new Error("Your workspace setup is not complete. A Site and Department are required.");
+  if(iyMembership){
+   const {data:member,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,site_id,department_id,is_active,last_login_at,signature_path").eq("id",iyMembership.id).maybeSingle();
+   if(error)throw error;
+   iyMembership=member;
+  }
+  // Company Administrators operate company-wide, but a default write scope is useful immediately.
+  iyWriteSiteId=firstSite.id;iyWriteDepartmentId=iyDepartment.id;
+  iyOnboardingState.step=6;iyOnboardingState.loading=false;
+  await finishAuthenticatedSessionSetup();
+ }catch(e){iyOnboardingState.loading=false;onboardingSetError(e?.message||"Your workspace could not be opened yet.");render();}
+}
+function renderGuidedOnboarding(){
+ if(!iyOnboardingState._plans&&!iyOnboardingState.loading&&Number(iyOnboardingState.step)===3)loadOnboardingPlans();
+ const step=Number(iyOnboardingState.step)||1;
+ if(step>=3&&step<=5&&iyCompany&&iyOnboardingState.created&&!iyOnboardingState.sites?.length)loadAdminLocationOptions().then(loc=>{iyOnboardingState.sites=loc.sites;iyOnboardingState.departments=loc.departments;render();}).catch(()=>{});
+ const meta=onboardingStepMeta();
+ const current=step>5?5:Math.max(1,step);
+ const steps=meta.map((m,i)=>{const n=i+1;const cls=n===current?"current":n<current?"done":"";return `<div class="iy-onboarding-step ${cls}"><span class="num">${n<current?"✓":n}</span><span class="iy-onboarding-step-copy"><b>${m.label}</b><span>${m.desc}</span></span></div>`}).join("");
+ const name=iyOnboardingState.profile.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.email?.split("@")[0]||"User";
+ const error=iyOnboardingState.error?`<div id="iyOnboardingError" class="iy-onboarding-alert" style="display:block">${esc(iyOnboardingState.error)}</div>`:`<div id="iyOnboardingError" class="iy-onboarding-alert"></div>`;
+ let content="";
+ let title="Complete your IY Maintain setup";
+ let subtitle="We'll guide you through the few steps required before your maintenance workspace opens.";
+ if(step===1){title="Complete your profile";subtitle="Start with your account details. Your role will be Company Administrator for the new workspace.";content=`<div class="iy-onboarding-card"><h3>Profile details</h3><p class="iy-onboarding-card-sub">This information identifies you throughout reports, approvals and the IY Maintain workspace.</p><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Full name *</label><input id="iyOnboardFullName" value="${esc(iyOnboardingState.profile.full_name)}" autocomplete="name" placeholder="Your full name"></div><div class="iy-onboarding-field"><label>Email address</label><input value="${esc(iyAuthUser?.email||"")}" disabled></div></div><div class="iy-onboarding-summary"><div class="iy-onboarding-summary-item"><span>Account</span><b>Company Administrator</b></div><div class="iy-onboarding-summary-item"><span>Workspace access</span><b>Setup required</b></div><div class="iy-onboarding-summary-item"><span>Next</span><b>Company details</b></div></div></div>`;}
+ else if(step===2){title="Set up your company";subtitle="Enter the company information that will identify the workspace and appear in your reports.";const c=iyOnboardingState.company||{};content=`<div class="iy-onboarding-card"><h3>Company details</h3><p class="iy-onboarding-card-sub">Only the company name is required to create the workspace. The remaining fields can be completed now or refined later in Settings.</p><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Company name *</label><input id="iyOnboardCompanyName" value="${esc(c.name)}" autocomplete="organization" placeholder="Company name"></div><div class="iy-onboarding-field"><label>Company email</label><input id="iyOnboardCompanyEmail" type="email" value="${esc(c.email||iyAuthUser?.email||"")}" placeholder="company@example.com"></div><div class="iy-onboarding-field"><label>Telephone</label><input id="iyOnboardCompanyTelephone" value="${esc(c.telephone)}" placeholder="Telephone number"></div><div class="iy-onboarding-field"><label>Website</label><input id="iyOnboardCompanyWebsite" value="${esc(c.website)}" placeholder="https://example.com"></div><div class="iy-onboarding-field full"><label>Company address</label><textarea id="iyOnboardCompanyAddress" placeholder="Company address">${esc(c.address)}</textarea></div></div></div>`;}
+ else if(step===3){title="Choose your plan and billing";subtitle="Select the capacity you need and decide whether you want to be billed monthly or annually.";const plans=onboardingPlans();content=`<div class="iy-onboarding-card"><h3>Plans & billing frequency</h3><p class="iy-onboarding-card-sub">Your selected plan starts with the configured 14-day free trial. No payment is required to begin the trial.</p><div class="iy-onboarding-toggle" role="group" aria-label="Billing frequency"><button type="button" class="${iyOnboardingState.billingInterval==="monthly"?"active":""}" onclick="selectOnboardingBilling('monthly')">Monthly</button><button type="button" class="${iyOnboardingState.billingInterval==="annual"?"active":""}" onclick="selectOnboardingBilling('annual')">Annual</button></div><div class="iy-onboarding-plans">${plans.length?plans.map(onboardingPlanCard).join(""):`<div style="grid-column:1/-1;padding:28px;text-align:center;color:#74879a;font-size:11px">Loading available plans…</div>`}</div></div>`;}
+ else if(step===4){title="Create your first site";subtitle="Your maintenance records need an operating location. Start with the first site your company will manage.";content=`<div class="iy-onboarding-card"><h3>First site</h3><p class="iy-onboarding-card-sub">You can add more sites later according to your plan capacity. This first site will be used as your starting operating location.</p><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Site name *</label><input id="iyOnboardSiteName" placeholder="e.g. Ahafo Mine"></div><div class="iy-onboarding-field"><label>Site code</label><input id="iyOnboardSiteCode" placeholder="e.g. AHAFO"></div><div class="iy-onboarding-field full"><label>Site address</label><textarea id="iyOnboardSiteAddress" placeholder="Site address or location">${esc(iyOnboardingState.company?.address||"")}</textarea></div></div><div class="iy-onboarding-location-preview"><div class="iy-onboarding-location-box"><b>Company</b><span>${esc(iyOnboardingState.company?.name||"")}</span></div><div class="iy-onboarding-location-box"><b>Selected plan</b><span>${esc(iyOnboardingState.planCode)} · ${iyOnboardingState.billingInterval==="annual"?"Annual":"Monthly"}</span></div></div></div>`;}
+ else if(step===5){const site=iyOnboardingState.sites?.[0]||null;title="Create your first department";subtitle="Departments belong to a site and give your operational records the scope they need.";content=`<div class="iy-onboarding-card"><h3>First department</h3><p class="iy-onboarding-card-sub">Create the first department under <b>${esc(site?.name||"your first site")}</b>. More departments can be added later.</p><div class="iy-onboarding-form-grid"><div class="iy-onboarding-field"><label>Department name *</label><input id="iyOnboardDeptName" placeholder="e.g. Mobile Maintenance"></div><div class="iy-onboarding-field"><label>Department code</label><input id="iyOnboardDeptCode" placeholder="e.g. MM"></div></div><div class="iy-onboarding-location-preview"><div class="iy-onboarding-location-box"><b>Site</b><span>${esc(site?.name||"Not created")}</span></div><div class="iy-onboarding-location-box"><b>Workspace</b><span>${esc(iyOnboardingState.company?.name||"")} · ${esc(iyOnboardingState.planCode)}</span></div></div></div>`;}
+ else {title="Your workspace is ready";subtitle="The basic structure is complete. Your operational modules are now ready for use.";content=`<div class="iy-onboarding-card"><div class="iy-onboarding-complete"><div class="iy-onboarding-complete-mark">✓</div><h2>Setup complete</h2><p>${esc(name)}, your IY Maintain workspace has been created and your first operating location is ready. The full application can now open.</p><div class="iy-onboarding-complete-grid"><div class="iy-onboarding-complete-stat"><span>Company</span><b>${esc(iyOnboardingState.company?.name||iyCompany?.name||"")}</b></div><div class="iy-onboarding-complete-stat"><span>Plan</span><b>${esc(iyOnboardingState.planCode)} · ${iyOnboardingState.billingInterval==="annual"?"Annual":"Monthly"}</b></div><div class="iy-onboarding-complete-stat"><span>Workspace</span><b>${esc(iyOnboardingState.sites?.[0]?.name||"Site ready")} · ${esc(iyOnboardingState.departments?.[0]?.name||"Department ready")}</b></div></div></div></div>`;}
+ const primaryLabel=step===6?"Open IY Maintain":iyOnboardingState.loading?"Saving…":"Continue";
+ document.getElementById("app").innerHTML=`<div class="iy-onboarding-shell"><div class="iy-onboarding-wrap"><aside class="iy-onboarding-side"><div class="iy-onboarding-brand"><img src="${IY_BRAND_ICON}" alt="IY"><div class="iy-onboarding-brand-copy"><b>IY Maintain</b><span>IY Digital Innovations</span></div></div><div class="iy-onboarding-eyebrow">GUIDED WORKSPACE SETUP</div><h2>Let's get your maintenance workspace ready.</h2><p>Complete these setup steps once. After the first Site and Department are created, the full IY Maintain application will open.</p><div class="iy-onboarding-progress">${steps}</div><div class="iy-onboarding-side-note"><b>Why this setup is required</b>IY Maintain uses Site and Department scope throughout maintenance, parts, machines, inventory and reporting so your company's data has a clear operating structure from day one.</div></aside><main class="iy-onboarding-main"><div class="iy-onboarding-main-head"><div><div class="iy-onboarding-kicker">STEP ${Math.min(step,6)} OF 6</div><h1>${esc(title)}</h1><p>${esc(subtitle)}</p></div><div class="iy-onboarding-account"><div class="iy-onboarding-avatar">${esc(initials(name))}</div><div><b>${esc(name)}</b><span>${esc(iyAuthUser?.email||"")}</span></div></div></div>${error}${content}<div class="iy-onboarding-footer"><div class="iy-onboarding-footer-note">${step===6?"Your operational modules are now available.":"You can continue through the setup steps without entering the main application yet."}</div><div class="iy-onboarding-actions">${step>1&&step<6?`<button type="button" class="iy-onboarding-btn" onclick="onboardingBack()">Back</button>`:""}<button type="button" class="iy-onboarding-btn primary" ${step===3&&(!onboardingPlans().length||iyOnboardingState.loading)?"disabled":iyOnboardingState.loading?"disabled":""} onclick="onboardingNext()">${primaryLabel}</button></div></div></main></div></div>`;
+}
+
 function renderLogin(mode="signin"){
  const signup=mode==="signup";
  const forgot=mode==="forgot";
@@ -5800,12 +6060,12 @@ function renderLogin(mode="signin"){
   </section>
   <section class="iy-auth-panel"><div class="iy-auth-card">
    <div class="iy-auth-logo"><img src="${IY_BRAND_ICON}" alt="IY"></div>
-   <div class="iy-auth-kicker">${forgot?"ACCOUNT RECOVERY":signup?"CREATE WORKSPACE":signedout?"SECURE SIGN IN":"SECURE SIGN IN"}</div>
+   <div class="iy-auth-kicker">${forgot?"ACCOUNT RECOVERY":signup?"CREATE YOUR ACCOUNT":signedout?"SECURE SIGN IN":"SECURE SIGN IN"}</div>
    <h2>${forgot?"Reset your password":signup?"Create your IY Maintain account":"Welcome back"}</h2>
-   <p class="iy-auth-sub">${forgot?"Enter your email and we'll send you a password reset link.":signup?"Create your secure maintenance workspace and get started.":signedout?"You have been signed out securely. Sign in again to return to your maintenance workspace.":"Sign in to access your secure CMMS maintenance workspace."}</p>
+   <p class="iy-auth-sub">${forgot?"Enter your email and we'll send you a password reset link.":signup?"Create your secure account first. After login, IY Maintain will guide you through company, subscription and workspace setup.":signedout?"You have been signed out securely. Sign in again to return to your maintenance workspace.":"Sign in to access your secure CMMS maintenance workspace."}</p>
    <div id="iyAuthError" class="iy-auth-error"></div><div id="iyAuthSuccess" class="iy-auth-success"></div>
    <form class="iy-auth-form" onsubmit="return handleAuthSubmit(event)">
-    ${signup?`<div class="iy-auth-field"><label>Full name</label><input id="auth_name" autocomplete="name" required placeholder="Your full name"></div><div class="iy-auth-field"><label>Company name</label><input id="auth_company" autocomplete="organization" required placeholder="Your company name"></div>`:""}
+    ${signup?`<div class="iy-auth-field"><label>Full name</label><input id="auth_name" autocomplete="name" required placeholder="Your full name"></div>`:""}
     <div class="iy-auth-field"><label>Email address</label><input id="auth_email" type="email" autocomplete="email" required placeholder="you@company.com"></div>
     ${!forgot?`<div class="iy-auth-field"><label>Password</label><input id="auth_password" type="password" autocomplete="${signup?"new-password":"current-password"}" required minlength="6" placeholder="••••••••"></div>`:""}
     ${signup?`<div class="iy-auth-field"><label>Confirm password</label><input id="auth_confirm" type="password" autocomplete="new-password" required minlength="6" placeholder="••••••••"></div>`:""}
@@ -5825,9 +6085,9 @@ async function handleAuthSubmit(event){
    const {error}=await iySupabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
    if(error)throw error; authMessage("success","Password reset instructions have been sent to your email.");
   } else if(mode==="signup") {
-   const name=document.getElementById("auth_name").value.trim(), company=document.getElementById("auth_company").value.trim(), password=document.getElementById("auth_password").value, confirm=document.getElementById("auth_confirm").value;
+   const name=document.getElementById("auth_name").value.trim(), password=document.getElementById("auth_password").value, confirm=document.getElementById("auth_confirm").value;
    if(password!==confirm)throw new Error("Passwords do not match.");
-   const {data,error}=await iySupabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.href,data:{full_name:name,company_name:company}}});
+   const {data,error}=await iySupabase.auth.signUp({email,password,options:{emailRedirectTo:window.location.href,data:{full_name:name}}});
    if(error)throw error;
    if(data.session){await completeAuthenticatedSession(data.user);}
    else authMessage("success","Account created. Please check your email to confirm the account, then sign in.");
@@ -5844,7 +6104,41 @@ async function handleAuthSubmit(event){
 
 async function completeAuthenticatedSession(user){
  iyAuthUser=user;
- await loadCompanyContext(user);
+ const context=await loadCompanyContext(user);
+ if(context?.needsOnboarding){
+   loggedIn=true;
+   iyOnboardingState.active=true;
+   iyOnboardingState.step=context.step||1;
+   iyOnboardingState.profile.full_name=user?.user_metadata?.full_name||"";
+   iyOnboardingState.company={name:"",address:"",telephone:"",email:user?.email||"",website:""};
+   iyOnboardingState.planCode="BASIC";
+   iyOnboardingState.billingInterval="monthly";
+   iyOnboardingState.sites=[];
+   iyOnboardingState.departments=[];
+   iyOnboardingState.error="";
+   iyOnboardingState.loading=false;
+   if(context.company){
+     iyOnboardingState.company={
+       name:context.company.name||"",
+       address:context.company.address||"",
+       telephone:context.company.telephone||"",
+       email:context.company.email||user?.email||"",
+       website:context.company.website||""
+     };
+   }
+   if(context.subscription){
+     iyOnboardingState.planCode=String(context.subscription.plan_code||"BASIC").toUpperCase();
+     iyOnboardingState.billingInterval=String(context.subscription.billing_interval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
+   }
+   iyOnboardingState.sites=context.sites||[];
+   iyOnboardingState.departments=context.departments||[];
+   render();
+   return;
+ }
+ await finishAuthenticatedSessionSetup();
+}
+
+async function finishAuthenticatedSessionSetup(){
  if(isCompanyWideScope()){await loadAdminLocationOptions();initializeWriteScope();}
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
@@ -5853,8 +6147,9 @@ async function completeAuthenticatedSession(user){
  await migrateLegacyProfileAvatar();
  const profileAvatar=await loadProfileAvatar();
  const signatureUrl=await loadCurrentUserSignature();
+ iyOnboardingState.active=false;iyOnboardingState.loading=false;iyOnboardingState.error="";
  loggedIn=true;
- db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
+ db.user={name:iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.email?.split("@")[0]||"User",email:iyAuthUser?.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
  if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
  render();
@@ -5865,30 +6160,40 @@ async function loadCompanyContext(user){
  let {data:membership,error}=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,site_id,department_id,is_active,last_login_at,signature_path").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
  if(error)throw error;
  if(!membership){
-   const companyName=user.user_metadata?.company_name?.trim();
-   if(!companyName)throw new Error("Your account is not linked to a company. Please ask a company administrator to add your membership.");
-   const {data:provision,error:provisionError}=await iySupabase.rpc("provision_company_for_user",{p_company_name:companyName,p_full_name:user.user_metadata?.full_name||user.email?.split("@")[0]||"User"});
-   if(provisionError)throw provisionError;
-   const companyId=Array.isArray(provision)?provision[0]?.company_id:provision?.company_id;
-   if(!companyId)throw new Error("Your company workspace could not be created.");
-   const res=await iySupabase.from("memberships").select("id,company_id,user_id,user_code,full_name,role,department,site_id,department_id,is_active,last_login_at,signature_path").eq("user_id",user.id).eq("is_active",true).limit(1).maybeSingle();
-   if(res.error)throw res.error; membership=res.data;
+   return {needsOnboarding:true,step:1,company:null,subscription:null,sites:[],departments:[]};
  }
  iyMembership=membership;
  iySite=null;iyDepartment=null;
 
- // Load the company first, then resolve the user's location through the
- // secured location RPC. Do not query public.sites/departments directly
- // from the browser session.
  const {data:company,error:companyError}=await iySupabase.from("companies").select("*").eq("id",membership.company_id).single();
  if(companyError)throw companyError;
  iyCompany=company;
 
- await loadAdminLocationOptions();
+ const locations=await loadAdminLocationOptions();
  iySite=membership.site_id ? (iyCompanySites.find(s=>String(s.id)===String(membership.site_id))||null) : null;
  iyDepartment=membership.department_id ? (iyCompanyDepartments.find(d=>String(d.id)===String(membership.department_id))||null) : null;
- const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
-  if(lastLoginError)console.warn("Could not record last login:",lastLoginError.message||lastLoginError);
+
+ // Existing customer companies with no site or no department are routed through
+ // the guided workspace setup before the operational application is exposed.
+ const role=String(membership.role||"").toLowerCase();
+ if(["company_admin","super_admin"].includes(role) && (!locations.sites.length || !locations.departments.length)){
+   const {data:subscription,error:subscriptionError}=await iySupabase
+     .from("subscriptions")
+     .select("id,plan_id,status,billing_interval")
+     .eq("company_id",membership.company_id)
+     .in("status",["trialing","active","past_due","suspended"])
+     .maybeSingle();
+   if(subscriptionError)throw subscriptionError;
+   let planCode="BASIC";
+   if(subscription?.plan_id){
+     const {data:plan,error:planError}=await iySupabase.from("subscription_plans").select("code").eq("id",subscription.plan_id).maybeSingle();
+     if(planError)throw planError;
+     planCode=String(plan?.code||"BASIC").toUpperCase();
+   }
+   const step=!locations.sites.length?4:5;
+   return {needsOnboarding:true,step,company,subscription:subscription?{...subscription,plan_code:planCode}:null,sites:locations.sites,departments:locations.departments};
+ }
+ return {needsOnboarding:false,company,subscription:null,sites:locations.sites,departments:locations.departments};
 }
 
 function blankCloudDB(){return {inventory:[],receipts:[],issues:[],updates:[],orders:[],maintenance:[],machines:[],settings:{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:3,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations",signaturePrepared:"",signatureTeamLead:"",signaturePartsCoordinator:"",signatureManager:""},user:{},activityLog:[]};}
