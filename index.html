@@ -2432,6 +2432,62 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
   }
 }
 </style>
+<style id="iy-mobile-header-panels-fix-v6-11-4">
+/* V6.11.4 — mobile header overlays: notifications, view scope, and search */
+@media (max-width:700px){
+  /* Keep dropdowns anchored to the viewport, not to their narrow header wrappers. */
+  .notification-panel{
+    position:fixed!important;
+    top:calc(64px + env(safe-area-inset-top) + 8px)!important;
+    right:12px!important;
+    left:auto!important;
+    width:min(360px,calc(100vw - 24px))!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 64px - env(safe-area-inset-top) - 92px)!important;
+    overflow:hidden!important;
+    z-index:360!important;
+  }
+  .notification-panel .notification-list{max-height:calc(100dvh - 260px)!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+
+  .view-scope-panel{
+    position:fixed!important;
+    top:calc(64px + env(safe-area-inset-top) + 8px)!important;
+    right:12px!important;
+    left:auto!important;
+    width:min(380px,calc(100vw - 24px))!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 64px - env(safe-area-inset-top) - 92px)!important;
+    overflow:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    z-index:360!important;
+  }
+
+  .global-search-wrap:focus-within{
+    position:fixed!important;
+    top:calc(env(safe-area-inset-top) + 8px)!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    height:44px!important;
+    z-index:370!important;
+  }
+  .global-search-wrap:focus-within .global-search-panel{
+    position:fixed!important;
+    top:calc(64px + env(safe-area-inset-top) + 8px)!important;
+    left:12px!important;
+    right:12px!important;
+    width:auto!important;
+    max-width:none!important;
+    max-height:calc(100dvh - 64px - env(safe-area-inset-top) - 92px)!important;
+    overflow:hidden!important;
+    z-index:360!important;
+  }
+  .global-search-results{max-height:calc(100dvh - 180px)!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+
+  /* Header always remains visually above page content, while overlays begin below it. */
+  .top{z-index:400!important}
+}
+</style>
 </head>
 
 <style>
