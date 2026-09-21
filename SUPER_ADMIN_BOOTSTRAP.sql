@@ -1,10 +1,18 @@
 -- ============================================================
 -- IY Maintain — SUPER ADMIN LOGIN BOOTSTRAP
 -- ============================================================
--- Run IY-Maintain-V7.00-Super-Admin-Platform-Control-Center.sql first.
--- The Auth account must already exist in Supabase Authentication.
--- Replace the email below with the account that should be the
--- IY Maintain platform administrator.
+-- Purpose:
+--   Authorize one Supabase Auth account as a global Super Admin.
+--
+-- IMPORTANT:
+--   1. Run IY-Maintain-V7.00-Super-Admin-Platform-Control-Center.sql first.
+--   2. The Auth account must already exist in Supabase Authentication.
+--   3. Replace the email below.
+--   4. If the account already belongs to an active company, the script
+--      will use that company automatically. For a brand-new Auth account,
+--      replace REPLACE_WITH_COMPANY_ID with an existing company UUID.
+--   5. This does NOT create/change the Auth password. Passwords remain
+--      managed by Supabase Authentication.
 -- ============================================================
 
 BEGIN;
@@ -12,8 +20,9 @@ BEGIN;
 DO $$
 DECLARE
     v_email text := lower(trim('REPLACE_WITH_SUPER_ADMIN_EMAIL'));
+    v_company_id uuid := NULL;
+    v_company_override text := trim('REPLACE_WITH_COMPANY_ID');
     v_user_id uuid;
-    v_company_id uuid;
     v_full_name text;
 BEGIN
     IF v_email = 'replace_with_super_admin_email' OR v_email = '' THEN
@@ -21,7 +30,10 @@ BEGIN
     END IF;
 
     SELECT u.id,
-           COALESCE(NULLIF(trim(u.raw_user_meta_data->>'full_name'),''), split_part(COALESCE(u.email,''),'@',1))
+           COALESCE(
+             NULLIF(trim(u.raw_user_meta_data->>'full_name'),''),
+             split_part(COALESCE(u.email,''),'@',1)
+           )
       INTO v_user_id, v_full_name
     FROM auth.users u
     WHERE lower(u.email) = v_email
@@ -41,7 +53,19 @@ BEGIN
     LIMIT 1;
 
     IF v_company_id IS NULL THEN
-        RAISE EXCEPTION 'The Auth account % does not have an active company membership. Create the account and attach it to the intended company first.', v_email;
+        IF v_company_override = '' OR lower(v_company_override) = 'replace_with_company_id' THEN
+            RAISE EXCEPTION 'No active company membership found for %. Replace REPLACE_WITH_COMPANY_ID with an existing company UUID.', v_email;
+        END IF;
+
+        BEGIN
+            v_company_id := v_company_override::uuid;
+        EXCEPTION WHEN invalid_text_representation THEN
+            RAISE EXCEPTION 'REPLACE_WITH_COMPANY_ID must be a valid company UUID.';
+        END;
+
+        IF NOT EXISTS (SELECT 1 FROM public.companies c WHERE c.id = v_company_id) THEN
+            RAISE EXCEPTION 'Company % does not exist.', v_company_id;
+        END IF;
     END IF;
 
     INSERT INTO public.memberships(
@@ -60,14 +84,21 @@ BEGIN
         department=NULL,
         is_active=true;
 
-    RAISE NOTICE 'Super Admin authorization granted to % (user %).', v_email, v_user_id;
+    RAISE NOTICE 'Super Admin authorization granted to % (user %, company %).', v_email, v_user_id, v_company_id;
 END $$;
 
 COMMIT;
 
-SELECT id,user_id,company_id,full_name,email,role,is_active
-FROM public.memberships
-WHERE lower(role)='super_admin'
-ORDER BY created_at DESC;
+SELECT
+    m.id,
+    m.user_id,
+    m.company_id,
+    m.full_name,
+    m.email,
+    m.role,
+    m.is_active
+FROM public.memberships m
+WHERE lower(m.role) = 'super_admin'
+ORDER BY m.created_at DESC;
 
 SELECT to_regprocedure('public.super_admin_is_authorized()') AS authorization_function;
