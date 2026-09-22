@@ -2838,6 +2838,8 @@ let iySite = null;
 let iyDepartment = null;
 let iyCompanySites = [];
 let iyCompanyDepartments = [];
+let iyCompanyModules = {};
+let iyCompanyModulesLoaded = false;
 let iyWriteSiteId = null;
 let iyWriteDepartmentId = null;
 let iyCloudReady = false;
@@ -5901,7 +5903,9 @@ function workspaceScopeMarkup(){const label=workspaceScopeLabel();return `<span 
 function canAccess(page){
  const role=currentRole();
  if(["superadmin","superadmin_companies","superadmin_billing","superadmin_settings"].includes(page))return isSuperAdminRole();
- if(["company_admin","super_admin"].includes(role)||isSuperAdminRole())return true;
+ if(["company_admin","super_admin"].includes(role)||isSuperAdminRole()){
+   return companyModuleEnabledForPage(page);
+ }
  const operational=["manager","site_supervisor","department_supervisor","team_lead","technician"];
  const access={
    dashboard:[...operational,"parts_coordinator","viewer"],
@@ -5922,8 +5926,10 @@ function canAccess(page){
    activity:["manager","site_supervisor","department_supervisor","team_lead","technician","parts_coordinator"],
    backup:[]
  };
- return (access[page]||[]).includes(role);
+ if(!access[page]||!access[page].includes(role))return false;
+ return companyModuleEnabledForPage(page);
 }
+
 function canGenerateReports(){
  const role=currentRole();
  // Report generation/viewing is separate from edit permissions.
@@ -6531,7 +6537,7 @@ async function logoutUser(){
   await cloudAudit("Logged out","User signed out");
   await iySupabase.auth.signOut();
  }catch(e){console.warn("Logout audit/signout warning",e)}
- iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCloudReady=false;loggedIn=false;iyOnboardingState={active:false,step:1,loading:false,error:"",profile:{full_name:""},company:{name:"",address:"",telephone:"",email:"",website:"",logoFile:null,logoPreview:""},planCode:"BASIC",billingInterval:"monthly",sites:[],departments:[],siteDrafts:[],departmentDrafts:[],created:false,logoUploaded:false,logoRemoved:false,paymentConfirmed:false,paymentCheckoutLoading:false};profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
+ iyAuthUser=null;iyCompany=null;iyMembership=null;iySite=null;iyDepartment=null;iyWriteSiteId=null;iyWriteDepartmentId=null;iyCompanySites=[];iyCompanyDepartments=[];iyCompanyModules={};iyCompanyModulesLoaded=false;iyCloudReady=false;loggedIn=false;iyOnboardingState={active:false,step:1,loading:false,error:"",profile:{full_name:""},company:{name:"",address:"",telephone:"",email:"",website:"",logoFile:null,logoPreview:""},planCode:"BASIC",billingInterval:"monthly",sites:[],departments:[],siteDrafts:[],departmentDrafts:[],created:false,logoUploaded:false,logoRemoved:false,paymentConfirmed:false,paymentCheckoutLoading:false};profileOpen=false;notificationOpen=false;notificationReads=[];cloudNotifications=[];reportApprovalReports=[];reportApprovalRequests=[];if(notificationTimer){clearInterval(notificationTimer);notificationTimer=null;}
  renderLogin("signedout");
 }
 
@@ -7294,7 +7300,65 @@ async function completeAuthenticatedSession(user){
  await finishAuthenticatedSessionSetup();
 }
 
+async function loadCompanyModules(){
+ if(!iySupabase||!iyCompany?.id){
+   iyCompanyModules={};
+   iyCompanyModulesLoaded=false;
+   return {};
+ }
+ try{
+   const {data,error}=await iySupabase
+     .from("company_modules")
+     .select("module_code,enabled")
+     .eq("company_id",iyCompany.id)
+     .eq("enabled",true);
+   if(error)throw error;
+   iyCompanyModules={};
+   (data||[]).forEach(row=>{
+     if(row?.module_code)iyCompanyModules[String(row.module_code).toLowerCase()]=true;
+   });
+   iyCompanyModulesLoaded=true;
+   return iyCompanyModules;
+ }catch(e){
+   console.error("Company modules could not be loaded",e);
+   iyCompanyModules={};
+   iyCompanyModulesLoaded=false;
+   throw e;
+ }
+}
+
+function companyModuleCodeForPage(page){
+ const map={
+   issue:"search_issue_parts",
+   receive:"receive_parts",
+   inventory:"parts_inventory",
+   updates:"parts_updates",
+   orders:"parts_orders",
+   mdashboard:"maintenance_dashboard",
+   mlog:"maintenance_log",
+   machines:"machines",
+   preports:"parts_reports",
+   mreports:"maintenance_reports",
+   approvals:"my_approvals",
+   settings:"settings",
+   users:"users_roles",
+   activity:"user_audit",
+   backup:"backup_data"
+ };
+ return map[page]||"";
+}
+
+function companyModuleEnabledForPage(page){
+ if(!iyCompany?.id)return true;
+ const role=String(currentRole()||"").toLowerCase();
+ if(role==="super_admin"||isSuperAdminRole())return true;
+ const code=companyModuleCodeForPage(page);
+ if(!code)return true;
+ return iyCompanyModulesLoaded ? iyCompanyModules[code]===true : false;
+}
+
 async function finishAuthenticatedSessionSetup(){
+ if(iyCompany && !isSuperAdminRole()) await loadCompanyModules();
  if(isCompanyWideScope()){await loadAdminLocationOptions();initializeWriteScope();}
  const {error:lastLoginError}=await iySupabase.rpc("record_last_login");
  if(lastLoginError)console.warn("Last login timestamp could not be recorded",lastLoginError);
@@ -7311,6 +7375,7 @@ async function finishAuthenticatedSessionSetup(){
  // Super Admin is a platform administrator, not a customer workspace user.
  // Send the account directly to the Super Admin Control Center after authentication.
  if(isSuperAdmin())currentPage="superadmin";
+ else if(!canAccess(currentPage))currentPage="dashboard";
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
@@ -8513,6 +8578,20 @@ async function initiyAuth(){
 initiyAuth();
 </script>
 
+
+<style id="iy-super-admin-modules-css">
+.sa-module-panel{margin-top:16px;border:1px solid #dce7f2;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 5px 18px rgba(19,57,98,.05)}
+.sa-module-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:15px 17px;background:linear-gradient(135deg,#082c68 0%,#114fae 58%,#168fe2 100%);color:#fff}
+.sa-module-panel-head h3{margin:0;font-size:13px}.sa-module-panel-head p{margin:4px 0 0;font-size:9px;color:rgba(255,255,255,.74);line-height:1.45}
+.sa-module-tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.sa-module-tools button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:7px 9px;font-size:9px;font-weight:800;cursor:pointer}
+.sa-module-body{padding:14px 16px}.sa-module-category{margin-bottom:14px}.sa-module-category:last-child{margin-bottom:0}.sa-module-category-title{font-size:9px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#5e7290;margin-bottom:7px}
+.sa-module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.sa-module-option{display:flex;align-items:center;gap:9px;border:1px solid #dce5ef;border-radius:10px;padding:9px 10px;background:#fbfdff;cursor:pointer;transition:.15s ease}
+.sa-module-option:hover{border-color:#b8d2ef;background:#f5faff}.sa-module-option input{width:15px;height:15px;margin:0;accent-color:#146fe6}.sa-module-option span{font-size:10px;font-weight:750;color:#234568}.sa-module-option small{display:block;font-size:8px;color:#7c8ea4;margin-top:2px;font-weight:500}
+.sa-module-summary{font-size:9px;color:#71839a;margin-top:9px}.sa-module-status-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.sa-module-status{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid #e0e7f0;border-radius:9px;background:#fbfdff}.sa-module-status b{font-size:9px;color:#29486d}.sa-module-status em{font-style:normal;font-size:8px;font-weight:800;padding:4px 7px;border-radius:999px}.sa-module-status em.on{background:#eaf9f1;color:#137847}.sa-module-status em.off{background:#f1f4f8;color:#78889b}
+@media(max-width:620px){.sa-module-grid,.sa-module-status-list{grid-template-columns:1fr}.sa-module-panel-head{flex-direction:column}.sa-module-tools{justify-content:flex-start}}
+</style>
 <script id="iy-super-admin-v700-js">
 /* IY Maintain V7.00 — Super Admin Platform Control Center */
 let iySuperAdminState={loaded:false,loading:false,error:null,snapshot:null,companies:[],selectedCompany:null,companySearch:"",statusFilter:"",planFilter:""};
@@ -8546,36 +8625,73 @@ async function superAdminRefresh(){
  await Promise.all([loadSuperAdminConsole(true),loadSuperAdminUsers(true),loadSuperAdminBilling(true)]);
  toast(iySuperAdminState.error?"Super Admin data could not be refreshed.":"Super Admin dashboard refreshed.");
 }
+const SA_MODULE_GROUPS=[
+ {title:"Parts",codes:["search_issue_parts","receive_parts","parts_inventory","parts_updates","parts_orders"]},
+ {title:"Maintenance",codes:["maintenance_dashboard","maintenance_log","machines"]},
+ {title:"Reports",codes:["parts_reports","maintenance_reports"]},
+ {title:"Approvals",codes:["my_approvals"]},
+ {title:"Administration",codes:["settings","users_roles","user_audit","backup_data"]}
+];
+const SA_MODULE_META={
+ search_issue_parts:"Search & Issue Parts",receive_parts:"Receive Parts",parts_inventory:"Inventory",parts_updates:"Parts Updates",parts_orders:"Parts Orders",
+ maintenance_dashboard:"Maintenance Dashboard",maintenance_log:"Maintenance Log",machines:"Machines",parts_reports:"Parts Reports",maintenance_reports:"Maintenance Reports",
+ my_approvals:"My Approvals",settings:"Settings",users_roles:"Users & Roles",user_audit:"User Audit",backup_data:"Backup Data"
+};
+function superAdminSelectedModuleCodes(){return [...document.querySelectorAll('input[data-sa-module]:checked')].map(x=>x.getAttribute('data-sa-module')).filter(Boolean)}
+function superAdminModulePicker(prefix,selectedCodes){const selected=new Set(selectedCodes||[]);return `<div class="sa-module-panel"><div class="sa-module-panel-head"><div><h3>Company modules & sections</h3><p>Select the exact IY Maintain sections this company is licensed to use. Dashboard and Commercial account pages remain available separately.</p></div><div class="sa-module-tools"><button type="button" onclick="superAdminSetModuleChecks(true)">Select all</button><button type="button" onclick="superAdminSetModuleChecks(false)">Clear all</button></div></div><div class="sa-module-body">${SA_MODULE_GROUPS.map(g=>`<div class="sa-module-category"><div class="sa-module-category-title">${esc(g.title)}</div><div class="sa-module-grid">${g.codes.map(code=>`<label class="sa-module-option"><input type="checkbox" data-sa-module="${esc(code)}" id="${prefix}_${esc(code)}" ${selected.has(code)?'checked':''}><span>${esc(SA_MODULE_META[code]||code)}<small>Available to this company when enabled</small></span></label>`).join('')}</div></div>`).join('')}<div class="sa-module-summary"><b>Dashboard</b> is always available. <b>Pricing, Subscription and Billing</b> are managed separately from operational module licensing.</div></div></div>`}
+function superAdminSetModuleChecks(value){document.querySelectorAll('input[data-sa-module]').forEach(x=>x.checked=!!value)}
+async function superAdminGetCompanyModules(companyId){const {data,error}=await iySupabase.rpc("super_admin_get_company_modules",{p_company_id:companyId});if(error)throw error;return Array.isArray(data)?data:[]}
+async function superAdminSaveCompanyModules(companyId,selectedCodes,returnToCompany=true){if(!selectedCodes.length)return alert("Select at least one company section.");try{const {error}=await iySupabase.rpc("super_admin_set_company_modules",{p_company_id:companyId,p_module_codes:selectedCodes});if(error)throw error;iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);if(returnToCompany)await superAdminOpenCompany(companyId);toast("Company modules updated successfully.")}catch(e){alert(superAdminError(e))}}
+function superAdminOpenCompanyModules(companyId,selectedCodes){openModal(`<div class="modal-card" style="max-width:900px"><div class="modal-head"><h2>Manage company modules</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-modal-note">These selections control the operational sections available to this company. Changes are stored in the database and recorded in the company audit history.</div>${superAdminModulePicker('sa_m',selectedCodes)}<div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminSaveCompanyModules('${esc(companyId)}',superAdminSelectedModuleCodes())">Save modules</button></div></div>`)}
 function superAdminOpenCreateCompany(){
- openModal(`<div class="modal-card" style="max-width:900px"><div class="modal-head"><h2>Create company</h2><button class="close" onclick="closeModal()">×</button></div><div class="sa-modal-note">Create a company directly from the platform console. New manually created companies begin on the selected plan's configured trial period. You can optionally attach an already registered auth account as the initial Company Administrator.</div><div class="sa-form-grid">
+ const allCodes=SA_MODULE_GROUPS.flatMap(g=>g.codes);
+ openModal(`<div class="modal-card" style="max-width:980px"><div class="modal-head"><h2>Create company</h2><button class="close" onclick="closeModal()">×</button></div><div class="sa-modal-note">Create a company directly from the platform console. New manually created companies begin on the selected plan's configured trial period. Select the exact operational sections this company should have.</div><div class="sa-form-grid">
  <div class="sa-field"><label>Company name *</label><input id="sa_c_name" autofocus></div><div class="sa-field"><label>Company email</label><input id="sa_c_email" type="email"></div>
  <div class="sa-field"><label>Telephone</label><input id="sa_c_tel"></div><div class="sa-field"><label>Website</label><input id="sa_c_web"></div>
  <div class="sa-field full"><label>Company address</label><textarea id="sa_c_addr"></textarea></div>
  <div class="sa-field"><label>Plan *</label><select id="sa_c_plan"><option>BASIC</option><option>PROFESSIONAL</option><option>BUSINESS</option></select></div>
  <div class="sa-field"><label>Billing interval *</label><select id="sa_c_interval"><option value="monthly">Monthly</option><option value="annual">Annual</option></select></div>
- <div class="sa-field"><label>Initial admin email (existing account)</label><input id="sa_c_admin" type="email"></div><div class="sa-field"><label>Administrative reason *</label><input id="sa_c_reason" placeholder="Why are you creating this company manually?"></div>
+ <div class="sa-field"><label>Company Administrator name *</label><input id="sa_c_admin_name" placeholder="Full name"></div><div class="sa-field"><label>Company Administrator email *</label><input id="sa_c_admin" type="email" placeholder="admin@company.com"></div><div class="sa-field"><label>Administrative reason *</label><input id="sa_c_reason" placeholder="Why are you creating this company manually?"></div>
  <div class="sa-field"><label>Initial site name</label><input id="sa_c_site"></div><div class="sa-field"><label>Initial site code</label><input id="sa_c_sitecode"></div>
  <div class="sa-field full"><label>Initial site address</label><textarea id="sa_c_siteaddr"></textarea></div>
  <div class="sa-field"><label>Initial department name</label><input id="sa_c_dept"></div><div class="sa-field"><label>Initial department code</label><input id="sa_c_deptcode"></div>
- </div><div class="sa-modal-actions"><button class="sa-btn" onclick="closeModal()">Cancel</button><button class="sa-btn primary" onclick="superAdminCreateCompany()">Create company</button></div></div>`);
+ </div>${superAdminModulePicker('sa_c',allCodes)}<div class="sa-modal-actions"><button class="sa-btn" onclick="closeModal()">Cancel</button><button class="sa-btn primary" onclick="superAdminCreateCompany()">Create company</button></div></div>`);
 }
 async function superAdminCreateCompany(){
- const name=document.getElementById("sa_c_name")?.value.trim();const reason=document.getElementById("sa_c_reason")?.value.trim();
- if(!name)return alert("Company name is required.");if(!reason)return alert("An administrative reason is required.");
+ const name=document.getElementById("sa_c_name")?.value.trim();const adminName=document.getElementById("sa_c_admin_name")?.value.trim();const adminEmail=document.getElementById("sa_c_admin")?.value.trim().toLowerCase();const reason=document.getElementById("sa_c_reason")?.value.trim();const selectedCodes=superAdminSelectedModuleCodes();
+ if(!name)return alert("Company name is required.");if(!adminName)return alert("Company Administrator name is required.");if(!adminEmail)return alert("Company Administrator email is required.");if(!reason)return alert("An administrative reason is required.");if(!selectedCodes.length)return alert("Select at least one company section.");
  try{
-   const {data,error}=await iySupabase.rpc("super_admin_create_company",{p_name:name,p_address:document.getElementById("sa_c_addr")?.value.trim()||null,p_telephone:document.getElementById("sa_c_tel")?.value.trim()||null,p_email:document.getElementById("sa_c_email")?.value.trim()||null,p_website:document.getElementById("sa_c_web")?.value.trim()||null,p_plan_code:document.getElementById("sa_c_plan")?.value,p_billing_interval:document.getElementById("sa_c_interval")?.value,p_initial_admin_email:document.getElementById("sa_c_admin")?.value.trim()||null,p_initial_site_name:document.getElementById("sa_c_site")?.value.trim()||null,p_initial_site_code:document.getElementById("sa_c_sitecode")?.value.trim()||null,p_initial_site_address:document.getElementById("sa_c_siteaddr")?.value.trim()||null,p_initial_department_name:document.getElementById("sa_c_dept")?.value.trim()||null,p_initial_department_code:document.getElementById("sa_c_deptcode")?.value.trim()||null,p_reason:reason});
-   if(error)throw error;closeModal();iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast("Company created successfully.");
+   // Create the company without attaching an existing auth account. The
+   // secure invitation flow below creates/invites the new administrator.
+   const {data,error}=await iySupabase.rpc("super_admin_create_company",{p_name:name,p_address:document.getElementById("sa_c_addr")?.value.trim()||null,p_telephone:document.getElementById("sa_c_tel")?.value.trim()||null,p_email:document.getElementById("sa_c_email")?.value.trim()||null,p_website:document.getElementById("sa_c_web")?.value.trim()||null,p_plan_code:document.getElementById("sa_c_plan")?.value,p_billing_interval:document.getElementById("sa_c_interval")?.value,p_initial_admin_email:null,p_initial_site_name:document.getElementById("sa_c_site")?.value.trim()||null,p_initial_site_code:document.getElementById("sa_c_sitecode")?.value.trim()||null,p_initial_site_address:document.getElementById("sa_c_siteaddr")?.value.trim()||null,p_initial_department_name:document.getElementById("sa_c_dept")?.value.trim()||null,p_initial_department_code:document.getElementById("sa_c_deptcode")?.value.trim()||null,p_reason:reason});
+   if(error)throw error;const companyId=data?.company_id;if(!companyId)throw new Error("Company was created but no company ID was returned, so the remaining onboarding steps could not be applied safely.");
+   const {error:moduleError}=await iySupabase.rpc("super_admin_set_company_modules",{p_company_id:companyId,p_module_codes:selectedCodes});if(moduleError)throw moduleError;
+
+   // Use the existing secure invitation workflow. The customer receives an
+   // email and creates their own password; no password is generated here.
+   const {data:{session}}=await iySupabase.auth.getSession();
+   if(!session)throw new Error("Your secure session has expired. Please sign in again.");
+   const inviteResponse=await fetch(`${iy_SUPABASE_URL}/functions/v1/invite-user`,{
+     method:"POST",
+     headers:{Authorization:`Bearer ${session.access_token}`,"Content-Type":"application/json"},
+     body:JSON.stringify({full_name:adminName,email:adminEmail,role:"company_admin",company_id:companyId})
+   });
+   const invitePayload=await inviteResponse.json().catch(()=>({}));
+   if(!inviteResponse.ok)throw new Error(invitePayload.error||invitePayload.message||"Company was created, but the administrator invitation could not be sent. You can retry the invitation after the company is created.");
+
+   closeModal();iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast("Company created, modules saved, and the Company Administrator invitation was sent.");
  }catch(e){alert(superAdminError(e))}
 }
 async function superAdminOpenCompany(companyId){
- try{const {data,error}=await iySupabase.rpc("super_admin_company_detail",{p_company_id:companyId});if(error)throw error;iySuperAdminState.selectedCompany=data;superAdminRenderCompanyModal(data)}catch(e){alert(superAdminError(e))}
+ try{const [detailRes,moduleRes]=await Promise.all([iySupabase.rpc("super_admin_company_detail",{p_company_id:companyId}),iySupabase.rpc("super_admin_get_company_modules",{p_company_id:companyId})]);if(detailRes.error)throw detailRes.error;if(moduleRes.error)throw moduleRes.error;const data=detailRes.data||{};data.modules=Array.isArray(moduleRes.data)?moduleRes.data:[];iySuperAdminState.selectedCompany=data;superAdminRenderCompanyModal(data)}catch(e){alert(superAdminError(e))}
 }
 function superAdminRenderCompanyModal(d){
  const c=d.company||{},s=d.settings||{},sub=d.subscription||{},p=d.plan||{},m=d.metrics||{};const users=d.users||[],sites=d.sites||[],depts=d.departments||[],activity=d.recent_activity||[],billing=d.recent_billing||[];
  openModal(`<div class="modal-card sa-company-modal" style="max-width:1120px"><div class="sa-company-modal-head"><div class="modal-title-wrap"><div class="modal-title-icon">▦</div><div><h2>Company administration</h2><p>Platform-level workspace, users, operations and commercial administration</p></div></div><button class="close" onclick="closeModal()">×</button></div><div class="sa-company-modal-body">
- <div class="sa-company-hero"><div class="sa-company-hero-main"><div class="sa-company-detail-name">${esc(c.name||"Company")}</div><div class="sa-company-detail-id">Company ID · ${esc(c.id||"")}</div></div><div class="sa-company-hero-actions">${superAdminStatusPill(sub.status,c.name==="IY Digital Innovations")}<button class="sa-btn primary" onclick="superAdminOpenEditCompany('${esc(c.id)}')">Edit company</button></div></div>
+ <div class="sa-company-hero"><div class="sa-company-hero-main"><div class="sa-company-detail-name">${esc(c.name||"Company")}</div><div class="sa-company-detail-id">Company ID · ${esc(c.id||"")}</div></div><div class="sa-company-hero-actions">${superAdminStatusPill(sub.status,c.name==="IY Digital Innovations")}<button class="sa-btn" onclick="superAdminOpenCompanyModules('${esc(c.id)}',(d.modules||[]).filter(x=>x.enabled).map(x=>x.code))">Manage modules</button><button class="sa-btn primary" onclick="superAdminOpenEditCompany('${esc(c.id)}')">Edit company</button></div></div>
  <div class="sa-statline sa-company-stats"><div class="sa-mini"><b>${superAdminMetric(m.users)}</b><span>Users</span></div><div class="sa-mini"><b>${superAdminMetric(m.sites)}</b><span>Sites</span></div><div class="sa-mini"><b>${superAdminMetric(m.departments)}</b><span>Departments</span></div><div class="sa-mini"><b>${superAdminMetric(m.machines)}</b><span>Machines</span></div><div class="sa-mini"><b>${superAdminMetric(m.parts)}</b><span>Parts</span></div><div class="sa-mini"><b>${superAdminMetric(m.maintenance)}</b><span>Maintenance</span></div><div class="sa-mini"><b>${superAdminMetric(m.inventory)}</b><span>Inventory</span></div><div class="sa-mini"><b>${superAdminMetric(m.open_approvals)}</b><span>Open approvals</span></div></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Company & subscription</div><table class="sa-data-table"><tbody><tr><td><b>Email</b><br>${esc(c.email||s.email||"—")}</td><td><b>Telephone</b><br>${esc(c.telephone||s.telephone||"—")}</td><td><b>Website</b><br>${esc(c.website||s.website||"—")}</td><td><b>Plan</b><br>${esc(p.name||p.code||"—")} · ${esc(sub.billing_interval||"—")}</td></tr><tr><td colspan="2"><b>Address</b><br>${esc(c.address||s.address||"—")}</td><td><b>Stripe customer</b><br>${esc(sub.stripe_customer_id||"—")}</td><td><b>Stripe subscription</b><br>${esc(sub.stripe_subscription_id||"—")}</td></tr><tr><td><b>Period</b><br>${esc(superAdminTime(sub.current_period_start))} → ${esc(superAdminTime(sub.current_period_end))}</td><td><b>Last activity</b><br>${esc(superAdminTime(c.last_activity_at||null))}</td><td><b>Subscription status</b><br>${superAdminStatusPill(sub.status)}</td><td><b>Cancellation at period end</b><br>${sub.cancel_at_period_end?"Yes":"No"}</td></tr></tbody></table></div>
+ <div class="sa-detail-section"><div class="sa-detail-title">Enabled company sections</div><div class="sa-module-status-list">${SA_MODULE_GROUPS.flatMap(g=>g.codes).map(code=>{const item=(d.modules||[]).find(x=>x.code===code);const on=!!item?.enabled;return `<div class="sa-module-status"><b>${esc(SA_MODULE_META[code]||code)}</b><em class="${on?'on':'off'}">${on?'Enabled':'Disabled'}</em></div>`}).join("")}</div><div class="sa-modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="sa-btn primary" onclick="superAdminOpenCompanyModules('${esc(c.id)}',(d.modules||[]).filter(x=>x.enabled).map(x=>x.code))">Configure sections</button></div></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Sites & departments</div><div class="sa-quick-grid"><button class="sa-quick" onclick="superAdminCreateSitePrompt('${esc(c.id)}')"><b>+ Add site</b><span>Create another operating location within plan capacity.</span></button><button class="sa-quick" onclick="superAdminCreateDepartmentPrompt('${esc(c.id)}')"><b>+ Add department</b><span>Create a department and connect it to a site.</span></button><button class="sa-quick" onclick="superAdminOpenCreateMembershipHelp()"><b>Users & roles</b><span>Review current company memberships below.</span></button><button class="sa-quick" onclick="superAdminOpenCompany('${esc(c.id)}')"><b>Refresh company</b><span>Reload the complete company administration view.</span></button></div>
  <table class="sa-data-table" style="margin-top:10px"><thead><tr><th>Sites</th><th>Code</th><th>Status</th><th>Departments</th></tr></thead><tbody>${sites.map(site=>{const ds=depts.filter(d=>d.site_id===site.id);return `<tr><td><b>${esc(site.name)}</b><br><small>${esc(site.address||"")}</small></td><td>${esc(site.code||"—")}</td><td>${site.is_active?'<span class="sa-pill active">Active</span>':'<span class="sa-pill canceled">Inactive</span>'}</td><td>${ds.length?ds.map(d=>esc(d.name)+` <small>(${esc(d.code||"—")})</small>`).join("<br>"):"—"}</td></tr>`}).join("")||`<tr><td colspan="4">No sites.</td></tr>`}</tbody></table></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Users & roles</div><table class="sa-data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Scope</th><th>Status</th><th></th></tr></thead><tbody>${users.map(u=>`<tr><td><b>${esc(u.full_name||"—")}</b><br><small>${esc(u.user_code||"")}</small></td><td>${esc(u.email||"—")}</td><td>${esc(roleLabel(u.role||""))}</td><td>${esc(u.site_id||"All sites")} · ${esc(u.department_id||"All departments")}</td><td>${u.is_active?'<span class="sa-pill active">Active</span>':'<span class="sa-pill canceled">Inactive</span>'}</td><td>${String(u.role||"").toLowerCase()!="super_admin"?`<button class="sa-btn" onclick="superAdminOpenMembershipEdit('${esc(u.id)}')">Edit</button>`:"—"}</td></tr>`).join("")||`<tr><td colspan="6">No users.</td></tr>`}</tbody></table></div>
@@ -8583,13 +8699,26 @@ function superAdminRenderCompanyModal(d){
  <div class="sa-detail-section"><div class="sa-detail-title">Recent billing activity</div><table class="sa-data-table"><thead><tr><th>Date</th><th>Plan</th><th>Interval</th><th>Amount</th><th>Status</th></tr></thead><tbody>${billing.map(b=>`<tr><td>${esc(superAdminTime(b.created_at))}</td><td>${esc(b.plan_code||"—")}</td><td>${esc(b.billing_interval||"—")}</td><td>${esc(b.currency||"")} ${esc(b.amount??"—")}</td><td>${superAdminStatusPill(b.status)}</td></tr>`).join("")||`<tr><td colspan="5">No billing activity.</td></tr>`}</tbody></table></div>
  </div></div>`);
 }
-function superAdminOpenEditCompany(companyId){
- const d=iySuperAdminState.selectedCompany||{},c=d.company||{},s=d.settings||{};
- openModal(`<div class="modal-card" style="max-width:760px"><div class="modal-head"><h2>Edit company</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-modal-note">Changes made here are platform-level administrative changes and are written to the company audit history.</div><div class="sa-form-grid"><div class="sa-field"><label>Company name *</label><input id="sa_e_name" value="${esc(c.name||"")}"></div><div class="sa-field"><label>Company email</label><input id="sa_e_email" value="${esc(c.email||s.email||"")}"></div><div class="sa-field"><label>Telephone</label><input id="sa_e_tel" value="${esc(c.telephone||s.telephone||"")}"></div><div class="sa-field"><label>Website</label><input id="sa_e_web" value="${esc(c.website||s.website||"")}"></div><div class="sa-field full"><label>Company address</label><textarea id="sa_e_addr">${esc(c.address||s.address||"")}</textarea></div><div class="sa-field full"><label>Administrative reason *</label><input id="sa_e_reason" placeholder="Reason for this change"></div></div><div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminSaveCompany('${esc(companyId)}')">Save changes</button></div></div>`);
+async function superAdminOpenEditCompany(companyId){
+ try{
+  let d=iySuperAdminState.selectedCompany;
+  if(!d || d.company?.id!==companyId){
+   const [detailRes,moduleRes]=await Promise.all([iySupabase.rpc("super_admin_company_detail",{p_company_id:companyId}),iySupabase.rpc("super_admin_get_company_modules",{p_company_id:companyId})]);
+   if(detailRes.error)throw detailRes.error;if(moduleRes.error)throw moduleRes.error;
+   d=detailRes.data||{};d.modules=Array.isArray(moduleRes.data)?moduleRes.data:[];iySuperAdminState.selectedCompany=d;
+  }
+  const c=d.company||{},s=d.settings||{},selected=(d.modules||[]).filter(x=>x.enabled).map(x=>x.code);
+  openModal(`<div class="modal-card" style="max-width:980px"><div class="modal-head"><h2>Edit company</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-modal-note">Update company information and the exact operational sections licensed to this company. Module changes are saved to the database.</div><div class="sa-form-grid"><div class="sa-field"><label>Company name *</label><input id="sa_e_name" value="${esc(c.name||"")}"></div><div class="sa-field"><label>Company email</label><input id="sa_e_email" value="${esc(c.email||s.email||"")}"></div><div class="sa-field"><label>Telephone</label><input id="sa_e_tel" value="${esc(c.telephone||s.telephone||"")}"></div><div class="sa-field"><label>Website</label><input id="sa_e_web" value="${esc(c.website||s.website||"")}"></div><div class="sa-field full"><label>Company address</label><textarea id="sa_e_addr">${esc(c.address||s.address||"")}</textarea></div><div class="sa-field full"><label>Administrative reason *</label><input id="sa_e_reason" placeholder="Reason for this change"></div></div>${superAdminModulePicker('sa_e',selected)}<div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminSaveCompany('${esc(companyId)}',superAdminSelectedModuleCodes())">Save changes</button></div></div>`);
+ }catch(e){alert(superAdminError(e))}
 }
-async function superAdminSaveCompany(companyId){
+async function superAdminSaveCompany(companyId,selectedCodes){
  const reason=document.getElementById("sa_e_reason")?.value.trim();if(!reason)return alert("An administrative reason is required.");
- try{const {error}=await iySupabase.rpc("super_admin_update_company",{p_company_id:companyId,p_name:document.getElementById("sa_e_name")?.value.trim(),p_address:document.getElementById("sa_e_addr")?.value.trim()||null,p_telephone:document.getElementById("sa_e_tel")?.value.trim()||null,p_email:document.getElementById("sa_e_email")?.value.trim()||null,p_website:document.getElementById("sa_e_web")?.value.trim()||null,p_reason:reason});if(error)throw error;await superAdminOpenCompany(companyId);iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast("Company information updated.")}catch(e){alert(superAdminError(e))}
+ if(!Array.isArray(selectedCodes)||!selectedCodes.length)return alert("Select at least one company section.");
+ try{
+  const {error}=await iySupabase.rpc("super_admin_update_company",{p_company_id:companyId,p_name:document.getElementById("sa_e_name")?.value.trim(),p_address:document.getElementById("sa_e_addr")?.value.trim()||null,p_telephone:document.getElementById("sa_e_tel")?.value.trim()||null,p_email:document.getElementById("sa_e_email")?.value.trim()||null,p_website:document.getElementById("sa_e_web")?.value.trim()||null,p_reason:reason});if(error)throw error;
+  const {error:moduleError}=await iySupabase.rpc("super_admin_set_company_modules",{p_company_id:companyId,p_module_codes:selectedCodes});if(moduleError)throw moduleError;
+  await superAdminOpenCompany(companyId);iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast("Company information and modules updated successfully.")
+ }catch(e){alert(superAdminError(e))}
 }
 function superAdminCreateSitePrompt(companyId){
  openModal(`<div class="modal-card" style="max-width:620px"><div class="modal-head"><h2>Add site</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-form-grid"><div class="sa-field"><label>Site name *</label><input id="sa_s_name"></div><div class="sa-field"><label>Site code</label><input id="sa_s_code"></div><div class="sa-field full"><label>Site address</label><textarea id="sa_s_addr"></textarea></div><div class="sa-field full"><label>Administrative reason *</label><input id="sa_s_reason"></div></div><div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminCreateSite('${esc(companyId)}')">Add site</button></div></div>`)
@@ -8781,16 +8910,25 @@ function superAdminCompanyFilteredRows(){
 }
 function superAdminDeleteCompanyPrompt(companyId,companyName){
  if(companyName==="IY Digital Innovations"){alert("The IY Digital Innovations platform-owner company cannot be deleted.");return;}
- const ok=confirm(`Delete ${companyName||"this company"}? This is a destructive platform action. Only continue if the company is intended to be permanently removed.`);
- if(!ok)return;
+ const typed=prompt(`Permanently delete ${companyName||"this company"} and ALL of its data?\n\nThis includes users, sites, departments, parts, inventory, orders, maintenance records, reports, approvals, billing records, subscriptions, company modules and other company data.\n\nThis action cannot be undone.\n\nType DELETE to confirm.`);
+ if(typed!=="DELETE")return;
  superAdminDeleteCompany(companyId,companyName);
 }
 async function superAdminDeleteCompany(companyId,companyName){
  try{
-  const {error}=await iySupabase.rpc("super_admin_delete_company",{p_company_id:companyId,p_reason:"Company deleted by Super Admin from the Companies administration page."});
+  const {data,error}=await iySupabase.functions.invoke("super-admin-delete-company",{
+   body:{company_id:companyId}
+  });
   if(error)throw error;
-  iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast(`${companyName||"Company"} deleted.`);render();
- }catch(e){alert("Company deletion is not available yet in the installed Super Admin backend. The Delete button is ready, but a server-side super_admin_delete_company RPC must be added before deletion can be executed safely. No data was changed.");}
+  if(!data?.success)throw new Error(data?.error||"Company deletion failed.");
+  iySuperAdminState.loaded=false;
+  await loadSuperAdminConsole(true);
+  toast(`${companyName||"Company"} and its associated data were permanently deleted.`);
+  render();
+ }catch(e){
+  console.error("Super Admin company deletion failed",e);
+  alert(`Company deletion failed. No frontend data was changed.\n\n${e?.message||e}`);
+ }
 }
 function superAdminCompaniesPage(){
  if(!isSuperAdmin())return accessDeniedPage("Companies","This platform company directory is restricted to Super Admin accounts.");
