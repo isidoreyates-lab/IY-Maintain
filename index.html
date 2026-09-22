@@ -6799,8 +6799,9 @@ async function onboardingLogoRemove(){
    try{
      const folder=String(iyCompany.id);
      await removeKnownAssetPaths([`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]);
-     const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:null}).eq("company_id",iyCompany.id);
-     if(pathError)throw pathError;
+     const {data:logoResult,error:logoRpcError}=await iySupabase.rpc("company_admin_update_company_logo",{p_company_id:iyCompany.id,p_logo_path:null,p_reason:"Company Administrator removed company logo"});
+     if(logoRpcError)throw logoRpcError;
+     if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo removal.");
      if(db.settings){db.settings.logoData="";db.settings.logo_path="";}
      toast("Company logo removed.");
    }catch(e){
@@ -6961,8 +6962,9 @@ async function uploadOnboardingCompanyLogo(){
  ].filter(p=>p!==newPath));
  const {error}=await iySupabase.storage.from(IY_COMPANY_ASSETS_BUCKET).upload(newPath,file,{upsert:true,contentType:file.type,cacheControl:"3600"});
  if(error)throw error;
- const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:newPath}).eq("company_id",iyCompany.id);
- if(pathError)throw pathError;
+ const {data:logoResult,error:logoRpcError}=await iySupabase.rpc("company_admin_update_company_logo",{p_company_id:iyCompany.id,p_logo_path:newPath,p_reason:"Company Administrator updated company logo"});
+ if(logoRpcError)throw logoRpcError;
+ if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo update.");
  await loadCloudAssets(db.settings);
  const persisted=await loadOnboardingExistingLogo(iyCompany.id);
  if(persisted)iyOnboardingState.company.logoPreview=persisted;
@@ -7844,9 +7846,9 @@ async function cloudSaveSettings(){
   p_prepared_by:s.preparedBy||null,
   p_department:s.department||null,
   p_default_minimum_stock:num(s.defaultMinimumStock),
-  p_report_footer:s.reportFooter||null,
-  p_reason:"Super Admin updated company settings"
+  p_report_footer:s.reportFooter||null
  };
+ if(isSuperAdminRole()) payload.p_reason="Super Admin updated company settings";
  // Super Admin settings are saved through the dedicated SECURITY DEFINER
  // administration function. Normal company users continue using the existing
  // company settings workflow unchanged.
@@ -8163,8 +8165,9 @@ async function handleLogoUpload(input){
    if(logoRpcError)throw logoRpcError;
    if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo update.");
   }else{
-   const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:newPath}).eq("company_id",iyCompany.id);
-   if(pathError)throw pathError;
+   const {data:logoResult,error:logoRpcError}=await iySupabase.rpc("company_admin_update_company_logo",{p_company_id:iyCompany.id,p_logo_path:newPath,p_reason:"Company Administrator updated company logo"});
+   if(logoRpcError)throw logoRpcError;
+   if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo update.");
   }
   await loadCloudAssets(db.settings);
   save();
@@ -8191,8 +8194,9 @@ async function removeCompanyLogo(){
    if(logoRpcError)throw logoRpcError;
    if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo removal.");
   }else{
-   const {error:pathError}=await iySupabase.from("company_settings").update({logo_path:null}).eq("company_id",iyCompany.id);
-   if(pathError)throw pathError;
+   const {data:logoResult,error:logoRpcError}=await iySupabase.rpc("company_admin_update_company_logo",{p_company_id:iyCompany.id,p_logo_path:null,p_reason:"Company Administrator removed company logo"});
+   if(logoRpcError)throw logoRpcError;
+   if(!logoResult?.success)throw new Error(logoResult?.message||"The server did not confirm the company logo removal.");
   }
   db.settings.logoData="";db.settings.logo_path="";
   await loadCloudAssets(db.settings);
