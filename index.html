@@ -5,6 +5,18 @@
 <!-- IY Maintain V24.81 — Refresh company logo URLs for generated/approval reports -->
 <html lang="en">
 <head>
+<style id="iy-google-sans-font">
+  :root {
+    --iy-font-family: "Google Sans", "Google Sans Text", Arial, sans-serif;
+  }
+  html, body, button, input, select, textarea, table, th, td {
+    font-family: var(--iy-font-family) !important;
+  }
+  *, *::before, *::after {
+    font-family: inherit;
+  }
+</style>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8642,7 +8654,7 @@ function superAdminModulePicker(prefix,selectedCodes){const selected=new Set(sel
 function superAdminSetModuleChecks(value){document.querySelectorAll('input[data-sa-module]').forEach(x=>x.checked=!!value)}
 async function superAdminGetCompanyModules(companyId){const {data,error}=await iySupabase.rpc("super_admin_get_company_modules",{p_company_id:companyId});if(error)throw error;return Array.isArray(data)?data:[]}
 async function superAdminSaveCompanyModules(companyId,selectedCodes,returnToCompany=true){if(!selectedCodes.length)return alert("Select at least one company section.");try{const {error}=await iySupabase.rpc("super_admin_set_company_modules",{p_company_id:companyId,p_module_codes:selectedCodes});if(error)throw error;iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);if(returnToCompany)await superAdminOpenCompany(companyId);toast("Company modules updated successfully.")}catch(e){alert(superAdminError(e))}}
-function superAdminOpenCompanyModules(companyId,selectedCodes){openModal(`<div class="modal-card" style="max-width:900px"><div class="modal-head"><h2>Manage company modules</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-modal-note">These selections control the operational sections available to this company. Changes are stored in the database and recorded in the company audit history.</div>${superAdminModulePicker('sa_m',selectedCodes)}<div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminSaveCompanyModules('${esc(companyId)}',superAdminSelectedModuleCodes())">Save modules</button></div></div>`)}
+async function superAdminOpenCompanyModules(companyId,selectedCodes){if(!Array.isArray(selectedCodes)){try{selectedCodes=(await superAdminGetCompanyModules(companyId)).filter(x=>x.enabled).map(x=>x.code)}catch(e){return alert(superAdminError(e))}}openModal(`<div class="modal-card" style="max-width:900px"><div class="modal-head"><h2>Manage company modules</h2><button class="close" onclick="superAdminOpenCompany('${esc(companyId)}')">×</button></div><div class="sa-modal-note">These selections control the operational sections available to this company. Changes are stored in the database and recorded in the company audit history.</div>${superAdminModulePicker('sa_m',selectedCodes)}<div class="sa-modal-actions"><button class="sa-btn" onclick="superAdminOpenCompany('${esc(companyId)}')">Cancel</button><button class="sa-btn primary" onclick="superAdminSaveCompanyModules('${esc(companyId)}',superAdminSelectedModuleCodes())">Save modules</button></div></div>`)}
 function superAdminOpenCreateCompany(){
  const allCodes=SA_MODULE_GROUPS.flatMap(g=>g.codes);
  openModal(`<div class="modal-card" style="max-width:980px"><div class="modal-head"><h2>Create company</h2><button class="close" onclick="closeModal()">×</button></div><div class="sa-modal-note">Create a company directly from the platform console. New manually created companies begin on the selected plan's configured trial period. Select the exact operational sections this company should have.</div><div class="sa-form-grid">
@@ -8682,16 +8694,41 @@ async function superAdminCreateCompany(){
    closeModal();iySuperAdminState.loaded=false;await loadSuperAdminConsole(true);toast("Company created, modules saved, and the Company Administrator invitation was sent.");
  }catch(e){alert(superAdminError(e))}
 }
+async function superAdminResendAdminInvitation(companyId){
+ const d=iySuperAdminState.selectedCompany||{};
+ const c=d.company||{};
+ if(!companyId)return;
+ if(c.name==="IY Digital Innovations")return alert("The platform-owner company does not require a customer administrator invitation.");
+ const admins=(d.users||[]).filter(u=>String(u.role||"").toLowerCase()==="company_admin" && u.is_active!==false);
+ const names=admins.map(u=>`${u.full_name||"Company Administrator"}${u.email?` <${u.email}>`:""}`).join("\n");
+ const promptText=admins.length
+   ? `Resend the Company Administrator invitation for ${c.name}?\n\nCurrent administrator account(s):\n${names}\n\nIf the administrator has already activated the account, no new invitation will be sent.`
+   : `Send a Company Administrator invitation for ${c.name}?\n\nThe secure server will locate the company's pending administrator account. If the account has already been activated, no new invitation will be sent.`;
+ if(!confirm(promptText))return;
+ try{
+   const {data:{session}}=await iySupabase.auth.getSession();
+   if(!session)throw new Error("Your secure session has expired. Please sign in again.");
+   const response=await fetch(`${iy_SUPABASE_URL}/functions/v1/resend-company-admin-invite`,{
+     method:"POST",
+     headers:{Authorization:`Bearer ${session.access_token}`,"Content-Type":"application/json"},
+     body:JSON.stringify({company_id:companyId})
+   });
+   const payload=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(payload.error||payload.message||"The administrator invitation could not be resent.");
+   toast(payload.message||"Company Administrator invitation sent.");
+   await superAdminOpenCompany(companyId);
+ }catch(e){alert(superAdminError(e))}
+}
 async function superAdminOpenCompany(companyId){
  try{const [detailRes,moduleRes]=await Promise.all([iySupabase.rpc("super_admin_company_detail",{p_company_id:companyId}),iySupabase.rpc("super_admin_get_company_modules",{p_company_id:companyId})]);if(detailRes.error)throw detailRes.error;if(moduleRes.error)throw moduleRes.error;const data=detailRes.data||{};data.modules=Array.isArray(moduleRes.data)?moduleRes.data:[];iySuperAdminState.selectedCompany=data;superAdminRenderCompanyModal(data)}catch(e){alert(superAdminError(e))}
 }
 function superAdminRenderCompanyModal(d){
  const c=d.company||{},s=d.settings||{},sub=d.subscription||{},p=d.plan||{},m=d.metrics||{};const users=d.users||[],sites=d.sites||[],depts=d.departments||[],activity=d.recent_activity||[],billing=d.recent_billing||[];
  openModal(`<div class="modal-card sa-company-modal" style="max-width:1120px"><div class="sa-company-modal-head"><div class="modal-title-wrap"><div class="modal-title-icon">▦</div><div><h2>Company administration</h2><p>Platform-level workspace, users, operations and commercial administration</p></div></div><button class="close" onclick="closeModal()">×</button></div><div class="sa-company-modal-body">
- <div class="sa-company-hero"><div class="sa-company-hero-main"><div class="sa-company-detail-name">${esc(c.name||"Company")}</div><div class="sa-company-detail-id">Company ID · ${esc(c.id||"")}</div></div><div class="sa-company-hero-actions">${superAdminStatusPill(sub.status,c.name==="IY Digital Innovations")}<button class="sa-btn" onclick="superAdminOpenCompanyModules('${esc(c.id)}',(d.modules||[]).filter(x=>x.enabled).map(x=>x.code))">Manage modules</button><button class="sa-btn primary" onclick="superAdminOpenEditCompany('${esc(c.id)}')">Edit company</button></div></div>
+ <div class="sa-company-hero"><div class="sa-company-hero-main"><div class="sa-company-detail-name">${esc(c.name||"Company")}</div><div class="sa-company-detail-id">Company ID · ${esc(c.id||"")}</div></div><div class="sa-company-hero-actions">${superAdminStatusPill(sub.status,c.name==="IY Digital Innovations")}<button class="sa-btn" onclick="superAdminResendAdminInvitation('${esc(c.id)}')">Resend admin invitation</button><button class="sa-btn" onclick="superAdminOpenCompanyModules('${esc(c.id)}')">Manage modules</button><button class="sa-btn primary" onclick="superAdminOpenEditCompany('${esc(c.id)}')">Edit company</button></div></div>
  <div class="sa-statline sa-company-stats"><div class="sa-mini"><b>${superAdminMetric(m.users)}</b><span>Users</span></div><div class="sa-mini"><b>${superAdminMetric(m.sites)}</b><span>Sites</span></div><div class="sa-mini"><b>${superAdminMetric(m.departments)}</b><span>Departments</span></div><div class="sa-mini"><b>${superAdminMetric(m.machines)}</b><span>Machines</span></div><div class="sa-mini"><b>${superAdminMetric(m.parts)}</b><span>Parts</span></div><div class="sa-mini"><b>${superAdminMetric(m.maintenance)}</b><span>Maintenance</span></div><div class="sa-mini"><b>${superAdminMetric(m.inventory)}</b><span>Inventory</span></div><div class="sa-mini"><b>${superAdminMetric(m.open_approvals)}</b><span>Open approvals</span></div></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Company & subscription</div><table class="sa-data-table"><tbody><tr><td><b>Email</b><br>${esc(c.email||s.email||"—")}</td><td><b>Telephone</b><br>${esc(c.telephone||s.telephone||"—")}</td><td><b>Website</b><br>${esc(c.website||s.website||"—")}</td><td><b>Plan</b><br>${esc(p.name||p.code||"—")} · ${esc(sub.billing_interval||"—")}</td></tr><tr><td colspan="2"><b>Address</b><br>${esc(c.address||s.address||"—")}</td><td><b>Stripe customer</b><br>${esc(sub.stripe_customer_id||"—")}</td><td><b>Stripe subscription</b><br>${esc(sub.stripe_subscription_id||"—")}</td></tr><tr><td><b>Period</b><br>${esc(superAdminTime(sub.current_period_start))} → ${esc(superAdminTime(sub.current_period_end))}</td><td><b>Last activity</b><br>${esc(superAdminTime(c.last_activity_at||null))}</td><td><b>Subscription status</b><br>${superAdminStatusPill(sub.status)}</td><td><b>Cancellation at period end</b><br>${sub.cancel_at_period_end?"Yes":"No"}</td></tr></tbody></table></div>
- <div class="sa-detail-section"><div class="sa-detail-title">Enabled company sections</div><div class="sa-module-status-list">${SA_MODULE_GROUPS.flatMap(g=>g.codes).map(code=>{const item=(d.modules||[]).find(x=>x.code===code);const on=!!item?.enabled;return `<div class="sa-module-status"><b>${esc(SA_MODULE_META[code]||code)}</b><em class="${on?'on':'off'}">${on?'Enabled':'Disabled'}</em></div>`}).join("")}</div><div class="sa-modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="sa-btn primary" onclick="superAdminOpenCompanyModules('${esc(c.id)}',(d.modules||[]).filter(x=>x.enabled).map(x=>x.code))">Configure sections</button></div></div>
+ <div class="sa-detail-section"><div class="sa-detail-title">Enabled company sections</div><div class="sa-module-status-list">${SA_MODULE_GROUPS.flatMap(g=>g.codes).map(code=>{const item=(d.modules||[]).find(x=>x.code===code);const on=!!item?.enabled;return `<div class="sa-module-status"><b>${esc(SA_MODULE_META[code]||code)}</b><em class="${on?'on':'off'}">${on?'Enabled':'Disabled'}</em></div>`}).join("")}</div><div class="sa-modal-actions" style="justify-content:flex-start;margin-top:10px"><button class="sa-btn primary" onclick="superAdminOpenCompanyModules('${esc(c.id)}')">Configure sections</button></div></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Sites & departments</div><div class="sa-quick-grid"><button class="sa-quick" onclick="superAdminCreateSitePrompt('${esc(c.id)}')"><b>+ Add site</b><span>Create another operating location within plan capacity.</span></button><button class="sa-quick" onclick="superAdminCreateDepartmentPrompt('${esc(c.id)}')"><b>+ Add department</b><span>Create a department and connect it to a site.</span></button><button class="sa-quick" onclick="superAdminOpenCreateMembershipHelp()"><b>Users & roles</b><span>Review current company memberships below.</span></button><button class="sa-quick" onclick="superAdminOpenCompany('${esc(c.id)}')"><b>Refresh company</b><span>Reload the complete company administration view.</span></button></div>
  <table class="sa-data-table" style="margin-top:10px"><thead><tr><th>Sites</th><th>Code</th><th>Status</th><th>Departments</th></tr></thead><tbody>${sites.map(site=>{const ds=depts.filter(d=>d.site_id===site.id);return `<tr><td><b>${esc(site.name)}</b><br><small>${esc(site.address||"")}</small></td><td>${esc(site.code||"—")}</td><td>${site.is_active?'<span class="sa-pill active">Active</span>':'<span class="sa-pill canceled">Inactive</span>'}</td><td>${ds.length?ds.map(d=>esc(d.name)+` <small>(${esc(d.code||"—")})</small>`).join("<br>"):"—"}</td></tr>`}).join("")||`<tr><td colspan="4">No sites.</td></tr>`}</tbody></table></div>
  <div class="sa-detail-section"><div class="sa-detail-title">Users & roles</div><table class="sa-data-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Scope</th><th>Status</th><th></th></tr></thead><tbody>${users.map(u=>`<tr><td><b>${esc(u.full_name||"—")}</b><br><small>${esc(u.user_code||"")}</small></td><td>${esc(u.email||"—")}</td><td>${esc(roleLabel(u.role||""))}</td><td>${esc(u.site_id||"All sites")} · ${esc(u.department_id||"All departments")}</td><td>${u.is_active?'<span class="sa-pill active">Active</span>':'<span class="sa-pill canceled">Inactive</span>'}</td><td>${String(u.role||"").toLowerCase()!="super_admin"?`<button class="sa-btn" onclick="superAdminOpenMembershipEdit('${esc(u.id)}')">Edit</button>`:"—"}</td></tr>`).join("")||`<tr><td colspan="6">No users.</td></tr>`}</tbody></table></div>
