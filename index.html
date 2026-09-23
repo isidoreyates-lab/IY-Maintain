@@ -3264,6 +3264,16 @@ function commercialLimit(value){
 function commercialPlanCard(plan,currentPlanCode){
   const isCurrent=String(plan.code||"")===String(currentPlanCode||"");
   const billingInterval=String(iyCommercialPricingState.billingInterval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
+  const currentBillingInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"").toLowerCase();
+  const canSwitchCurrentInterval=isCurrent
+    && ["monthly","annual"].includes(currentBillingInterval)
+    && billingInterval!==currentBillingInterval;
+  const actionDisabled=isCurrent && !canSwitchCurrentInterval;
+  const actionLabel=canSwitchCurrentInterval
+    ? `Switch to ${billingInterval==="annual"?"annual":"monthly"} billing`
+    : isCurrent
+      ? "Current plan"
+      : billingInterval==="annual"?"Choose annual plan":"Choose monthly plan";
   const monthly=Number(plan.monthly_price||0);
   const annual=Number(plan.annual_price||0);
   const annualSaving=Math.max(0,(monthly*12)-annual);
@@ -3308,7 +3318,7 @@ function commercialPlanCard(plan,currentPlanCode){
       <li>Unlimited reports</li>
       <li>Approvals &amp; machine images</li>
     </ul>
-    <button class="iy-pricing-action ${isCurrent?'secondary':''}" type="button" ${isCurrent?'disabled':''} onclick="commercialPricingAction('${esc(plan.code)}')">${isCurrent?"Current plan":billingInterval==="annual"?"Choose annual plan":"Choose monthly plan"}</button>
+    <button class="iy-pricing-action ${actionDisabled?'secondary':''}" type="button" ${actionDisabled?'disabled':''} onclick="commercialPricingAction('${esc(plan.code)}')">${actionLabel}</button>
   </article>`;
 }
 
@@ -3331,7 +3341,7 @@ function commercialPricingPage(){
   const billingInterval=String(iyCommercialPricingState.billingInterval||"monthly").toLowerCase()==="annual"?"annual":"monthly";
   const currentBillingInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"").toLowerCase();
   const activeIntervalNotice=String(iyCommercialSubscriptionState.status?.status||"").toLowerCase()==="active"
-    ? `Your current subscription remains on ${currentBillingInterval==="annual"?"annual":"monthly"} billing. The selector below controls the interval for a new subscription/trial or a compatible plan change.`
+    ? `Your current subscription remains on ${currentBillingInterval==="annual"?"annual":"monthly"} billing. The selector below controls the interval for a new subscription/trial, plan change, or billing interval change.`
     : "Choose how you want the selected plan billed. You can switch between monthly and annual before continuing.";
 
   return `<div class="iy-pricing-shell">
@@ -3390,7 +3400,7 @@ async function commercialPricingAction(planCode){
     if(status==="active"){
       const currentInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"monthly").toLowerCase();
       if(selectedInterval!==currentInterval){
-        toast(`Your current subscription is billed ${currentInterval}. Billing interval changes are not part of the active upgrade flow yet.`);
+        await openCommercialBillingIntervalChangeModal(code,selectedInterval);
         return;
       }
       await openCommercialPlanChangeModal(code,selectedInterval);
@@ -3403,6 +3413,153 @@ async function commercialPricingAction(planCode){
     console.error("Pricing plan action failed",error);
     iyCommercialSubscriptionState.checkoutError=error;
     nav("subscription");
+  }
+}
+
+async function openCommercialBillingIntervalChangeModal(targetPlanCode,targetBillingInterval){
+  const code=String(targetPlanCode||"").trim().toUpperCase();
+  const interval=String(targetBillingInterval||"").trim().toLowerCase();
+  if(!code||!["monthly","annual"].includes(interval))return;
+
+  if(!iyCommercialPricingState.plans||!iyCommercialPricingState.plans.length){
+    if(!iyCommercialPricingState.loading) loadCommercialPricingPlans();
+    await new Promise(resolve=>{
+      const started=Date.now();
+      const wait=()=>{
+        if(iyCommercialPricingState.plans||Date.now()-started>8000){resolve();return;}
+        setTimeout(wait,80);
+      };
+      wait();
+    });
+  }
+
+  const plans=iyCommercialPricingState.plans||[];
+  const currentCode=String(
+    iyCommercialPricingState.currentPlanCode
+    || iyCommercialSubscriptionState.status?.plan_code
+    || code
+  ).toUpperCase();
+  const currentInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"").toLowerCase();
+
+  if(code!==currentCode){
+    throw new Error("Billing interval changes must use the current subscription plan.");
+  }
+  if(!["monthly","annual"].includes(currentInterval)){
+    throw new Error("The current billing interval could not be resolved.");
+  }
+  if(interval===currentInterval){
+    toast("Your subscription is already on this billing interval.");
+    return;
+  }
+
+  const plan=plans.find(p=>String(p.code||"").toUpperCase()===currentCode);
+  if(!plan)throw new Error("The current subscription plan could not be resolved.");
+
+  const currentAmount=currentInterval==="annual"?plan.annual_price:plan.monthly_price;
+  const targetAmount=interval==="annual"?plan.annual_price:plan.monthly_price;
+  const currentLabel=currentInterval==="annual"?"Annual":"Monthly";
+  const targetLabel=interval==="annual"?"Annual":"Monthly";
+
+  openModal(`<div class="modalhead">
+      <div>
+        <h2 style="margin-bottom:6px">Change billing interval</h2>
+        <div style="color:#6d7e92;font-size:13px">Your existing Stripe subscription will be changed in place. No second subscription will be created.</div>
+      </div>
+      <button class="close" type="button" onclick="closeModal()">×</button>
+    </div>
+    <div class="iy-plan-change-summary">
+      <div class="iy-plan-change-flow">
+        <div><span>Current billing</span><b>${esc(plan.name||currentCode)}</b><small>${commercialMoney(currentAmount,plan.currency||"USD")} / ${esc(currentLabel.toLowerCase())}</small></div>
+        <div class="iy-plan-change-arrow">→</div>
+        <div><span>New billing</span><b>${esc(plan.name||currentCode)}</b><small>${commercialMoney(targetAmount,plan.currency||"USD")} / ${esc(targetLabel.toLowerCase())}</small></div>
+      </div>
+      <div class="iy-plan-change-note">
+        <b>Billing interval: ${esc(currentLabel)} → ${esc(targetLabel)}</b>
+        <span>Stripe will apply the applicable prorated charge or credit when the existing subscription is changed. Your plan and workspace limits stay unchanged.</span>
+      </div>
+      <div id="iyBillingIntervalChangeError" class="iy-plan-change-error" style="display:none"></div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" type="button" id="iyBillingIntervalChangeConfirm" onclick="confirmCommercialBillingIntervalChange('${esc(code)}','${esc(interval)}')">Confirm change</button>
+    </div>`);
+}
+
+async function confirmCommercialBillingIntervalChange(targetPlanCode,targetBillingInterval){
+  const code=String(targetPlanCode||"").trim().toUpperCase();
+  const interval=String(targetBillingInterval||"").trim().toLowerCase();
+  const button=document.getElementById("iyBillingIntervalChangeConfirm");
+  const errorBox=document.getElementById("iyBillingIntervalChangeError");
+
+  if(!["BASIC","PROFESSIONAL","BUSINESS"].includes(code)){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Please select a valid subscription plan.";}
+    return;
+  }
+  if(!["monthly","annual"].includes(interval)){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Please select a valid billing interval.";}
+    return;
+  }
+  if(!iyCompany?.id){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="Company context is not ready. Please refresh and try again.";}
+    return;
+  }
+
+  const currentCode=String(iyCommercialSubscriptionState.status?.plan_code||iyCommercialPricingState.currentPlanCode||"").toUpperCase();
+  const currentInterval=String(iyCommercialSubscriptionState.status?.billing_interval||"").toLowerCase();
+  if(code!==currentCode){
+    if(errorBox){errorBox.style.display="block";errorBox.textContent="The selected plan does not match the current subscription.";}
+    return;
+  }
+  if(interval===currentInterval){
+    closeModal();
+    toast("Your subscription is already on this billing interval.");
+    return;
+  }
+
+  if(button){button.disabled=true;button.textContent="Updating subscription…";}
+  if(errorBox){errorBox.style.display="none";errorBox.textContent="";}
+
+  try{
+    const {data:{session},error:sessionError}=await iySupabase.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!session?.access_token)throw new Error("Your secure session has expired. Please sign in again.");
+
+    const res=await fetch(`${iy_SUPABASE_URL}/functions/v1/change-subscription-billing-interval`,{
+      method:"POST",
+      headers:{
+        Authorization:`Bearer ${session.access_token}`,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        company_id:iyCompany.id,
+        target_plan_code:code,
+        target_billing_interval:interval
+      })
+    });
+
+    const payload=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(payload?.error||"The billing interval could not be changed.");
+
+    closeModal();
+    iyCommercialSubscriptionState.loaded=false;
+    iyCommercialSubscriptionState.status=null;
+    iyCommercialSubscriptionState.error=null;
+    iyCommercialPricingState.plans=null;
+    iyCommercialPricingState.currentPlanCode="";
+    iyCommercialPricingState.billingInterval=interval;
+    render();
+    toast(`✓ Billing interval changed to ${interval==="annual"?"annual":"monthly"}.`);
+    setTimeout(()=>{
+      loadCommercialSubscriptionStatus();
+      loadCommercialPricingPlans();
+    },150);
+  }catch(error){
+    console.error("Commercial billing interval change failed",error);
+    if(errorBox){
+      errorBox.style.display="block";
+      errorBox.textContent=error?.message||"The billing interval could not be changed.";
+    }
+    if(button){button.disabled=false;button.textContent="Confirm change";}
   }
 }
 
