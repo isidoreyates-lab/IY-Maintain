@@ -2786,7 +2786,7 @@ function inventoryEditModal(x){
  <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}"></div>
  <div class="field"><label>Machine Model</label><input id="i_machine" class="input" value="${esc(x?.[2]||"")}"></div>
  <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}"></div>
- <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
+ <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??0}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
  <div class="field full"><label>Remarks</label><textarea id="i_rem" class="textarea">${esc(x?.[8]||"")}</textarea></div></div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveInventoryById('${encodeURIComponent(x?.[9]||"")}')">Save</button></div>`);
@@ -3196,9 +3196,10 @@ function maintenanceLogExportFilterSummary(){
 function buildFilteredMaintenanceLogExportHTML(rows){
  const company=esc(db.settings?.companyName||db.companyName||"Company");
  const system=esc(db.settings?.systemName||"Computerized Machines Maintenance System");
- const prepared=esc(db.settings?.preparedBy||"");
- const department=esc(db.settings?.department||"");
- const footer=esc(db.settings?.reportFooter||"");
+ const reportCtx=currentReportContext();
+ const prepared=esc(reportCtx.preparedBy||"");
+ const department=esc(reportCtx.scopeLabel||"");
+ const footer="";
  const logo=db.settings?.logoData||"";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const machine=document.getElementById("mlMachine")?.value||"";
@@ -3615,6 +3616,7 @@ function runPartsReport(){
  toast("Parts report generated.");
 }
 function currentReportActor(){return {userId:iyAuthUser?.id||"",name:iyMembership?.full_name||db.user?.name||"User",role:iyMembership?.role||db.user?.role||"employee",signature:iyMembership?.signature_path||""};}
+function currentReportContext(){const actor=currentReportActor();const scope=globalViewScopeValues();const site=iyCompanySites.find(x=>String(x.id)===String(scope.siteId));const dept=iyCompanyDepartments.find(x=>String(x.id)===String(scope.departmentId));return {preparedBy:actor.name||"User",site:site?.name||"",department:dept?.name||"",scopeLabel:globalViewScopeLabel()};}
 function approvalDraftKey(kind){const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;return kind+"|"+JSON.stringify(d||{});}
 function approvalActiveId(kind){return window.__activeReportApproval?.[kind]||"";}
 function startFreshReportApproval(kind){window.__activeReportApproval=window.__activeReportApproval||{};window.__activeReportApproval[kind]="";window.__approvalDraftKeys=window.__approvalDraftKeys||{};window.__approvalDraftKeys[kind]="";window.__approvalSelections=window.__approvalSelections||{};window.__approvalSelections[kind]=[];window.__approvalSignatureUrls=window.__approvalSignatureUrls||{};delete window.__approvalSignatureUrls[kind];}
@@ -3622,7 +3624,7 @@ function approvalStateForKind(kind){const id=approvalActiveId(kind);if(id){const
 function approvalSnapshotForKind(kind){
  const d=kind==="parts"?window.__partsReportData:window.__maintenanceReportData;
  if(!d)return null;
- const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:db.settings.preparedBy||"",department:globalViewScopeLabel(),reportFooter:db.settings.reportFooter||"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
+ const snapshot={kind,data:clone(d),settings:{companyName:db.settings.companyName||"iy",systemName:"Computerized Machines Maintenance System",preparedBy:currentReportContext().preparedBy,department:currentReportContext().scopeLabel,reportFooter:"",logoData:db.settings.logoData||""},createdAt:new Date().toISOString()};
  if(kind==="maintenance")snapshot.data.partsUpdates=Array.isArray(window.__maintenanceReportParts)?clone(window.__maintenanceReportParts):[];
  return snapshot;
 }
@@ -3784,7 +3786,7 @@ async function refreshReportApprovalPreview(kind){
 }
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
- const ss=snapshotOverride?.settings||db.settings;const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
+ const ss=snapshotOverride?.settings||db.settings;const ctx=snapshotOverride?.settings?.preparedBy?{preparedBy:snapshotOverride.settings.preparedBy,scopeLabel:snapshotOverride.settings.department||""}:currentReportContext();const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ctx.preparedBy||""),department=esc(ctx.scopeLabel||""),footer="",logo=ss.logoData||"";
  const rows=data.rows,issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const table=isOrders?(rows.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active parts orders match the selected filters.</div>`):(rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`);
@@ -4841,7 +4843,7 @@ async function loadCloudData(){
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null]);
- const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations"});
+ const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:"",preparedBy:"",department:"",defaultMinimumStock:0,reportFooter:"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
@@ -4917,7 +4919,7 @@ async function cloudEnsurePartForUpdate(partNumber,description,machineModel,supp
    if(me)throw me;
    machineId=m?.id||null;
  }
- const minimumStock=num(db.settings?.defaultMinimumStock)||3;
+ const minimumStock=0;
  const rpcScope=scope||effectiveWriteScope();
  const {data:createdResult,error:createError}=await iySupabase.rpc("manage_inventory_record",{
    p_part_number:pn,
@@ -5073,11 +5075,11 @@ async function cloudSaveSettings(){
   p_telephone:String(s.telephone||""),
   p_email:s.email||null,
   p_website:s.website||null,
-  p_store_manager:s.storeManager||null,
-  p_prepared_by:s.preparedBy||null,
-  p_department:s.department||null,
-  p_default_minimum_stock:num(s.defaultMinimumStock),
-  p_report_footer:s.reportFooter||null
+  p_store_manager:null,
+  p_prepared_by:null,
+  p_department:null,
+  p_default_minimum_stock:null,
+  p_report_footer:null
  });
  if(error)throw error;
  if(!data?.success)throw new Error("The server did not confirm the Settings change.");
@@ -5113,7 +5115,7 @@ function settingsPage(){
     <section class="modern-card">
      <div class="modern-card-head"><div class="head-icon blue">⌂</div><div><h3>Company information</h3><p>Details used across the application and generated reports.</p></div></div>
      <div class="modern-form-grid">
-      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"],["storeManager","Store Manager"],["preparedBy","Prepared By"],["department","Department"],["defaultMinimumStock","Default Minimum Stock"],["reportFooter","Report Footer"]].map(([k,l])=>{const canEditField=(["companyName","companyAddress","telephone","email","website"].includes(k)?isCompanyAdmin():canSettings);return `<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canEditField?"":"disabled"}></div>`}).join("")}
+      ${[["companyName","Company Name"],["companyAddress","Company Address"],["telephone","Telephone"],["email","Email"],["website","Website"]].map(([k,l])=>{const canEditField=(["companyName","companyAddress","telephone","email","website"].includes(k)?isCompanyAdmin():canSettings);return `<div class="modern-field"><label for="s_${k}">${l}</label><input id="s_${k}" class="modern-input" value="${esc(s[k]??"")}" ${canEditField?"":"disabled"}></div>`}).join("")}
      </div>
     </section>
    </div>
@@ -5267,7 +5269,7 @@ async function removeSignature(key){
 
 async function saveSettings(){
  if(!canEdit("settings"))return alert("Only a Company Administrator or Manager can change company settings.");
- const editableKeys=["companyName","companyAddress","telephone","email","website","storeManager","preparedBy","department","defaultMinimumStock","reportFooter","logoData"];
+ const editableKeys=["companyName","companyAddress","telephone","email","website","logoData"];
  editableKeys.forEach(k=>{const el=document.getElementById("s_"+k);if(el)db.settings[k]=el.value});
  db.settings.defaultMinimumStock=num(db.settings.defaultMinimumStock);
  // System identity is controlled by IY Digital Innovations and is never editable by company users.
@@ -5607,7 +5609,8 @@ function buildMaintenanceReportHTML(snapshotOverride){
  if(!snapshotOverride&&(!out||!out.innerHTML))return "";
  const ss=snapshotOverride?.settings||db.settings;
  const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System");
- const prepared=esc(ss.preparedBy||""),department=esc(ss.department||""),footer=esc(ss.reportFooter||"");
+ const ctx=snapshotOverride?.settings?.preparedBy?{preparedBy:snapshotOverride.settings.preparedBy,scopeLabel:snapshotOverride.settings.department||""}:currentReportContext();
+ const prepared=esc(ctx.preparedBy||""),department=esc(ctx.scopeLabel||""),footer="";
  const logo=ss.logoData||"";
  let reportType,period,rows,partsUpdates;
  if(snapshotOverride?.data){
