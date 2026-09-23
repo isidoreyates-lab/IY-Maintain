@@ -4788,6 +4788,7 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  openModal(`<div class="modalhead"><h2>${order?"Receive Ordered Part":"Receive Part"}</h2><button class="close" onclick="closeModal()">×</button></div>
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
  <div class="formgrid">
+ ${writeScopeSelectorMarkup()}
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
  <div class="field"><label>Machine</label><select id="r_machine" class="select">${machineSelectOptions(order?.[3]||part?.[2]||"")}</select><div class="hint">Select the registered machine associated with this receipt.</div></div>
@@ -4850,11 +4851,14 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const receiver=document.getElementById("r_by").value.trim();
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
 
+ let scope;
+ try{scope=effectiveWriteScope();}catch(e){return alert(e?.message||"Please select the Site and Department for this transaction.");}
+
  const now=new Date().toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
  try{
-   const {data,error}=await iySupabase.rpc("receive_part_transaction",{
+   const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
      p_part_number:pn,
      p_description:desc||null,
      p_machine_model:machine||null,
@@ -4862,7 +4866,9 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_supplier:supplier||null,
      p_reference:reference||null,
      p_receiver_name:receiver||null,
-     p_received_at:now
+     p_received_at:now,
+     p_site_id:scope.siteId,
+     p_department_id:scope.departmentId
    });
    if(error)throw error;
 
@@ -7698,7 +7704,7 @@ async function cloudUpsertPart(row){
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
 async function cloudInsertReceipt(row){
  const scope=effectiveWriteScope(row[10],row[11]);
- const {data,error}=await iySupabase.rpc("receive_part_transaction",{
+ const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
    p_part_number:String(row[1]),
    p_description:row[2]||null,
    p_machine_model:row[3]||null,
@@ -7706,7 +7712,9 @@ async function cloudInsertReceipt(row){
    p_supplier:row[5]||null,
    p_reference:row[6]||null,
    p_receiver_name:row[7]||null,
-   p_received_at:row[0]||new Date().toISOString()
+   p_received_at:row[0]||new Date().toISOString(),
+   p_site_id:scope.siteId,
+   p_department_id:scope.departmentId
  });
  if(error)throw error;
  return data?.receipt_id||data;
