@@ -3524,6 +3524,7 @@ async function confirmCommercialBillingIntervalChange(targetPlanCode,targetBilli
     if(sessionError)throw sessionError;
     if(!session?.access_token)throw new Error("Your secure session has expired. Please sign in again.");
 
+    const returnUrl=window.location.origin;
     const res=await fetch(`${iy_SUPABASE_URL}/functions/v1/change-subscription-billing-interval`,{
       method:"POST",
       headers:{
@@ -3533,12 +3534,19 @@ async function confirmCommercialBillingIntervalChange(targetPlanCode,targetBilli
       body:JSON.stringify({
         company_id:iyCompany.id,
         target_plan_code:code,
-        target_billing_interval:interval
+        target_billing_interval:interval,
+        return_url:returnUrl
       })
     });
 
     const payload=await res.json().catch(()=>({}));
-    if(!res.ok)throw new Error(payload?.error||"The billing interval could not be changed.");
+    if(!res.ok)throw new Error(payload?.error||"The billing interval change could not be started.");
+
+    if(payload?.checkout_required && payload?.checkout_url){
+      if(button){button.textContent="Opening Stripe Checkout…";}
+      window.location.href=payload.checkout_url;
+      return;
+    }
 
     closeModal();
     iyCommercialSubscriptionState.loaded=false;
@@ -3995,6 +4003,69 @@ async function handleSubscriptionUpgradeReturn(){
     console.error("Subscription upgrade return handling failed",error);
     toast(error?.message||"Upgrade payment confirmation could not be completed.");
   }
+}
+
+
+async function handleSubscriptionBillingIntervalReturn(){
+  const params=new URLSearchParams(window.location.search);
+  const state=params.get("subscription_interval");
+  const requestId=String(params.get("request_id")||"").trim();
+  const sessionId=String(params.get("session_id")||"").trim();
+  if(!state)return false;
+
+  if(state==="canceled"){
+    try{
+      const {data:{session}}=await iySupabase.auth.getSession();
+      if(session?.access_token && iyCompany?.id && requestId){
+        await fetch(`${iy_SUPABASE_URL}/functions/v1/cancel-subscription-billing-interval`,{
+          method:"POST",
+          headers:{Authorization:`Bearer ${session.access_token}`,"Content-Type":"application/json"},
+          body:JSON.stringify({company_id:iyCompany.id,request_id:requestId})
+        });
+      }
+    }catch(error){console.error("Billing interval checkout cancellation cleanup failed",error);}
+    window.history.replaceState({},document.title,window.location.pathname);
+    nav("subscription");
+    toast("Payment was canceled. Your existing billing interval was not changed.");
+    return true;
+  }
+  if(state!=="success"||!requestId||!sessionId)return false;
+
+  toast("Payment received. Confirming your billing interval change…");
+  try{
+    const {data:{session},error:sessionError}=await iySupabase.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!session?.access_token)throw new Error("Your secure session has expired. Please sign in again.");
+
+    const res=await fetch(`${iy_SUPABASE_URL}/functions/v1/complete-subscription-billing-interval`,{
+      method:"POST",
+      headers:{
+        Authorization:`Bearer ${session.access_token}`,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({company_id:iyCompany?.id,request_id:requestId,session_id:sessionId})
+    });
+    const payload=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(payload?.error||"Payment was received, but the billing interval could not be updated yet.");
+
+    window.history.replaceState({},document.title,window.location.pathname);
+    iyCommercialSubscriptionState.loaded=false;
+    iyCommercialSubscriptionState.status=null;
+    iyCommercialSubscriptionState.error=null;
+    iyCommercialPricingState.plans=null;
+    iyCommercialPricingState.currentPlanCode="";
+    nav("subscription");
+    render();
+    toast("✓ Payment confirmed. Your billing interval has been updated.");
+    setTimeout(()=>{
+      loadCommercialSubscriptionStatus();
+      loadCommercialPricingPlans();
+    },200);
+  }catch(error){
+    console.error("Subscription billing interval return handling failed",error);
+    toast(error?.message||"Billing interval payment confirmation could not be completed.");
+  }
+  return true;
 }
 
 
@@ -8881,7 +8952,7 @@ async function initiyAuth(){
  try{
   if(checkForInviteLink()) return;
   const {data:{session}}=await iySupabase.auth.getSession();
-  if(session?.user){await completeAuthenticatedSession(session.user);await handleSubscriptionUpgradeReturn();}
+  if(session?.user){await completeAuthenticatedSession(session.user);const intervalReturnHandled=await handleSubscriptionBillingIntervalReturn();if(!intervalReturnHandled)await handleSubscriptionUpgradeReturn();}
   else renderLogin("signin");
  }catch(e){console.error(e);renderLogin("signin");authMessage("error",e?.message||"Unable to initialize secure sign in.")}
  iySupabase.auth.onAuthStateChange(async(event,session)=>{
