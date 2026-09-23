@@ -3032,7 +3032,7 @@ async function markNotificationRead(id){
  if(iyCloudReady&&iyCompany&&iyAuthUser){try{await iySupabase.from("notification_reads").upsert({company_id:iyCompany.id,user_id:iyAuthUser.id,notification_id:id,read_at:new Date().toISOString()},{onConflict:"company_id,user_id,notification_id"});}catch(e){console.warn("Notification read state not saved to cloud",e)}}
 }
 async function handleNotificationClick(id,reportId,page){await markNotificationRead(id);notificationOpen=false;if(reportId)await openReportNotification(reportId);else nav(page||"dashboard");}
-async function loadApprovalNotificationsOnly(){if(!iyCloudReady||!iyAuthUser)return;try{const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);if(error)throw error;cloudNotifications=data||[];notificationLastRefresh=new Date();render();}catch(e){if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e)}}
+async function loadApprovalNotificationsOnly(silent=false){if(!iyCloudReady||!iyAuthUser)return;try{const {data,error}=await iySupabase.from("notifications").select("id,type,title,detail,page,report_id,created_at,read_at").eq("recipient_user_id",iyAuthUser.id).order("created_at",{ascending:false}).limit(100);if(error)throw error;const next=data||[];const oldKey=(cloudNotifications||[]).map(n=>`${n.id}|${n.read_at||""}|${n.created_at||""}`).join(";");const nextKey=next.map(n=>`${n.id}|${n.read_at||""}|${n.created_at||""}`).join(";");cloudNotifications=next;notificationLastRefresh=new Date();if(!silent||oldKey!==nextKey)render();}catch(e){if(e?.code!=="PGRST205")console.warn("Notification refresh failed",e?.message||e)}}
 async function refreshNotifications(){if(notificationRefreshBusy)return;notificationRefreshBusy=true;try{await loadApprovalNotificationsOnly();}finally{notificationRefreshBusy=false;}}
 function notificationCount(){return notificationState().unread.length;}
 function notificationIconType(type){return type==='bad'?'●':type==='warn'?'▲':'●'}
@@ -4276,10 +4276,12 @@ function commercialUpgradePromptCard(){
       <button class="iy-pricing-action" type="button" onclick="nav('pricing')">View upgrade options</button>
     </div>
     <div class="iy-capacity-list">
-      ${attention.map(r=>{
+      ${resources.map(r=>{
         const p=r.percentage==null?null:Math.min(100,r.percentage);
-        const cls=r.level==="limit_reached"?"danger":r.level==="near_limit"?"near":"warn";
-        return `<div class="iy-capacity-row"><div class="iy-capacity-label"><b>${esc(r.label)}</b><span>${r.current==null?"—":commercialLimit(r.current)} / ${r.max==null?"—":commercialLimit(r.max)} ${r.level==="limit_reached"?"· New creation is blocked":""}</span></div><div class="iy-capacity-track"><i class="${cls}" style="width:${p==null?0:p}%"></i></div><strong>${p==null?"—":Math.round(p)+"%"}</strong></div>`;
+        const cls=r.level==="limit_reached"?"danger":r.level==="near_limit"||r.level==="warning"?"near":"";
+        const statusText=r.level==="limit_reached"?"Limit reached":r.level==="near_limit"?"Near limit":r.level==="warning"?"Approaching limit":r.level==="normal"?"Within capacity":"Status unavailable";
+        const blocked=r.level==="limit_reached"?" · New creation is blocked":"";
+        return `<div class="iy-capacity-row"><div class="iy-capacity-label"><b>${esc(r.label)}</b><span>${r.current==null?"—":commercialLimit(r.current)} / ${r.max==null?"—":commercialLimit(r.max)}${blocked} · ${esc(statusText)}</span></div><div class="iy-capacity-track"><i class="${cls}" style="width:${p==null?0:p}%"></i></div><strong>${p==null?"—":Math.round(p)+"%"}</strong></div>`;
       }).join("")}
     </div>
   </div>`;
@@ -4673,6 +4675,20 @@ function viewUpdateRows(){return viewScopedRows(db.updates,13,14)}
 function viewOrderRows(){return viewScopedRows(db.orders,13,14)}
 function viewMaintenanceRows(){return viewScopedRows(db.maintenance,16,17)}
 function viewMachineRows(){return viewScopedRows(db.machines,11,12)}
+function machineSelectOptions(selected="", includeBlank=true){
+ const rows=viewMachineRows().filter(m=>String(m?.[2]||"").trim());
+ const seen=new Set();
+ const opts=[];
+ if(includeBlank)opts.push(`<option value="">Select machine...</option>`);
+ rows.forEach(m=>{
+   const model=String(m?.[2]||"").trim();
+   const fleet=String(m?.[0]||"").trim();
+   if(!model||seen.has(model))return;
+   seen.add(model);
+   opts.push(`<option value="${esc(model)}" ${model===String(selected||"").trim()?"selected":""}>${esc(model)}${fleet?` — ${esc(fleet)}`:""}</option>`);
+ });
+ return opts.join("");
+}
 function globalViewScopeMarkup(){
  if(!isDashboardScopeController())return "";
  const selectedSite=dashboardSiteId||"", selectedDept=dashboardDepartmentId||"";
@@ -4921,11 +4937,10 @@ function issueModal(p){if(!canEdit("issue"))return alert("You do not have permis
  <div class="notice"><b>${esc(part[0])}</b> — ${esc(part[1])}<br>Machine: ${esc(part[2])} &nbsp; | &nbsp; Available: <b>${part[3]}</b></div>
  <div class="formgrid">
  <div class="field"><label>Quantity To Issue</label><input id="f_qty" class="input" type="number" min="1" max="${num(part[3])}" value="1"></div>
- <div class="field"><label>Machine Issued To</label><input id="f_machine" class="input" list="issueMachineList" value="${esc(part[2]||"")}" placeholder="Machine model / fleet"></div>
+ <div class="field"><label>Machine Issued To</label><select id="f_machine" class="select">${machineSelectOptions(part[2]||"")}</select></div>
  <div class="field"><label>Technician</label><input id="f_tech" class="input" value=""></div>
  <div class="field"><label>Work Order</label><input id="f_wo" class="input"></div>
  <div class="field full"><label>Remarks</label><textarea id="f_rem" class="textarea"></textarea></div></div>
- <datalist id="issueMachineList">${viewMachineRows().map(m=>`<option value="${esc(m[2])}">${esc(m[0])}</option>`).join("")}</datalist>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssue('${encodeURIComponent(part[0])}')">Issue Part</button></div>`);
 }
 async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
@@ -4986,9 +5001,10 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  openModal(`<div class="modalhead"><h2>${order?"Receive Ordered Part":"Receive Part"}</h2><button class="close" onclick="closeModal()">×</button></div>
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
  <div class="formgrid">
+ ${writeScopeSelectorMarkup()}
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
- <div class="field"><label>Machine</label><input id="r_machine" class="input" value="${esc(order?.[3]||part?.[2]||"")}" placeholder="Machine model"></div>
+ <div class="field"><label>Machine</label><select id="r_machine" class="select">${machineSelectOptions(order?.[3]||part?.[2]||"")}</select></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
  <div class="field"><label>Invoice / J-Ref</label><input id="r_invoice" class="input" value="${esc(ref)}" placeholder="Invoice or J-Ref" ${order?"readonly":""}></div>
@@ -5045,12 +5061,14 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const reference=document.getElementById("r_invoice").value.trim();
  const receiver=document.getElementById("r_by").value.trim();
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
+ let scope;
+ try{scope=effectiveWriteScope();}catch(e){return alert(e?.message||"Select the Site and Department for this receipt.");}
 
  const now=new Date().toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
  try{
-   const {data,error}=await iySupabase.rpc("receive_part_transaction",{
+   const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
      p_part_number:pn,
      p_description:desc||null,
      p_machine_model:machine||null,
@@ -5058,7 +5076,9 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_supplier:supplier||null,
      p_reference:reference||null,
      p_receiver_name:receiver||null,
-     p_received_at:now
+     p_received_at:now,
+     p_site_id:scope.siteId,
+     p_department_id:scope.departmentId
    });
    if(error)throw error;
 
@@ -5092,7 +5112,7 @@ function inventoryEditModal(x){
  <div class="formgrid">
  <div class="field"><label>Part Number</label><input id="i_pn" class="input" value="${esc(x?.[0]||"")}" ${x?"readonly":""}></div>
  <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}"></div>
- <div class="field"><label>Machine Model</label><input id="i_machine" class="input" value="${esc(x?.[2]||"")}"></div>
+ <div class="field"><label>Machine Model</label><select id="i_machine" class="select">${machineSelectOptions(x?.[2]||"")}</select></div>
  <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}"></div>
  <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
@@ -7684,7 +7704,7 @@ async function finishAuthenticatedSessionSetup(){
  loggedIn=true;
  db.user={name:iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.email?.split("@")[0]||"User",email:iyAuthUser?.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
- if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},60000);
+ if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly(true);},300000);
  // Super Admin is a platform administrator, not a customer workspace user.
  // Send the account directly to the Super Admin Control Center after authentication.
  if(isSuperAdmin())currentPage="superadmin";
@@ -7894,7 +7914,7 @@ async function cloudUpsertPart(row){
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
 async function cloudInsertReceipt(row){
  const scope=effectiveWriteScope(row[10],row[11]);
- const {data,error}=await iySupabase.rpc("receive_part_transaction",{
+ const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
    p_part_number:String(row[1]),
    p_description:row[2]||null,
    p_machine_model:row[3]||null,
@@ -7902,7 +7922,9 @@ async function cloudInsertReceipt(row){
    p_supplier:row[5]||null,
    p_reference:row[6]||null,
    p_receiver_name:row[7]||null,
-   p_received_at:row[0]||new Date().toISOString()
+   p_received_at:row[0]||new Date().toISOString(),
+   p_site_id:scope.siteId,
+   p_department_id:scope.departmentId
  });
  if(error)throw error;
  return data?.receipt_id||data;
