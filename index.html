@@ -1,5 +1,4 @@
 <!-- IY Maintain V7.01 Super Admin Settings alignment | IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
-<!-- V7.21 WORKING CHANGE — Machine fields in Issue/Receive/Inventory/Parts Updates now use registered-machine dropdowns. Original V7.21 remains the locked baseline. -->
 <!-- V7.07 — Super Admin Settings option removed from navigation by user request. Settings code retained but no sidebar/mobile navigation entry. -->
 <!doctype html>
 <!-- IY Maintain V6.06.5 — Guided Onboarding site/department add UX + persistent company logo -->
@@ -2769,48 +2768,6 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 .sa-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.sa-quick{min-height:72px;text-align:left!important;padding:12px 13px!important;border:1px solid #dce7f2!important;border-radius:12px!important;background:linear-gradient(180deg,#fbfdff,#f5f9fd)!important;transition:all .16s ease;box-shadow:none}.sa-quick:hover{border-color:#b9d5f3!important;transform:translateY(-1px);box-shadow:0 6px 18px rgba(15,77,145,.08)!important}.sa-quick b{font-size:10px!important;color:#0e4f9b!important}.sa-quick span{font-size:8.5px!important;color:#71849b!important;line-height:1.45!important}.sa-company-modal .sa-pill{font-size:8.5px;padding:5px 8px}.sa-company-modal .sa-empty{padding:18px 8px!important;color:#8494a7!important}.sa-company-modal .sa-btn{font-size:10px;padding:8px 11px;border-radius:8px}
 @media(max-width:900px){.sa-company-stats.sa-statline{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-company-hero{flex-direction:column}.sa-company-hero-actions{justify-content:flex-start}}@media(max-width:620px){.modal:has(.sa-company-modal){width:100%!important;max-width:100%!important;border-radius:14px!important}.sa-company-modal-body{padding:12px;max-height:calc(100dvh - 70px)}.sa-company-modal-head{padding:14px 15px}.sa-company-detail-name{font-size:21px!important}.sa-company-stats.sa-statline{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sa-quick-grid{grid-template-columns:1fr}}
 </style>
-<style id="v21-machine-editor-scroll-fix">
-/* Machine editor: keep header/actions visible and make the form itself scroll */
-.modal.machine-editor-modal-v19{
-  width:min(900px,94vw)!important;
-  height:min(90vh,900px)!important;
-  max-height:90vh!important;
-  padding:0!important;
-  box-sizing:border-box!important;
-  overflow:hidden!important;
-  display:flex!important;
-  flex-direction:column!important;
-}
-.machine-editor-v19{
-  width:100%!important;
-  height:100%!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  overflow:hidden!important;
-}
-.machine-editor-head-v19{flex:0 0 auto!important}
-.machine-editor-body-v19{
-  flex:1 1 auto!important;
-  min-height:0!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  -webkit-overflow-scrolling:touch!important;
-  scrollbar-gutter:stable;
-}
-.machine-editor-body-v19::-webkit-scrollbar{width:10px}
-.machine-editor-body-v19::-webkit-scrollbar-track{background:#eef3f8}
-.machine-editor-body-v19::-webkit-scrollbar-thumb{background:#b8c9da;border-radius:999px;border:2px solid #eef3f8}
-.machine-editor-body-v19::-webkit-scrollbar-thumb:hover{background:#8fa8bf}
-.machine-editor-actions-v19{
-  flex:0 0 auto!important;
-  background:#f5f8fc!important;
-  border-top:1px solid #e3ebf2!important;
-}
-@media(max-width:650px){
-  .modal.machine-editor-modal-v19{width:100%!important;height:96vh!important;max-height:96vh!important;border-radius:14px!important}
-}
-</style>
 </head>
 
 <style>
@@ -4488,35 +4445,6 @@ function viewUpdateRows(){return viewScopedRows(db.updates,13,14)}
 function viewOrderRows(){return viewScopedRows(db.orders,13,14)}
 function viewMaintenanceRows(){return viewScopedRows(db.maintenance,16,17)}
 function viewMachineRows(){return viewScopedRows(db.machines,11,12)}
-function machineSelectOptions(selectedModel=""){
- const selected=String(selectedModel||"").trim().toLowerCase();
- const rows=(viewMachineRows()||[]).filter(m=>String(m?.[0]||"").trim()&&String(m?.[2]||"").trim());
- const seen=new Set();
- const options=[];
- rows.forEach(m=>{
-   const fleet=String(m[0]||"").trim();
-   const model=String(m[2]||"").trim();
-   const key=fleet.toLowerCase();
-   if(seen.has(key))return;
-   seen.add(key);
-   const selectedAttr=selected===model.toLowerCase()?" selected":"";
-   options.push(`<option value="${esc(fleet)}"${selectedAttr}>${esc(model)} — ${esc(fleet)}</option>`);
- });
- return `<option value="">Select machine...</option>`+options.join("");
-}
-function selectedMachineModel(selectId){
- const fleet=String(document.getElementById(selectId)?.value||"").trim();
- if(!fleet)return "";
- const machine=(viewMachineRows()||[]).find(m=>String(m?.[0]||"").trim().toLowerCase()===fleet.toLowerCase());
- return String(machine?.[2]||"").trim();
-}
-function machineFleetForModel(model){
- const wanted=String(model||"").trim().toLowerCase();
- if(!wanted)return "";
- const machine=(viewMachineRows()||[]).find(m=>String(m?.[2]||"").trim().toLowerCase()===wanted);
- return String(machine?.[0]||"").trim();
-}
-
 function globalViewScopeMarkup(){
  if(!isDashboardScopeController())return "";
  const selectedSite=dashboardSiteId||"", selectedDept=dashboardDepartmentId||"";
@@ -4765,10 +4693,11 @@ function issueModal(p){if(!canEdit("issue"))return alert("You do not have permis
  <div class="notice"><b>${esc(part[0])}</b> — ${esc(part[1])}<br>Machine: ${esc(part[2])} &nbsp; | &nbsp; Available: <b>${part[3]}</b></div>
  <div class="formgrid">
  <div class="field"><label>Quantity To Issue</label><input id="f_qty" class="input" type="number" min="1" max="${num(part[3])}" value="1"></div>
- <div class="field"><label>Machine Issued To</label><select id="f_machine" class="select">${machineSelectOptions(part[2]||"")}</select><div class="hint">The part's machine is selected by default. Choose another machine from the registered fleet if needed.</div></div>
+ <div class="field"><label>Machine Issued To</label><input id="f_machine" class="input" list="issueMachineList" value="${esc(part[2]||"")}" placeholder="Machine model / fleet"></div>
  <div class="field"><label>Technician</label><input id="f_tech" class="input" value=""></div>
  <div class="field"><label>Work Order</label><input id="f_wo" class="input"></div>
  <div class="field full"><label>Remarks</label><textarea id="f_rem" class="textarea"></textarea></div></div>
+ <datalist id="issueMachineList">${viewMachineRows().map(m=>`<option value="${esc(m[2])}">${esc(m[0])}</option>`).join("")}</datalist>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssue('${encodeURIComponent(part[0])}')">Issue Part</button></div>`);
 }
 async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
@@ -4777,8 +4706,7 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  const qty=num(document.getElementById("f_qty").value);
  if(!part||qty<=0||qty>num(part[3]))return alert("Please enter a valid quantity within available stock.");
 
- const machine=selectedMachineModel("f_machine");
- if(!machine)return alert("Please select a registered machine.");
+ const machine=document.getElementById("f_machine").value.trim();
  const tech=document.getElementById("f_tech").value.trim();
  const wo=document.getElementById("f_wo").value.trim();
  const rem=document.getElementById("f_rem").value.trim();
@@ -4830,10 +4758,9 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  openModal(`<div class="modalhead"><h2>${order?"Receive Ordered Part":"Receive Part"}</h2><button class="close" onclick="closeModal()">×</button></div>
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
  <div class="formgrid">
- ${writeScopeSelectorMarkup()}
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
- <div class="field"><label>Machine</label><select id="r_machine" class="select">${machineSelectOptions(order?.[3]||part?.[2]||"")}</select><div class="hint">Select the registered machine associated with this receipt.</div></div>
+ <div class="field"><label>Machine</label><input id="r_machine" class="input" value="${esc(order?.[3]||part?.[2]||"")}" placeholder="Machine model"></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
  <div class="field"><label>Invoice / J-Ref</label><input id="r_invoice" class="input" value="${esc(ref)}" placeholder="Invoice or J-Ref" ${order?"readonly":""}></div>
@@ -4856,8 +4783,7 @@ function autoFillReceivePart(){
    if(part){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
-     const receiveFleet=machineFleetForModel(matchedOrder[3]||part[2]||"");
-     document.getElementById("r_machine").value=receiveFleet;
+     document.getElementById("r_machine").value=matchedOrder[3]||part[2]||"";
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
      if(hint)hint.textContent="Active order found by J-Ref. Part details and order reference have been filled automatically.";
@@ -4885,22 +4811,18 @@ function autoFillReceivePart(){
 async function saveReceipt(){if(!canEdit("receive"))return alert("You do not have permission to receive parts.");
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
- const machine=selectedMachineModel("r_machine");
- if(!machine)return alert("Please select a registered machine.");
+ const machine=document.getElementById("r_machine").value.trim();
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
  const receiver=document.getElementById("r_by").value.trim();
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
 
- let scope;
- try{scope=effectiveWriteScope();}catch(e){return alert(e?.message||"Please select the Site and Department for this transaction.");}
-
  const now=new Date().toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
  try{
-   const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
+   const {data,error}=await iySupabase.rpc("receive_part_transaction",{
      p_part_number:pn,
      p_description:desc||null,
      p_machine_model:machine||null,
@@ -4908,9 +4830,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_supplier:supplier||null,
      p_reference:reference||null,
      p_receiver_name:receiver||null,
-     p_received_at:now,
-     p_site_id:scope.siteId,
-     p_department_id:scope.departmentId
+     p_received_at:now
    });
    if(error)throw error;
 
@@ -4944,7 +4864,7 @@ function inventoryEditModal(x){
  <div class="formgrid">
  <div class="field"><label>Part Number</label><input id="i_pn" class="input" value="${esc(x?.[0]||"")}" ${x?"readonly":""}></div>
  <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}"></div>
- <div class="field"><label>Machine</label><select id="i_machine" class="select">${machineSelectOptions(x?.[2]||"")}</select><div class="hint">Select the registered machine this part belongs to.</div></div>
+ <div class="field"><label>Machine Model</label><input id="i_machine" class="input" value="${esc(x?.[2]||"")}"></div>
  <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}"></div>
  <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
@@ -4961,8 +4881,7 @@ async function saveInventoryRecord(x){
  const pn=document.getElementById("i_pn").value.trim();
  if(!pn)return alert("Part number is required.");
  x[1]=document.getElementById("i_desc").value.trim();
- x[2]=selectedMachineModel("i_machine");
- if(!x[2])return alert("Please select a registered machine.");
+ x[2]=document.getElementById("i_machine").value.trim();
  x[3]=num(document.getElementById("i_stock").value);
  x[6]=num(document.getElementById("i_min").value);
  x[7]=document.getElementById("i_loc").value.trim();
@@ -5060,7 +4979,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
  <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${viewInventoryRows().map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
- <div class="field"><label>Machine</label><select id="u_machine" class="select">${machineSelectOptions(x?.[3]||"")}</select><div class="hint">Select the registered machine associated with this parts update.</div></div>
+ <div class="field"><label>Machine</label><input id="u_machine" class="input" value="${esc(x?.[3]||"")}"></div>
  <div class="field"><label>Quantity</label><input id="u_qty" class="input" type="number" min="1" value="${x?.[4]??1}"></div>
  <div class="field"><label>PO / J-Ref</label><input id="u_po" class="input" value="${esc(x?.[5]||"")}"></div>
  <div class="field"><label>Supplier</label><input id="u_supplier" class="input" value="${esc(x?.[6]||"")}"></div>
@@ -5077,7 +4996,7 @@ function autoFillUpdatePart(){
  if(!part)return;
  const desc=document.getElementById("u_desc"),machine=document.getElementById("u_machine");
  if(desc&&!desc.value.trim())desc.value=part[1]||"";
- if(machine&&!machine.value)machine.value=machineFleetForModel(part[2]||"");
+ if(machine&&!machine.value.trim())machine.value=part[2]||"";
 } 
 function editUpdate(index){updateModal(index)}
 async function deleteUpdateById(id,siteId,departmentId){
@@ -5094,9 +5013,7 @@ async function deleteUpdateById(id,siteId,departmentId){
 }
 async function saveUpdate(index){
  if(!canEdit("updates"))return alert("You do not have permission to save parts updates.");
- const selectedUpdateMachine=selectedMachineModel("u_machine");
- if(!selectedUpdateMachine)return alert("Please select a registered machine.");
- const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),selectedUpdateMachine,num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
+ const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),document.getElementById("u_machine").value.trim(),num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
  if(!row[1]||row[4]<=0)return alert("Part number and a valid quantity are required.");
  if(row[8]==="ORDERED" && !row[5])return alert("PO / J-Ref is required before an order can be marked Ordered.");
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
@@ -5979,10 +5896,13 @@ function reportPartsUpdateTable(rows){
 function runMaintenanceReport(){
  if(!canGenerateReports())return toast("You do not have permission to generate reports.");const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=viewMaintenanceRows().filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
  const partsUpdates=viewUpdateRows().filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
+ const reportLabel=type==="CUSTOM DATE"?`Custom Date - ${fmtDate(start)} to ${fmtDate(end)}`:type==="WEEKLY"?`Weekly - Week ${getISOWeek_(start)}`:type==="MONTHLY"?`Monthly - ${start.toLocaleDateString("en-GB",{month:"long",year:"numeric"})}`:`Daily - ${fmtDate(start)}`;
+ const reportPeriod=`${fmtDate(start)} - ${fmtDate(end)}`;
  window.__maintenanceReportParts=partsUpdates;
+ window.__maintenanceReportData={type,from:start.toISOString().slice(0,10),to:end.toISOString().slice(0,10),reportType:reportLabel,period:reportPeriod,rows,partsUpdates};
  startFreshReportApproval("maintenance");
  const completed=rows.filter(x=>String(x[10]).toLowerCase()==="completed").length,ongoing=rows.filter(x=>["ongoing","in progress","open"].includes(String(x[10]).toLowerCase())).length,preventive=rows.filter(x=>["preventive maintenance","preventive","pm"].includes(String(x[7]).toLowerCase())).length,repairs=rows.filter(x=>["repair","repairs"].includes(String(x[7]).toLowerCase())).length,parts=rows.filter(x=>String(x[11]||"").trim()!=="").length;
- const reportLabel=type==="CUSTOM DATE"?`Custom Date - ${fmtDate(start)} to ${fmtDate(end)}`:type;document.getElementById("mrout").innerHTML=`<div class="cards">${metric("TOTAL JOBS",rows.length,reportLabel)}${metric("COMPLETED",completed,"Completed")}${metric("ONGOING",ongoing,"Open / in progress")}${metric("PARTS REQUIRED",parts,"Jobs with parts listed")}</div><div class="notice"><b>${reportLabel}</b> period: ${fmtDate(start)} to ${fmtDate(end)} &nbsp; | &nbsp; Preventive: ${preventive} &nbsp; | &nbsp; Repairs: ${repairs}</div><section class="report-section maintenance-report-section"><div class="report-section-heading"><h3>Maintenance Records</h3><span>${rows.length} job(s)</span></div>${maintenanceTable(rows)}</section><section class="report-section parts-report-section"><div class="report-section-heading"><h3>Parts Updates</h3><span>${partsUpdates.length} update(s)</span></div>${reportPartsUpdateTable(partsUpdates)}</section>`}
+ document.getElementById("mrout").innerHTML=`<div class="cards">${metric("TOTAL JOBS",rows.length,reportLabel)}${metric("COMPLETED",completed,"Completed")}${metric("ONGOING",ongoing,"Open / in progress")}${metric("PARTS REQUIRED",parts,"Jobs with parts listed")}</div><div class="notice"><b>${reportLabel}</b> period: ${fmtDate(start)} to ${fmtDate(end)} &nbsp; | &nbsp; Preventive: ${preventive} &nbsp; | &nbsp; Repairs: ${repairs}</div><section class="report-section maintenance-report-section"><div class="report-section-heading"><h3>Maintenance Records</h3><span>${rows.length} job(s)</span></div>${maintenanceTable(rows)}</section><section class="report-section parts-report-section"><div class="report-section-heading"><h3>Parts Updates</h3><span>${partsUpdates.length} update(s)</span></div>${reportPartsUpdateTable(partsUpdates)}</section>`}
 
 
 let iyUsersCache=[];
@@ -7746,7 +7666,7 @@ async function cloudUpsertPart(row){
 async function cloudSaveInventory(row){return cloudUpsertPart(row)}
 async function cloudInsertReceipt(row){
  const scope=effectiveWriteScope(row[10],row[11]);
- const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
+ const {data,error}=await iySupabase.rpc("receive_part_transaction",{
    p_part_number:String(row[1]),
    p_description:row[2]||null,
    p_machine_model:row[3]||null,
@@ -7754,9 +7674,7 @@ async function cloudInsertReceipt(row){
    p_supplier:row[5]||null,
    p_reference:row[6]||null,
    p_receiver_name:row[7]||null,
-   p_received_at:row[0]||new Date().toISOString(),
-   p_site_id:scope.siteId,
-   p_department_id:scope.departmentId
+   p_received_at:row[0]||new Date().toISOString()
  });
  if(error)throw error;
  return data?.receipt_id||data;
