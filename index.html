@@ -1,4 +1,5 @@
 <!-- IY Maintain V7.01 Super Admin Settings alignment | IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
+<!-- V7.21 WORKING CHANGE — Machine fields in Issue/Receive/Inventory/Parts Updates now use registered-machine dropdowns. Original V7.21 remains the locked baseline. -->
 <!-- V7.07 — Super Admin Settings option removed from navigation by user request. Settings code retained but no sidebar/mobile navigation entry. -->
 <!doctype html>
 <!-- IY Maintain V6.06.5 — Guided Onboarding site/department add UX + persistent company logo -->
@@ -4445,6 +4446,35 @@ function viewUpdateRows(){return viewScopedRows(db.updates,13,14)}
 function viewOrderRows(){return viewScopedRows(db.orders,13,14)}
 function viewMaintenanceRows(){return viewScopedRows(db.maintenance,16,17)}
 function viewMachineRows(){return viewScopedRows(db.machines,11,12)}
+function machineSelectOptions(selectedModel=""){
+ const selected=String(selectedModel||"").trim().toLowerCase();
+ const rows=(viewMachineRows()||[]).filter(m=>String(m?.[0]||"").trim()&&String(m?.[2]||"").trim());
+ const seen=new Set();
+ const options=[];
+ rows.forEach(m=>{
+   const fleet=String(m[0]||"").trim();
+   const model=String(m[2]||"").trim();
+   const key=fleet.toLowerCase();
+   if(seen.has(key))return;
+   seen.add(key);
+   const selectedAttr=selected===model.toLowerCase()?" selected":"";
+   options.push(`<option value="${esc(fleet)}"${selectedAttr}>${esc(model)} — ${esc(fleet)}</option>`);
+ });
+ return `<option value="">Select machine...</option>`+options.join("");
+}
+function selectedMachineModel(selectId){
+ const fleet=String(document.getElementById(selectId)?.value||"").trim();
+ if(!fleet)return "";
+ const machine=(viewMachineRows()||[]).find(m=>String(m?.[0]||"").trim().toLowerCase()===fleet.toLowerCase());
+ return String(machine?.[2]||"").trim();
+}
+function machineFleetForModel(model){
+ const wanted=String(model||"").trim().toLowerCase();
+ if(!wanted)return "";
+ const machine=(viewMachineRows()||[]).find(m=>String(m?.[2]||"").trim().toLowerCase()===wanted);
+ return String(machine?.[0]||"").trim();
+}
+
 function globalViewScopeMarkup(){
  if(!isDashboardScopeController())return "";
  const selectedSite=dashboardSiteId||"", selectedDept=dashboardDepartmentId||"";
@@ -4693,11 +4723,10 @@ function issueModal(p){if(!canEdit("issue"))return alert("You do not have permis
  <div class="notice"><b>${esc(part[0])}</b> — ${esc(part[1])}<br>Machine: ${esc(part[2])} &nbsp; | &nbsp; Available: <b>${part[3]}</b></div>
  <div class="formgrid">
  <div class="field"><label>Quantity To Issue</label><input id="f_qty" class="input" type="number" min="1" max="${num(part[3])}" value="1"></div>
- <div class="field"><label>Machine Issued To</label><input id="f_machine" class="input" list="issueMachineList" value="${esc(part[2]||"")}" placeholder="Machine model / fleet"></div>
+ <div class="field"><label>Machine Issued To</label><select id="f_machine" class="select">${machineSelectOptions(part[2]||"")}</select><div class="hint">The part's machine is selected by default. Choose another machine from the registered fleet if needed.</div></div>
  <div class="field"><label>Technician</label><input id="f_tech" class="input" value=""></div>
  <div class="field"><label>Work Order</label><input id="f_wo" class="input"></div>
  <div class="field full"><label>Remarks</label><textarea id="f_rem" class="textarea"></textarea></div></div>
- <datalist id="issueMachineList">${viewMachineRows().map(m=>`<option value="${esc(m[2])}">${esc(m[0])}</option>`).join("")}</datalist>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssue('${encodeURIComponent(part[0])}')">Issue Part</button></div>`);
 }
 async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
@@ -4706,7 +4735,8 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  const qty=num(document.getElementById("f_qty").value);
  if(!part||qty<=0||qty>num(part[3]))return alert("Please enter a valid quantity within available stock.");
 
- const machine=document.getElementById("f_machine").value.trim();
+ const machine=selectedMachineModel("f_machine");
+ if(!machine)return alert("Please select a registered machine.");
  const tech=document.getElementById("f_tech").value.trim();
  const wo=document.getElementById("f_wo").value.trim();
  const rem=document.getElementById("f_rem").value.trim();
@@ -4760,7 +4790,7 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  <div class="formgrid">
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
- <div class="field"><label>Machine</label><input id="r_machine" class="input" value="${esc(order?.[3]||part?.[2]||"")}" placeholder="Machine model"></div>
+ <div class="field"><label>Machine</label><select id="r_machine" class="select">${machineSelectOptions(order?.[3]||part?.[2]||"")}</select><div class="hint">Select the registered machine associated with this receipt.</div></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
  <div class="field"><label>Invoice / J-Ref</label><input id="r_invoice" class="input" value="${esc(ref)}" placeholder="Invoice or J-Ref" ${order?"readonly":""}></div>
@@ -4783,7 +4813,8 @@ function autoFillReceivePart(){
    if(part){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
-     document.getElementById("r_machine").value=matchedOrder[3]||part[2]||"";
+     const receiveFleet=machineFleetForModel(matchedOrder[3]||part[2]||"");
+     document.getElementById("r_machine").value=receiveFleet;
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
      if(hint)hint.textContent="Active order found by J-Ref. Part details and order reference have been filled automatically.";
@@ -4811,7 +4842,8 @@ function autoFillReceivePart(){
 async function saveReceipt(){if(!canEdit("receive"))return alert("You do not have permission to receive parts.");
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
- const machine=document.getElementById("r_machine").value.trim();
+ const machine=selectedMachineModel("r_machine");
+ if(!machine)return alert("Please select a registered machine.");
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
@@ -4864,7 +4896,7 @@ function inventoryEditModal(x){
  <div class="formgrid">
  <div class="field"><label>Part Number</label><input id="i_pn" class="input" value="${esc(x?.[0]||"")}" ${x?"readonly":""}></div>
  <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}"></div>
- <div class="field"><label>Machine Model</label><input id="i_machine" class="input" value="${esc(x?.[2]||"")}"></div>
+ <div class="field"><label>Machine</label><select id="i_machine" class="select">${machineSelectOptions(x?.[2]||"")}</select><div class="hint">Select the registered machine this part belongs to.</div></div>
  <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}"></div>
  <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
@@ -4881,7 +4913,8 @@ async function saveInventoryRecord(x){
  const pn=document.getElementById("i_pn").value.trim();
  if(!pn)return alert("Part number is required.");
  x[1]=document.getElementById("i_desc").value.trim();
- x[2]=document.getElementById("i_machine").value.trim();
+ x[2]=selectedMachineModel("i_machine");
+ if(!x[2])return alert("Please select a registered machine.");
  x[3]=num(document.getElementById("i_stock").value);
  x[6]=num(document.getElementById("i_min").value);
  x[7]=document.getElementById("i_loc").value.trim();
@@ -4979,7 +5012,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
  <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${viewInventoryRows().map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
- <div class="field"><label>Machine</label><input id="u_machine" class="input" value="${esc(x?.[3]||"")}"></div>
+ <div class="field"><label>Machine</label><select id="u_machine" class="select">${machineSelectOptions(x?.[3]||"")}</select><div class="hint">Select the registered machine associated with this parts update.</div></div>
  <div class="field"><label>Quantity</label><input id="u_qty" class="input" type="number" min="1" value="${x?.[4]??1}"></div>
  <div class="field"><label>PO / J-Ref</label><input id="u_po" class="input" value="${esc(x?.[5]||"")}"></div>
  <div class="field"><label>Supplier</label><input id="u_supplier" class="input" value="${esc(x?.[6]||"")}"></div>
@@ -4996,7 +5029,7 @@ function autoFillUpdatePart(){
  if(!part)return;
  const desc=document.getElementById("u_desc"),machine=document.getElementById("u_machine");
  if(desc&&!desc.value.trim())desc.value=part[1]||"";
- if(machine&&!machine.value.trim())machine.value=part[2]||"";
+ if(machine&&!machine.value)machine.value=machineFleetForModel(part[2]||"");
 } 
 function editUpdate(index){updateModal(index)}
 async function deleteUpdateById(id,siteId,departmentId){
@@ -5013,7 +5046,9 @@ async function deleteUpdateById(id,siteId,departmentId){
 }
 async function saveUpdate(index){
  if(!canEdit("updates"))return alert("You do not have permission to save parts updates.");
- const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),document.getElementById("u_machine").value.trim(),num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
+ const selectedUpdateMachine=selectedMachineModel("u_machine");
+ if(!selectedUpdateMachine)return alert("Please select a registered machine.");
+ const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),selectedUpdateMachine,num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
  if(!row[1]||row[4]<=0)return alert("Part number and a valid quantity are required.");
  if(row[8]==="ORDERED" && !row[5])return alert("PO / J-Ref is required before an order can be marked Ordered.");
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
