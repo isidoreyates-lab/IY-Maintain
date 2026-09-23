@@ -2122,7 +2122,6 @@ function renderGlobalSearch(){
 function renderGlobalSearchPanel(){const p=document.getElementById('globalSearchPanel');if(p){const q=globalSearchQuery.trim(),results=globalSearchResults(q);p.style.display=globalSearchOpen?'block':'none';p.innerHTML=q.length<2?`<div class="global-search-head"><b>Quick search</b><span>Type at least 2 characters</span></div><div class="quick-actions" style="padding:12px;margin:0">${quickActionButton('issue','Issue Part','▣')}${quickActionButton('receive','Receive Part','+')}${quickActionButton('machines','Add Machine','⚙')}</div>`:results.length?`<div class="global-search-head"><b>Search results</b><span>${results.length} result${results.length===1?'':'s'}</span></div><div class="global-search-results">${results.map(r=>`<button class="global-search-result" onclick="globalSearchOpen=false;globalSearchQuery='';nav('${r.page}')"><span class="global-search-result-icon">${r.icon}</span><span class="global-search-result-copy"><b>${esc(r.title)}</b><span>${esc(r.detail)}</span></span><span class="global-search-result-type">${esc(r.kind)}</span></button>`).join('')}</div>`:`<div class="global-search-empty"><b>No matching records</b>Try a part number, machine, service reference or technician name.</div>`;}}
 function render(){
  const s=db.settings;
- if(iyCloudReady&&!document.getElementById("iyCloudBanner")){const b=document.createElement("div");b.id="iyCloudBanner";b.className="iy-cloud-banner";b.textContent="☁ Connected • "+(iyCompany?.name||"Company");document.body.appendChild(b);setTimeout(()=>b.remove(),2600)}
  document.getElementById("app").innerHTML=`
  <div class="app">
   <aside class="sidebar">
@@ -4694,7 +4693,7 @@ async function completeAuthenticatedSession(user){
  loggedIn=true;
  db.user={name:iyMembership?.full_name||user.user_metadata?.full_name||user.email?.split("@")[0]||"User",email:user.email||"",role:iyMembership?.role||"employee",userId:iyMembership?.user_code||"—",siteId:iyMembership?.site_id||null,departmentId:iyMembership?.department_id||null,siteName:iySite?.name||"",departmentName:iyDepartment?.name||"",scopeLabel:workspaceScopeLabel(),avatarUrl:profileAvatar,signatureUrl};
  await cloudAudit("Logged in","Supabase authenticated session started");
- if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly();},10000);
+ if(!notificationTimer)notificationTimer=setInterval(()=>{if(iyCloudReady&&iyAuthUser)loadApprovalNotificationsOnly({render:false});},30000);
  render();
  setTimeout(()=>maybeResumeRestore(),250);
 }
