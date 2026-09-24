@@ -19,6 +19,10 @@
 .iy-workspace-row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .iy-workspace-edit-btn{border:1px solid #d6e2f0;background:#fff;color:#1457c5;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer}
 .iy-workspace-edit-btn:hover{background:#eef5ff}
+
+/* v26 Machine Certification — targeted enhancement only */
+/* v30 Certification status notifications — explicit status + expiry trigger only */
+.machine-cert-valid-v26{color:#14884b;font-weight:800}.machine-cert-expiring-v26{color:#bf7900;font-weight:800}.machine-cert-expired-v26{color:#c83b49;font-weight:800}
 </style>
 </style>
 
@@ -624,13 +628,14 @@ button,input,select,textarea{font-family:inherit}
 .machine-hero-v19{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px 28px;border-radius:14px;background:linear-gradient(115deg,#071f4f 0%,#0a4fa6 58%,#1598df 100%);color:#fff;box-shadow:0 10px 28px rgba(10,37,64,.12)}
 .machine-hero-v19:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-150px;top:-220px;box-shadow:0 0 0 55px rgba(255,255,255,.025),0 0 0 110px rgba(255,255,255,.018)}
 .machine-hero-copy-v19{position:relative;z-index:1}.machine-hero-kicker-v19{font-size:10px;font-weight:800;letter-spacing:.14em;opacity:.72;margin-bottom:5px}.machine-hero-v19 h2{margin:0;font-size:26px;letter-spacing:-.04em}.machine-hero-v19 p{margin:7px 0 0;color:rgba(255,255,255,.78);font-size:12px;max-width:680px}.machine-hero-action-v19{position:relative;z-index:1;flex:none}.machine-hero-action-v19 .btn{background:#fff;color:#075fff;border:0;box-shadow:0 8px 20px rgba(0,0,0,.12);font-weight:800}.machine-hero-action-v19 .btn:hover{background:#f2f7ff;color:#0547d8}
-.machine-kpis-v19{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.machine-kpi-v19{position:relative;min-width:0;padding:17px 18px 16px;background:#fff;border:1px solid #dfe7ef;border-radius:12px;box-shadow:0 2px 7px rgba(10,37,64,.035);overflow:hidden}.machine-kpi-v19:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#0b72d0}.machine-kpi-v19.green:before{background:#18a65a}.machine-kpi-v19.orange:before{background:#ee9917}.machine-kpi-v19.red:before{background:#e04a5b}.machine-kpi-v19 .kpi-label{font-size:10px;font-weight:800;letter-spacing:.06em;color:#6b7f93;text-transform:uppercase;white-space:normal;line-height:1.35}.machine-kpi-v19 .kpi-value{font-size:27px;font-weight:850;line-height:1.1;letter-spacing:-.04em;margin-top:8px;color:#0a2540}.machine-kpi-v19 .kpi-sub{font-size:10px;line-height:1.4;color:#8292a3;margin-top:5px;white-space:normal}
+.machine-kpis-v19{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.machine-kpi-v19{position:relative;min-width:0;padding:17px 18px 16px;background:#fff;border:1px solid #dfe7ef;border-radius:12px;box-shadow:0 2px 7px rgba(10,37,64,.035);overflow:hidden}.machine-kpi-v19:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#0b72d0}.machine-kpi-v19.green:before{background:#18a65a}.machine-kpi-v19.orange:before{background:#ee9917}.machine-kpi-v19.red:before{background:#e04a5b}.machine-kpi-v19 .kpi-label{font-size:10px;font-weight:800;letter-spacing:.06em;color:#6b7f93;text-transform:uppercase;white-space:normal;line-height:1.35}.machine-kpi-v19 .kpi-value{font-size:27px;font-weight:850;line-height:1.1;letter-spacing:-.04em;margin-top:8px;color:#0a2540}.machine-kpi-v19 .kpi-sub{font-size:10px;line-height:1.4;color:#8292a3;margin-top:5px;white-space:normal}
 .machine-attention-v19{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1px solid #f0d3d7;background:#fff5f6;color:#8e2c38;border-radius:10px}.machine-attention-v19.ok{border-color:#d2eadc;background:#f2fbf6;color:#166b42}.machine-attention-icon-v19{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#fde1e5;flex:none;font-weight:900}.machine-attention-v19.ok .machine-attention-icon-v19{background:#dff4e8}.machine-attention-v19 b{display:block;font-size:12px}.machine-attention-v19 span{display:block;font-size:11px;line-height:1.45;margin-top:2px;color:inherit;opacity:.82}
+.machine-cert-kpi-v19{padding-right:15px}.machine-cert-kpi-v19 .kpi-value{font-size:23px}.machine-cert-summary-v19{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:#6f8295;font-weight:700}.machine-cert-summary-v19 span{display:inline-flex;align-items:center;gap:3px}.machine-cert-summary-v19 i{width:6px;height:6px;border-radius:50%;display:inline-block;background:#19a65a}.machine-cert-summary-v19 i.warn{background:#ee9917}.machine-cert-summary-v19 i.bad{background:#e04a5b}.machine-cert-kpi-v19:before{background:#0b72d0}.machine-cert-kpi-v19.has-attention:before{background:#ee9917}.machine-cert-kpi-v19.has-expired:before{background:#e04a5b}
 .machine-overview-grid-v19{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.machine-panel-v19{background:#fff;border:1px solid #dfe7ef;border-radius:12px;box-shadow:0 2px 7px rgba(10,37,64,.03);padding:18px}.machine-panel-head-v19{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.machine-panel-head-v19 h3{margin:0;font-size:15px;letter-spacing:-.02em}.machine-panel-head-v19 p{margin:4px 0 0;color:#718398;font-size:11px}.machine-status-list-v19{display:grid;grid-template-columns:1fr 1fr;gap:10px}.machine-status-item-v19{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border:1px solid #e3eaf1;border-radius:9px;background:#fbfcfe}.machine-status-item-v19 span{display:flex;align-items:center;gap:7px;font-size:11px;color:#536a80;font-weight:700}.machine-status-dot-v19{width:8px;height:8px;border-radius:50%;background:#8ca0b4}.machine-status-dot-v19.running{background:#18a65a}.machine-status-dot-v19.standby{background:#4e9ad4}.machine-status-dot-v19.maintenance{background:#ee9917}.machine-status-dot-v19.breakdown{background:#e04a5b}.machine-status-dot-v19.out{background:#8a4fba}.machine-status-item-v19 b{font-size:14px;color:#17334f}.machine-quick-v19{display:grid;gap:9px}.machine-quick-row-v19{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border:1px solid #e3eaf1;border-radius:9px;background:#fbfcfe}.machine-quick-row-v19 span{font-size:11px;color:#708298}.machine-quick-row-v19 b{font-size:12px;color:#18344f;text-align:right}
 .machine-filters-v19{display:grid;grid-template-columns:minmax(240px,1fr) 210px 240px;gap:10px;margin-bottom:14px}.machine-filters-v19 .input,.machine-filters-v19 .select{width:100%;box-sizing:border-box;min-height:42px}
-.machine-table-v19{border:1px solid #dfe7ef;border-radius:10px;overflow:auto}.machine-table-v19 table{min-width:980px}.machine-table-v19 .table th{background:#f5f8fb;font-size:9px;padding:10px}.machine-table-v19 .table td{padding:11px 10px;font-size:11px}.machine-row-id-v19{font-weight:850;color:#075fff}.machine-machine-name-v19{font-weight:700;color:#17334f}.machine-actions-v19{white-space:nowrap}
+.machine-page-v19{min-width:0;max-width:100%;overflow:visible}.machine-page-v19>.panel{min-width:0;max-width:100%;overflow:hidden}.machine-filters-v19{min-width:0}.machine-table-v19{width:100%;max-width:100%;min-width:0;border:1px solid #dfe7ef;border-radius:10px;overflow-x:auto;overflow-y:hidden;background:#fff;scrollbar-width:auto;scroll-behavior:smooth}.machine-table-v19::-webkit-scrollbar{height:12px}.machine-table-v19::-webkit-scrollbar-track{background:#eef3f7;border-radius:0 0 10px 10px}.machine-table-v19::-webkit-scrollbar-thumb{background:#aebdcc;border:3px solid #eef3f7;border-radius:999px}.machine-table-v19::-webkit-scrollbar-thumb:hover{background:#8498ad}.machine-table-v19 table{width:max-content;min-width:1420px;border-collapse:separate;border-spacing:0}.machine-table-v19 .table th{background:#f5f8fb;font-size:9px;padding:10px 11px;position:sticky;top:0;z-index:1;border-bottom:1px solid #dfe7ef;white-space:nowrap}.machine-table-v19 .table td{padding:10px 11px;font-size:11px;white-space:nowrap;border-bottom:1px solid #edf1f5;vertical-align:middle}.machine-table-v19 .table tbody tr:last-child td{border-bottom:0}.machine-table-v19 .table tbody tr:hover td{background:#f8fbfe}.machine-row-id-v19{font-weight:850;color:#075fff}.machine-machine-name-v19{font-weight:700;color:#17334f}.machine-actions-v19{white-space:nowrap;text-align:right}.machine-table-v19 .machine-actions-v19 .btn{margin:0 0 0 3px}.machine-table-v19 .machine-actions-v19 .btn:first-child{margin-left:0}
 .machine-editor-modal-v19{width:min(900px,94vw)!important;max-height:90vh!important;padding:0!important;border-radius:15px!important;overflow:hidden!important}.machine-editor-v19{background:#f5f8fc;color:#10263e}.machine-editor-head-v19{background:linear-gradient(120deg,#082b61,#0a65c8 70%,#159be0);color:#fff;padding:21px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}.machine-editor-head-v19 h2{margin:0;font-size:23px;letter-spacing:-.04em}.machine-editor-head-v19 p{margin:5px 0 0;color:rgba(255,255,255,.76);font-size:11px}.machine-editor-close-v19{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.22)!important}.machine-editor-body-v19{padding:20px 22px}.machine-editor-section-v19{background:#fff;border:1px solid #dfe7ef;border-radius:11px;margin-bottom:14px;overflow:hidden}.machine-editor-section-head-v19{display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid #e8eef4;background:#fbfcfe}.machine-editor-section-head-v19 .icon{width:29px;height:29px;border-radius:8px;background:#e9f3ff;color:#076bc8;display:grid;place-items:center;font-weight:900}.machine-editor-section-head-v19 h3{margin:0;font-size:13px}.machine-editor-section-head-v19 span{margin-left:auto;font-size:9px;font-weight:800;color:#8192a5;letter-spacing:.05em}.machine-editor-grid-v19{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}.machine-editor-field-v19 label{display:block;font-size:10px;font-weight:800;color:#425a70;margin-bottom:6px}.machine-editor-field-v19 .input,.machine-editor-field-v19 .select{width:100%;box-sizing:border-box;min-height:42px;background:#fff}.machine-editor-note-v19{margin:0 16px 16px;padding:10px 12px;border-radius:8px;background:#f0f7ff;border:1px solid #d7e8fa;color:#5d7690;font-size:10px;line-height:1.45}.machine-editor-actions-v19{display:flex;justify-content:flex-end;gap:9px;padding:0 22px 20px}.machine-editor-actions-v19 .btn{min-width:92px}
-@media(max-width:1000px){.machine-overview-grid-v19{grid-template-columns:1fr}.machine-kpis-v19{grid-template-columns:repeat(2,minmax(0,1fr))}.machine-filters-v19{grid-template-columns:1fr 1fr}.machine-filters-v19 .input{grid-column:1/-1}}
+@media(max-width:1100px){.machine-kpis-v19{grid-template-columns:repeat(3,minmax(0,1fr))}} @media(max-width:1000px){.machine-overview-grid-v19{grid-template-columns:1fr}.machine-kpis-v19{grid-template-columns:repeat(2,minmax(0,1fr))}.machine-filters-v19{grid-template-columns:1fr 1fr}.machine-filters-v19 .input{grid-column:1/-1}}
 @media(max-width:650px){.machine-hero-v19{align-items:flex-start;flex-direction:column;padding:20px}.machine-kpis-v19{grid-template-columns:1fr}.machine-status-list-v19{grid-template-columns:1fr}.machine-filters-v19{grid-template-columns:1fr}.machine-editor-grid-v19{grid-template-columns:1fr}.machine-editor-head-v19{padding:18px}.machine-editor-body-v19{padding:14px}.machine-editor-actions-v19{padding:0 14px 14px}.machine-editor-section-head-v19 span{display:none}}
 /* v19.1 Machine Edit dialog scroll fix — preserve header/actions while allowing full form access */
 .machine-editor-modal-v19{max-height:90vh!important;overflow:hidden!important;display:flex!important;flex-direction:column!important}
@@ -3006,6 +3011,7 @@ function getNotifications(){
  inv.filter(x=>num(x[3])===0).forEach(x=>add('stock-out-'+String(x[0]),'bad','Part out of stock',`${x[0]} — ${x[1]||'No description'} has no stock available.`,'inventory',{source:'Parts Inventory',severity:'bad'}));
  inv.filter(x=>num(x[3])>0&&num(x[3])<=num(x[6])).forEach(x=>add('stock-low-'+String(x[0]),'warn','Low stock',`${x[0]} — ${x[1]||'No description'} is at or below the minimum stock level.`,'inventory',{source:'Parts Inventory',severity:'warn'}));
  (viewMachineRows()).filter(x=>{const st=String(x[7]||'').toLowerCase();return st.includes('breakdown')||st.includes('maintenance')||st.includes('out of service')||st.includes('repair')}).forEach(x=>add('machine-'+String(x[0]),'bad','Machine needs attention',`${x[0]} — ${x[1]||x[2]||'Machine'} is ${x[7]}.`,'machines',{source:'Fleet',severity:'bad'}));
+ (viewMachineRows()).forEach(x=>{const fleet=String(x[0]||'');const machine=x[1]||x[2]||'Machine';const status=String(x[14]||'').trim().toLowerCase();const exp=x[15]?new Date(x[15]+'T23:59:59'):null;const validExp=exp&&!isNaN(exp);const days=validExp?Math.ceil((exp.getTime()-Date.now())/86400000):null;const isExpired=status==='expired'||(validExp&&days<0);const isExpiring=status==='expiring soon'||(validExp&&days>=0&&days<=30);if(isExpired){add('cert-expired-'+fleet,'bad','Machine certification expired',validExp?`${fleet} — ${machine} certification expired on ${fmtDate(x[15])}.`:`${fleet} — ${machine} certification is marked Expired.` ,'machines',{source:'Machine Certification',severity:'bad'});}else if(isExpiring){const detail=validExp?`${fleet} — ${machine} certification expires in ${days} day${days===1?'':'s'} (${fmtDate(x[15])}).`:`${fleet} — ${machine} certification is marked Expiring Soon.`;add('cert-expiring-'+fleet,'warn','Machine certification expiring',detail,'machines',{source:'Machine Certification',severity:'warn'});}});
  const latest={};
  (viewMaintenanceRows()).forEach(x=>{const fleet=String(x[4]||'').trim();if(!fleet)return;const d=new Date(x[1]);if(!latest[fleet]||d>new Date(latest[fleet][1]))latest[fleet]=x;});
  Object.keys(latest).forEach(fleet=>{const x=latest[fleet],current=num(x[5]),next=num(x[6]);if(next>0&&current>=next)add('maint-due-'+fleet,'bad','Maintenance overdue',`${fleet} has reached ${current} hours and is due at ${next} hours.`,'mreports',{source:'Maintenance',severity:'bad',createdAt:x[1]});else if(next>0&&next-current<=100)add('maint-upcoming-'+fleet,'warn','Maintenance approaching',`${fleet} has ${Math.max(0,next-current)} hours remaining until service.`,'mreports',{source:'Maintenance',severity:'warn',createdAt:x[1]});});
@@ -5692,7 +5698,7 @@ function machineDetailModal(id){
     </div>
    </div>
    <div class="machine-profile-tabs-v18"><button class="active" data-profile-nav="overview" onclick="machineProfileNav('overview',this)">◆ Overview</button><button data-profile-nav="service" onclick="machineProfileNav('service',this)">◷ Operating &amp; Service</button><button data-profile-nav="maintenance" onclick="machineProfileNav('maintenance',this)">🔧 Maintenance History</button><button data-profile-nav="parts-issued" onclick="machineProfileNav('parts-issued',this)">▣ Parts History</button><button data-profile-nav="parts-available" onclick="machineProfileNav('parts-available',this)">▤ Available Parts</button></div>
-   <section class="machine-profile-section-v18 active" data-profile-section="overview"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18">▣</div><h3>Machine Information</h3></div><span>IDENTIFICATION &amp; ASSIGNMENT</span></div><div class="machine-info-grid-v18"><div class="machine-info-item-v18"><span>Fleet ID</span><b>${esc(x[0]||'—')}</b></div><div class="machine-info-item-v18"><span>Machine Name</span><b>${esc(x[1]||'—')}</b></div><div class="machine-info-item-v18"><span>Model</span><b>${esc(x[2]||'—')}</b></div><div class="machine-info-item-v18"><span>Serial Number</span><b>${esc(x[3]||'—')}</b></div><div class="machine-info-item-v18"><span>Manufacturer</span><b>${esc(x[4]||'—')}</b></div><div class="machine-info-item-v18"><span>Capacity</span><b>${esc(x[5]||'—')}</b></div><div class="machine-info-item-v18"><span>Department / Location</span><b>${esc(x[6]||'—')}</b></div><div class="machine-info-item-v18"><span>Current Status</span><b><span class="badge" style="background:${accent.bg};color:${accent.fg}">${esc(x[7]||'Not set')}</span></b></div><div class="machine-info-item-v18"><span>Assigned Technician</span><b>${esc(x[8]||'—')}</b></div></div></div></section>
+   <section class="machine-profile-section-v18 active" data-profile-section="overview"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18">▣</div><h3>Machine Information</h3></div><span>IDENTIFICATION &amp; ASSIGNMENT</span></div><div class="machine-info-grid-v18"><div class="machine-info-item-v18"><span>Fleet ID</span><b>${esc(x[0]||'—')}</b></div><div class="machine-info-item-v18"><span>Machine Name</span><b>${esc(x[1]||'—')}</b></div><div class="machine-info-item-v18"><span>Model</span><b>${esc(x[2]||'—')}</b></div><div class="machine-info-item-v18"><span>Serial Number</span><b>${esc(x[3]||'—')}</b></div><div class="machine-info-item-v18"><span>Manufacturer</span><b>${esc(x[4]||'—')}</b></div><div class="machine-info-item-v18"><span>Capacity</span><b>${esc(x[5]||'—')}</b></div><div class="machine-info-item-v18"><span>Department / Location</span><b>${esc(x[6]||'—')}</b></div><div class="machine-info-item-v18"><span>Current Status</span><b><span class="badge" style="background:${accent.bg};color:${accent.fg}">${esc(x[7]||'Not set')}</span></b></div><div class="machine-info-item-v18"><span>Assigned Technician</span><b>${esc(x[8]||'—')}</b></div><div class="machine-info-item-v18"><span>Certification Day</span><b>${x[13]?fmtDate(x[13]):'—'}</b></div><div class="machine-info-item-v18"><span>Certification Status</span><b>${esc(machineCertificationDisplay(x).status)}</b></div><div class="machine-info-item-v18"><span>Certification Expiry</span><b>${x[15]?fmtDate(x[15]):'—'}</b></div></div></div></section>
    <section class="machine-profile-section-v18" data-profile-section="service"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 green">◷</div><h3>Operating &amp; Service</h3></div><span>FROM MAINTENANCE RECORDS</span></div><div class="machine-service-grid-v18"><div class="machine-service-box-v18 blue"><span>Latest Recorded Hours</span><b>${latestHours===null?'—':esc(latestHours)+' hrs'}</b></div><div class="machine-service-box-v18 green"><span>Last Service</span><b>${lastServiceDate?fmtDate(lastServiceDate):'—'}</b></div><div class="machine-service-box-v18 orange"><span>Next Service At</span><b>${nextService===null||nextService===0?'—':esc(nextService)+' hrs'}</b></div><div class="machine-service-box-v18 ${String(last?.[10]||'').toLowerCase().includes('complete')?'green':'red'}"><span>Latest Service Status</span><b>${esc(last?.[10]||'—')}</b></div></div></div></section>
    <section class="machine-profile-section-v18" data-profile-section="maintenance"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 orange">🔧</div><h3>Maintenance History</h3></div><span>${jobs.length} RECORD(S)</span></div>${jobs.length?`<div class="machine-table-wrap-v18"><table class="machine-profile-table-v18"><tr><th>Date</th><th>Service Ref</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th></tr>${jobs.slice(0,30).map(r=>`<tr><td>${fmtDate(r[1])}</td><td><b>${esc(r[0])}</b></td><td>${esc(r[7]||'—')}</td><td>${esc(r[10]||'—')}</td><td>${esc(r[12]||'—')}</td><td>${esc(r[8]||'—')}</td><td>${esc(r[9]||'—')}</td></tr>`).join('')}</table></div>`:`<div class="machine-profile-empty-v18">No maintenance history recorded for this machine yet.</div>`}</div></section>
    <section class="machine-profile-section-v18" data-profile-section="parts-issued"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 purple">▣</div><h3>Parts Issued to Machine</h3></div><span>${partIssues.length} TRANSACTION(S)</span></div>${partIssues.length?`<div class="machine-table-wrap-v18"><table class="machine-profile-table-v18"><tr><th>Date</th><th>Part Number</th><th>Description</th><th>Qty</th><th>Technician</th><th>Work Order</th><th>Remarks</th></tr>${partIssues.slice(0,30).map(r=>`<tr><td>${fmtDate(r[0])}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2]||'—')}</td><td><b>${num(r[4])}</b></td><td>${esc(r[5]||'—')}</td><td>${esc(r[6]||'—')}</td><td>${esc(r[7]||'—')}</td></tr>`).join('')}</table></div>`:`<div class="machine-profile-empty-v18">No parts issue transactions are linked to this machine yet.</div>`}</div></section>
@@ -5707,13 +5713,19 @@ function renderMachineRows(){
  const dept=(document.getElementById("machineDeptFilter")?.value||"").trim().toLowerCase();
  const rows=viewMachineRows().filter(x=>(!q||x.slice(0,9).join(" ").toLowerCase().includes(q))&&(!status||String(x[7]||"").toLowerCase()===status)&&(!dept||String(x[6]||"").toLowerCase()===dept));
  const target=document.getElementById("machineRows"); if(!target)return;
- target.innerHTML=rows.length?rows.map(x=>`<tr><td><span class="machine-row-id-v19">${esc(x[0])}</span></td><td><span class="machine-machine-name-v19">${esc(x[1]||"—")}</span></td><td>${esc(x[2]||"—")}</td><td>${esc(x[3]||"—")}</td><td>${esc(x[4]||"—")}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td><span class="${machineStatusClass(x[7])}">${esc(x[7]||"Not set")}</span></td><td>${esc(x[8]||"—")}</td><td class="machine-actions-v19"><button class="btn secondary small" onclick="machineDetailModal('${encodeURIComponent(x[0])}')">View</button>${canEdit("machines")?` <button class="btn secondary small" onclick="machineModal('${encodeURIComponent(x[0])}')">Edit</button>${norm(x[7])!=="retired"?` <button class="btn secondary small" onclick="retireMachine('${encodeURIComponent(x[0])}')">Retire</button>`:""}`:""}${["company_admin","super_admin"].includes(currentRole())?` <button class="btn danger small" onclick="deleteMachine('${encodeURIComponent(x[0])}')">Delete</button>`:""}</td></tr>`).join(""):`<tr><td colspan="10"><div class="empty">No machines match the selected filters.</div></td></tr>`;
+ target.innerHTML=rows.length?rows.map(x=>`<tr><td><span class="machine-row-id-v19">${esc(x[0])}</span></td><td><span class="machine-machine-name-v19">${esc(x[1]||"—")}</span></td><td>${esc(x[2]||"—")}</td><td>${esc(x[3]||"—")}</td><td>${esc(x[4]||"—")}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td><span class="${machineStatusClass(x[7])}">${esc(x[7]||"Not set")}</span></td><td>${esc(x[8]||"—")}</td><td>${esc(x[13]?fmtDate(x[13]):"—")}</td><td><span class="${machineCertificationDisplay(x).class}">${esc(machineCertificationDisplay(x).status)}</span></td><td>${esc(x[15]?fmtDate(x[15]):"—")}</td><td class="machine-actions-v19"><button class="btn secondary small" onclick="machineDetailModal('${encodeURIComponent(x[0])}')">View</button>${canEdit("machines")?` <button class="btn secondary small" onclick="machineModal('${encodeURIComponent(x[0])}')">Edit</button>${norm(x[7])!=="retired"?` <button class="btn secondary small" onclick="retireMachine('${encodeURIComponent(x[0])}')">Retire</button>`:""}`:""}${["company_admin","super_admin"].includes(currentRole())?` <button class="btn danger small" onclick="deleteMachine('${encodeURIComponent(x[0])}')">Delete</button>`:""}</td></tr>`).join(""):`<tr><td colspan="13"><div class="empty">No machines match the selected filters.</div></td></tr>`;
  const count=document.getElementById("machineResultCount"); if(count)count.textContent=`Showing ${rows.length} of ${viewMachineRows().length} machines`;
 }
 function machinesPage(){
  const norm=v=>String(v??"").trim().toLowerCase();
  const statuses=[...new Set(viewMachineRows().map(x=>String(x[7]||"").trim()).filter(Boolean))].sort();
  const depts=[...new Set(viewMachineRows().map(x=>String(x[6]||"").trim()).filter(Boolean))].sort();
+ const certRows=viewMachineRows();
+ const certExpired=certRows.filter(x=>machineCertificationDisplay(x).status==="Expired").length;
+ const certExpiring=certRows.filter(x=>machineCertificationDisplay(x).status==="Expiring Soon").length;
+ const certNotCertified=certRows.filter(x=>machineCertificationDisplay(x).status==="Not Certified").length;
+ const certValid=certRows.length-certExpired-certExpiring-certNotCertified;
+ const certAttention=certExpired+certExpiring;
  const countStatus=s=>viewMachineRows().filter(x=>norm(x[7])===s).length;
  const running=viewMachineRows().filter(x=>["running","active"].includes(norm(x[7]))).length;
  const attention=viewMachineRows().filter(x=>{const s=norm(x[7]);return s.includes("maintenance")||s.includes("breakdown")||s.includes("repair")||s.includes("down")||s.includes("out of service")||s.includes("inactive")}).length;
@@ -5726,6 +5738,7 @@ function machinesPage(){
    <div class="machine-kpi-v19 green"><div class="kpi-label">Running</div><div class="kpi-value">${running}</div><div class="kpi-sub">Currently operational</div></div>
    <div class="machine-kpi-v19 red"><div class="kpi-label">Needs Attention</div><div class="kpi-value">${attention}</div><div class="kpi-sub">Maintenance or downtime</div></div>
    <div class="machine-kpi-v19 orange"><div class="kpi-label">Locations</div><div class="kpi-value">${depts.length}</div><div class="kpi-sub">Departments / locations</div></div>
+   <div class="machine-kpi-v19 machine-cert-kpi-v19 ${certExpired?"has-expired":(certAttention?"has-attention":"")}"><div class="kpi-label">Certification</div><div class="kpi-value">${certAttention}</div><div class="kpi-sub">Expiring / expired</div><div class="machine-cert-summary-v19"><span><i></i>${certValid} Certified</span><span><i class="warn"></i>${certExpiring} Expiring</span><span><i class="bad"></i>${certExpired} Expired</span></div></div>
   </div>
   ${alert}
   <div class="machine-overview-grid-v19">
@@ -5743,7 +5756,7 @@ function machinesPage(){
   </div>
   <div class="panel"><div class="toolbar" style="margin-bottom:14px"><div style="flex:1"><h3>Fleet Register</h3><div class="hint" id="machineResultCount">Showing ${viewMachineRows().length} of ${viewMachineRows().length} machines</div></div></div>
    <div class="machine-filters-v19"><input id="machineSearch" class="input search" placeholder="Search fleet ID, machine, model, serial or technician..." oninput="renderMachineRows()"><select id="machineStatusFilter" class="select" onchange="renderMachineRows()"><option value="">All statuses</option>${statuses.map(s=>`<option value="${esc(s.toLowerCase())}">${esc(s)}</option>`).join("")}</select><select id="machineDeptFilter" class="select" onchange="renderMachineRows()"><option value="">All departments / locations</option>${depts.map(s=>`<option value="${esc(s.toLowerCase())}">${esc(s)}</option>`).join("")}</select></div>
-   <div class="machine-table-v19"><table class="table"><tr><th>Fleet ID</th><th>Machine</th><th>Model</th><th>Serial Number</th><th>Manufacturer</th><th>Capacity</th><th>Department / Location</th><th>Status</th><th>Assigned Technician</th><th>Actions</th></tr><tbody id="machineRows"></tbody></table></div>
+   <div class="machine-table-v19"><table class="table"><thead><tr><th>Fleet ID</th><th>Machine</th><th>Model</th><th>Serial Number</th><th>Manufacturer</th><th>Capacity</th><th>Department / Location</th><th>Status</th><th>Assigned Technician</th><th>Certification Day</th><th>Certification Status</th><th>Certification Expiry</th><th>Actions</th></tr></thead><tbody id="machineRows"></tbody></table></div>
   </div>
  </div>`;
 }
@@ -5784,6 +5797,9 @@ function machineModal(id){
      <div class="machine-editor-field-v19"><label>Scope Department</label><select id="mcDepartment" class="select">${machineDepartmentOptions(selectedSiteId,selectedDepartmentId)}</select></div>
      <div class="machine-editor-field-v19"><label>Current Status</label><select id="mc7" class="select">${machineStatusOptions(x?.[7]||"")}</select></div>
      <div class="machine-editor-field-v19"><label>Assigned Technician</label><input id="mc8" class="input" value="${esc(x?.[8]||"")}" placeholder="Technician name"></div>
+     <div class="machine-editor-field-v19"><label>Certification Day</label><input id="mcCertDate" class="input" type="date" value="${esc(x?.[13]||"")}"></div>
+     <div class="machine-editor-field-v19"><label>Certification Status</label><select id="mcCertStatus" class="select">${["Not Certified","Certified"].map(v=>`<option value="${esc(v)}" ${String(x?.[14]||"Not Certified").toLowerCase()===v.toLowerCase()?"selected":""}>${v}</option>`).join("")}</select></div>
+     <div class="machine-editor-field-v19"><label>Certification Expiry</label><input id="mcCertExpiry" class="input" type="date" value="${esc(x?.[15]||"")}"></div>
     </div><div class="machine-editor-note-v19"><b>Scope assignment:</b> Scope Site and Scope Department control machine visibility. Department / Location is the machine's physical location and is independent of the access scope.</div><div class="machine-editor-note-v19"><b>Service data:</b> Operating hours and service dates are recorded from maintenance entries and displayed automatically in the machine profile.</div></section>
    </div>
    <div class="machine-editor-actions-v19"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMachine('${encodeURIComponent(x?.[0]||"")}')">${x?"Save Changes":"Add Machine"}</button></div>
@@ -5849,6 +5865,22 @@ async function deleteMachine(id){
  }
 }
 
+async function saveMachineCertification(machineId,certificationDate,certificationStatus,certificationExpiry){
+ if(!iyCloudReady||!machineId)return;
+ const {data,error}=await iySupabase.rpc("manage_machine_certification",{p_machine_id:machineId,p_certification_date:certificationDate||null,p_certification_status:certificationStatus||"Not Certified",p_certification_expiry:certificationExpiry||null});
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the machine certification change.");
+}
+
+function machineCertificationDisplay(x){
+ const exp=x?.[15]?new Date(x[15]+'T23:59:59'):null;
+ if(!exp||isNaN(exp))return {status:x?.[14]||"Not Certified",class:""};
+ const days=Math.ceil((exp.getTime()-Date.now())/86400000);
+ if(days<0)return {status:"Expired",class:"machine-cert-expired-v26"};
+ if(days<=30)return {status:"Expiring Soon",class:"machine-cert-expiring-v26"};
+ return {status:"Certified",class:"machine-cert-valid-v26"};
+}
+
 async function saveMachine(old){
   if(!canEdit("machines"))return alert("You do not have permission to save machine records.");
   const vals=Array.from({length:6},(_,i)=>document.getElementById("mc"+i).value.trim());
@@ -5857,7 +5889,10 @@ async function saveMachine(old){
   const physicalLocation=document.getElementById("mc6")?.value.trim()||"";
   const status=document.getElementById("mc7")?.value.trim()||"";
   const technician=document.getElementById("mc8")?.value.trim()||"";
-  vals.push(physicalLocation,status,technician);
+  const certificationDate=document.getElementById("mcCertDate")?.value||"";
+  const certificationStatus=document.getElementById("mcCertStatus")?.value||"Not Certified";
+  const certificationExpiry=document.getElementById("mcCertExpiry")?.value||"";
+  vals.push(physicalLocation,status,technician,certificationDate,certificationStatus,certificationExpiry);
   if(!vals[0])return alert("Fleet ID is required.");
   if(!vals[2])return alert("Machine model is required.");
   if(!siteId)return alert("Please select a Site.");
@@ -5871,9 +5906,16 @@ async function saveMachine(old){
       try{
         const id=await cloudSaveMachine(vals,siteId,departmentId);
         vals[9]=id;vals[10]=null;vals[11]=siteId;vals[12]=departmentId;
+        await saveMachineCertification(id,certificationDate,certificationStatus,certificationExpiry);
         await cloudAudit("Added machine","Machine record created",siteId,departmentId);
       }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
     }
+    // Keep the local machine row in the same 16-column shape used by the
+    // cloud loader so certification notifications update immediately without
+    // requiring a page reload.
+    vals[13]=certificationDate||null;
+    vals[14]=certificationStatus||"Not Certified";
+    vals[15]=certificationExpiry||null;
     db.machines.push(vals);
     logActivity("Added machine","Machine record created");
   }else{
@@ -5881,11 +5923,27 @@ async function saveMachine(old){
       try{
         const id=await cloudSaveMachine(vals,siteId,departmentId,x[9]);
         x[9]=id;
+        await saveMachineCertification(id,certificationDate,certificationStatus,certificationExpiry);
         await cloudAudit("Updated machine","Machine record updated",siteId,departmentId);
       }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
     }
-    vals.forEach((v,i)=>x[i]=v);
-    x[11]=siteId;x[12]=departmentId;
+    // Update only the existing machine fields in their established positions.
+    // Do not overwrite the machine id, image, scope ids, or certification
+    // columns with the shorter form-array used by the editor.
+    x[0]=vals[0];
+    x[1]=vals[1];
+    x[2]=vals[2];
+    x[3]=vals[3]||null;
+    x[4]=vals[4]||null;
+    x[5]=vals[5]||null;
+    x[6]=physicalLocation||null;
+    x[7]=status||null;
+    x[8]=technician||null;
+    x[11]=siteId;
+    x[12]=departmentId;
+    x[13]=certificationDate||null;
+    x[14]=certificationStatus||"Not Certified";
+    x[15]=certificationExpiry||null;
     logActivity("Updated machine","Machine record updated");
   }
   save();closeModal();render();toast("Machine saved successfully.");
@@ -7927,7 +7985,7 @@ async function loadCloudData(){
  if(approvalReports?.error&&approvalReports.error.code!=="PGRST205")console.warn("Report approval records could not be loaded.",approvalReports.error.message||approvalReports.error);
  if(approvalRequests?.error&&approvalRequests.error.code!=="PGRST205")console.warn("Report approval requests could not be loaded.",approvalRequests.error.message||approvalRequests.error);
  notificationLastRefresh=new Date();
- empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id,null,x.site_id||null,x.department_id||null]);
+ empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id,null,x.site_id||null,x.department_id||null,x.certification_date||null,x.certification_status||"Not Certified",x.certification_expiry||null]);
  try{
    const {data:machineImageFiles,error:machineImageError}=await iySupabase.storage.from("machine-images").list(iyCompany.id,{limit:1000});
    if(machineImageError)throw machineImageError;
