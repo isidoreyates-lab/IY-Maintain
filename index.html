@@ -5747,31 +5747,48 @@ function machinesPage(){
   </div>
  </div>`;
 }
+function machineDepartmentOptions(siteId,selected=""){
+  const list=iyCompanyDepartments
+    .filter(d=>String(d.site_id||"")===String(siteId||""))
+    .sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+  if(!siteId)return `<option value="">Select Site First</option>`;
+  if(!list.length)return `<option value="">No Departments Available</option>`;
+  return `<option value="">Select Department</option>`+list.map(d=>`<option value="${esc(d.id)}" ${String(d.id)===String(selected||"")?"selected":""}>${esc(d.name)}</option>`).join("");
+}
+function refreshMachineDepartmentSelect(siteId,selected=""){
+  const el=document.getElementById("mcDepartment");
+  if(el)el.innerHTML=machineDepartmentOptions(siteId,selected);
+}
 function machineModal(id){
   if(!canEdit("machines"))return alert("You do not have permission to edit machine records.");
   const decoded=id?decodeURIComponent(id):"";
   const x=id?viewMachineRows().find(z=>String(z[0])===String(decoded)):null;
   if(id&&!x)return alert("Machine record not found in the selected View Scope.");
- openModal(`<div class="machine-editor-v19">
-  <div class="machine-editor-head-v19"><div><div class="machine-hero-kicker-v19">FLEET ASSET</div><h2>${x?"Edit Machine":"Add Machine"}</h2><p>${x?"Update the machine record and keep fleet information accurate.":"Register a new machine in your company fleet."}</p></div><button class="close machine-editor-close-v19" onclick="closeModal()">×</button></div>
-  <div class="machine-editor-body-v19">
-   <section class="machine-editor-section-v19"><div class="machine-editor-section-head-v19"><div class="icon">▣</div><h3>Machine Identification</h3><span>REQUIRED INFORMATION</span></div><div class="machine-editor-grid-v19">
-    <div class="machine-editor-field-v19"><label>Fleet ID</label><input id="mc0" class="input" value="${esc(x?.[0]||"")}" placeholder="e.g. CRM001" ${x?"readonly":""}></div>
-    <div class="machine-editor-field-v19"><label>Machine Name</label><input id="mc1" class="input" value="${esc(x?.[1]||"")}" placeholder="e.g. Grove Crane"></div>
-    <div class="machine-editor-field-v19"><label>Machine Model</label><input id="mc2" class="input" value="${esc(x?.[2]||"")}" placeholder="e.g. GRT9165"></div>
-    <div class="machine-editor-field-v19"><label>Serial Number</label><input id="mc3" class="input" value="${esc(x?.[3]||"")}" placeholder="Manufacturer serial number"></div>
-    <div class="machine-editor-field-v19"><label>Manufacturer</label><input id="mc4" class="input" value="${esc(x?.[4]||"")}" placeholder="e.g. Grove"></div>
-    <div class="machine-editor-field-v19"><label>Capacity</label><input id="mc5" class="input" value="${esc(x?.[5]||"")}" placeholder="e.g. 120 Tonnes"></div>
-   </div></section>
-   <section class="machine-editor-section-v19"><div class="machine-editor-section-head-v19"><div class="icon">⚙</div><h3>Operations & Assignment</h3><span>FLEET STATUS</span></div><div class="machine-editor-grid-v19">
-    <div class="machine-editor-field-v19"><label>Department / Location</label><input id="mc6" class="input" value="${esc(x?.[6]||"")}" placeholder="e.g. Processing"></div>
-    <div class="machine-editor-field-v19"><label>Current Status</label><select id="mc7" class="select">${machineStatusOptions(x?.[7]||"")}</select></div>
-    <div class="machine-editor-field-v19"><label>Assigned Technician</label><input id="mc8" class="input" value="${esc(x?.[8]||"")}" placeholder="Technician name"></div>
-   </div><div class="machine-editor-note-v19"><b>Service data:</b> Operating hours and service dates are recorded from maintenance entries and displayed automatically in the machine profile.</div></section>
-  </div>
-  <div class="machine-editor-actions-v19"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMachine('${encodeURIComponent(x?.[0]||"")}')">${x?"Save Changes":"Add Machine"}</button></div>
- </div>`);
- const modal=document.getElementById("modal");if(modal){modal.classList.add("machine-editor-modal-v19");}
+  const selectedSiteId=String(x?.[11]||"");
+  const selectedDepartmentId=String(x?.[12]||"");
+  const siteOptions=`<option value="">Select Site</option>`+iyCompanySites.map(s=>`<option value="${esc(s.id)}" ${String(s.id)===selectedSiteId?"selected":""}>${esc(s.name)}</option>`).join("");
+  openModal(`<div class="machine-editor-v19">
+   <div class="machine-editor-head-v19"><div><div class="machine-hero-kicker-v19">FLEET ASSET</div><h2>${x?"Edit Machine":"Add Machine"}</h2><p>${x?"Update the machine record and keep fleet information accurate.":"Register a new machine in your company fleet."}</p></div><button class="close machine-editor-close-v19" onclick="closeModal()">×</button></div>
+   <div class="machine-editor-body-v19">
+    <section class="machine-editor-section-v19"><div class="machine-editor-section-head-v19"><div class="icon">▣</div><h3>Machine Identification</h3><span>REQUIRED INFORMATION</span></div><div class="machine-editor-grid-v19">
+     <div class="machine-editor-field-v19"><label>Fleet ID</label><input id="mc0" class="input" value="${esc(x?.[0]||"")}" placeholder="e.g. CRM001" ${x?"readonly":""}></div>
+     <div class="machine-editor-field-v19"><label>Machine Name</label><input id="mc1" class="input" value="${esc(x?.[1]||"")}" placeholder="e.g. Grove Crane"></div>
+     <div class="machine-editor-field-v19"><label>Machine Model</label><input id="mc2" class="input" value="${esc(x?.[2]||"")}" placeholder="e.g. GRT9165"></div>
+     <div class="machine-editor-field-v19"><label>Serial Number</label><input id="mc3" class="input" value="${esc(x?.[3]||"")}" placeholder="Manufacturer serial number"></div>
+     <div class="machine-editor-field-v19"><label>Manufacturer</label><input id="mc4" class="input" value="${esc(x?.[4]||"")}" placeholder="e.g. Grove"></div>
+     <div class="machine-editor-field-v19"><label>Capacity</label><input id="mc5" class="input" value="${esc(x?.[5]||"")}" placeholder="e.g. 120 Tonnes"></div>
+    </div></section>
+    <section class="machine-editor-section-v19"><div class="machine-editor-section-head-v19"><div class="icon">⚙</div><h3>Operations & Assignment</h3><span>FLEET STATUS</span></div><div class="machine-editor-grid-v19">
+     <div class="machine-editor-field-v19"><label>Department / Location</label><input id="mc6" class="input" value="${esc(x?.[6]||"")}" placeholder="e.g. Processing"></div>
+     <div class="machine-editor-field-v19"><label>Scope Site</label><select id="mcSite" class="select" onchange="refreshMachineDepartmentSelect(this.value)">${siteOptions}</select></div>
+     <div class="machine-editor-field-v19"><label>Scope Department</label><select id="mcDepartment" class="select">${machineDepartmentOptions(selectedSiteId,selectedDepartmentId)}</select></div>
+     <div class="machine-editor-field-v19"><label>Current Status</label><select id="mc7" class="select">${machineStatusOptions(x?.[7]||"")}</select></div>
+     <div class="machine-editor-field-v19"><label>Assigned Technician</label><input id="mc8" class="input" value="${esc(x?.[8]||"")}" placeholder="Technician name"></div>
+    </div><div class="machine-editor-note-v19"><b>Scope assignment:</b> Scope Site and Scope Department control machine visibility. Department / Location is the machine's physical location and is independent of the access scope.</div><div class="machine-editor-note-v19"><b>Service data:</b> Operating hours and service dates are recorded from maintenance entries and displayed automatically in the machine profile.</div></section>
+   </div>
+   <div class="machine-editor-actions-v19"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMachine('${encodeURIComponent(x?.[0]||"")}')">${x?"Save Changes":"Add Machine"}</button></div>
+  </div>`);
+  const modal=document.getElementById("modal");if(modal){modal.classList.add("machine-editor-modal-v19");}
 }
 async function retireMachine(id){
  const decoded=decodeURIComponent(id);
@@ -5832,7 +5849,47 @@ async function deleteMachine(id){
  }
 }
 
-async function saveMachine(old){if(!canEdit("machines"))return alert("You do not have permission to save machine records.");const vals=Array.from({length:9},(_,i)=>document.getElementById("mc"+i).value.trim());if(!vals[0])return alert("Fleet ID is required.");if(!vals[2])return alert("Machine model is required.");let x=old?viewMachineRows().find(z=>String(z[0])===String(decodeURIComponent(old))):null;if(!x){if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");if(iyCloudReady){try{const id=await cloudSaveMachine(vals);vals[9]=id;const scope=effectiveWriteScope();vals[10]=null;vals[11]=scope.siteId;vals[12]=scope.departmentId;await cloudAudit("Added machine","Machine record created",scope.siteId,scope.departmentId)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}db.machines.push(vals);logActivity("Added machine","Machine record created")}else{if(iyCloudReady){try{const id=await cloudSaveMachine(vals,x[11],x[12],x[9]);x[9]=id;await cloudAudit("Updated machine","Machine record updated",x[11]||null,x[12]||null)}catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}}vals.forEach((v,i)=>x[i]=v);logActivity("Updated machine","Machine record updated")}save();closeModal();render();toast("Machine saved successfully.");}
+async function saveMachine(old){
+  if(!canEdit("machines"))return alert("You do not have permission to save machine records.");
+  const vals=Array.from({length:6},(_,i)=>document.getElementById("mc"+i).value.trim());
+  const siteId=document.getElementById("mcSite")?.value||"";
+  const departmentId=document.getElementById("mcDepartment")?.value||"";
+  const physicalLocation=document.getElementById("mc6")?.value.trim()||"";
+  const status=document.getElementById("mc7")?.value.trim()||"";
+  const technician=document.getElementById("mc8")?.value.trim()||"";
+  vals.push(physicalLocation,status,technician);
+  if(!vals[0])return alert("Fleet ID is required.");
+  if(!vals[2])return alert("Machine model is required.");
+  if(!siteId)return alert("Please select a Site.");
+  if(!departmentId)return alert("Please select a Department.");
+  const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId));
+  if(!dept||String(dept.site_id)!==String(siteId))return alert("The selected Department does not belong to the selected Site.");
+  let x=old?viewMachineRows().find(z=>String(z[0])===String(decodeURIComponent(old))):null;
+  if(!x){
+    if(db.machines.some(z=>z[0]===vals[0]))return alert("Fleet ID already exists.");
+    if(iyCloudReady){
+      try{
+        const id=await cloudSaveMachine(vals,siteId,departmentId);
+        vals[9]=id;vals[10]=null;vals[11]=siteId;vals[12]=departmentId;
+        await cloudAudit("Added machine","Machine record created",siteId,departmentId);
+      }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
+    }
+    db.machines.push(vals);
+    logActivity("Added machine","Machine record created");
+  }else{
+    if(iyCloudReady){
+      try{
+        const id=await cloudSaveMachine(vals,siteId,departmentId,x[9]);
+        x[9]=id;
+        await cloudAudit("Updated machine","Machine record updated",siteId,departmentId);
+      }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
+    }
+    vals.forEach((v,i)=>x[i]=v);
+    x[11]=siteId;x[12]=departmentId;
+    logActivity("Updated machine","Machine record updated");
+  }
+  save();closeModal();render();toast("Machine saved successfully.");
+}
 
 function initMachinePage(){if(document.getElementById("machineRows"))renderMachineRows();}
 
@@ -8088,10 +8145,14 @@ async function cloudSaveMaintenance(row){
  if(error)throw error;
  return data.id;
 }
-async function cloudSaveMachine(row,existingSiteId=null,existingDepartmentId=null,existingMachineId=null){
-  const scope=effectiveWriteScope(existingSiteId,existingDepartmentId);
+async function cloudSaveMachine(row,selectedSiteId=null,selectedDepartmentId=null,existingMachineId=null){
+  const siteId=selectedSiteId||null;
+  const departmentId=selectedDepartmentId||null;
   const editId=existingMachineId||row[9]||null;
-  if(!scope.siteId||!scope.departmentId)throw new Error("Your account must have a Site and Department assigned before machine records can be saved.");
+  if(!siteId||!departmentId)throw new Error("A Site and Department are required for every machine.");
+  const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId));
+  if(!dept||String(dept.site_id)!==String(siteId))throw new Error("The selected Department does not belong to the selected Site.");
+  if(!globalViewScopeMatches(siteId,departmentId) && !isCompanyWideScope())throw new Error("The selected machine scope is outside your active View Scope.");
   const {data,error}=await iySupabase.rpc("manage_machine",{
    p_machine_id:editId||null,
    p_fleet_id:row[0],
@@ -8103,8 +8164,8 @@ async function cloudSaveMachine(row,existingSiteId=null,existingDepartmentId=nul
    p_department:row[6]||null,
    p_status:row[7]||null,
    p_assigned_to:row[8]||null,
-   p_site_id:scope.siteId,
-   p_department_id:scope.departmentId
+   p_site_id:siteId,
+   p_department_id:departmentId
   });
   if(error)throw error;
   if(!data?.success||!data?.machine_id)throw new Error("The server did not confirm the Machine change.");
