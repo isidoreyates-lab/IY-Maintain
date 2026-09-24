@@ -4691,8 +4691,9 @@ function machineSelectOptions(selected="", includeBlank=true){
  rows.forEach(m=>{
    const model=String(m?.[2]||"").trim();
    const fleet=String(m?.[0]||"").trim();
-   if(!model||seen.has(model))return;
-   seen.add(model);
+   const key=`${model}\u001f${fleet}`;
+   if(!model||seen.has(key))return;
+   seen.add(key);
    opts.push(`<option value="${esc(model)}" ${model===String(selected||"").trim()?"selected":""}>${esc(model)}${fleet?` — ${esc(fleet)}`:""}</option>`);
  });
  return opts.join("");
@@ -5235,7 +5236,7 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
  <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${viewInventoryRows().map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
- <div class="field"><label>Machine</label><input id="u_machine" class="input" value="${esc(x?.[3]||"")}"></div>
+ <div class="field"><label>Machine</label><select id="u_machine" class="select">${machineSelectOptions(x?.[3]||"")}</select></div>
  <div class="field"><label>Quantity</label><input id="u_qty" class="input" type="number" min="1" value="${x?.[4]??1}"></div>
  <div class="field"><label>PO / J-Ref</label><input id="u_po" class="input" value="${esc(x?.[5]||"")}"></div>
  <div class="field"><label>Supplier</label><input id="u_supplier" class="input" value="${esc(x?.[6]||"")}"></div>
