@@ -5117,14 +5117,47 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
 
 function inventoryPage(){
  const m=invMetrics();
- return `<div class="panel"><div class="toolbar"><input id="invSearch" class="input search" placeholder="Search inventory..." oninput="renderInventory()"></div><div id="invTable">${inventoryTable("")}</div></div>`;
+ const rows=viewInventoryRows();
+ const machines=[...new Set(rows.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const locations=[...new Set(rows.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ return `<div class="panel">
+  <div class="issue-filters">
+   <div class="issue-filter-field issue-search-field"><label>Search</label><div class="issue-search-wrap"><span>⌕</span><input id="invSearch" class="input" placeholder="Part number, description, machine or location..." oninput="renderInventory()"></div></div>
+   <div class="issue-filter-field"><label>Machine</label><select id="invMachineFilter" class="input" onchange="renderInventory()"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>
+   <div class="issue-filter-field"><label>Stock status</label><select id="invStockFilter" class="input" onchange="renderInventory()"><option value="">All stock statuses</option><option value="available">In stock</option><option value="low">Low stock</option><option value="out">Out of stock</option></select></div>
+   <div class="issue-filter-field"><label>Location</label><select id="invLocationFilter" class="input" onchange="renderInventory()"><option value="">All locations</option>${locations.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>
+   <button class="issue-reset-btn" type="button" onclick="resetInventoryFilters()">↻ <span>Reset</span></button>
+  </div>
+  <div id="invTable">${inventoryTable("")}</div>
+ </div>`;
 }
 function inventoryTable(q){
- q=(q||"").toLowerCase();const rows=viewInventoryRows().filter(x=>x.slice(0,8).join(" ").toLowerCase().includes(q));
+ q=(q||"").toLowerCase().trim();
+ const machine=(document.getElementById("invMachineFilter")?.value||"").toLowerCase();
+ const stock=document.getElementById("invStockFilter")?.value||"";
+ const location=(document.getElementById("invLocationFilter")?.value||"").toLowerCase();
+ const rows=viewInventoryRows().filter(x=>{
+   const text=x.slice(0,8).join(" ").toLowerCase();
+   const stockQty=num(x[3]);
+   const minQty=num(x[6]);
+   const status=stockQty===0?"out":stockQty<=minQty?"low":"available";
+   return (!q||text.includes(q)) && (!machine||String(x[2]||"").trim().toLowerCase()===machine) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
+ });
  return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventoryById('${encodeURIComponent(x[9]||'')}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
 }
 function statusBadge(x){return num(x[3])===0?'<span class="badge bad">OUT OF STOCK</span>':num(x[3])<=num(x[6])?'<span class="badge warn">LOW STOCK</span>':'<span class="badge ok">IN STOCK</span>'}
-function renderInventory(){document.getElementById("invTable").innerHTML=inventoryTable(document.getElementById("invSearch").value)}
+function renderInventory(){document.getElementById("invTable").innerHTML=inventoryTable(document.getElementById("invSearch")?.value||"")}
+function resetInventoryFilters(){
+ const search=document.getElementById("invSearch");
+ const machine=document.getElementById("invMachineFilter");
+ const stock=document.getElementById("invStockFilter");
+ const location=document.getElementById("invLocationFilter");
+ if(search)search.value="";
+ if(machine)machine.value="";
+ if(stock)stock.value="";
+ if(location)location.value="";
+ renderInventory();
+}
 function editInventory(p){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");inventoryEditModal(viewInventoryRows().find(x=>x[0]===decodeURIComponent(p)))}
 function editInventoryById(id){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");const x=viewInventoryRows().find(r=>String(r[9])===String(decodeURIComponent(id)));if(!x)return alert("Inventory record not found in the selected scope.");inventoryEditModal(x)}
 function inventoryEditModal(x){
