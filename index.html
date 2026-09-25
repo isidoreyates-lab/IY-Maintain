@@ -2955,7 +2955,13 @@ function nav(page){
  if(["superadmin","superadmin_companies","superadmin_billing","superadmin_settings"].includes(page)&&!isSuperAdmin()){toast("Super Admin access is required.");return}
  if((page==="pricing" || page==="subscription" || page==="billing") && !canAccessCommercialPricing()){toast("You do not have permission to open this section.");return}
  if(!canAccess(page)){toast("You do not have permission to open this section.");return}
- currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render()
+ const sidebar=document.querySelector('.sidebar');
+ const sidebarScrollTop=sidebar?sidebar.scrollTop:0;
+ currentPage=page;profileOpen=false;notificationOpen=false;mobileMenuOpen=false;globalSearchOpen=false;logActivity("Viewed page",pageTitleFor(page));render();
+ requestAnimationFrame(()=>{
+   const nextSidebar=document.querySelector('.sidebar');
+   if(nextSidebar) nextSidebar.scrollTop=sidebarScrollTop;
+ });
 }
 function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing",subscription:"Subscription",billing:"Billing",superadmin:"Super Admin Control Center",superadmin_companies:"Companies",superadmin_billing:"Billing Activities",superadmin_settings:"Settings"};return t[page]||"Dashboard"}
 function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(currentRole())}
