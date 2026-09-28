@@ -8234,7 +8234,7 @@ async function cloudSaveMaintenance(row){
  }else{
    query=iySupabase
      .from("maintenance_records")
-     .upsert(payload,{onConflict:"company_id,service_ref"})
+     .insert(payload)
      .select("id")
      .single();
  }
