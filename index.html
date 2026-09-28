@@ -23,6 +23,8 @@
 /* v26 Machine Certification — targeted enhancement only */
 /* v30 Certification status notifications — explicit status + expiry trigger only */
 .machine-cert-valid-v26{color:#14884b;font-weight:800}.machine-cert-expiring-v26{color:#bf7900;font-weight:800}.machine-cert-expired-v26{color:#c83b49;font-weight:800}
+.iy-report-image-links{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.iy-report-image-link{display:inline-flex;align-items:center;gap:3px;padding:3px 6px;border:1px solid #cddbef;border-radius:5px;background:#f7faff;color:#075fff;font-size:8px;font-weight:800;text-decoration:none;white-space:nowrap}.iy-report-image-link:hover{background:#eef5ff;text-decoration:underline}.iy-report-image-none{color:#8a9bac}.r-parts-image-links{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.r-parts-image-link{display:inline-block;color:#075fff;font-size:7.1px;font-weight:800;text-decoration:underline;white-space:nowrap}.r-parts-image-none{color:#8a9bac}
+.r-maint-image-links{display:flex;gap:4px;flex-wrap:wrap;align-items:center}.r-maint-image-link{display:inline-block;color:#075fff;font-size:7.1px;font-weight:800;text-decoration:underline;white-space:nowrap}.r-maint-image-none{color:#8a9bac}
 </style>
 </style>
 
@@ -2781,6 +2783,14 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 .sa-quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.sa-quick{min-height:72px;text-align:left!important;padding:12px 13px!important;border:1px solid #dce7f2!important;border-radius:12px!important;background:linear-gradient(180deg,#fbfdff,#f5f9fd)!important;transition:all .16s ease;box-shadow:none}.sa-quick:hover{border-color:#b9d5f3!important;transform:translateY(-1px);box-shadow:0 6px 18px rgba(15,77,145,.08)!important}.sa-quick b{font-size:10px!important;color:#0e4f9b!important}.sa-quick span{font-size:8.5px!important;color:#71849b!important;line-height:1.45!important}.sa-company-modal .sa-pill{font-size:8.5px;padding:5px 8px}.sa-company-modal .sa-empty{padding:18px 8px!important;color:#8494a7!important}.sa-company-modal .sa-btn{font-size:10px;padding:8px 11px;border-radius:8px}
 @media(max-width:900px){.sa-company-stats.sa-statline{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sa-company-hero{flex-direction:column}.sa-company-hero-actions{justify-content:flex-start}}@media(max-width:620px){.modal:has(.sa-company-modal){width:100%!important;max-width:100%!important;border-radius:14px!important}.sa-company-modal-body{padding:12px;max-height:calc(100dvh - 70px)}.sa-company-modal-head{padding:14px 15px}.sa-company-detail-name{font-size:21px!important}.sa-company-stats.sa-statline{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sa-quick-grid{grid-template-columns:1fr}}
 </style>
+
+<style id="iy-parts-update-images">
+.iy-update-images-field{grid-column:1/-1}.iy-update-images-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.iy-update-images-head label{margin:0}.iy-update-images-note{font-size:10px;color:#7b8da0;line-height:1.4}.iy-update-images-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.iy-update-image-card{border:1px solid #dce6ef;border-radius:11px;background:#fbfdff;padding:10px}.iy-update-image-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11px;color:#173650;font-weight:800;margin-bottom:8px}.iy-update-image-title span{font-size:9px;color:#8a9bac;font-weight:700}.iy-update-image-preview{height:150px;border:1px dashed #c9d8e6;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}.iy-update-image-preview>a{display:block;width:100%;height:100%}.iy-update-image-preview img{display:block;width:100%;height:100%;object-fit:contain;cursor:zoom-in}.iy-update-image-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#93a4b4;font-size:10px;font-weight:700;text-align:center}.iy-update-image-empty strong{font-size:22px;line-height:1}.iy-update-image-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px}.iy-update-image-upload{display:inline-flex;align-items:center;justify-content:center;border:1px solid #075fff;background:#075fff;color:#fff;border-radius:8px;padding:7px 10px;font-size:9px;font-weight:800;cursor:pointer}.iy-update-image-upload:hover{background:#0547d8}.iy-update-image-upload input{display:none}.iy-update-image-remove{border:1px solid #efd7d7;background:#fff5f5;color:#b54a4a;border-radius:8px;padding:7px 10px;font-size:9px;font-weight:800;cursor:pointer}.iy-update-image-remove:hover{background:#fff0f0}.iy-update-image-link{font-size:9px;color:#075fff;font-weight:800;text-decoration:none;margin-left:auto}.iy-update-image-link:hover{text-decoration:underline}@media(max-width:700px){.iy-update-images-grid{grid-template-columns:1fr}.iy-update-image-preview{height:170px}}
+</style>
+
+<style id="iy-parts-orders-report-sections">
+.report-subsection-title{font-size:11px;font-weight:800;letter-spacing:.05em;color:#173650;margin:16px 0 8px}
+</style>
 </head>
 
 <style>
@@ -2905,6 +2915,8 @@ let profilePhotoRemovePending=false;
 const IY_PROFILE_BUCKET="profile-images";
 const IY_COMPANY_ASSETS_BUCKET="company-assets";
 const IY_MACHINE_IMAGES_BUCKET="machine-images";
+const IY_PARTS_UPDATE_IMAGES_BUCKET="machine-images";
+const IY_MAINTENANCE_IMAGES_BUCKET="machine-images";
 
 let loggedIn=false;
 let globalSearchOpen=false;
@@ -5271,16 +5283,19 @@ function updatesPage(){
 }
 function updatesTable(){const rows=viewUpdateRows();if(!rows.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO/J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite</th><th>Remarks</th><th>Action</th></tr>${rows.map((x)=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${canEdit("updates")?`<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary small" onclick="editUpdateById('${x[11]}')">Edit</button><button class="btn danger small" onclick="deleteUpdateById('${x[11]}','${x[13]||''}','${x[14]||''}')">Delete</button></div>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`}
 function editUpdateById(id){if(!canEdit("updates"))return alert("You do not have permission to edit parts updates.");const x=viewUpdateRows().find(r=>String(r[11])===String(id));if(!x)return alert("Parts update not found in the selected scope.");const idx=db.updates.findIndex(r=>String(r[11])===String(id));if(idx<0)return alert("Parts update record could not be found.");updateModal(idx)}
-function updateModal(index){if(!canEdit("updates"))return alert("Parts update editing is restricted to Parts Coordinators and Administrators.");
+function updateModal(index){
+ if(!canEdit("updates"))return alert("Parts update editing is restricted to Parts Coordinators and Administrators.");
+ resetPartsUpdateImageState();
  const x=Number.isInteger(index)?db.updates[index]:null;
  const date=x?String(x[0]).slice(0,10):new Date().toISOString().slice(0,10);
  const status=x?String(x[8]||"TO ORDER"):"TO ORDER";
- openModal(`<div class="modalhead"><h2>${x?"Edit Parts Update":"Parts Requisition & Update"}</h2><button class="close" onclick="closeModal()">×</button></div>
+ openModal(`<div class="modalhead"><h2>${x?"Edit Parts Update":"Parts Requisition & Update"}</h2><button class="close" onclick="discardPartsUpdateImages();closeModal()">×</button></div>
  <div class="formgrid">
  ${writeScopeSelectorMarkup()}
  <div class="field"><label>Order Date</label><input id="u_date" class="input" type="date" value="${esc(date)}"></div>
  <div class="field"><label>Part Number</label><input id="u_part" class="input" list="updatePartList" value="${esc(x?.[1]||"")}" oninput="autoFillUpdatePart()" onchange="autoFillUpdatePart()"><datalist id="updatePartList">${viewInventoryRows().map(v=>`<option value="${esc(v[0]||"")}">${esc(v[1]||"")}</option>`).join("")}</datalist><div class="hint">Select an existing part or enter a new part number. New parts will be created with zero opening stock.</div></div>
  <div class="field"><label>Description</label><input id="u_desc" class="input" value="${esc(x?.[2]||"")}"></div>
+ <div class="iy-update-images-field"><div class="iy-update-images-head"><label>Part Images</label><span class="iy-update-images-note">Optional · add up to 2 clear photos so the part can be identified before ordering.</span></div><div id="u_imageSlots" class="iy-update-images-grid"></div></div>
  <div class="field"><label>Machine</label><select id="u_machine" class="select">${machineSelectOptions(x?.[3]||"")}</select></div>
  <div class="field"><label>Quantity</label><input id="u_qty" class="input" type="number" min="1" value="${x?.[4]??1}"></div>
  <div class="field"><label>PO / J-Ref</label><input id="u_po" class="input" value="${esc(x?.[5]||"")}"></div>
@@ -5289,7 +5304,154 @@ function updateModal(index){if(!canEdit("updates"))return alert("Parts update ed
  <div class="field"><label>Status</label><select id="u_status" class="select"><option ${status==="TO ORDER"?"selected":""}>TO ORDER</option><option ${status==="ORDERED"?"selected":""}>ORDERED</option><option ${status==="PARTIALLY RECEIVED"?"selected":""}>PARTIALLY RECEIVED</option><option ${status==="RECEIVED"?"selected":""}>RECEIVED</option><option ${status==="CANCELLED"?"selected":""}>CANCELLED</option></select></div>
  <div class="field"><label>Onsite Date</label><input id="u_onsite" class="input" type="date" value="${esc(x?.[9]||"").slice(0,10)}"></div>
  <div class="field full"><label>Remarks</label><textarea id="u_rem" class="textarea">${esc(x?.[10]||"")}</textarea></div></div>
- <div class="actions">${x?`<button class="btn danger" onclick="deleteUpdateById('${x[11]}','${x[13]||''}','${x[14]||''}')">Delete</button>`:""}<button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveUpdate(${x?index:"null"})">${x?"Save Changes":"Save Update"}</button></div>`);
+ <div class="actions">${x?`<button class="btn danger" onclick="deleteUpdateById('${x[11]}','${x[13]||''}','${x[14]||''}')">Delete</button>`:""}<button class="btn secondary" onclick="discardPartsUpdateImages();closeModal()">Cancel</button><button class="btn primary" onclick="saveUpdate(${x?index:"null"})">${x?"Save Changes":"Save Update"}</button></div>`);
+ renderPartsUpdateImageSlots();
+ if(x?.[11])loadPartsUpdateImages(x[11]);
+}
+const EMPTY_PARTS_UPDATE_IMAGE_STATE=()=>({file:null,url:"",path:"",remove:false});
+let iyPartsUpdateImageState={1:EMPTY_PARTS_UPDATE_IMAGE_STATE(),2:EMPTY_PARTS_UPDATE_IMAGE_STATE()};
+function resetPartsUpdateImageState(){
+ for(const slot of [1,2]){
+   const url=iyPartsUpdateImageState?.[slot]?.url||"";
+   if(url.startsWith("blob:")){try{URL.revokeObjectURL(url)}catch(e){}}
+ }
+ iyPartsUpdateImageState={1:EMPTY_PARTS_UPDATE_IMAGE_STATE(),2:EMPTY_PARTS_UPDATE_IMAGE_STATE()};
+}
+function discardPartsUpdateImages(){resetPartsUpdateImageState()}
+function partsUpdateImagePath(updateId,slot){return iyCompany?.id&&updateId?`${iyCompany.id}/parts-update-${updateId}-image-${slot}.jpg`:""}
+function renderPartsUpdateImageSlots(){
+ const holder=document.getElementById("u_imageSlots");
+ if(!holder)return;
+ holder.innerHTML=[1,2].map(slot=>{
+   const s=iyPartsUpdateImageState[slot]||EMPTY_PARTS_UPDATE_IMAGE_STATE();
+   const hasImage=Boolean(s.url);
+   return `<div class="iy-update-image-card"><div class="iy-update-image-title"><b>Image ${slot}</b><span>${hasImage?(s.file?"New image selected":"Saved image"):"Optional"}</span></div><div class="iy-update-image-preview">${hasImage?`<a href="${esc(s.url)}" target="_blank" rel="noopener" title="Open image larger"><img src="${esc(s.url)}" alt="Parts update image ${slot}"></a>`:`<div class="iy-update-image-empty"><strong>+</strong><span>No image selected</span></div>`}</div><div class="iy-update-image-actions"><label class="iy-update-image-upload">${hasImage?"Replace image":"Choose image"}<input type="file" accept="image/png,image/jpeg,image/webp" onchange="handlePartsUpdateImageFile(this,${slot})"></label>${hasImage?`<button type="button" class="iy-update-image-remove" onclick="removePartsUpdateImage(${slot})">Remove</button><a class="iy-update-image-link" href="${esc(s.url)}" target="_blank" rel="noopener">View larger</a>`:""}</div></div>`;
+ }).join("");
+}
+function removePartsUpdateImage(slot){
+ const s=iyPartsUpdateImageState[slot]||EMPTY_PARTS_UPDATE_IMAGE_STATE();
+ if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+ s.file=null;
+ s.url="";
+ s.remove=Boolean(s.path);
+ iyPartsUpdateImageState[slot]=s;
+ renderPartsUpdateImageSlots();
+}
+function handlePartsUpdateImageFile(input,slot){
+ const file=input?.files?.[0];
+ if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/i.test(file.type)){input.value="";return alert("Please upload a PNG, JPG or WebP image.");}
+ if(file.size>8*1024*1024){input.value="";return alert("Please choose an image smaller than 8 MB.");}
+ const s=iyPartsUpdateImageState[slot]||EMPTY_PARTS_UPDATE_IMAGE_STATE();
+ if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+ s.file=file;
+ s.url=URL.createObjectURL(file);
+ s.remove=false;
+ iyPartsUpdateImageState[slot]=s;
+ input.value="";
+ renderPartsUpdateImageSlots();
+}
+async function preparePartsUpdateImageBlob(file){
+ return await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onerror=()=>reject(new Error("The image could not be read."));
+   reader.onload=()=>{
+     const img=new Image();
+     img.onerror=()=>reject(new Error("The image could not be processed."));
+     img.onload=()=>{
+       const max=1600,scale=Math.min(1,max/Math.max(img.width,img.height));
+       const canvas=document.createElement("canvas");
+       canvas.width=Math.max(1,Math.round(img.width*scale));
+       canvas.height=Math.max(1,Math.round(img.height*scale));
+       const ctx=canvas.getContext("2d");
+       if(!ctx)return reject(new Error("The image could not be prepared."));
+       ctx.drawImage(img,0,0,canvas.width,canvas.height);
+       canvas.toBlob(blob=>blob?resolve(blob):reject(new Error("The image could not be converted.")),"image/jpeg",.82);
+     };
+     img.src=reader.result;
+   };
+   reader.readAsDataURL(file);
+ });
+}
+async function loadPartsUpdateImages(updateId){
+ if(!updateId||!iyCompany)return;
+ for(const slot of [1,2]){
+   const path=partsUpdateImagePath(updateId,slot);
+   try{
+     const signed=await signedStorageUrl(IY_PARTS_UPDATE_IMAGES_BUCKET,path,3600);
+     if(signed){
+       iyPartsUpdateImageState[slot].path=path;
+       iyPartsUpdateImageState[slot].url=`${signed}&v=${Date.now()}`;
+     }
+   }catch(e){/* No saved image for this slot. */}
+ }
+ renderPartsUpdateImageSlots();
+}
+async function syncPartsUpdateImages(updateId){
+ const errors=[];
+ if(!updateId||!iyCloudReady||!iyCompany)return errors;
+ for(const slot of [1,2]){
+   const s=iyPartsUpdateImageState[slot]||EMPTY_PARTS_UPDATE_IMAGE_STATE();
+   const path=partsUpdateImagePath(updateId,slot);
+   try{
+     if(s.file){
+       const blob=await preparePartsUpdateImageBlob(s.file);
+       const {error}=await iySupabase.storage.from(IY_PARTS_UPDATE_IMAGES_BUCKET).upload(path,blob,{contentType:"image/jpeg",upsert:true,cacheControl:"3600"});
+       if(error)throw error;
+       const signed=await signedStorageUrl(IY_PARTS_UPDATE_IMAGES_BUCKET,path,3600);
+       if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+       s.file=null;
+       s.path=path;
+       s.remove=false;
+       s.url=signed?`${signed}&v=${Date.now()}`:"";
+     }else if(s.remove&&s.path){
+       const {error}=await iySupabase.storage.from(IY_PARTS_UPDATE_IMAGES_BUCKET).remove([s.path]);
+       if(error)throw error;
+       s.path="";
+       s.url="";
+       s.remove=false;
+     }
+   }catch(e){
+     console.warn(`Parts Update image ${slot} could not be saved.`,e?.message||e);
+     errors.push(`Image ${slot}`);
+   }
+ }
+ renderPartsUpdateImageSlots();
+ return errors;
+}
+async function removePartsUpdateImages(updateId){
+ if(!updateId||!iyCompany)return;
+ const paths=[1,2].map(slot=>partsUpdateImagePath(updateId,slot)).filter(Boolean);
+ if(!paths.length)return;
+ const {error}=await iySupabase.storage.from(IY_PARTS_UPDATE_IMAGES_BUCKET).remove(paths);
+ if(error)throw error;
+}
+
+let iyPartsUpdateReportImageUrls={};
+async function hydratePartsUpdateReportImages(rows){
+ const list=Array.isArray(rows)?rows:[];
+ if(!list.length||!iyCompany)return;
+ await Promise.all(list.map(async row=>{
+   const updateId=String(row?.[11]||"").trim();
+   if(!updateId)return;
+   iyPartsUpdateReportImageUrls[updateId]=iyPartsUpdateReportImageUrls[updateId]||{};
+   await Promise.all([1,2].map(async slot=>{
+     if(Object.prototype.hasOwnProperty.call(iyPartsUpdateReportImageUrls[updateId],slot))return;
+     const path=partsUpdateImagePath(updateId,slot);
+     if(!path){iyPartsUpdateReportImageUrls[updateId][slot]="";return;}
+     try{
+       const signed=await signedStorageUrl(IY_PARTS_UPDATE_IMAGES_BUCKET,path,3600);
+       iyPartsUpdateReportImageUrls[updateId][slot]=signed?`${signed}&v=${Date.now()}`:"";
+     }catch(e){iyPartsUpdateReportImageUrls[updateId][slot]="";}
+   }));
+ }));
+}
+function partsUpdateReportImageLinks(row,report=true){
+ const updateId=String(row?.[11]||"").trim();
+ const urls=updateId?iyPartsUpdateReportImageUrls?.[updateId]||{}:{};
+ const parts=[1,2].map(slot=>({slot,url:urls?.[slot]||""})).filter(x=>x.url);
+ if(!parts.length)return report?`<span class="r-parts-image-none">—</span>`:`<span class="iy-report-image-none">—</span>`;
+ return report?`<div class="r-parts-image-links">${parts.map(x=>`<a class="r-parts-image-link" href="${esc(x.url)}" download="part-${updateId}-image-${x.slot}.jpg" title="Download image ${x.slot}">IMG ${x.slot} ↓</a>`).join("")}</div>`:`<div class="iy-report-image-links">${parts.map(x=>`<a class="iy-report-image-link" href="${esc(x.url)}" download="part-${updateId}-image-${x.slot}.jpg" title="Download image ${x.slot}">IMG ${x.slot} ↓</a>`).join("")}</div>`;
 }
 function autoFillUpdatePart(){
  const input=document.getElementById("u_part");if(!input)return;
@@ -5307,6 +5469,8 @@ async function deleteUpdateById(id,siteId,departmentId){
  if(!confirm("Delete this Parts Update? This cannot be undone."))return;
  try{
    await cloudDeleteUpdate(id,siteId||null,departmentId||null);
+   try{await removePartsUpdateImages(id)}catch(imageError){console.warn("Parts Update images could not be removed",imageError?.message||imageError);}
+   discardPartsUpdateImages();
    await loadCloudData();
    render();
    await cloudAudit("Deleted parts update","Parts update deleted");
@@ -5321,6 +5485,7 @@ async function saveUpdate(index){
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
  try{
    const id=await cloudSaveUpdate(row,index);
+   const imageErrors=await syncPartsUpdateImages(id);
 
    // ORDERED is the hand-off from Parts Updates to Parts Orders.
    // Use the secure server-side conversion so the order creation/update
@@ -5332,9 +5497,12 @@ async function saveUpdate(index){
      if(moveError)throw moveError;
      const orderId=Array.isArray(moveData)?moveData?.[0]?.order_id:moveData?.order_id;
      if(!orderId)throw new Error("The server did not confirm the Parts Order conversion.");
+     try{await removePartsUpdateImages(updateId)}catch(imageError){console.warn("Parts Update images could not be removed after order conversion",imageError?.message||imageError);}
+     discardPartsUpdateImages();
      await loadCloudData();
      await cloudAudit("Ordered part","Parts Update moved to active Parts Orders for "+row[1]+" · "+row[5]);
      closeModal();render();toast("Order placed. The Parts Update has been cleared and the order is now in Parts Orders.");
+     if(imageErrors.length)setTimeout(()=>alert("The order was placed, but "+imageErrors.join(" and ")+" could not be saved. Please add the image again to a new Parts Update if needed."),120);
      return;
    }
 
@@ -5346,9 +5514,11 @@ async function saveUpdate(index){
    // immediately reflects the single canonical Parts Update record.
    await loadCloudData();
 
+   discardPartsUpdateImages();
    closeModal();
    render();
    toast(index===null?"Parts update saved.":"Parts update updated.");
+   if(imageErrors.length)setTimeout(()=>alert("The Parts Update was saved, but "+imageErrors.join(" and ")+" could not be saved. Please try the image again from Edit Parts Update."),120);
  }catch(e){console.error("Parts update save failed",e);alert(e?.message||"Parts update could not be saved to the cloud.")}
 }
 
@@ -5467,6 +5637,13 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
    try{
      const id=await cloudSaveMaintenance(row);
      row[14]=id;
+     if(String(row[11]||"").trim()){
+       const imageErrors=await syncMaintenanceImages(id);
+       if(imageErrors.length)toast(`${imageErrors.join(", ")} could not be saved.`);
+     }else if(id){
+       try{await removeMaintenanceImages(id)}catch(imageError){console.warn("Maintenance images could not be removed",imageError?.message||imageError);}
+     }
+     resetMaintenanceImageState();
      await cloudAudit(editId?"Updated maintenance entry":"Created maintenance entry",editId?"Maintenance record updated":"Maintenance record saved",mach[16]||null,mach[17]||null);
    }catch(e){
      console.error("Maintenance save failed:",e);
@@ -5483,8 +5660,27 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
 function maintenanceLogTable(rows){
  if(!rows.length)return `<div class="maintenance-log-empty"><div class="maintenance-log-empty-icon">▤</div><b>No maintenance records found</b><span>Create your first maintenance entry to get started.</span><button class="btn primary maintenance-empty-btn" onclick="maintenanceModal()">+ New Maintenance Entry</button></div>`;
  return `<div class="tablewrap maintenance-log-wrap"><table class="table maintenance-log-table"><tr>
- <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Next Service</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th><th>Action</th>
- </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${x[6]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
+ <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Next Service</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th><th>Images</th><th>Action</th>
+ </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${x[6]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td>${String(x[11]||"").trim()?maintenanceLogImageLinks(x):`<span class="r-maint-image-none">—</span>`}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
+}
+function maintenanceLogImageLinks(row){
+ const recordId=String(row?.[14]||"").trim();
+ if(!recordId)return `<span class="r-maint-image-none">—</span>`;
+ return `<div class="r-maint-image-links"><a href="#" class="r-maint-image-link" onclick="openMaintenanceLogImage('${esc(recordId)}',1);return false;" title="View / download image 1">IMG 1 ↓</a><a href="#" class="r-maint-image-link" onclick="openMaintenanceLogImage('${esc(recordId)}',2);return false;" title="View / download image 2">IMG 2 ↓</a></div>`;
+}
+async function openMaintenanceLogImage(recordId,slot){
+ if(!recordId)return;
+ if(!iyCloudReady||!iyCompany)return alert("Secure cloud session is not ready. Please refresh and try again.");
+ try{
+   const path=maintenanceImagePath(recordId,slot);
+   const signed=await signedStorageUrl(IY_MAINTENANCE_IMAGES_BUCKET,path,3600);
+   if(!signed)throw new Error(`Image ${slot} is not available for this maintenance record.`);
+   const win=window.open(signed,"_blank","noopener");
+   if(!win)alert("The image could not be opened. Please allow pop-ups for IY Maintain.");
+ }catch(e){
+   console.error("Maintenance log image open failed",e);
+   alert(e?.message||`Image ${slot} could not be opened.`);
+ }
 }
 function editMaintenance(id){
   if(!canEdit("maintenance"))return alert("You do not have permission to edit maintenance records.");
@@ -5492,11 +5688,124 @@ function editMaintenance(id){
   if(!row)return alert("Maintenance record not found in the selected View Scope.");
  openMaintenanceModal(row);
 }
+const EMPTY_MAINTENANCE_IMAGE_STATE=()=>({file:null,url:"",path:"",remove:false});
+let iyMaintenanceImageState={1:EMPTY_MAINTENANCE_IMAGE_STATE(),2:EMPTY_MAINTENANCE_IMAGE_STATE()};
+function resetMaintenanceImageState(){
+ for(const slot of [1,2]){
+   const url=iyMaintenanceImageState?.[slot]?.url||"";
+   if(url.startsWith("blob:")){try{URL.revokeObjectURL(url)}catch(e){}}
+ }
+ iyMaintenanceImageState={1:EMPTY_MAINTENANCE_IMAGE_STATE(),2:EMPTY_MAINTENANCE_IMAGE_STATE()};
+}
+function discardMaintenanceImages(){resetMaintenanceImageState()}
+function toggleMaintenanceImagesField(){
+ const parts=document.getElementById("m_parts");
+ const field=document.getElementById("m_images_field");
+ if(!field)return;
+ const hasParts=Boolean(String(parts?.value||"").trim());
+ field.style.display="block";
+ const note=field.querySelector(".iy-update-images-note");
+ if(note)note.textContent=hasParts
+   ? "Optional · Upload up to 2 images for the required part(s)."
+   : "Enter the required part(s) above to enable the 2 image upload slots.";
+ renderMaintenanceImageSlots();
+}
+function maintenanceImagePath(recordId,slot){
+ return iyCompany?.id&&recordId?`${iyCompany.id}/maintenance-${recordId}-image-${slot}.jpg`:"";
+}
+function renderMaintenanceImageSlots(){
+ const holder=document.getElementById("m_imageSlots");
+ if(!holder)return;
+ const hasParts=Boolean(String(document.getElementById("m_parts")?.value||"").trim());
+ holder.innerHTML=[1,2].map(slot=>{
+   const s=iyMaintenanceImageState[slot]||EMPTY_MAINTENANCE_IMAGE_STATE();
+   const hasImage=Boolean(s.url);
+   const disabled=!hasParts;
+   return `<div class="iy-update-image-card" style="${disabled&&!hasImage?"opacity:.62":""}"><div class="iy-update-image-title"><b>Image ${slot}</b><span>${hasImage?(s.file?"New image selected":"Saved image"):"Optional"}</span></div><div class="iy-update-image-preview">${hasImage?`<a href="${esc(s.url)}" target="_blank" rel="noopener" title="Open image larger"><img src="${esc(s.url)}" alt="Maintenance part image ${slot}"></a>`:`<div class="iy-update-image-empty"><strong>+</strong><span>${disabled?"Enter Parts Required first":"No image selected"}</span></div>`}</div><div class="iy-update-image-actions"><label class="iy-update-image-upload" style="${disabled&&!hasImage?"pointer-events:none;cursor:not-allowed":""}">${hasImage?"Replace image":"Choose image"}<input type="file" accept="image/png,image/jpeg,image/webp" onchange="handleMaintenanceImageFile(this,${slot})" ${disabled?"disabled":""}></label>${hasImage?`<button type="button" class="iy-update-image-remove" onclick="removeMaintenanceImage(${slot})" ${disabled?"disabled":""}>Remove</button><a class="iy-update-image-link" href="${esc(s.url)}" target="_blank" rel="noopener">View larger</a>`:""}</div></div>`;
+ }).join("");
+}
+function removeMaintenanceImage(slot){
+ const s=iyMaintenanceImageState[slot]||EMPTY_MAINTENANCE_IMAGE_STATE();
+ if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+ s.file=null;
+ s.url="";
+ s.remove=Boolean(s.path);
+ iyMaintenanceImageState[slot]=s;
+ renderMaintenanceImageSlots();
+}
+function handleMaintenanceImageFile(input,slot){
+ const file=input?.files?.[0];
+ if(!file)return;
+ if(!/^image\/(png|jpeg|webp)$/i.test(file.type)){input.value="";return alert("Please upload a PNG, JPG or WebP image.");}
+ if(file.size>8*1024*1024){input.value="";return alert("Please choose an image smaller than 8 MB.");}
+ const s=iyMaintenanceImageState[slot]||EMPTY_MAINTENANCE_IMAGE_STATE();
+ if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+ s.file=file;
+ s.url=URL.createObjectURL(file);
+ s.remove=false;
+ iyMaintenanceImageState[slot]=s;
+ input.value="";
+ renderMaintenanceImageSlots();
+}
+async function loadMaintenanceImages(recordId){
+ if(!recordId||!iyCompany)return;
+ for(const slot of [1,2]){
+   const path=maintenanceImagePath(recordId,slot);
+   try{
+     const signed=await signedStorageUrl(IY_MAINTENANCE_IMAGES_BUCKET,path,3600);
+     if(signed){
+       iyMaintenanceImageState[slot].path=path;
+       iyMaintenanceImageState[slot].url=`${signed}&v=${Date.now()}`;
+     }
+   }catch(e){/* No saved image for this slot. */}
+ }
+ renderMaintenanceImageSlots();
+}
+async function syncMaintenanceImages(recordId){
+ const errors=[];
+ if(!recordId||!iyCloudReady||!iyCompany)return errors;
+ for(const slot of [1,2]){
+   const s=iyMaintenanceImageState[slot]||EMPTY_MAINTENANCE_IMAGE_STATE();
+   const path=maintenanceImagePath(recordId,slot);
+   try{
+     if(s.file){
+       const blob=await preparePartsUpdateImageBlob(s.file);
+       const {error}=await iySupabase.storage.from(IY_MAINTENANCE_IMAGES_BUCKET).upload(path,blob,{contentType:"image/jpeg",upsert:true,cacheControl:"3600"});
+       if(error)throw error;
+       const signed=await signedStorageUrl(IY_MAINTENANCE_IMAGES_BUCKET,path,3600);
+       if(s.url?.startsWith("blob:")){try{URL.revokeObjectURL(s.url)}catch(e){}}
+       s.file=null;
+       s.path=path;
+       s.remove=false;
+       s.url=signed?`${signed}&v=${Date.now()}`:"";
+     }else if(s.remove&&s.path){
+       const {error}=await iySupabase.storage.from(IY_MAINTENANCE_IMAGES_BUCKET).remove([s.path]);
+       if(error)throw error;
+       s.path="";
+       s.url="";
+       s.remove=false;
+     }
+   }catch(e){
+     console.warn(`Maintenance part image ${slot} could not be saved.`,e?.message||e);
+     errors.push(`Image ${slot}`);
+   }
+ }
+ renderMaintenanceImageSlots();
+ return errors;
+}
+async function removeMaintenanceImages(recordId){
+ if(!recordId||!iyCompany)return;
+ const paths=[1,2].map(slot=>maintenanceImagePath(recordId,slot)).filter(Boolean);
+ if(!paths.length)return;
+ const {error}=await iySupabase.storage.from(IY_MAINTENANCE_IMAGES_BUCKET).remove(paths);
+ if(error)throw error;
+}
+
 function openMaintenanceModal(existing){
  const row=existing||null;
  const machineModel=String(row?.[2]||"");
  const machineOptions=viewMachineRows().map(x=>`<option value="${esc(x[2])}" ${String(x[2])===machineModel?'selected':''}>${esc(x[2])} (${esc(x[0])})</option>`).join("");
- openModal(`<div class="modalhead"><h2>${row?'Edit Maintenance Entry':'Maintenance Entry'}</h2><button class="close" onclick="closeModal()">×</button></div>
+ openModal(`<div class="modalhead"><h2>${row?'Edit Maintenance Entry':'Maintenance Entry'}</h2><button class="close" onclick="discardMaintenanceImages();closeModal()">×</button></div>
  <div class="formgrid">
  <div class="field"><label>Service Reference</label><input id="m_ref" class="input" value="${esc(row?.[0]||`PSC${String(Math.floor(Math.random()*900)+100)}`)}"></div>
  <div class="field"><label>Job Date</label><input id="m_date" class="input" type="date" value="${esc(row?.[1]||new Date().toISOString().slice(0,10))}"></div>
@@ -5508,12 +5817,15 @@ function openMaintenanceModal(existing){
  <div class="field"><label>Job Type</label><input id="m_type" class="input" value="${esc(row?.[7]||'Weekly Inspection')}"></div>
  <div class="field"><label>Job Status</label><select id="m_status" class="select"><option ${String(row?.[10]||'Completed')==='Completed'?'selected':''}>Completed</option><option ${String(row?.[10]||'')==='Ongoing'?'selected':''}>Ongoing</option><option ${String(row?.[10]||'')==='In Progress'?'selected':''}>In Progress</option><option ${String(row?.[10]||'')==='Open'?'selected':''}>Open</option></select></div>
  <div class="field"><label>Technician(s)</label><input id="m_tech" class="input" value="${esc(row?.[12]||"")}"></div>
- <div class="field full"><label>Parts Required</label><input id="m_parts" class="input" value="${esc(row?.[11]||"")}"></div>
+ <div class="field full"><label>Parts Required</label><input id="m_parts" class="input" value="${esc(row?.[11]||"")}" oninput="toggleMaintenanceImagesField()"></div>
+ <div class="field full" id="m_images_field"><div class="iy-update-images-head"><div><label>Part Images</label><div class="iy-update-images-note">Enter the required part(s) above to enable the 2 image upload slots.</div></div></div><div id="m_imageSlots" class="iy-update-images-grid"></div></div>
  <div class="field full"><label>Fault / Problem</label><textarea id="m_fault" class="textarea">${esc(row?.[8]||"")}</textarea></div>
  <div class="field full"><label>Work Performed</label><textarea id="m_work" class="textarea">${esc(row?.[9]||"")}</textarea></div>
  <div class="field full"><label>Remarks</label><textarea id="m_rem" class="textarea">${esc(row?.[13]||"")}</textarea></div></div>
- <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMaintenance('${esc(String(row?.[14]||''))}')">${row?'Save Changes':'Save Entry'}</button></div>`);
+ <div class="actions"><button class="btn secondary" onclick="discardMaintenanceImages();closeModal()">Cancel</button><button class="btn primary" onclick="saveMaintenance('${esc(String(row?.[14]||''))}')">${row?'Save Changes':'Save Entry'}</button></div>`);
  populateMachineDetails();
+ toggleMaintenanceImagesField();
+ if(row?.[14] && String(row?.[11]||"").trim())loadMaintenanceImages(row[14]);
 }
 
 function maintenanceLogPage(){
@@ -5598,9 +5910,9 @@ function buildFilteredMaintenanceLogExportHTML(rows){
  const kpis=`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching maintenance records")}${metricReportKpi("MACHINES",machines,"Machines represented")}${metricReportKpi("COMPLETED",completed,"Completed jobs")}${metricReportKpi("ONGOING",ongoing,"Open / in progress")}`;
  const summary=`<div class="parts-summary maintenance-log-export-summary"><div class="parts-summary-box"><span>MACHINE</span><b>${esc(reportMachineLabel)}</b></div><div class="parts-summary-box"><span>MAINTENANCE TYPE</span><b>${esc(type||"All types")}</b></div><div class="parts-summary-box"><span>STATUS</span><b>${esc(status||"All statuses")}</b></div></div>`;
  const table=`<table class="r-report-table maintenance-log-export-table"><colgroup>
-  <col style="width:7%"><col style="width:6%"><col style="width:8%"><col style="width:7%"><col style="width:5%"><col style="width:6%"><col style="width:8%"><col style="width:7%"><col style="width:10%"><col style="width:11%"><col style="width:12%"><col style="width:13%">
- </colgroup><thead><tr><th>SERVICE REF</th><th>DATE</th><th>MACHINE</th><th>FLEET ID</th><th>HOURS</th><th>NEXT SERVICE</th><th>MAINTENANCE TYPE</th><th>STATUS</th><th>TECHNICIAN(S)</th><th>FAULT / PROBLEM</th><th>WORK PERFORMED</th><th>REMARKS</th></tr></thead><tbody>
-  ${rows.length?rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"—"}</td><td>${x[6]||"—"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12]||"—")}</td><td>${esc(x[8]||"—")}</td><td>${esc(x[9]||"—")}</td><td>${esc(x[13]||"—")}</td></tr>`).join(""):`<tr><td colspan="12" class="r-empty-cell">No maintenance records match the selected filters.</td></tr>`}
+  <col style="width:7%"><col style="width:6%"><col style="width:8%"><col style="width:7%"><col style="width:5%"><col style="width:6%"><col style="width:8%"><col style="width:7%"><col style="width:10%"><col style="width:11%"><col style="width:12%"><col style="width:9%"><col style="width:4%">
+ </colgroup><thead><tr><th>SERVICE REF</th><th>DATE</th><th>MACHINE</th><th>FLEET ID</th><th>HOURS</th><th>NEXT SERVICE</th><th>MAINTENANCE TYPE</th><th>STATUS</th><th>TECHNICIAN(S)</th><th>FAULT / PROBLEM</th><th>WORK PERFORMED</th><th>REMARKS</th><th>IMAGES</th></tr></thead><tbody>
+  ${rows.length?rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"—"}</td><td>${x[6]||"—"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12]||"—")}</td><td>${esc(x[8]||"—")}</td><td>${esc(x[9]||"—")}</td><td>${esc(x[13]||"—")}</td><td>${String(x[11]||"").trim()?maintenanceReportImageLinks(x):`<span class="r-maint-image-none">—</span>`}</td></tr>`).join(""):`<tr><td colspan="13" class="r-empty-cell">No maintenance records match the selected filters.</td></tr>`}
  </tbody></table>`;
  return `<div class="report-document"><section class="report-paper parts-report-paper maintenance-log-export-paper">
   <div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">MAINTENANCE LOG</p></div>
@@ -5613,8 +5925,9 @@ function buildFilteredMaintenanceLogExportHTML(rows){
   <div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div>
  </section></div>`;
 }
-function exportFilteredMaintenanceLog(){
+async function exportFilteredMaintenanceLog(){
  const rows=getFilteredMaintenanceLogRows();
+ await hydrateMaintenanceReportImages(rows);
  let modal=document.getElementById('maintenanceLogExportModal');
  if(!modal){
    modal=document.createElement('div');modal.id='maintenanceLogExportModal';modal.className='report-preview-modal';
@@ -6084,19 +6397,27 @@ function dateIn(v,from,to){const d=new Date(v);if(from&&d<new Date(from))return 
 function runPartsReport(){
  if(!canGenerateReports())return toast("You do not have permission to generate reports.");
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
- let rows=[];
+ let rows=[],partsUpdates=[];
  if(type==="Parts Orders"){
-  viewOrderRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);});
+  viewUpdateRows().forEach(x=>{
+   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))partsUpdates.push(x);
+  });
+  viewOrderRows().forEach(x=>{
+   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);
+  });
  }else{
   if(type!=="Parts Received")viewIssueRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!tech||String(x[5]).toLowerCase().includes(tech))&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["ISSUED",...x])});
   if(type!=="Parts Issued")viewReceiptRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part)))rows.push(["RECEIVED",...x])});
  }
  rows.sort((a,b)=>new Date(a[1])-new Date(b[1]));
- window.__partsReportData={type,tech,machine,part,from,to,rows};startFreshReportApproval("parts");
+ partsUpdates.sort((a,b)=>new Date(a[0])-new Date(b[0]));
+ window.__partsReportData={type,tech,machine,part,from,to,rows,partsUpdates};startFreshReportApproval("parts");
  const total=rows.reduce((a,x)=>a+num(x[5]),0),issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED");
  if(type==="Parts Orders"){
-  const suppliers=new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,machines=new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size;
-  document.getElementById("prout").innerHTML=`<div class="cards">${metric("ORDERS",ordered.length,"Active parts orders")}${metric("QUANTITY",total,"Units on order")}${metric("SUPPLIERS",suppliers,"Suppliers")}${metric("MACHINES",machines,"Machines")}</div><div class="notice"><b>Parts Orders</b> &nbsp; ${ordered.length} active order${ordered.length===1?"":"s"} awaiting receipt ${from||to?`&nbsp; | &nbsp; period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No active parts orders match the selected filters.</div>`}`;
+  const suppliers=new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,machines=new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size,updateQty=partsUpdates.reduce((a,x)=>a+num(x[4]),0);
+  const updateSection=partsUpdates.length?`<div class="report-subsection-title">PARTS UPDATES</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5]||"")}</b></td><td>${esc(x[6]||"")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>`:`<div class="report-subsection-title">PARTS UPDATES</div><div class="empty">No Parts Updates match the selected filters.</div>`;
+  const orderSection=ordered.length?`<div class="report-subsection-title">PARTS ORDERS</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>`:`<div class="report-subsection-title">PARTS ORDERS</div><div class="empty">No active Parts Orders match the selected filters.</div>`;
+  document.getElementById("prout").innerHTML=`<div class="cards">${metric("UPDATES",partsUpdates.length,"Parts Updates")}${metric("ORDERS",ordered.length,"Active parts orders")}${metric("UPDATE QTY",updateQty,"Units requested")}${metric("ORDER QTY",total,"Units on order")}</div><div class="notice"><b>Parts Orders + Parts Updates</b> &nbsp; ${from||to?`&nbsp; | &nbsp; period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""} &nbsp; | &nbsp; ${suppliers} supplier${suppliers===1?"":"s"} &nbsp; | &nbsp; ${machines} machine${machines===1?"":"s"}</div>${updateSection}${orderSection}`;
  }else{
   document.getElementById("prout").innerHTML=`<div class="cards">${metric("RECORDS",rows.length,"Matching transactions")}${metric("QUANTITY",total,"Units in selected transactions")}${metric("ISSUED",issued.length,"Issue transactions")}${metric("RECEIVED",received.length,"Receipt transactions")}</div><div class="notice"><b>${esc(type)}</b> &nbsp; ${from||to?`period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${tech?`&nbsp; | &nbsp; Technician: ${esc(tech)}`:""} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Type</th><th>Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Person / Supplier</th><th>Reference</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No parts transactions match the selected filters.</div>`}`;
  }
@@ -6278,12 +6599,15 @@ async function refreshReportApprovalPreview(kind){
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
  const ss=snapshotOverride?.settings||db.settings;const legacySnapshotSite=snapshotOverride&&ss.department?String(ss.department).split(" · ")[0].trim():"";const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||reportPreparedByName()),siteName=esc(ss.siteName||legacySnapshotSite||reportActiveSiteName()),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
- const rows=data.rows,issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
+ const rows=data.rows,partsUpdates=Array.isArray(data.partsUpdates)?data.partsUpdates:[],issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),updateQty=partsUpdates.reduce((a,x)=>a+num(x[4]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
- const table=isOrders?(rows.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active parts orders match the selected filters.</div>`):(rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`);
- const kpis=isOrders?`${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("TOTAL QUANTITY",total,"Units on order")}${metricReportKpi("SUPPLIERS",new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,"Suppliers")}${metricReportKpi("MACHINES",new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size,"Machines")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
- const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Active Parts Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
- return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>SITE</span><b>${siteName}</b></div></div><div class="r-kpis">${kpis}</div>${summary}<div class="r-section">${isOrders?"ACTIVE PARTS ORDERS":"PARTS TRANSACTIONS"}</div>${table}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
+ const partsUpdateTable=partsUpdates.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>STATUS</th><th>ONSITE DATE</th><th>REMARKS</th><th>IMAGES</th></tr>${partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5]||"")}</b></td><td>${esc(x[6]||"")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td><td>${partsUpdateReportImageLinks(x,true)}</td></tr>`).join("")}</table>`:`<div class="empty">No Parts Updates match the selected filters.</div>`;
+ const orderTable=ordered.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active Parts Orders match the selected filters.</div>`;
+ const transactionTable=rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`;
+ const kpis=isOrders?`${metricReportKpi("PARTS UPDATES",partsUpdates.length,"Replenishment requests")}${metricReportKpi("UPDATE QUANTITY",updateQty,"Units requested")}${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("ORDER QUANTITY",total,"Units on order")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
+ const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Parts Updates & Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
+ const content=isOrders?`<div class="r-section">PARTS UPDATES <small>${partsUpdates.length} update(s)</small></div>${partsUpdateTable}<div class="r-section">PARTS ORDERS <small>${ordered.length} order(s)</small></div>${orderTable}`:`<div class="r-section">PARTS TRANSACTIONS</div>${transactionTable}`;
+ return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>SITE</span><b>${siteName}</b></div></div><div class="r-kpis">${kpis}</div>${summary}${content}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
 }
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 async function openPartsReportPreview(){
@@ -6302,11 +6626,12 @@ function maintenanceReportsPage(){const today=new Date().toISOString().slice(0,1
 function toggleMaintenanceCustomDates(){const custom=document.getElementById("mr_type")?.value==="CUSTOM DATE";const single=document.getElementById("mr_single_date_field"),from=document.getElementById("mr_from_field"),to=document.getElementById("mr_to_field");if(single)single.style.display=custom?"none":"";if(from)from.style.display=custom?"":"none";if(to)to.style.display=custom?"":"none"}
 function reportPartsUpdateTable(rows){
  if(!rows.length)return `<div class="empty">No parts updates for this reporting period.</div>`;
- return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td></tr>`).join("")}</table></div>`;
+ return `<div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th><th>Images</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td>${esc(x[5])}</td><td>${esc(x[6])}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10])}</td><td>${partsUpdateReportImageLinks(x,false)}</td></tr>`).join("")}</table></div>`;
 }
-function runMaintenanceReport(){
+async function runMaintenanceReport(){
  if(!canGenerateReports())return toast("You do not have permission to generate reports.");const type=document.getElementById("mr_type").value,date=document.getElementById("mr_date")?.value||new Date().toISOString().slice(0,10);let start,end;if(type==="CUSTOM DATE"){const from=document.getElementById("mr_from")?.value,to=document.getElementById("mr_to")?.value;if(!from||!to)return alert("Please select both From Date and To Date.");start=new Date(from+"T00:00:00");end=new Date(to+"T00:00:00");if(start>end)return alert("From Date cannot be later than To Date.")}else{const d=new Date(date+"T00:00:00");start=new Date(d);end=new Date(d);if(type==="WEEKLY"){const day=(d.getDay()+6)%7;start.setDate(d.getDate()-day);end=new Date(start);end.setDate(start.getDate()+6)}if(type==="MONTHLY"){start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0)}}let rows=viewMaintenanceRows().filter(x=>{const z=new Date(x[1]);return z>=start&&z<=new Date(end.getTime()+86399999)});
  const partsUpdates=viewUpdateRows().filter(x=>dateIn(x[0],start.toISOString().slice(0,10),end.toISOString().slice(0,10)));
+ await hydratePartsUpdateReportImages(partsUpdates);
  const reportLabel=type==="CUSTOM DATE"?`Custom Date - ${fmtDate(start)} to ${fmtDate(end)}`:type==="WEEKLY"?`Weekly - Week ${getISOWeek_(start)}`:type==="MONTHLY"?`Monthly - ${start.toLocaleDateString("en-GB",{month:"long",year:"numeric"})}`:`Daily - ${fmtDate(start)}`;
  const reportPeriod=`${fmtDate(start)} - ${fmtDate(end)}`;
  window.__maintenanceReportParts=partsUpdates;
@@ -7966,9 +8291,39 @@ async function resolveReportLogoUrl(settings){
  if(iyCompany){const folder=String(iyCompany.id);for(const path of [`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]){const fresh=await assetSignedUrlOrEmpty(path);if(fresh)return `${fresh}&v=${Date.now()}`;}}
  return raw;
 }
+let iyMaintenanceReportImageUrls={};
+async function hydrateMaintenanceReportImages(rows){
+ const list=Array.isArray(rows)?rows:[];
+ if(!list.length||!iyCompany)return;
+ await Promise.all(list.map(async row=>{
+   const recordId=String(row?.[14]||"").trim();
+   if(!recordId)return;
+   iyMaintenanceReportImageUrls[recordId]=iyMaintenanceReportImageUrls[recordId]||{};
+   await Promise.all([1,2].map(async slot=>{
+     if(Object.prototype.hasOwnProperty.call(iyMaintenanceReportImageUrls[recordId],slot))return;
+     const path=maintenanceImagePath(recordId,slot);
+     if(!path){iyMaintenanceReportImageUrls[recordId][slot]="";return;}
+     try{
+       const signed=await signedStorageUrl(IY_MAINTENANCE_IMAGES_BUCKET,path,3600);
+       iyMaintenanceReportImageUrls[recordId][slot]=signed?`${signed}&v=${Date.now()}`:"";
+     }catch(e){iyMaintenanceReportImageUrls[recordId][slot]="";}
+   }));
+ }));
+}
+function maintenanceReportImageLinks(row){
+ const recordId=String(row?.[14]||"").trim();
+ const urls=recordId?iyMaintenanceReportImageUrls?.[recordId]||{}:{};
+ const images=[1,2].map(slot=>({slot,url:urls?.[slot]||""})).filter(x=>x.url);
+ if(!images.length)return `<span class="r-maint-image-none">—</span>`;
+ return `<div class="r-maint-image-links">${images.map(x=>`<a class="r-maint-image-link" href="${esc(x.url)}" download="maintenance-${recordId}-image-${x.slot}.jpg" title="Download image ${x.slot}">IMG ${x.slot} ↓</a>`).join("")}</div>`;
+}
+
 async function prepareReportSnapshotForPreview(snapshot){
  const base=snapshot&&typeof snapshot==="object"?snapshot:{};const settings={...(base.settings||db.settings||{})};
- settings.logoData=await resolveReportLogoUrl(settings);return {...base,settings};
+ settings.logoData=await resolveReportLogoUrl(settings);
+ if(Array.isArray(base?.data?.rows))await hydrateMaintenanceReportImages(base.data.rows);
+ if(Array.isArray(base?.data?.partsUpdates))await hydratePartsUpdateReportImages(base.data.partsUpdates);
+ return {...base,settings};
 }
 async function loadProfileAvatar(){
  if(!iyAuthUser?.id)return "";
@@ -9070,19 +9425,19 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 
  const maintenance=`<table class="r-report-table r-maint-report-table"><colgroup>
-   <col style="width:9%"><col style="width:8%"><col style="width:10%"><col style="width:9%"><col style="width:6%"><col style="width:11%"><col style="width:9%"><col style="width:10%"><col style="width:14%"><col style="width:14%">
+   <col style="width:8%"><col style="width:7%"><col style="width:9%"><col style="width:8%"><col style="width:5%"><col style="width:10%"><col style="width:8%"><col style="width:9%"><col style="width:13%"><col style="width:18%"><col style="width:5%">
  </colgroup><thead><tr>
-   <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th>
+   <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Images</th>
  </tr></thead><tbody>
- ${rows.length?rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"—"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td>${esc(x[8]||"—")}</td><td>${esc(x[9]||"—")}</td></tr>`).join(""):`<tr><td colspan="10" class="r-empty-cell">No maintenance activities for this period.</td></tr>`}
+ ${rows.length?rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"—"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td>${esc(x[8]||"—")}</td><td>${esc(x[9]||"—")}</td><td>${String(x[11]||"").trim()?maintenanceReportImageLinks(x):`<span class="r-maint-image-none">—</span>`}</td></tr>`).join(""):`<tr><td colspan="11" class="r-empty-cell">No maintenance activities for this period.</td></tr>`}
  </tbody></table>`;
 
  const parts=`<table class="r-report-table r-parts-report-table"><colgroup>
-   <col style="width:8%"><col style="width:9%"><col style="width:10%"><col style="width:9%"><col style="width:5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:17%">
+   <col style="width:7%"><col style="width:8%"><col style="width:10%"><col style="width:9%"><col style="width:5%"><col style="width:8%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:14%"><col style="width:5%">
  </colgroup><thead><tr>
-   <th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th>
+   <th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th><th>Images</th>
  </tr></thead><tbody>
- ${partsUpdates.length?partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]||"—"}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"—")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"—")}</td></tr>`).join(""):`<tr><td colspan="11" class="r-empty-cell">No parts updates for this reporting period.</td></tr>`}
+ ${partsUpdates.length?partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]||"—"}</td><td>${esc(x[5]||"—")}</td><td>${esc(x[6]||"—")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"—")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"—")}</td><td>${partsUpdateReportImageLinks(x,true)}</td></tr>`).join(""):`<tr><td colspan="12" class="r-empty-cell">No parts updates for this reporting period.</td></tr>`}
  </tbody></table>`;
 
  const signatures=buildReportApprovalSignatureHTML("maintenance", prepared);
