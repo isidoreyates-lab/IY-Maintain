@@ -1331,7 +1331,7 @@ button,input,select,textarea{font-family:inherit}
 .maintenance-log-page .page-hero-v23{background:linear-gradient(120deg,#073f57 0%,#087c96 52%,#0b9ab3 100%)}
 .maintenance-log-hero-btn{font-family:"Google Sans Text","Google Sans",Arial,sans-serif;font-weight:700;letter-spacing:-.01em;display:flex!important;align-items:center;gap:9px}
 .hero-btn-icon{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#075fff;color:#fff;font-size:17px;line-height:1}
-.maintenance-log-filters{display:grid;grid-template-columns:minmax(260px,1.55fr) minmax(150px,1fr) minmax(140px,.9fr) minmax(170px,1fr) minmax(270px,1.45fr) auto;gap:12px;align-items:end;padding:18px;border:1px solid #dfe7ef;border-radius:14px;background:#fff;box-shadow:0 2px 8px rgba(15,43,70,.035)}
+.maintenance-log-filters{display:grid;grid-template-columns:minmax(220px,1.35fr) minmax(150px,.9fr) minmax(150px,.9fr) minmax(140px,.9fr) minmax(170px,1fr) minmax(260px,1.35fr) auto;gap:12px;align-items:end;padding:18px;border:1px solid #dfe7ef;border-radius:14px;background:#fff;box-shadow:0 2px 8px rgba(15,43,70,.035)}
 .ml-filter{min-width:0}.ml-filter label{display:block;margin:0 0 7px 1px;font-size:10px;font-weight:750;letter-spacing:.02em;color:#22364d}.ml-filter .input,.ml-filter .select{width:100%;height:40px;box-sizing:border-box}.ml-search-wrap{position:relative}.ml-search-wrap>span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#7890a7;font-size:16px;z-index:1}.ml-search-wrap .input{padding-left:36px}.ml-date-range{display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:center}.ml-date-range span{font-size:11px;color:#7b8da2}.ml-date-range .input{min-width:0}.ml-reset-btn{height:40px;padding:0 16px;border:1px solid #cfdbe7;border-radius:9px;background:#f7fafd;color:#31506d;font-family:"Google Sans Text","Google Sans",Arial,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}.ml-reset-btn:hover{border-color:#9eb4c9;background:#eef5fb;color:#075fff}.maintenance-records-panel{padding:0;overflow:hidden}.maintenance-records-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px}.maintenance-records-actions{display:flex;align-items:center;gap:9px}.maintenance-records-title{display:flex;align-items:center;gap:12px}.maintenance-records-title h3{margin:0;font-size:17px;letter-spacing:-.02em}.maintenance-records-title p{margin:4px 0 0;font-size:11px;color:#73869b}.maintenance-records-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#eaf4ff;color:#075fff;font-size:18px}.ml-export-btn{height:34px;padding:0 12px;border:1px solid #cfe0f0;border-radius:9px;background:#f7fbff;color:#075fff;font-family:"Google Sans Text","Google Sans",Arial,sans-serif;font-size:11px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}.ml-export-btn:hover{background:#eaf4ff;border-color:#b9d4ee}.maintenance-records-panel .maintenance-log-wrap{border-top:1px solid #e7edf3}.maintenance-log-empty{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:#718399;text-align:center}.maintenance-log-empty-icon{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#eef3f7;color:#8aa0b6;font-size:28px;margin-bottom:10px}.maintenance-log-empty b{font-size:17px;color:#122b45}.maintenance-log-empty span{font-size:13px}.maintenance-empty-btn{margin-top:16px}.maintenance-log-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 16px;font-size:11px;color:#7890a7}.ml-pagination{display:flex;gap:6px}.ml-pagination button{width:34px;height:34px;border:1px solid #dce5ed;background:#fff;border-radius:9px;color:#8192a5;font-weight:700}.ml-pagination button.active{background:#eaf3ff;color:#075fff;border-color:#d4e5ff}.ml-pagination button:disabled{opacity:.65}.maintenance-log-table th{font-size:10px;letter-spacing:.04em;color:#536a82;background:#f5f8fb}.maintenance-log-table td{font-size:11px}.maintenance-log-table tr:hover td{background:#fbfdff}
 @media(max-width:1200px){.maintenance-log-filters{grid-template-columns:1.4fr 1fr 1fr;}.ml-date-filter{grid-column:span 2}.ml-reset-btn{justify-self:start}}
 @media(max-width:760px){.maintenance-log-filters{grid-template-columns:1fr;padding:14px}.ml-date-filter{grid-column:auto}.ml-reset-btn{width:100%}.maintenance-records-head{align-items:flex-start;gap:12px}.maintenance-records-head .v24-pill{margin-top:4px}.maintenance-log-footer{gap:10px;align-items:flex-start;flex-direction:column}.maintenance-log-page .page-hero-v23{padding:18px}.maintenance-log-page .page-hero-v23 .hero-action{width:auto}.maintenance-log-page .page-hero-v23 .hero-btn-v23{width:auto}.ml-date-range{grid-template-columns:1fr}.ml-date-range span{display:none}.maintenance-records-head{flex-wrap:wrap}.maintenance-records-actions{width:100%;justify-content:flex-end}}
@@ -2834,6 +2834,68 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 @media(max-width:760px){.iy-transfer-pending-grid,.iy-transfer-review-grid{grid-template-columns:1fr}.iy-transfer-approval-inbox-card{align-items:flex-start;flex-wrap:wrap}.iy-transfer-approval-inbox-card .btn{margin-left:42px}}
 </style>
 
+
+<style id="iy-reliability-kpi-styles">
+/* IY Maintain — simplified reliability dashboard. Uses the main application palette and typography. */
+.iy-reliability-panel{margin-top:18px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 3px 10px rgba(20,55,95,.035)}
+.iy-rel-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 24px;background:linear-gradient(115deg,#0a2540 0%,#183e62 60%,#075fff 140%);color:#fff}
+.iy-rel-kicker{font-size:9px;letter-spacing:.14em;font-weight:800;color:rgba(255,255,255,.72)}
+.iy-rel-head h3{margin:4px 0 4px;color:#fff;font-size:20px;letter-spacing:-.02em}
+.iy-rel-head p{margin:0;color:#dbe5ef;font-size:11px}
+.iy-rel-scope-label{font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 11px;white-space:nowrap}
+.iy-rel-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
+.iy-rel-filters label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:#60738a;margin-bottom:6px}
+.iy-rel-period-note{padding:0 20px 14px;color:var(--muted);font-size:10px;line-height:1.5;background:#fff}
+.iy-rel-period-note strong{color:#17324c}
+.iy-rel-howto{margin:0 20px 16px;padding:12px 14px;border:1px solid #d7e8f5;border-radius:10px;background:#f0f6fb;color:#47647c;font-size:10px;line-height:1.5}
+.iy-rel-howto b{color:#17324c}
+.iy-rel-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 20px 18px}
+.iy-rel-summary-card{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff}
+.iy-rel-summary-card .label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:#60738a}
+.iy-rel-summary-card .value{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;color:#17324c;margin-top:5px}
+.iy-rel-summary-card .target{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.iy-rel-summary-card .performance{display:block;font-size:12px;font-weight:800;color:var(--blue);margin-top:6px}
+.iy-rel-summary-card .performance.good{color:var(--ok)}
+.iy-rel-summary-card .performance.below{color:#bf6d1f}
+.iy-rel-summary-card .note{display:block;font-size:10px;color:var(--muted);margin-top:5px;line-height:1.45}
+.iy-rel-table-section{padding:0 20px 20px}
+.iy-rel-table-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.iy-rel-table-head h4{margin:0;color:#102d49;font-size:14px}
+.iy-rel-table-head p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.iy-rel-table-note{font-size:9px;color:#6d7e92;text-align:right}
+.iy-rel-simple-table{width:100%;border-collapse:collapse;min-width:920px}
+.iy-rel-simple-table th{padding:9px 10px;background:#f5f8fb;border-bottom:1px solid #dfe7ef;color:#667b90;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.iy-rel-simple-table td{padding:10px;border-bottom:1px solid #edf1f5;color:#304969;font-size:11px;vertical-align:middle}
+.iy-rel-simple-table tr:last-child td{border-bottom:0}
+.iy-rel-simple-table tbody tr:hover td{background:#f8fbfe}
+.iy-rel-machine-id{font-weight:800;color:#075fff}
+.iy-rel-machine-name{font-weight:700;color:#17324c}
+.iy-rel-subtext{display:block;color:var(--muted);font-size:9px;margin-top:2px}
+.iy-rel-status{display:inline-flex;align-items:center;justify-content:center;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap;background:#f1f5f8;color:#5d7285}
+
+.iy-rel-machine-link{border:0;background:none;padding:0;color:#075fff;font:inherit;font-weight:800;cursor:pointer;text-align:left}.iy-rel-machine-link:hover{text-decoration:underline}.iy-rel-comparison-section,.iy-rel-machine-compare{padding:18px 20px 20px;border-top:1px solid var(--line);background:#fff}.iy-rel-section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}.iy-rel-section-title h4{margin:0;color:#102d49;font-size:14px}.iy-rel-section-title p{margin:3px 0 0;color:var(--muted);font-size:10px}.iy-rel-compare-period-selects,.iy-rel-machine-compare-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}.iy-rel-compare-period-selects label,.iy-rel-machine-compare-selects label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:#60738a;margin-bottom:6px}.iy-rel-compare-table-wrap{border:1px solid #dfe7ef;border-radius:10px;overflow:auto}.iy-rel-compare-table{min-width:760px}.iy-rel-period-compare-table{min-width:720px}.iy-rel-period-compare-table td:first-child,.iy-rel-compare-table td:first-child{font-weight:700;color:#17324c}.iy-rel-table-caption{margin:15px 0 8px;font-size:11px;font-weight:800;color:#17324c}.iy-rel-compare-note{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.iy-rel-compare-note .btn{font-size:11px;height:34px}.iy-rel-compare-delta{font-style:normal;font-weight:800}.iy-rel-compare-delta.good{color:var(--ok)}.iy-rel-compare-delta.below{color:#a66508}.iy-rel-compare-delta.neutral{color:#718399}.iy-rel-machine-compare{border-top:1px solid var(--line)}
+@media(max-width:900px){.iy-rel-compare-period-selects,.iy-rel-machine-compare-selects{grid-template-columns:1fr}.iy-rel-comparison-section,.iy-rel-machine-compare{padding-left:14px;padding-right:14px}}
+.iy-rel-status.good{background:#e7f6ee;color:var(--ok)}
+.iy-rel-status.below{background:#fff3df;color:#a66508}
+.iy-rel-status.neutral{background:#e8f2fb;color:#16659c}
+.iy-rel-status.down{background:#fde8e8;color:var(--danger)}
+.iy-rel-empty{padding:26px 14px;text-align:center;color:var(--muted);font-size:11px;border:1px dashed #cfdae4;border-radius:10px}
+@media(max-width:900px){.iy-rel-summary{grid-template-columns:1fr}.iy-rel-head{align-items:flex-start;flex-direction:column}.iy-rel-scope-label{white-space:normal}.iy-rel-table-note{text-align:left}}
+@media(max-width:650px){.iy-rel-filters{grid-template-columns:1fr}.iy-rel-table-section{padding-left:14px;padding-right:14px}.iy-rel-summary{padding-left:14px;padding-right:14px}.iy-rel-period-note{padding-left:14px;padding-right:14px}.iy-rel-howto{margin-left:14px;margin-right:14px}}
+.iy-maint-time-section{border:1px solid #dce6ef;border-radius:11px;background:#fbfdff;padding:12px}.iy-maint-time-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:9px}.iy-maint-time-head label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#173650}.iy-maint-time-head span{display:block;color:#7f91a0;font-size:8px;margin-top:3px;line-height:1.45}.iy-maint-time-head>strong{font-size:8px;color:#075fff;background:#edf5ff;border:1px solid #cfe0f5;border-radius:12px;padding:4px 7px;white-space:nowrap}
+.iy-maint-time-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.iy-maint-time-field label{display:block;font-size:8px;color:#778b9c;margin-bottom:4px}.iy-maint-time-field input[readonly]{background:#eef4f8;color:#173650;font-weight:800}
+.iy-maint-time-targets{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.iy-maint-time-targets span,.iy-maint-time-targets b{font-size:8px}.iy-maint-time-targets span{color:#8192a0}.iy-maint-time-targets b{padding:4px 7px;background:#eef6ff;border:1px solid #d5e5f5;color:#335d81;border-radius:8px}
+.iy-machine-profile-reliability{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15)}.iy-machine-profile-reliability>div{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:8px}.iy-machine-profile-reliability span{display:block;font-size:7px;letter-spacing:.06em;color:rgba(255,255,255,.72)}.iy-machine-profile-reliability strong{display:block;margin-top:3px;font-size:11px;color:#fff}.iy-machine-profile-reliability strong.good{color:#a9f1c8}.iy-machine-profile-reliability strong.below{color:#ffd1a5}
+@media(max-width:900px){.iy-machine-profile-reliability{grid-template-columns:repeat(3,minmax(0,1fr))}.iy-maint-time-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.iy-machine-profile-reliability{grid-template-columns:1fr 1fr}}
+/* Maintenance editor: keep the header/actions visible and make the form body independently scrollable. */
+#modal.maintenance-editor-modal{overflow:hidden!important;display:flex!important;flex-direction:column!important;min-height:0!important;}
+#modal.maintenance-editor-modal>.modalhead{flex:0 0 auto!important;}
+#modal.maintenance-editor-modal>.formgrid{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;padding-right:8px!important;}
+#modal.maintenance-editor-modal>.actions{flex:0 0 auto!important;}
+@media(max-width:720px){#modal.maintenance-editor-modal>.formgrid{padding-right:3px!important;}}
+</style>
+
 </head>
 
 <style>
@@ -2996,7 +3058,7 @@ function norm(v){return String(v??"").trim().toLowerCase()}
 function fmtDate(v){if(!v)return "";let d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString("en-GB")}
 function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",2800)}
 function openModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("modalBack").style.display="flex"}
-function closeModal(){const m=document.getElementById("modal");if(m)m.classList.remove("machine-profile-modal");document.getElementById("modalBack").style.display="none"}
+function closeModal(){const m=document.getElementById("modal");if(m)m.classList.remove("machine-profile-modal","maintenance-editor-modal");document.getElementById("modalBack").style.display="none"}
 function logActivity(action,details=""){
  const u=db.user||{name:"admin"};
  db.activityLog=db.activityLog||[];
@@ -5570,6 +5632,517 @@ async function saveUpdate(index){
  }catch(e){console.error("Parts update save failed",e);alert(e?.message||"Parts update could not be saved to the cloud.")}
 }
 
+
+const IY_RELIABILITY_FAILURE_TYPES = new Set([
+ "breakdown maintenance",
+ "repair",
+ "troubleshooting",
+ "corrective maintenance"
+]);
+
+function isReliabilityFailureJobType(type){
+ return IY_RELIABILITY_FAILURE_TYPES.has(String(type||"").trim().toLowerCase());
+}
+function averageReliability(values){
+ const a=(values||[]).filter(v=>Number.isFinite(Number(v))).map(Number);
+ return a.length?a.reduce((s,v)=>s+v,0)/a.length:null;
+}
+function toDateTimeLocalValue(value){
+ if(!value)return "";
+ const d=new Date(value);
+ if(isNaN(d.getTime()))return "";
+ const pad=n=>String(n).padStart(2,"0");
+ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function dateTimeLocalToISO(value){
+ if(!value)return null;
+ const d=new Date(value);
+ return isNaN(d.getTime())?null:d.toISOString();
+}
+function fmtDateTime(value){
+ if(!value)return "—";
+ const d=new Date(value);
+ if(isNaN(d.getTime()))return String(value);
+ return d.toLocaleString("en-GB",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+}
+function maintenanceDowntimeHours(startValue,endValue){
+ if(!startValue||!endValue)return null;
+ const start=new Date(startValue),end=new Date(endValue);
+ if(isNaN(start)||isNaN(end))return null;
+ const hours=(end.getTime()-start.getTime())/3600000;
+ return hours>=0?hours:null;
+}
+function reliabilityPerformancePercent(kind,actual,target){
+ if(actual===null||actual===undefined||!Number.isFinite(Number(actual))||Number(actual)<=0)return null;
+ if(target===null||target===undefined||!Number.isFinite(Number(target))||Number(target)<=0)return null;
+ return kind==="mtbf"
+   ? (Number(actual)/Number(target))*100
+   : (Number(target)/Number(actual))*100;
+}
+function machineReliabilityStatsForMachine(machine,maintenanceRows){
+ const fleet=String(machine?.[0]||"").trim().toLowerCase();
+ const machineId=String(machine?.[9]||"").trim();
+ const jobs=(maintenanceRows||[])
+   .filter(r=>{
+     const sameId=machineId&&String(r?.[15]||"").trim()===machineId;
+     const sameFleet=fleet&&String(r?.[4]||"").trim().toLowerCase()===fleet;
+     return (sameId||sameFleet)&&isReliabilityFailureJobType(r?.[7]);
+   })
+   .map(r=>({
+     row:r,
+     down:r?.[18]?new Date(r[18]):null,
+     up:r?.[19]?new Date(r[19]):null
+   }))
+   .filter(e=>e.down && !isNaN(e.down.getTime()))
+   .sort((a,b)=>a.down-b.down);
+
+ const mttrSamples=jobs
+   .filter(e=>e.up && !isNaN(e.up.getTime()) && e.up>=e.down)
+   .map(e=>(e.up.getTime()-e.down.getTime())/3600000);
+
+ const mtbfSamples=[];
+ for(let i=1;i<jobs.length;i++){
+   const previous=jobs[i-1],current=jobs[i];
+   if(previous.up && !isNaN(previous.up.getTime()) && previous.up<=current.down){
+     mtbfSamples.push((current.down.getTime()-previous.up.getTime())/3600000);
+   }
+ }
+
+ const mtbfTarget=Number(machine?.[16])>0?Number(machine[16]):null;
+ const mttrTarget=Number(machine?.[17])>0?Number(machine[17]):null;
+ const actualMTBF=averageReliability(mtbfSamples);
+ const actualMTTR=averageReliability(mttrSamples);
+
+ return {
+   machine,
+   fleetId:String(machine?.[0]||""),
+   machineId:String(machine?.[9]||""),
+   mtbfTarget,
+   mttrTarget,
+   actualMTBF,
+   actualMTTR,
+   mtbfPercent:reliabilityPerformancePercent("mtbf",actualMTBF,mtbfTarget),
+   mttrPercent:actualMTTR!==null
+     ? reliabilityPerformancePercent("mttr",actualMTTR,mttrTarget)
+     : (jobs.length===0&&mttrTarget!==null?100:null),
+   failureCount:jobs.length,
+   mtbfSamples,
+   mttrSamples
+ };
+}
+function reliabilityMaintenanceDate(value){
+ if(!value)return null;
+ const d=new Date(value);
+ if(!isNaN(d.getTime()))return d;
+ const s=String(value).trim();
+ const m=s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+ if(!m)return null;
+ const d2=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]||0),Number(m[5]||0),Number(m[6]||0));
+ return isNaN(d2.getTime())?null:d2;
+}
+function reliabilityMaintenanceMachineMatches(row,machine){
+ const machineId=String(machine?.[9]||'').trim();
+ const fleet=String(machine?.[0]||'').trim().toLowerCase();
+ const sameId=machineId&&String(row?.[15]||'').trim()===machineId;
+ const sameFleet=fleet&&String(row?.[4]||'').trim().toLowerCase()===fleet;
+ return !!(sameId||sameFleet);
+}
+function reliabilityObservedMeterHours(machine,rows,period){
+ const readings=(rows||[])
+  .filter(r=>reliabilityMaintenanceMachineMatches(r,machine))
+  .map(r=>({date:reliabilityMaintenanceDate(r?.[1]),hours:Number(r?.[5])}))
+  .filter(x=>x.date&&!isNaN(x.date.getTime())&&Number.isFinite(x.hours))
+  .sort((a,b)=>a.date-b.date);
+ if(!readings.length)return null;
+ const baseline=readings.filter(x=>x.date<period.start).slice(-1)[0]||null;
+ const inPeriod=readings.filter(x=>x.date>=period.start&&x.date<=period.end);
+ if(!inPeriod.length)return null;
+ const latest=inPeriod[inPeriod.length-1];
+ if(baseline && latest.hours>=baseline.hours)return Math.max(0,latest.hours-baseline.hours);
+ if(!baseline && inPeriod.length>=2 && latest.hours>=inPeriod[0].hours)return Math.max(0,latest.hours-inPeriod[0].hours);
+ return null;
+}
+function machineReliabilityStatsForPeriod(machine,maintenanceRows,periodKey){
+ const period=reliabilityPeriodMeta(periodKey);
+ const allJobs=(maintenanceRows||[])
+  .filter(r=>reliabilityMaintenanceMachineMatches(r,machine)&&isReliabilityFailureJobType(r?.[7]))
+  .map(r=>({
+   row:r,
+   down:r?.[18]?reliabilityMaintenanceDate(r[18]):null,
+   up:r?.[19]?reliabilityMaintenanceDate(r[19]):null
+  }))
+  .filter(e=>e.down&&!isNaN(e.down.getTime())&&e.down<=period.end)
+  .sort((a,b)=>a.down-b.down);
+
+ const periodFailures=allJobs.filter(e=>e.down>=period.start&&e.down<=period.end);
+
+ const mttrSamples=periodFailures
+  .filter(e=>e.up&&!isNaN(e.up.getTime())&&e.up>=e.down)
+  .map(e=>(e.up.getTime()-e.down.getTime())/3600000);
+
+ const mtbfSamples=[];
+ for(let i=1;i<allJobs.length;i++){
+  const previous=allJobs[i-1],current=allJobs[i];
+  if(
+    current.down>=period.start &&
+    current.down<=period.end &&
+    previous.up &&
+    !isNaN(previous.up.getTime()) &&
+    previous.up<=current.down
+  ){
+   mtbfSamples.push((current.down.getTime()-previous.up.getTime())/3600000);
+  }
+ }
+
+ const mtbfTarget=Number(machine?.[16])>0?Number(machine[16]):null;
+ const mttrTarget=Number(machine?.[17])>0?Number(machine[17]):null;
+
+ // Reliability KPIs are failure-based only:
+ // - MTBF is recorded only when there are at least two qualifying failures
+ //   with a valid Return to Service -> next Down At interval.
+ // - MTTR is recorded only when a qualifying failure has a valid Return to Service.
+ // - A machine with no failures has 0.0 h MTTR and a 100% no-failure benchmark.
+ const actualMTBF=averageReliability(mtbfSamples);
+ const actualMTTR=averageReliability(mttrSamples);
+ const mtbfPercent=reliabilityPerformancePercent('mtbf',actualMTBF,mtbfTarget);
+ const mttrPercent=actualMTTR!==null
+   ? reliabilityPerformancePercent('mttr',actualMTTR,mttrTarget)
+   : (periodFailures.length===0&&mttrTarget!==null?100:null);
+
+ return {
+  machine,
+  fleetId:String(machine?.[0]||''),
+  machineId:String(machine?.[9]||''),
+  mtbfTarget,
+  mttrTarget,
+  actualMTBF,
+  actualMTTR,
+  mtbfPercent,
+  mttrPercent,
+  failureCount:periodFailures.length,
+  completedFailureCount:mttrSamples.length,
+  mtbfSamples,
+  mttrSamples,
+  period
+ };
+}
+
+
+function reliabilityCurrentMonthKey(){
+ const now=new Date();
+ return `monthly:${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+}
+
+function reliabilityAvailableYears(){
+ const now=new Date();
+ const years=new Set([now.getFullYear()]);
+ (db.maintenance||[]).forEach(r=>{
+   [r?.[1],r?.[18],r?.[19]].forEach(v=>{
+     const d=reliabilityMaintenanceDate(v);
+     if(d&&!isNaN(d.getTime()))years.add(d.getFullYear());
+   });
+ });
+ return Array.from(years).filter(y=>Number.isInteger(y)&&y>=2000&&y<=2100).sort((a,b)=>b-a);
+}
+
+function reliabilityPeriodOptions(){
+ const now=new Date();
+ const currentYear=now.getFullYear();
+ const currentMonth=now.getMonth();
+ const years=reliabilityAvailableYears();
+ const options=[];
+ years.forEach(year=>{
+   const maxMonth=year===currentYear?currentMonth:11;
+   for(let m=0;m<=maxMonth;m++){
+     const d=new Date(year,m,1);
+     options.push({
+       value:`monthly:${year}-${String(m+1).padStart(2,'0')}`,
+       label:`Monthly — ${d.toLocaleString('en-US',{month:'long',year:'numeric'})}`
+     });
+   }
+   options.push({value:`ytd:${year}`,label:`YTD — Jan to ${year===currentYear?'current date': 'Dec'} (${year})`});
+ });
+ return options;
+}
+
+function reliabilityYearOptions(){
+ return reliabilityAvailableYears();
+}
+
+function reliabilityDefaultComparisonPeriods(){
+ const years=reliabilityAvailableYears();
+ const currentYear=new Date().getFullYear();
+ const previous=years.find(y=>y<currentYear);
+ if(previous)return {a:`ytd:${currentYear}`,b:`ytd:${previous}`};
+ return {a:`ytd:${currentYear}`,b:''};
+}
+
+function reliabilityPeriodMeta(periodKey){
+ const now=new Date();
+ const currentYear=now.getFullYear();
+ const currentMonth=now.getMonth();
+ let key=String(periodKey||'');
+ if(key==='monthly')key=reliabilityCurrentMonthKey();
+ if(key==='ytd')key=`ytd:${currentYear}`;
+ const ytdMatch=key.match(/^ytd:(\d{4})$/);
+ if(ytdMatch){
+   const year=Number(ytdMatch[1]);
+   const safeYear=Number.isInteger(year)&&year>=2000&&year<=2100?year:currentYear;
+   const start=new Date(safeYear,0,1,0,0,0,0);
+   const end=safeYear===currentYear?now:new Date(safeYear,11,31,23,59,59,999);
+   return {key:`ytd:${safeYear}`,start,end,label:`YTD — Jan to ${safeYear===currentYear?'current date':'Dec'} (${safeYear})`,year:safeYear,month:null,type:'ytd'};
+ }
+ const match=key.match(/^monthly:(\d{4})-(\d{2})$/);
+ const year=match?Number(match[1]):currentYear;
+ const month=match?Number(match[2])-1:currentMonth;
+ const validMonth=Number.isInteger(month)&&month>=0&&month<=11;
+ const safeYear=Number.isInteger(year)&&year>=2000&&year<=2100?year:currentYear;
+ const safeMonth=validMonth?month:currentMonth;
+ const start=new Date(safeYear,safeMonth,1,0,0,0,0);
+ const monthEnd=new Date(safeYear,safeMonth+1,0,23,59,59,999);
+ const end=(safeYear===currentYear&&safeMonth===currentMonth)?now:monthEnd;
+ const monthName=start.toLocaleString('en-US',{month:'long'});
+ return {key:`monthly:${safeYear}-${String(safeMonth+1).padStart(2,'0')}`,start,end,label:`Monthly — ${monthName} ${safeYear}`,year:safeYear,month:safeMonth,type:'monthly'};
+}
+
+function setReliabilityDashboardPeriod(periodKey){
+ const valid=new Set(reliabilityPeriodOptions().map(o=>o.value));
+ window.__reliabilityPeriod=valid.has(String(periodKey||''))?String(periodKey):reliabilityCurrentMonthKey();
+ render();
+}
+
+function maintenanceReliabilityScopeDefaults(){
+ const globalSite=dashboardScopeValues()?.siteId||currentSiteId()||'';
+ if(!window.__reliabilitySiteId){
+   window.__reliabilitySiteId=globalSite || iyCompanySites?.[0]?.id || '';
+ }
+ if(typeof window.__reliabilityDepartmentId === 'undefined'){
+   window.__reliabilityDepartmentId='';
+ }
+ if(typeof window.__reliabilityPeriod === 'undefined'){
+   window.__reliabilityPeriod=reliabilityCurrentMonthKey();
+ }
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(window.__reliabilityDepartmentId||''));
+ if(window.__reliabilityDepartmentId && window.__reliabilitySiteId && dept && String(dept.site_id)!==String(window.__reliabilitySiteId)){
+   window.__reliabilityDepartmentId='';
+ }
+ return {
+  siteId:window.__reliabilitySiteId||'',
+  departmentId:window.__reliabilityDepartmentId||'',
+  periodKey:/^ytd:\d{4}$/.test(String(window.__reliabilityPeriod||''))?String(window.__reliabilityPeriod):(/^monthly:\d{4}-\d{2}$/.test(String(window.__reliabilityPeriod||''))?String(window.__reliabilityPeriod):reliabilityCurrentMonthKey())
+ };
+}
+
+function setReliabilityDashboardSite(siteId){
+ window.__reliabilitySiteId=siteId||'';
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(window.__reliabilityDepartmentId||''));
+ if(!dept || String(dept.site_id)!==String(window.__reliabilitySiteId)){
+   window.__reliabilityDepartmentId='';
+ }
+ render();
+}
+function setReliabilityDashboardDepartment(departmentId){
+ window.__reliabilityDepartmentId=departmentId||'';
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(window.__reliabilityDepartmentId||''));
+ if(dept)window.__reliabilitySiteId=String(dept.site_id||window.__reliabilitySiteId||'');
+ render();
+}
+function reliabilityScopeName(siteId,departmentId){
+ const site=iyCompanySites.find(s=>String(s.id)===String(siteId||''));
+ const dept=iyCompanyDepartments.find(d=>String(d.id)===String(departmentId||''));
+ if(site&&dept)return `${site.name} · ${dept.name}`;
+ if(site)return `${site.name} · All Departments`;
+ return 'Select a Site';
+}
+function reliabilityPctText(value){
+ return value===null||value===undefined||!Number.isFinite(Number(value))?'—':`${Number(value).toFixed(1)}%`;
+}
+function reliabilityHoursText(value){
+ return value===null||value===undefined||!Number.isFinite(Number(value))?'—':`${Number(value).toFixed(1)} h`;
+}
+function reliabilityPerformanceClass(value){
+ if(value===null||value===undefined)return '';
+ return Number(value)>=100?'good':'below';
+}
+function reliabilitySimpleStatus(value,mode='normal'){
+ const n=Number(value);
+ if(mode==='no-failure')return '<span class="iy-rel-status good">100% · No failures</span>';
+ if(!Number.isFinite(n))return '<span class="iy-rel-status">—</span>';
+ if(n>=100)return `<span class="iy-rel-status good">${n.toFixed(1)}%</span>`;
+ return `<span class="iy-rel-status below">${n.toFixed(1)}%</span>`;
+}
+function reliabilityValueText(value,prefix=''){
+ return value===null||value===undefined||!Number.isFinite(Number(value))?'—':`${prefix}${Number(value).toFixed(1)} h`;
+}
+function reliabilityTargetText(value){
+ return value===null||value===undefined||!Number.isFinite(Number(value))?'Not set':`${Number(value).toFixed(1)} h`;
+}
+function reliabilityNoFailureMTBFText(stat){
+ if(stat.failureCount===0)return 'No failure recorded';
+ return stat.actualMTBF===null?'Waiting for next failure':reliabilityValueText(stat.actualMTBF);
+}
+function reliabilityMachineTableRow(stat){
+ const fleet=stat.fleetId||'—';
+ const name=stat.machine?.[2]||stat.machine?.[1]||'Machine';
+ const model=stat.machine?.[1]||'—';
+ const failureLabel=stat.failureCount===0?'<span class="iy-rel-status good">No failures</span>':`<span class="iy-rel-status neutral">${stat.failureCount}</span>`;
+ const mtbfValue=reliabilityNoFailureMTBFText(stat);
+ const mtbfSub=stat.failureCount===0?'MTBF starts after failure history is recorded':(stat.mtbfPercent===null?'Needs another completed failure interval':'Measured failure interval');
+ const mttrValue=stat.failureCount===0?'0.0 h':(stat.actualMTTR!==null?reliabilityValueText(stat.actualMTTR):'Still down');
+ const mttrSub=stat.failureCount===0?'No failure · no repair required':(stat.actualMTTR!==null?'Completed failure repair':'Return to Service not recorded');
+ return `<tr>
+  <td><button type="button" class="iy-rel-machine-link" onclick="openReliabilityMachineHistory('${esc(stat.machineId)}')" title="Open failure history for ${esc(fleet)}">${esc(fleet)}</button><span class="iy-rel-subtext">${esc(name)}</span></td>
+  <td><span class="iy-rel-machine-name">${esc(model)}</span></td>
+  <td>${failureLabel}</td>
+  <td><strong>${esc(mtbfValue)}</strong><span class="iy-rel-subtext">${esc(mtbfSub)}</span></td>
+  <td>${esc(reliabilityTargetText(stat.mtbfTarget))}</td>
+  <td>${stat.mtbfPercent===null?'<span class="iy-rel-status">—</span>':reliabilitySimpleStatus(stat.mtbfPercent)}</td>
+  <td><strong>${esc(mttrValue)}</strong><span class="iy-rel-subtext">${esc(mttrSub)}</span></td>
+  <td>${esc(reliabilityTargetText(stat.mttrTarget))}</td>
+  <td>${stat.failureCount===0?reliabilitySimpleStatus(100,'no-failure'):stat.mttrPercent===null?'<span class="iy-rel-status">—</span>':reliabilitySimpleStatus(stat.mttrPercent)}</td>
+ </tr>`;
+}
+function reliabilityComparisonMetric(stats,kind){
+ const eligible=stats.filter(s=>kind==='mtbf'?s.actualMTBF!==null&&s.mtbfTarget!==null:s.actualMTTR!==null&&s.mttrTarget!==null);
+ const actual=averageReliability(eligible.map(s=>kind==='mtbf'?s.actualMTBF:s.actualMTTR));
+ const target=averageReliability(eligible.map(s=>kind==='mtbf'?s.mtbfTarget:s.mttrTarget));
+ const percent=reliabilityPerformancePercent(kind,actual,target);
+ return {actual,target,percent,count:eligible.length,lowerBound:kind==='mtbf'&&eligible.some(s=>s.mtbfIsLowerBound)};
+}
+function reliabilityComparisonPeriodSummary(periodKey,machines,maintenanceRows){
+ if(!periodKey)return null;
+ const stats=(machines||[]).map(m=>machineReliabilityStatsForPeriod(m,maintenanceRows,periodKey));
+ const mtbf=reliabilityComparisonMetric(stats,'mtbf');
+ const mttr=reliabilityComparisonMetric(stats,'mttr');
+ const failures=stats.reduce((sum,s)=>sum+s.failureCount,0);
+ const noFailures=stats.filter(s=>s.failureCount===0).length;
+ return {period:reliabilityPeriodMeta(periodKey),stats,mtbf,mttr,failures,noFailures,machines:stats.length};
+}
+function reliabilityComparePeriodSelect(id,value){
+ return `<select id="${id}" class="select" onchange="setReliabilityComparisonPeriod('${id.endsWith('A')||id==='relCompareA'?'a':'b'}',this.value)"><option value="">Select period</option>${reliabilityPeriodOptions().map(o=>`<option value="${esc(o.value)}" ${o.value===value?'selected':''}>${esc(o.label)}</option>`).join('')}</select>`;
+}
+function reliabilityComparisonDelta(kind,a,b){
+ if(!a||!b||a.actual===null||b.actual===null)return '<span class="iy-rel-compare-delta neutral">—</span>';
+ const delta=Number(b.actual)-Number(a.actual);
+ const label=`${delta>0?'+':''}${delta.toFixed(1)} h`;
+ const better=kind==='mtbf'?delta>0:delta<0;
+ return `<span class="iy-rel-compare-delta ${better?'good':'below'}">${esc(label)}</span>`;
+}
+function reliabilityMachineCompareBlock(machines,maintenanceRows,periodKey){
+ if(!machines.length)return '';
+ let aId=String(window.__reliabilityMachineA||'');
+ let bId=String(window.__reliabilityMachineB||'');
+ const ids=new Set(machines.map(m=>String(m?.[9]||'')));
+ if(!ids.has(aId))aId=String(machines[0]?.[9]||'');
+ if(!ids.has(bId)||bId===aId)bId=String(machines.find(m=>String(m?.[9]||'')!==aId)?.[9]||aId);
+ window.__reliabilityMachineA=aId;window.__reliabilityMachineB=bId;
+ const ma=machines.find(m=>String(m?.[9]||'')===aId)||machines[0];
+ const mb=machines.find(m=>String(m?.[9]||'')===bId)||machines[1]||machines[0];
+ const sa=machineReliabilityStatsForPeriod(ma,maintenanceRows,periodKey);
+ const sb=machineReliabilityStatsForPeriod(mb,maintenanceRows,periodKey);
+ const machineOptions=(selected)=>machines.map(m=>`<option value="${esc(m?.[9]||'')}" ${String(m?.[9]||'')===String(selected)?'selected':''}>${esc(m?.[0]||m?.[1]||'Machine')} — ${esc(m?.[1]||'')}</option>`).join('');
+ const mtbfText=s=>s.failureCount===0?(s.mtbfIsLowerBound&&s.actualMTBF!==null?`+ ${reliabilityHoursText(s.actualMTBF)}`:'No failure'):(s.actualMTBF===null?'—':reliabilityHoursText(s.actualMTBF));
+ const mttrText=s=>s.failureCount===0?'No failure':(s.actualMTTR===null?'Still down':reliabilityHoursText(s.actualMTTR));
+ const scoreText=(s,kind)=>s.failureCount===0&&kind==='mttr'?'100% · No failures':(kind==='mtbf'?reliabilityPctText(s.mtbfPercent):reliabilityPctText(s.mttrPercent));
+ return `<div class="iy-rel-machine-compare">
+   <div class="iy-rel-section-title"><div><h4>Compare Machine to Machine</h4><p>Compare two machines using the selected site, department and period.</p></div></div>
+   <div class="iy-rel-machine-compare-selects"><div><label>Machine A</label><select class="select" onchange="setReliabilityMachineCompare('a',this.value)">${machineOptions(aId)}</select></div><div><label>Machine B</label><select class="select" onchange="setReliabilityMachineCompare('b',this.value)">${machineOptions(bId)}</select></div></div>
+   <div class="tablewrap iy-rel-compare-table-wrap"><table class="iy-rel-simple-table iy-rel-compare-table"><thead><tr><th>Measure</th><th>${esc(ma?.[0]||'Machine A')}</th><th>${esc(mb?.[0]||'Machine B')}</th></tr></thead><tbody>
+    <tr><td>Failure events</td><td>${esc(String(sa.failureCount))}</td><td>${esc(String(sb.failureCount))}</td></tr>
+    <tr><td>MTBF</td><td>${esc(mtbfText(sa))}</td><td>${esc(mtbfText(sb))}</td></tr>
+    <tr><td>MTBF target</td><td>${esc(reliabilityTargetText(sa.mtbfTarget))}</td><td>${esc(reliabilityTargetText(sb.mtbfTarget))}</td></tr>
+    <tr><td>MTBF score</td><td>${esc(reliabilityPctText(sa.mtbfPercent))}</td><td>${esc(reliabilityPctText(sb.mtbfPercent))}</td></tr>
+    <tr><td>MTTR</td><td>${esc(mttrText(sa))}</td><td>${esc(mttrText(sb))}</td></tr>
+    <tr><td>MTTR target</td><td>${esc(reliabilityTargetText(sa.mttrTarget))}</td><td>${esc(reliabilityTargetText(sb.mttrTarget))}</td></tr>
+    <tr><td>MTTR score</td><td>${esc(scoreText(sa,'mttr'))}</td><td>${esc(scoreText(sb,'mttr'))}</td></tr>
+   </tbody></table></div>
+   <div class="iy-rel-compare-note"><button type="button" class="btn secondary" onclick="openReliabilityMachineHistory('${esc(sa.machineId)}')">Open ${esc(sa.fleetId)} failure history</button><button type="button" class="btn secondary" onclick="openReliabilityMachineHistory('${esc(sb.machineId)}')">Open ${esc(sb.fleetId)} failure history</button></div>
+ </div>`;
+}
+function reliabilityYearComparisonBlock(machines,maintenanceRows){
+ const defaults=reliabilityDefaultComparisonPeriods();
+ if(typeof window.__reliabilityCompareA==='undefined')window.__reliabilityCompareA=defaults.a;
+ if(typeof window.__reliabilityCompareB==='undefined')window.__reliabilityCompareB=defaults.b;
+ const a=reliabilityComparisonPeriodSummary(window.__reliabilityCompareA,machines,maintenanceRows);
+ const b=reliabilityComparisonPeriodSummary(window.__reliabilityCompareB,machines,maintenanceRows);
+ const valueFor=(summary,kind)=>summary?(kind==='mtbf'?(summary.mtbf.actual===null?'—':(summary.mtbf.lowerBound?`≥ ${reliabilityHoursText(summary.mtbf.actual)}`:reliabilityHoursText(summary.mtbf.actual))):(summary.mttr.actual===null?'—':reliabilityHoursText(summary.mttr.actual))):'—';
+ const scoreFor=(summary,kind)=>summary?(kind==='mtbf'?reliabilityPctText(summary.mtbf.percent):reliabilityPctText(summary.mttr.percent)):'—';
+ return `<div class="iy-rel-comparison-section">
+   <div class="iy-rel-section-title"><div><h4>Compare Periods</h4><p>Compare any two months or YTD periods for the same site and department.</p></div></div>
+   <div class="iy-rel-compare-period-selects"><div><label>Period A</label>${reliabilityComparePeriodSelect('relCompareA',window.__reliabilityCompareA||'')}</div><div><label>Period B</label>${reliabilityComparePeriodSelect('relCompareB',window.__reliabilityCompareB||'')}</div></div>
+   ${a&&b?`<div class="tablewrap iy-rel-compare-table-wrap"><table class="iy-rel-simple-table iy-rel-period-compare-table"><thead><tr><th>Measure</th><th>${esc(a.period.label)}</th><th>${esc(b.period.label)}</th><th>Change (B − A)</th></tr></thead><tbody>
+    <tr><td>MTBF</td><td>${esc(valueFor(a,'mtbf'))}</td><td>${esc(valueFor(b,'mtbf'))}</td><td>${esc(a.mtbf.actual!==null&&b.mtbf.actual!==null?`${b.mtbf.actual-a.mtbf.actual>=0?'+':''}${(b.mtbf.actual-a.mtbf.actual).toFixed(1)} h`:'—')}</td></tr>
+    <tr><td>MTBF score</td><td>${esc(scoreFor(a,'mtbf'))}</td><td>${esc(scoreFor(b,'mtbf'))}</td><td>${esc(a.mtbf.percent!==null&&b.mtbf.percent!==null?`${b.mtbf.percent-a.mtbf.percent>=0?'+':''}${(b.mtbf.percent-a.mtbf.percent).toFixed(1)} pts`:'—')}</td></tr>
+    <tr><td>MTTR</td><td>${esc(valueFor(a,'mttr'))}</td><td>${esc(valueFor(b,'mttr'))}</td><td>${esc(a.mttr.actual!==null&&b.mttr.actual!==null?`${b.mttr.actual-a.mttr.actual>=0?'+':''}${(b.mttr.actual-a.mttr.actual).toFixed(1)} h`:'—')}</td></tr>
+    <tr><td>MTTR score</td><td>${esc(scoreFor(a,'mttr'))}</td><td>${esc(scoreFor(b,'mttr'))}</td><td>${esc(a.mttr.percent!==null&&b.mttr.percent!==null?`${b.mttr.percent-a.mttr.percent>=0?'+':''}${(b.mttr.percent-a.mttr.percent).toFixed(1)} pts`:'—')}</td></tr>
+    <tr><td>Failure events</td><td>${esc(String(a.failures))}</td><td>${esc(String(b.failures))}</td><td>${esc(`${b.failures-a.failures>=0?'+':''}${b.failures-a.failures}`)}</td></tr>
+    <tr><td>Machines with no failures</td><td>${esc(String(a.noFailures))}</td><td>${esc(String(b.noFailures))}</td><td>${esc(`${b.noFailures-a.noFailures>=0?'+':''}${b.noFailures-a.noFailures}`)}</td></tr>
+   </tbody></table></div>
+   <div class="iy-rel-table-caption">Machine-by-machine period comparison</div>
+   <div class="tablewrap iy-rel-compare-table-wrap"><table class="iy-rel-simple-table iy-rel-compare-table"><thead><tr><th>Machine</th><th>${esc(a.period.label)} MTBF</th><th>${esc(b.period.label)} MTBF</th><th>${esc(a.period.label)} MTTR</th><th>${esc(b.period.label)} MTTR</th><th>Failures A</th><th>Failures B</th></tr></thead><tbody>${machines.map(m=>{
+      const sa=a.stats.find(x=>x.machineId===String(m?.[9]||''));
+      const sb=b.stats.find(x=>x.machineId===String(m?.[9]||''));
+      const mtbfv=s=>s?.failureCount===0?(s?.mtbfIsLowerBound&&s.actualMTBF!==null?`+ ${reliabilityHoursText(s.actualMTBF)}`:'No failure'):(s?.actualMTBF===null?'—':reliabilityHoursText(s.actualMTBF));
+      const mttrv=s=>s?.failureCount===0?'No failure':(s?.actualMTTR===null?'Still down':reliabilityHoursText(s.actualMTTR));
+      return `<tr><td><button type="button" class="iy-rel-machine-link" onclick="openReliabilityMachineHistory('${esc(m?.[9]||'')}')">${esc(m?.[0]||m?.[1]||'Machine')}</button><span class="iy-rel-subtext">${esc(m?.[1]||'')}</span></td><td>${esc(mtbfv(sa))}</td><td>${esc(mtbfv(sb))}</td><td>${esc(mttrv(sa))}</td><td>${esc(mttrv(sb))}</td><td>${esc(String(sa?.failureCount??0))}</td><td>${esc(String(sb?.failureCount??0))}</td></tr>`;
+   }).join('')}</tbody></table></div>`:'<div class="iy-rel-empty">Select two periods to compare them.</div>'}
+ </div>`;
+}
+function maintenanceReliabilityDashboard(){
+ const scope=maintenanceReliabilityScopeDefaults();
+ const siteId=scope.siteId,departmentId=scope.departmentId,periodKey=scope.periodKey;
+ const period=reliabilityPeriodMeta(periodKey);
+ const siteOptions=`<option value="">Select Site</option>`+(iyCompanySites||[]).map(s=>`<option value="${esc(s.id)}" ${String(s.id)===String(siteId)?'selected':''}>${esc(s.name)}</option>`).join('');
+ const deptOptions=`<option value="">All Departments</option>`+(iyCompanyDepartments||[]).filter(d=>!siteId||String(d.site_id)===String(siteId)).map(d=>`<option value="${esc(d.id)}" ${String(d.id)===String(departmentId)?'selected':''}>${esc(d.name)}</option>`).join('');
+ const periodOptions=reliabilityPeriodOptions().map(o=>`<option value="${esc(o.value)}" ${o.value===periodKey?'selected':''}>${esc(o.label)}</option>`).join('');
+ if(!siteId){
+   return `<section class="iy-reliability-panel">
+    <div class="iy-rel-head"><div><div class="iy-rel-kicker">RELIABILITY</div><h3>Machine Reliability</h3><p>Select a site to see MTBF and MTTR performance.</p></div></div>
+    <div class="iy-rel-filters"><div><label>Site</label><select class="select" onchange="setReliabilityDashboardSite(this.value)">${siteOptions}</select></div><div><label>Department</label><select class="select" disabled><option>All Departments</option></select></div><div><label>Period</label><select class="select" onchange="setReliabilityDashboardPeriod(this.value)">${periodOptions}</select></div></div>
+   </section>`;
+ }
+ const machines=(db.machines||[]).filter(m=>{
+  const machineSiteId=String(m?.[11]||'');
+  const machineDepartmentId=String(m?.[12]||'');
+  return machineSiteId===String(siteId) && (!departmentId||machineDepartmentId===String(departmentId));
+ });
+ const maintenanceRows=(db.maintenance||[]).filter(r=>String(r?.[16]||'')===String(siteId) && (!departmentId||String(r?.[17]||'')===String(departmentId)));
+ const stats=machines.map(m=>machineReliabilityStatsForPeriod(m,maintenanceRows,periodKey));
+ if(typeof window.__reliabilityMachineA==='undefined'||!machines.some(m=>String(m?.[9]||'')===String(window.__reliabilityMachineA)))window.__reliabilityMachineA=String(machines[0]?.[9]||'');
+ if(typeof window.__reliabilityMachineB==='undefined'||!machines.some(m=>String(m?.[9]||'')===String(window.__reliabilityMachineB))||String(window.__reliabilityMachineB)===String(window.__reliabilityMachineA))window.__reliabilityMachineB=String(machines.find(m=>String(m?.[9]||'')!==String(window.__reliabilityMachineA))?.[9]||machines[0]?.[9]||'');
+ const mtbfEligible=stats.filter(s=>s.actualMTBF!==null && s.mtbfTarget!==null);
+ const mttrEligible=stats.filter(s=>s.actualMTTR!==null && s.mttrTarget!==null);
+ const meanMTBFTarget=averageReliability(mtbfEligible.map(s=>s.mtbfTarget));
+ const meanMTBFActual=averageReliability(mtbfEligible.map(s=>s.actualMTBF));
+ const meanMTBFPercent=reliabilityPerformancePercent('mtbf',meanMTBFActual,meanMTBFTarget);
+ const meanMTTRTarget=averageReliability(mttrEligible.map(s=>s.mttrTarget));
+ const meanMTTRActual=averageReliability(mttrEligible.map(s=>s.actualMTTR));
+ const meanMTTRPercent=reliabilityPerformancePercent('mttr',meanMTTRActual,meanMTTRTarget);
+ const mttrBenchmarkScores=stats.filter(s=>s.mttrTarget!==null&&s.mttrPercent!==null).map(s=>s.failureCount===0?100:s.mttrPercent);
+ const fleetMTTRBenchmark=averageReliability(mttrBenchmarkScores);
+ const failureEvents=stats.reduce((sum,s)=>sum+s.failureCount,0);
+ const noFailureMachines=stats.filter(s=>s.failureCount===0).length;
+ const fleetMTBFText=meanMTBFActual===null?'No failure interval recorded':reliabilityValueText(meanMTBFActual);
+ const fleetMTBFStatus=meanMTBFPercent===null?'<span class="iy-rel-status">MTBF starts after two qualifying failures</span>':reliabilitySimpleStatus(meanMTBFPercent);
+ const fleetMTTRStatus=fleetMTTRBenchmark===null?(meanMTTRPercent===null?'<span class="iy-rel-status">No completed failure repair</span>':reliabilitySimpleStatus(meanMTTRPercent)):`<span class="iy-rel-status ${Number(fleetMTTRBenchmark)>=100?'good':'below'}">${Number(fleetMTTRBenchmark).toFixed(1)}% fleet score</span>`;
+ const fleetMTTRText=failureEvents===0?'0.0 h':reliabilityValueText(meanMTTRActual);
+ const machineRows=stats.length?stats.map(reliabilityMachineTableRow).join(''):'';
+ return `<section class="iy-reliability-panel">
+  <div class="iy-rel-head"><div><div class="iy-rel-kicker">RELIABILITY</div><h3>Machine Reliability</h3><p>See MTBF and MTTR for the selected period.</p></div><div class="iy-rel-scope-label">${esc(reliabilityScopeName(siteId,departmentId))}</div></div>
+  <div class="iy-rel-filters"><div><label>Site</label><select class="select" onchange="setReliabilityDashboardSite(this.value)">${siteOptions}</select></div><div><label>Department</label><select class="select" onchange="setReliabilityDashboardDepartment(this.value)">${deptOptions}</select></div><div><label>Period</label><select class="select" onchange="setReliabilityDashboardPeriod(this.value)">${periodOptions}</select></div></div>
+  <div class="iy-rel-summary">
+   <div class="iy-rel-summary-card"><span class="label">MTBF</span><span class="value">${esc(fleetMTBFText)}</span><span class="target">Target: ${esc(reliabilityTargetText(meanMTBFTarget))}</span><span class="performance">${fleetMTBFStatus}</span><span class="note">Higher is better · ${mtbfEligible.length} machine${mtbfEligible.length===1?'':'s'} included</span></div>
+   <div class="iy-rel-summary-card"><span class="label">MTTR</span><span class="value">${esc(fleetMTTRText)}</span><span class="target">Target: ${esc(reliabilityTargetText(meanMTTRTarget))}</span><span class="performance">${fleetMTTRStatus}</span><span class="note">Lower is better · ${mttrEligible.length} completed failure repair${mttrEligible.length===1?'':'s'}</span></div>
+   <div class="iy-rel-summary-card"><span class="label">Machines & Failures</span><span class="value">${esc(String(machines.length))}</span><span class="target">${esc(String(failureEvents))} failure event${failureEvents===1?'':'s'}</span><span class="performance good">${esc(String(noFailureMachines))} machine${noFailureMachines===1?' has':'s have'} no failures</span><span class="note">No-failure MTTR benchmark: 100%</span></div>
+  </div>
+  <div class="iy-rel-table-section">
+   <div class="iy-rel-table-head"><div><h4>Machine-by-Machine Performance</h4><p>Click a machine to open its failure history.</p></div><div class="iy-rel-table-note">100% = target · Higher MTBF is better · Lower MTTR is better</div></div>
+   ${stats.length?`<div class="tablewrap"><table class="iy-rel-simple-table"><thead><tr><th>Machine</th><th>Model</th><th>Failures</th><th>MTBF</th><th>MTBF Target</th><th>MTBF %</th><th>MTTR</th><th>MTTR Target</th><th>MTTR %</th></tr></thead><tbody>${machineRows}</tbody></table></div>`:'<div class="iy-rel-empty">No machines are available in the selected Site / Department.</div>'}
+  </div>
+ </section>`;
+}
+
+
 function maintenanceDashboard(){
  const all=viewMaintenanceRows().slice();
  const norm=v=>String(v??"").trim().toLowerCase();
@@ -5617,7 +6190,8 @@ function maintenanceDashboard(){
  ${alertPanel}
  <div class="grid2"><div class="panel"><h3>Service Attention</h3><div class="hint">Machines requiring the closest attention</div><div class="attention-grid"><div class="attention-card danger"><span>OVERDUE</span><b>${overdue.length}</b><small>Service hours reached</small></div><div class="attention-card warn"><span>DUE SOON</span><b>${upcoming.length}</b><small>Within 100 hours</small></div><div class="attention-card ok"><span>ACTIVE MACHINES</span><b>${viewMachineRows().filter(m=>norm(m[7])==="running").length}</b><small>Currently running</small></div></div></div>${upcomingPanel}</div>
  <div class="panel"><h3>Machine Activity & Service Status</h3><div class="hint">Latest maintenance information for each machine</div>${machineTable}</div>
- <div class="panel"><h3>Recent Maintenance Activity</h3><div class="hint">Latest 10 maintenance records</div>${maintenanceTable(recent)}</div></div>`
+ <div class="panel"><h3>Recent Maintenance Activity</h3><div class="hint">Latest 10 maintenance records</div>${maintenanceTable(recent)}</div>
+ ${maintenanceReliabilityDashboard()}</div>`
 }
 function maintenanceTable(rows){if(!rows.length)return empty();return `<div class="tablewrap"><table class="table"><tr><th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td>${esc(x[13])}</td></tr>`).join("")}</table></div>`}
 function maintenanceEntryPage(){return `<div class="panel maintenance-entry-workspace">
@@ -5631,6 +6205,19 @@ function maintenanceModal(){
  if(!canEdit("maintenance"))return alert("You do not have permission to create maintenance records.");
  openMaintenanceModal(null);
 }
+
+function updateMaintenanceReliabilityTargetNote(){
+ const machineEl=document.getElementById("m_machine");
+ const holder=document.getElementById("m_reliability_target_note");
+ if(!holder)return;
+ const machine=viewMachineRows().find(x=>String(x?.[2]||"")===String(machineEl?.value||""));
+ if(!machine){
+   holder.textContent="Select a machine to see its MTBF / MTTR targets.";
+   return;
+ }
+ holder.innerHTML=`<span>Machine targets:</span><b>MTBF ${esc(reliabilityHoursText(num(machine[16])>0?num(machine[16]):null))}</b><b>MTTR ${esc(reliabilityHoursText(num(machine[17])>0?num(machine[17]):null))}</b>`;
+}
+
 function populateMachineDetails(){
   const machineEl=document.getElementById("m_machine");
   const serialEl=document.getElementById("m_serial");
@@ -5639,6 +6226,7 @@ function populateMachineDetails(){
   const machine=db.machines.find(x=>String(x[2]).trim()===String(machineEl.value).trim());
   serialEl.value=machine?String(machine[3]??""):"";
   fleetEl.value=machine?String(machine[0]??""):"";
+  updateMaintenanceReliabilityTargetNote();
 }
 
 
@@ -5656,6 +6244,8 @@ if(!window.__machineDetailWatcher){
 async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
  const machine=document.getElementById("m_machine").value;
   const mach=viewMachineRows().find(x=>String(x[2])===String(machine));
+ const downAtValue=document.getElementById("m_down_at")?.value||"";
+ const returnAtValue=document.getElementById("m_return_at")?.value||"";
  const row=[
    document.getElementById("m_ref").value.trim(),
    document.getElementById("m_date").value,
@@ -5670,7 +6260,16 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
    document.getElementById("m_status").value,
    document.getElementById("m_parts").value,
    document.getElementById("m_tech").value,
-   document.getElementById("m_rem").value
+   document.getElementById("m_rem").value,
+   null,
+   mach?.[9]||null,
+   mach?.[11]||null,
+   mach?.[12]||null,
+   dateTimeLocalToISO(downAtValue),
+   dateTimeLocalToISO(returnAtValue),
+   maintenanceDowntimeHours(downAtValue,returnAtValue),
+   document.getElementById("m_hours_down")?.value===""?null:num(document.getElementById("m_hours_down")?.value),
+   document.getElementById("m_hours_return")?.value===""?null:num(document.getElementById("m_hours_return")?.value)
  ];
  if(editId){
    const existingIndex=(db.maintenance||[]).findIndex(x=>String(x[14]||"")===String(editId));
@@ -5680,6 +6279,10 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
  if(!row[0])return alert("Service Reference is required.");
  if(!machine||!mach)return alert("Please select a valid machine.");
  if(!row[1])return alert("Job Date is required.");
+ if(row[19] && !row[18])return alert("Return to Service requires an Equipment Down At time.");
+ if(row[18] && row[19] && row[20]===null)return alert("Equipment Down At and Return to Service At must be valid times.");
+ // Machine hour readings are operational readings only. They may be equal when the machine is not started during the repair, and they are optional.
+ if(isReliabilityFailureJobType(row[7])&&!row[18])return alert("Failure / corrective Job Types require an Equipment Down At time so the event can be included in MTTR / MTBF calculations.");
 
  if(iyCloudReady){
    try{
@@ -5699,7 +6302,11 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
    }
  }
  const existingIndex=editId?(db.maintenance||[]).findIndex(x=>String(x[14]||"")===String(editId)):-1;
- if(existingIndex>=0)db.maintenance[existingIndex]=row;else db.maintenance.push(row);
+ if(existingIndex>=0){
+   db.maintenance[existingIndex]=row;
+ }else{
+   db.maintenance.push(row);
+ }
  save();
  closeModal();
  render();
@@ -5708,8 +6315,8 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
 function maintenanceLogTable(rows){
  if(!rows.length)return `<div class="maintenance-log-empty"><div class="maintenance-log-empty-icon">▤</div><b>No maintenance records found</b><span>Create your first maintenance entry to get started.</span><button class="btn primary maintenance-empty-btn" onclick="maintenanceModal()">+ New Maintenance Entry</button></div>`;
  return `<div class="tablewrap maintenance-log-wrap"><table class="table maintenance-log-table"><tr>
- <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Next Service</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th><th>Images</th><th>Action</th>
- </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${x[6]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td>${String(x[11]||"").trim()?maintenanceLogImageLinks(x):`<span class="r-maint-image-none">—</span>`}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
+ <th>Service Ref</th><th>Date</th><th>Machine</th><th>Fleet ID</th><th>Hours</th><th>Next Service</th><th>Maintenance Type</th><th>Status</th><th>Technician(s)</th><th>Down At</th><th>Return to Service</th><th>Downtime</th><th>Fault / Problem</th><th>Work Performed</th><th>Remarks</th><th>Images</th><th>Action</th>
+ </tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[4])}</td><td>${x[5]||"-"}</td><td>${x[6]||"-"}</td><td>${esc(x[7])}</td><td>${esc(x[10])}</td><td>${esc(x[12])}</td><td>${fmtDateTime(x[18])}</td><td>${fmtDateTime(x[19])}</td><td>${x[20]===null||x[20]===undefined?"—":`${Number(x[20]).toFixed(2)} h`}</td><td class="long-cell">${esc(x[8]||"—")}</td><td class="long-cell">${esc(x[9]||"—")}</td><td class="long-cell">${esc(x[13]||"—")}</td><td>${String(x[11]||"").trim()?maintenanceLogImageLinks(x):`<span class="r-maint-image-none">—</span>`}</td><td><button class="btn secondary" type="button" onclick="editMaintenance('${esc(x[14]||"")}')" ${!x[14]||!canEdit("maintenance")?'disabled':''}>Edit</button></td></tr>`).join("")}</table></div>`;
 }
 function maintenanceLogImageLinks(row){
  const recordId=String(row?.[14]||"").trim();
@@ -5849,6 +6456,49 @@ async function removeMaintenanceImages(recordId){
  if(error)throw error;
 }
 
+function maintenanceJobTypeOptions(selected=""){
+ const current=String(selected||"").trim();
+ const groups=[
+   {
+     label:"Failure / Corrective Work",
+     options:["Breakdown Maintenance","Repair","Troubleshooting","Corrective Maintenance"]
+   },
+   {
+     label:"Preventive / Inspection",
+     options:["Preventive Maintenance","Daily Inspection","Weekly Inspection","Quarterly Inspection","Pre Delivery Inspection"]
+   }
+ ];
+ const known=new Set(groups.flatMap(g=>g.options));
+ let html=groups.map(g=>`<optgroup label="${esc(g.label)}">${g.options.map(v=>`<option value="${esc(v)}" ${v===current?"selected":""}>${esc(v)}</option>`).join("")}</optgroup>`).join("");
+ if(current && !known.has(current)){
+   html=`<option value="${esc(current)}" selected>${esc(current)}</option>`+html;
+ }
+ return html;
+}
+
+
+function updateMaintenanceReliabilityHint(){
+ const type=document.getElementById("m_type")?.value||"";
+ const note=document.getElementById("m_reliability_note");
+ if(!note)return;
+ note.innerHTML=isReliabilityFailureJobType(type)
+   ? "<strong>Reliability event:</strong> This job type will be used for MTTR and MTBF calculations when valid downtime/return-to-service times are recorded."
+   : "<strong>Operational downtime:</strong> Downtime and return-to-service are recorded for the log, but this Job Type is excluded from MTTR and MTBF calculations.";
+}
+function updateMaintenanceReliabilityTimes(){
+ const down=document.getElementById("m_down_at")?.value||"";
+ const up=document.getElementById("m_return_at")?.value||"";
+ const downtime=maintenanceDowntimeHours(down,up);
+ const out=document.getElementById("m_downtime_hours");
+ if(out)out.value=downtime===null?"":downtime.toFixed(2);
+ const state=document.getElementById("m_equipment_time_status");
+ if(state){
+   if(down&&!up)state.textContent="Currently Down";
+   else if(down&&up&&downtime!==null)state.textContent="Returned to Service";
+   else state.textContent="Not recorded";
+ }
+ updateMaintenanceReliabilityHint();
+}
 function openMaintenanceModal(existing){
  const row=existing||null;
  const machineModel=String(row?.[2]||"");
@@ -5862,29 +6512,51 @@ function openMaintenanceModal(existing){
  <div class="field"><label>Fleet ID</label><input id="m_fleet" class="input" readonly value="${esc(row?.[4]||"")}"></div>
  <div class="field"><label>Machine Hours</label><input id="m_hours" class="input" type="number" value="${row?.[5]??''}"></div>
  <div class="field"><label>Next Service Hours</label><input id="m_next" class="input" type="number" value="${row?.[6]??''}"></div>
- <div class="field"><label>Job Type</label><input id="m_type" class="input" value="${esc(row?.[7]||'Weekly Inspection')}"></div>
+ <div class="field"><label>Job Type</label><select id="m_type" class="select" onchange="updateMaintenanceReliabilityHint()">${maintenanceJobTypeOptions(row?.[7]||'')}</select></div>
  <div class="field"><label>Job Status</label><select id="m_status" class="select"><option ${String(row?.[10]||'Completed')==='Completed'?'selected':''}>Completed</option><option ${String(row?.[10]||'')==='Ongoing'?'selected':''}>Ongoing</option><option ${String(row?.[10]||'')==='In Progress'?'selected':''}>In Progress</option><option ${String(row?.[10]||'')==='Open'?'selected':''}>Open</option></select></div>
  <div class="field"><label>Technician(s)</label><input id="m_tech" class="input" value="${esc(row?.[12]||"")}"></div>
+ <div class="field full">
+   <div class="iy-maint-time-section">
+    <div class="iy-maint-time-head"><div><label>Equipment Time & Reliability</label><span id="m_reliability_note">Select a Job Type to see how this event is treated for MTTR / MTBF.</span><small class="iy-maint-time-followup">A machine can remain down for days. Save the Equipment Down At time now and complete Returned to Service At later by editing the same entry.</small></div><strong id="m_equipment_time_status">Not recorded</strong></div>
+    <div class="iy-maint-time-grid">
+      <div class="iy-maint-time-field"><label>Equipment Down At</label><input id="m_down_at" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row?.[18]||""))}" onchange="updateMaintenanceReliabilityTimes()"></div>
+      <div class="iy-maint-time-field"><label>Returned to Service At</label><input id="m_return_at" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row?.[19]||""))}" onchange="updateMaintenanceReliabilityTimes()"></div>
+      <div class="iy-maint-time-field"><label>Downtime (hours)</label><input id="m_downtime_hours" class="input" type="number" value="${row?.[20]??""}" readonly></div>
+      <div class="iy-maint-time-field"><label>Machine Hours at Down</label><input id="m_hours_down" class="input" type="number" min="0" step="0.1" value="${row?.[21]??""}"></div>
+      <div class="iy-maint-time-field"><label>Machine Hours at Return</label><input id="m_hours_return" class="input" type="number" min="0" step="0.1" value="${row?.[22]??""}"></div>
+    </div>
+    <div class="iy-maint-time-targets" id="m_reliability_target_note"></div>
+   </div>
+ </div>
  <div class="field full"><label>Parts Required</label><input id="m_parts" class="input" value="${esc(row?.[11]||"")}" oninput="toggleMaintenanceImagesField()"></div>
  <div class="field full" id="m_images_field"><div class="iy-update-images-head"><div><label>Part Images</label><div class="iy-update-images-note">Enter the required part(s) above to enable the 2 image upload slots.</div></div></div><div id="m_imageSlots" class="iy-update-images-grid"></div></div>
  <div class="field full"><label>Fault / Problem</label><textarea id="m_fault" class="textarea">${esc(row?.[8]||"")}</textarea></div>
  <div class="field full"><label>Work Performed</label><textarea id="m_work" class="textarea">${esc(row?.[9]||"")}</textarea></div>
  <div class="field full"><label>Remarks</label><textarea id="m_rem" class="textarea">${esc(row?.[13]||"")}</textarea></div></div>
  <div class="actions"><button class="btn secondary" onclick="discardMaintenanceImages();closeModal()">Cancel</button><button class="btn primary" onclick="saveMaintenance('${esc(String(row?.[14]||''))}')">${row?'Save Changes':'Save Entry'}</button></div>`);
+ const maintenanceEditorModal=document.getElementById("modal");
+ if(maintenanceEditorModal)maintenanceEditorModal.classList.add("maintenance-editor-modal");
  populateMachineDetails();
+ updateMaintenanceReliabilityTimes();
+ updateMaintenanceReliabilityTargetNote();
  toggleMaintenanceImagesField();
  if(row?.[14] && String(row?.[11]||"").trim())loadMaintenanceImages(row[14]);
 }
 
 function maintenanceLogPage(){
  const rows=viewMaintenanceRows();
+ const preset=window.__maintenanceLogPreset||null;
+ delete window.__maintenanceLogPreset;
  const machines=[...new Set(rows.map(x=>String(x[2]||'').trim()).filter(Boolean))].sort();
  const statuses=[...new Set(rows.map(x=>String(x[10]||'').trim()).filter(Boolean))].sort();
  const types=[...new Set(rows.map(x=>String(x[7]||'').trim()).filter(Boolean))].sort();
+ const selectedMachine=preset?.machineModel||'';
+ const selectedRecordType=preset?.failureOnly?'failure':'';
  return `<div class="maintenance-log-page">
    <div class="maintenance-log-filters">
      <div class="ml-filter search-filter"><label>Search</label><div class="ml-search-wrap"><span>⌕</span><input id="mlSearch" class="input" placeholder="Search by machine, problem, work performed..." oninput="renderMaintenanceLog()"></div></div>
-     <div class="ml-filter"><label>Machine</label><select id="mlMachine" class="select" onchange="renderMaintenanceLog()"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
+     <div class="ml-filter"><label>Machine</label><select id="mlMachine" class="select" onchange="renderMaintenanceLog()"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}" ${String(v)===selectedMachine?'selected':''}>${esc(v)}</option>`).join('')}</select></div>
+     <div class="ml-filter"><label>Record Type</label><select id="mlRecordType" class="select" onchange="renderMaintenanceLog()"><option value="">All records</option><option value="failure" ${selectedRecordType==='failure'?'selected':''}>Failure / Corrective</option></select></div>
      <div class="ml-filter"><label>Status</label><select id="mlStatus" class="select" onchange="renderMaintenanceLog()"><option value="">All statuses</option>${statuses.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
      <div class="ml-filter"><label>Maintenance Type</label><select id="mlType" class="select" onchange="renderMaintenanceLog()"><option value="">All types</option>${types.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}</select></div>
      <div class="ml-filter ml-date-filter"><label>Date Range</label><div class="ml-date-range"><input id="mlDateFrom" class="input" type="date" aria-label="Start date" onchange="renderMaintenanceLog()"><span>to</span><input id="mlDateTo" class="input" type="date" aria-label="End date" onchange="renderMaintenanceLog()"></div></div>
@@ -5892,8 +6564,8 @@ function maintenanceLogPage(){
    </div>
    <section class="panel maintenance-records-panel">
      <div class="maintenance-records-head"><div><div class="maintenance-records-title"><span class="maintenance-records-icon">▤</span><div><h3>Maintenance Records</h3><p>Complete history of maintenance work across all machines.</p></div></div></div><div class="maintenance-records-actions"><span id="mlCount" class="v24-pill">${rows.length} RECORDS</span><button class="ml-export-btn" type="button" onclick="exportFilteredMaintenanceLog()"><span>⇩</span> Export PDF</button></div></div>
-     <div id="mlTable">${maintenanceLogTable(rows.slice().reverse())}</div>
-     <div class="maintenance-log-footer"><span id="mlShowing">Showing ${rows.length?1:0} to ${Math.min(rows.length,rows.length)} of ${rows.length} records</span><div class="ml-pagination"><button disabled>‹</button><button class="active">1</button><button disabled>›</button></div></div>
+     <div id="mlTable">${maintenanceLogTable(getFilteredMaintenanceLogRows())}</div>
+     <div class="maintenance-log-footer"><span id="mlShowing">Showing ${rows.length?1:0} to ${rows.length} of ${rows.length} records</span><div class="ml-pagination"><button disabled>‹</button><button class="active">1</button><button disabled>›</button></div></div>
    </section>
  </div>`;
 }
@@ -5903,10 +6575,11 @@ function renderMaintenanceLog(){
  const count=document.getElementById('mlCount'); if(count)count.textContent=`${rows.length} RECORD${rows.length===1?'':'S'}`;
  const showing=document.getElementById('mlShowing'); if(showing)showing.textContent=`Showing ${rows.length?1:0} to ${rows.length} of ${rows.length} records`;
 }
-function resetMaintenanceLogFilters(){['mlSearch','mlMachine','mlStatus','mlType','mlDateFrom','mlDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});renderMaintenanceLog()}
+function resetMaintenanceLogFilters(){['mlSearch','mlMachine','mlRecordType','mlStatus','mlType','mlDateFrom','mlDateTo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});renderMaintenanceLog()}
 function getFilteredMaintenanceLogRows(){
  const search=(document.getElementById('mlSearch')?.value||'').trim().toLowerCase();
  const machine=document.getElementById('mlMachine')?.value||'';
+ const recordType=document.getElementById('mlRecordType')?.value||'';
  const status=document.getElementById('mlStatus')?.value||'';
  const type=document.getElementById('mlType')?.value||'';
  const from=document.getElementById('mlDateFrom')?.value||'';
@@ -5915,11 +6588,12 @@ function getFilteredMaintenanceLogRows(){
  return rows.filter(x=>{
    const hay=x.map(v=>String(v??'')).join(' ').toLowerCase();
    const rowDate=String(x[1]||'').slice(0,10);
-   return (!search||hay.includes(search)) && (!machine||String(x[2]||'')===machine) && (!status||String(x[10]||'')===status) && (!type||String(x[7]||'')===type) && (!from||rowDate>=from) && (!to||rowDate<=to);
+   return (!search||hay.includes(search)) && (!machine||String(x[2]||'')===machine) && (!recordType||(recordType==='failure'&&isReliabilityFailureJobType(x[7]))) && (!status||String(x[10]||'')===status) && (!type||String(x[7]||'')===type) && (!from||rowDate>=from) && (!to||rowDate<=to);
  });
 }
 function maintenanceLogExportFilterSummary(){
  const machine=document.getElementById('mlMachine')?.value||'';
+ const recordType=document.getElementById('mlRecordType')?.value||'';
  const status=document.getElementById('mlStatus')?.value||'';
  const type=document.getElementById('mlType')?.value||'';
  const from=document.getElementById('mlDateFrom')?.value||'';
@@ -5927,6 +6601,7 @@ function maintenanceLogExportFilterSummary(){
  const search=(document.getElementById('mlSearch')?.value||'').trim();
  const parts=[];
  if(machine)parts.push(`Machine: ${machine}`);
+ if(recordType==='failure')parts.push('Record Type: Failure / Corrective');
  if(status)parts.push(`Status: ${status}`);
  if(type)parts.push(`Type: ${type}`);
  if(from||to)parts.push(`Date: ${from?fmtDate(from):'Any'} to ${to?fmtDate(to):'Any'}`);
@@ -6096,9 +6771,17 @@ function machineDetailModal(id){
       <div class="machine-profile-kpi-v18 orange"><div class="kpi-top"><span class="kpi-icon">✓</span><div class="kpi-label">Maintenance Jobs</div></div><div class="kpi-value">${jobs.length}</div><div class="kpi-sub">Service records</div></div>
       <div class="machine-profile-kpi-v18 red"><div class="kpi-top"><span class="kpi-icon">▣</span><div class="kpi-label">Parts Issued</div></div><div class="kpi-value">${partIssues.reduce((n,r)=>n+num(r[4]),0)}</div><div class="kpi-sub">Total quantity linked</div></div>
     </div>
+    <div class="iy-machine-profile-reliability">
+      <div><span>MTBF TARGET</span><strong>${x[16]?reliabilityHoursText(num(x[16])):"Not set"}</strong></div>
+      <div><span>MTBF ACTUAL</span><strong>${machineReliabilityStatsForMachine(x,jobs).failureCount===0?'No failure recorded':esc(reliabilityHoursText(machineReliabilityStatsForMachine(x,jobs).actualMTBF))}</strong></div>
+      <div><span>MTBF PERFORMANCE</span><strong class="${reliabilityPerformanceClass(machineReliabilityStatsForMachine(x,jobs).mtbfPercent)}">${esc(reliabilityPctText(machineReliabilityStatsForMachine(x,jobs).mtbfPercent))}</strong></div>
+      <div><span>MTTR TARGET</span><strong>${x[17]?reliabilityHoursText(num(x[17])):"Not set"}</strong></div>
+      <div><span>MTTR ACTUAL</span><strong>${machineReliabilityStatsForMachine(x,jobs).failureCount===0?'0.0 h':esc(reliabilityHoursText(machineReliabilityStatsForMachine(x,jobs).actualMTTR))}</strong></div>
+      <div><span>MTTR PERFORMANCE</span><strong class="${reliabilityPerformanceClass(machineReliabilityStatsForMachine(x,jobs).mttrPercent)}">${machineReliabilityStatsForMachine(x,jobs).failureCount===0?'100% · No failures':esc(reliabilityPctText(machineReliabilityStatsForMachine(x,jobs).mttrPercent))}</strong></div>
+    </div>
    </div>
    <div class="machine-profile-tabs-v18"><button class="active" data-profile-nav="overview" onclick="machineProfileNav('overview',this)">◆ Overview</button><button data-profile-nav="service" onclick="machineProfileNav('service',this)">◷ Operating &amp; Service</button><button data-profile-nav="maintenance" onclick="machineProfileNav('maintenance',this)">🔧 Maintenance History</button><button data-profile-nav="parts-issued" onclick="machineProfileNav('parts-issued',this)">▣ Parts History</button><button data-profile-nav="parts-available" onclick="machineProfileNav('parts-available',this)">▤ Available Parts</button></div>
-   <section class="machine-profile-section-v18 active" data-profile-section="overview"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18">▣</div><h3>Machine Information</h3></div><span>IDENTIFICATION &amp; ASSIGNMENT</span></div><div class="machine-info-grid-v18"><div class="machine-info-item-v18"><span>Fleet ID</span><b>${esc(x[0]||'—')}</b></div><div class="machine-info-item-v18"><span>Machine Name</span><b>${esc(x[1]||'—')}</b></div><div class="machine-info-item-v18"><span>Model</span><b>${esc(x[2]||'—')}</b></div><div class="machine-info-item-v18"><span>Serial Number</span><b>${esc(x[3]||'—')}</b></div><div class="machine-info-item-v18"><span>Manufacturer</span><b>${esc(x[4]||'—')}</b></div><div class="machine-info-item-v18"><span>Capacity</span><b>${esc(x[5]||'—')}</b></div><div class="machine-info-item-v18"><span>Department / Location</span><b>${esc(x[6]||'—')}</b></div><div class="machine-info-item-v18"><span>Current Status</span><b><span class="badge" style="background:${accent.bg};color:${accent.fg}">${esc(x[7]||'Not set')}</span></b></div><div class="machine-info-item-v18"><span>Assigned Technician</span><b>${esc(x[8]||'—')}</b></div><div class="machine-info-item-v18"><span>Certification Day</span><b>${x[13]?fmtDate(x[13]):'—'}</b></div><div class="machine-info-item-v18"><span>Certification Status</span><b>${esc(machineCertificationDisplay(x).status)}</b></div><div class="machine-info-item-v18"><span>Certification Expiry</span><b>${x[15]?fmtDate(x[15]):'—'}</b></div></div></div></section>
+   <section class="machine-profile-section-v18 active" data-profile-section="overview"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18">▣</div><h3>Machine Information</h3></div><span>IDENTIFICATION &amp; ASSIGNMENT</span></div><div class="machine-info-grid-v18"><div class="machine-info-item-v18"><span>Fleet ID</span><b>${esc(x[0]||'—')}</b></div><div class="machine-info-item-v18"><span>Machine Name</span><b>${esc(x[1]||'—')}</b></div><div class="machine-info-item-v18"><span>Model</span><b>${esc(x[2]||'—')}</b></div><div class="machine-info-item-v18"><span>Serial Number</span><b>${esc(x[3]||'—')}</b></div><div class="machine-info-item-v18"><span>Manufacturer</span><b>${esc(x[4]||'—')}</b></div><div class="machine-info-item-v18"><span>Capacity</span><b>${esc(x[5]||'—')}</b></div><div class="machine-info-item-v18"><span>Department / Location</span><b>${esc(x[6]||'—')}</b></div><div class="machine-info-item-v18"><span>Current Status</span><b><span class="badge" style="background:${accent.bg};color:${accent.fg}">${esc(x[7]||'Not set')}</span></b></div><div class="machine-info-item-v18"><span>Assigned Technician</span><b>${esc(x[8]||'—')}</b></div><div class="machine-info-item-v18"><span>Certification Day</span><b>${x[13]?fmtDate(x[13]):'—'}</b></div><div class="machine-info-item-v18"><span>Certification Status</span><b>${esc(machineCertificationDisplay(x).status)}</b></div><div class="machine-info-item-v18"><span>Certification Expiry</span><b>${x[15]?fmtDate(x[15]):'—'}</b></div><div class="machine-info-item-v18"><span>MTBF Target</span><b>${x[16]?reliabilityHoursText(num(x[16])):'Not set'}</b></div><div class="machine-info-item-v18"><span>MTTR Target</span><b>${x[17]?reliabilityHoursText(num(x[17])):'Not set'}</b></div></div></div></section>
    <section class="machine-profile-section-v18" data-profile-section="service"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 green">◷</div><h3>Operating &amp; Service</h3></div><span>FROM MAINTENANCE RECORDS</span></div><div class="machine-service-grid-v18"><div class="machine-service-box-v18 blue"><span>Latest Recorded Hours</span><b>${latestHours===null?'—':esc(latestHours)+' hrs'}</b></div><div class="machine-service-box-v18 green"><span>Last Service</span><b>${lastServiceDate?fmtDate(lastServiceDate):'—'}</b></div><div class="machine-service-box-v18 orange"><span>Next Service At</span><b>${nextService===null||nextService===0?'—':esc(nextService)+' hrs'}</b></div><div class="machine-service-box-v18 ${String(last?.[10]||'').toLowerCase().includes('complete')?'green':'red'}"><span>Latest Service Status</span><b>${esc(last?.[10]||'—')}</b></div></div></div></section>
    <section class="machine-profile-section-v18" data-profile-section="maintenance"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 orange">🔧</div><h3>Maintenance History</h3></div><span>${jobs.length} RECORD(S)</span></div>${jobs.length?`<div class="machine-table-wrap-v18"><table class="machine-profile-table-v18"><tr><th>Date</th><th>Service Ref</th><th>Job Type</th><th>Status</th><th>Technician(s)</th><th>Fault / Problem</th><th>Work Performed</th></tr>${jobs.slice(0,30).map(r=>`<tr><td>${fmtDate(r[1])}</td><td><b>${esc(r[0])}</b></td><td>${esc(r[7]||'—')}</td><td>${esc(r[10]||'—')}</td><td>${esc(r[12]||'—')}</td><td>${esc(r[8]||'—')}</td><td>${esc(r[9]||'—')}</td></tr>`).join('')}</table></div>`:`<div class="machine-profile-empty-v18">No maintenance history recorded for this machine yet.</div>`}</div></section>
    <section class="machine-profile-section-v18" data-profile-section="parts-issued"><div class="machine-profile-card-v18"><div class="machine-profile-card-head-v18"><div class="machine-profile-card-title-v18"><div class="machine-profile-icon-v18 purple">▣</div><h3>Parts Issued to Machine</h3></div><span>${partIssues.length} TRANSACTION(S)</span></div>${partIssues.length?`<div class="machine-table-wrap-v18"><table class="machine-profile-table-v18"><tr><th>Date</th><th>Part Number</th><th>Description</th><th>Qty</th><th>Technician</th><th>Work Order</th><th>Remarks</th></tr>${partIssues.slice(0,30).map(r=>`<tr><td>${fmtDate(r[0])}</td><td><b>${esc(r[1])}</b></td><td>${esc(r[2]||'—')}</td><td><b>${num(r[4])}</b></td><td>${esc(r[5]||'—')}</td><td>${esc(r[6]||'—')}</td><td>${esc(r[7]||'—')}</td></tr>`).join('')}</table></div>`:`<div class="machine-profile-empty-v18">No parts issue transactions are linked to this machine yet.</div>`}</div></section>
@@ -6172,6 +6855,25 @@ function refreshMachineDepartmentSelect(siteId,selected=""){
   const el=document.getElementById("mcDepartment");
   if(el)el.innerHTML=machineDepartmentOptions(siteId,selected);
 }
+function canManageReliabilityTargets(){
+ const r=currentRole();
+ return ["company_admin","manager","super_admin"].includes(r);
+}
+async function saveMachineReliabilityTargets(machineId,mtbfTarget,mttrTarget){
+ if(!canManageReliabilityTargets())return;
+ if(!machineId)throw new Error("Machine ID is required for reliability targets.");
+ const mtbf=mtbfTarget===""||mtbfTarget===null?null:num(mtbfTarget);
+ const mttr=mttrTarget===""||mttrTarget===null?null:num(mttrTarget);
+ if(mtbf!==null && mtbf<=0)throw new Error("MTBF Target must be greater than zero.");
+ if(mttr!==null && mttr<=0)throw new Error("MTTR Target must be greater than zero.");
+ const {data,error}=await iySupabase.rpc("set_machine_reliability_targets",{
+   p_machine_id:machineId,
+   p_mtbf_target_hours:mtbf,
+   p_mttr_target_hours:mttr
+ });
+ if(error)throw error;
+ if(!data?.success)throw new Error("The server did not confirm the reliability target change.");
+}
 function machineModal(id){
   if(!canEdit("machines"))return alert("You do not have permission to edit machine records.");
   const decoded=id?decodeURIComponent(id):"";
@@ -6200,7 +6902,16 @@ function machineModal(id){
      <div class="machine-editor-field-v19"><label>Certification Day</label><input id="mcCertDate" class="input" type="date" value="${esc(x?.[13]||"")}"></div>
      <div class="machine-editor-field-v19"><label>Certification Status</label><select id="mcCertStatus" class="select">${["Not Certified","Certified"].map(v=>`<option value="${esc(v)}" ${String(x?.[14]||"Not Certified").toLowerCase()===v.toLowerCase()?"selected":""}>${v}</option>`).join("")}</select></div>
      <div class="machine-editor-field-v19"><label>Certification Expiry</label><input id="mcCertExpiry" class="input" type="date" value="${esc(x?.[15]||"")}"></div>
-    </div><div class="machine-editor-note-v19"><b>Scope assignment:</b> Scope Site and Scope Department control machine visibility. Department / Location is the machine's physical location and is independent of the access scope.</div><div class="machine-editor-note-v19"><b>Service data:</b> Operating hours and service dates are recorded from maintenance entries and displayed automatically in the machine profile.</div></section>
+    </div>
+    <section class="machine-editor-section-v19 machine-reliability-editor-section">
+      <div class="machine-editor-section-head-v19"><div class="icon">◔</div><h3>Reliability Targets</h3><span>MACHINE-SPECIFIC KPI TARGETS</span></div>
+      <div class="machine-editor-grid-v19">
+       <div class="machine-editor-field-v19"><label>MTBF Target (hours)</label><input id="mcMtbfTarget" class="input" type="number" min="0.1" step="0.1" value="${x?.[16]??""}" ${canManageReliabilityTargets()?"":"disabled"} placeholder="e.g. 250"></div>
+       <div class="machine-editor-field-v19"><label>MTTR Target (hours)</label><input id="mcMttrTarget" class="input" type="number" min="0.1" step="0.1" value="${x?.[17]??""}" ${canManageReliabilityTargets()?"":"disabled"} placeholder="e.g. 4.0"></div>
+      </div>
+      <div class="machine-editor-note-v19"><b>Target meaning:</b> MTBF target is the desired average uptime between qualifying failures. MTTR target is the desired average repair/downtime duration. <strong>100% = target.</strong> ${canManageReliabilityTargets()?"":"Only a Company Administrator, Manager or Super Admin can change these targets."}</div>
+    </section>
+    <div class="machine-editor-note-v19"><b>Scope assignment:</b> Scope Site and Scope Department control machine visibility. Department / Location is the machine's physical location and is independent of the access scope.</div><div class="machine-editor-note-v19"><b>Service data:</b> Operating hours and service dates are recorded from maintenance entries and displayed automatically in the machine profile.</div></section>
    </div>
    <div class="machine-editor-actions-v19"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveMachine('${encodeURIComponent(x?.[0]||"")}')">${x?"Save Changes":"Add Machine"}</button></div>
   </div>`);
@@ -6307,6 +7018,7 @@ async function saveMachine(old){
         const id=await cloudSaveMachine(vals,siteId,departmentId);
         vals[9]=id;vals[10]=null;vals[11]=siteId;vals[12]=departmentId;
         await saveMachineCertification(id,certificationDate,certificationStatus,certificationExpiry);
+        if(canManageReliabilityTargets())await saveMachineReliabilityTargets(id,document.getElementById("mcMtbfTarget")?.value??"",document.getElementById("mcMttrTarget")?.value??"");
         await cloudAudit("Added machine","Machine record created",siteId,departmentId);
       }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
     }
@@ -6316,6 +7028,8 @@ async function saveMachine(old){
     vals[13]=certificationDate||null;
     vals[14]=certificationStatus||"Not Certified";
     vals[15]=certificationExpiry||null;
+    vals[16]=canManageReliabilityTargets()&&document.getElementById("mcMtbfTarget")?.value!==""?num(document.getElementById("mcMtbfTarget").value):null;
+    vals[17]=canManageReliabilityTargets()&&document.getElementById("mcMttrTarget")?.value!==""?num(document.getElementById("mcMttrTarget").value):null;
     db.machines.push(vals);
     logActivity("Added machine","Machine record created");
   }else{
@@ -6324,6 +7038,7 @@ async function saveMachine(old){
         const id=await cloudSaveMachine(vals,siteId,departmentId,x[9]);
         x[9]=id;
         await saveMachineCertification(id,certificationDate,certificationStatus,certificationExpiry);
+        if(canManageReliabilityTargets())await saveMachineReliabilityTargets(id,document.getElementById("mcMtbfTarget")?.value??"",document.getElementById("mcMttrTarget")?.value??"");
         await cloudAudit("Updated machine","Machine record updated",siteId,departmentId);
       }catch(e){return alert(e?.message||"Machine could not be saved to the cloud.")}
     }
@@ -6344,6 +7059,10 @@ async function saveMachine(old){
     x[13]=certificationDate||null;
     x[14]=certificationStatus||"Not Certified";
     x[15]=certificationExpiry||null;
+    if(canManageReliabilityTargets()){
+      x[16]=document.getElementById("mcMtbfTarget")?.value!==""?num(document.getElementById("mcMtbfTarget").value):null;
+      x[17]=document.getElementById("mcMttrTarget")?.value!==""?num(document.getElementById("mcMttrTarget").value):null;
+    }
     logActivity("Updated machine","Machine record updated");
   }
   save();closeModal();render();toast("Machine saved successfully.");
@@ -8898,7 +9617,7 @@ async function loadCloudData(){
  if(approvalReports?.error&&approvalReports.error.code!=="PGRST205")console.warn("Report approval records could not be loaded.",approvalReports.error.message||approvalReports.error);
  if(approvalRequests?.error&&approvalRequests.error.code!=="PGRST205")console.warn("Report approval requests could not be loaded.",approvalRequests.error.message||approvalRequests.error);
  notificationLastRefresh=new Date();
- empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id,null,x.site_id||null,x.department_id||null,x.certification_date||null,x.certification_status||"Not Certified",x.certification_expiry||null]);
+ empty.machines=(machines.data||[]).map(x=>[x.fleet_id,x.machine_name||x.name||x.machine_model||"",x.machine_model,x.machine_serial_number,x.manufacturer,x.capacity,x.department,x.status,x.assigned_to,x.id,null,x.site_id||null,x.department_id||null,x.certification_date||null,x.certification_status||"Not Certified",x.certification_expiry||null,x.mtbf_target_hours??null,x.mttr_target_hours??null]);
  try{
    const {data:machineImageFiles,error:machineImageError}=await iySupabase.storage.from("machine-images").list(iyCompany.id,{limit:1000});
    if(machineImageError)throw machineImageError;
@@ -8913,7 +9632,7 @@ async function loadCloudData(){
  empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||"",x.site_id||null,x.department_id||null]);
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
- empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null]);
+ empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null,x.downtime_start_at||null,x.return_to_service_at||null,x.downtime_hours??null,x.machine_hours_at_downtime??null,x.machine_hours_at_return??null]);
  const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
@@ -9091,6 +9810,10 @@ async function cloudSaveMaintenance(row){
    parts_required:Boolean(String(row[11]||"").trim()),
    technicians:row[12]||null,
    remarks:row[13]||null,
+   downtime_start_at:row[18]||null,
+   return_to_service_at:row[19]||null,
+   machine_hours_at_downtime:row[21]===null||row[21]===undefined?null:num(row[21]),
+   machine_hours_at_return:row[22]===null||row[22]===undefined?null:num(row[22]),
    created_by:iyAuthUser.id
  };
 
