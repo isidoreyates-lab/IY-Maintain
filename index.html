@@ -5032,7 +5032,10 @@ function dashboard(){
 }
 function metric(a,b,c){const icons={"TOTAL PARTS":"⚙","TOTAL STOCK":"▣","LOW STOCK":"⚠","OUT OF STOCK":"×","TOTAL JOBS":"🔧","COMPLETED":"✓","ONGOING":"◷","REPAIRS":"🔨","PREVENTIVE":"✓","PARTS REQUIRED":"▤","OVERDUE":"!","DUE SOON":"◴","ACTIVE MACHINES":"⚙","RECORDS":"▤","QUANTITY":"#"};const k=String(a).toUpperCase();const icon=icons[k]||"◆";const cls=k.includes("OVERDUE")||k.includes("OUT OF STOCK")?"bad":k.includes("LOW STOCK")||k.includes("DUE SOON")||k.includes("ONGOING")?"warn":k.includes("COMPLETED")||k.includes("PREVENTIVE")?"ok":"dark";return `<div class="card metric"><div class="metric-icon ${cls}">${icon}</div><div class="label">${a}</div><div class="value">${esc(b)}</div><div class="sub">${c}</div></div>`}
 function empty(){return `<div class="empty">No records available.</div>`}
-function simpleReceiptTable(rows){return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td></tr>`).join("")}</table></div>`}
+function simpleReceiptTable(rows){
+ const allowActions=canEdit("receive");
+ return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>PO / J-Ref</th><th>Description</th><th>Machine</th><th>Qty</th>${allowActions?"<th>Actions</th>":""}</tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[6]||"—")}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td>${allowActions?`<td><div style="display:flex;gap:6px;white-space:nowrap"><button class="btn secondary small" onclick="editPartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Edit</button><button class="btn danger small" onclick="deletePartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Delete</button></div></td>`:""}</tr>`).join("")}</table></div>`;
+}
 function simpleIssueTable(rows){return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td></tr>`).join("")}</table></div>`}
 
 function issuePage(){
@@ -5135,6 +5138,81 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
 
 function receivePage(){
  return `<div class="panel">${simpleReceiptTable(viewReceiptRows().slice(-20).reverse())}</div>`;
+}
+function editPartReceipt(encodedId){
+ if(!canEdit("receive"))return alert("You do not have permission to edit received parts.");
+ const id=decodeURIComponent(encodedId||"");
+ const row=viewReceiptRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Receipt not found in the selected Site / Department view.");
+ openModal(`<div class="modalhead"><h2>Edit Received Part</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="notice" style="margin-bottom:16px"><b>Inventory-linked edit:</b> Changing the quantity will adjust both Current Stock and Total Received automatically. Part Number and Description stay locked so the receipt remains linked to the correct inventory item.</div>
+ <div class="formgrid">
+  <div class="field"><label>Received Date &amp; Time</label><input id="er_received_at" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row[0]))}" required></div>
+  <div class="field"><label>Part Number</label><input class="input" value="${esc(row[1]||"")}" readonly></div>
+  <div class="field"><label>Description</label><input class="input" value="${esc(row[2]||"")}" readonly></div>
+  <div class="field"><label>Machine</label><input id="er_machine" class="input" value="${esc(row[3]||"")}" placeholder="Machine model"></div>
+  <div class="field"><label>Quantity</label><input id="er_qty" class="input" type="number" min="1" step="1" value="${num(row[4])}" required></div>
+  <div class="field"><label>Supplier</label><input id="er_supplier" class="input" value="${esc(row[5]||"")}" placeholder="Supplier"></div>
+  <div class="field"><label>PO / J-Ref / Invoice</label><input id="er_reference" class="input" value="${esc(row[6]||"")}" placeholder="PO / J-Ref / Invoice"></div>
+  <div class="field"><label>Received By</label><input id="er_receiver" class="input" value="${esc(row[7]||"")}" placeholder="Name of receiver"></div>
+ </div>
+ <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="savePartReceiptEdit('${encodeURIComponent(id)}')">Save Changes</button></div>`);
+}
+async function savePartReceiptEdit(encodedId){
+ if(!canEdit("receive"))return alert("You do not have permission to edit received parts.");
+ const id=decodeURIComponent(encodedId||"");
+ const row=viewReceiptRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Receipt not found in the selected Site / Department view.");
+ const receivedAt=dateTimeLocalToISO(document.getElementById("er_received_at")?.value||"");
+ const quantityRaw=Number(document.getElementById("er_qty")?.value);
+ if(!receivedAt)return alert("Enter a valid received date and time.");
+ if(!Number.isInteger(quantityRaw)||quantityRaw<=0)return alert("Quantity must be a whole number greater than zero.");
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+  const {data,error}=await iySupabase.rpc("update_part_receipt_transaction_scoped",{
+   p_receipt_id:id,
+   p_received_at:receivedAt,
+   p_quantity:quantityRaw,
+   p_machine_model:document.getElementById("er_machine")?.value.trim()||null,
+   p_supplier:document.getElementById("er_supplier")?.value.trim()||null,
+   p_reference:document.getElementById("er_reference")?.value.trim()||null,
+   p_receiver_name:document.getElementById("er_receiver")?.value.trim()||null
+  });
+  if(error)throw error;
+  await loadCloudData();
+  await cloudAudit("Edited part receipt",`Receipt ${row[1]} quantity changed from ${row[4]} to ${quantityRaw}; PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
+  closeModal();render();toast("Receipt updated and inventory adjusted.");
+ }catch(e){
+  console.error("Part receipt edit failed",e);
+  alert(e?.message||"Receipt could not be updated. Inventory was not changed.");
+ }
+}
+async function deletePartReceipt(encodedId){
+ if(!canEdit("receive"))return alert("You do not have permission to delete received parts.");
+ const id=decodeURIComponent(encodedId||"");
+ const row=viewReceiptRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Receipt not found in the selected Site / Department view.");
+ const ok=confirm(`DELETE RECEIPT?
+
+Part: ${row[1]} — ${row[2]}
+PO / J-Ref: ${row[6]||"—"}
+Quantity: ${row[4]}
+
+This will remove the receipt log and subtract this quantity from Current Stock and Total Received. The system will block deletion if the remaining stock is too low to reverse safely.
+
+Continue?`);
+ if(!ok)return;
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+  const {data,error}=await iySupabase.rpc("delete_part_receipt_transaction_scoped",{p_receipt_id:id});
+  if(error)throw error;
+  await loadCloudData();
+  await cloudAudit("Deleted part receipt",`Deleted receipt ${row[1]}, quantity ${row[4]}, PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
+  render();toast("Receipt deleted and inventory adjusted.");
+ }catch(e){
+  console.error("Part receipt deletion failed",e);
+  alert(e?.message||"Receipt could not be deleted. Inventory was not changed.");
+ }
 }
 function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts receiving access is restricted to Parts Coordinators and Administrators.");
  const order=orderId?(viewOrderRows()||[]).find(x=>String(x[11])===String(orderId)):null;
@@ -7186,7 +7264,7 @@ function runPartsReport(){
   const orderSection=ordered.length?`<div class="report-subsection-title">PARTS ORDERS</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>`:`<div class="report-subsection-title">PARTS ORDERS</div><div class="empty">No active Parts Orders match the selected filters.</div>`;
   document.getElementById("prout").innerHTML=`<div class="cards">${metric("UPDATES",partsUpdates.length,"Parts Updates")}${metric("ORDERS",ordered.length,"Active parts orders")}${metric("UPDATE QTY",updateQty,"Units requested")}${metric("ORDER QTY",total,"Units on order")}</div><div class="notice"><b>Parts Orders + Parts Updates</b> &nbsp; ${from||to?`&nbsp; | &nbsp; period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""} &nbsp; | &nbsp; ${suppliers} supplier${suppliers===1?"":"s"} &nbsp; | &nbsp; ${machines} machine${machines===1?"":"s"}</div>${updateSection}${orderSection}`;
  }else{
-  document.getElementById("prout").innerHTML=`<div class="cards">${metric("RECORDS",rows.length,"Matching transactions")}${metric("QUANTITY",total,"Units in selected transactions")}${metric("ISSUED",issued.length,"Issue transactions")}${metric("RECEIVED",received.length,"Receipt transactions")}</div><div class="notice"><b>${esc(type)}</b> &nbsp; ${from||to?`period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${tech?`&nbsp; | &nbsp; Technician: ${esc(tech)}`:""} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Type</th><th>Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Person / Supplier</th><th>Reference</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No parts transactions match the selected filters.</div>`}`;
+  document.getElementById("prout").innerHTML=`<div class="cards">${metric("RECORDS",rows.length,"Matching transactions")}${metric("QUANTITY",total,"Units in selected transactions")}${metric("ISSUED",issued.length,"Issue transactions")}${metric("RECEIVED",received.length,"Receipt transactions")}</div><div class="notice"><b>${esc(type)}</b> &nbsp; ${from||to?`period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${tech?`&nbsp; | &nbsp; Technician: ${esc(tech)}`:""} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Type</th><th>Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Person / Supplier</th><th>${type==="Parts Received"?"PO / J-Ref":type==="Parts Issued"?"Work Order":"PO / J-Ref / Work Order"}</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No parts transactions match the selected filters.</div>`}`;
  }
  const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
  toast("Parts report generated.");
@@ -7370,7 +7448,7 @@ function buildPartsReportHTML(snapshotOverride){
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const partsUpdateTable=partsUpdates.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>STATUS</th><th>ONSITE DATE</th><th>REMARKS</th><th>IMAGES</th></tr>${partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5]||"")}</b></td><td>${esc(x[6]||"")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td><td>${partsUpdateReportImageLinks(x,true)}</td></tr>`).join("")}</table>`:`<div class="empty">No Parts Updates match the selected filters.</div>`;
  const orderTable=ordered.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active Parts Orders match the selected filters.</div>`;
- const transactionTable=rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>REFERENCE</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`;
+ const transactionTable=rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>${data.type==="Parts Received"?"PO / J-REF":data.type==="Parts Issued"?"WORK ORDER":"PO / J-REF / WORK ORDER"}</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`;
  const kpis=isOrders?`${metricReportKpi("PARTS UPDATES",partsUpdates.length,"Replenishment requests")}${metricReportKpi("UPDATE QUANTITY",updateQty,"Units requested")}${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("ORDER QUANTITY",total,"Units on order")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
  const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Parts Updates & Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
  const content=isOrders?`<div class="r-section">PARTS UPDATES <small>${partsUpdates.length} update(s)</small></div>${partsUpdateTable}<div class="r-section">PARTS ORDERS <small>${ordered.length} order(s)</small></div>${orderTable}`:`<div class="r-section">PARTS TRANSACTIONS</div>${transactionTable}`;
