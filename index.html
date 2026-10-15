@@ -5152,6 +5152,7 @@ function editPartReceipt(encodedId){
  <div class="formgrid">
   <div class="field"><label>Received Date &amp; Time</label><input id="er_received_at" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row[0]))}" required></div>
   <div class="field"><label>Part Number</label><input class="input" value="${esc(row[1]||"")}" readonly></div>
+  <div class="field"><label>Material Number</label><input id="er_material_number" class="input" value="${esc(row[12]||"")}" placeholder="Material number"></div>
   <div class="field"><label>Description</label><input class="input" value="${esc(row[2]||"")}" readonly></div>
   <div class="field"><label>Machine</label><input id="er_machine" class="input" value="${esc(row[3]||"")}" placeholder="Machine model"></div>
   <div class="field"><label>Quantity</label><input id="er_qty" class="input" type="number" min="1" step="1" value="${num(row[4])}" required></div>
@@ -5179,11 +5180,12 @@ async function savePartReceiptEdit(encodedId){
    p_machine_model:document.getElementById("er_machine")?.value.trim()||null,
    p_supplier:document.getElementById("er_supplier")?.value.trim()||null,
    p_reference:document.getElementById("er_reference")?.value.trim()||null,
-   p_receiver_name:document.getElementById("er_receiver")?.value.trim()||null
+   p_receiver_name:document.getElementById("er_receiver")?.value.trim()||null,
+   p_material_number:document.getElementById("er_material_number")?.value.trim()||null
   });
   if(error)throw error;
   await loadCloudData();
-  await cloudAudit("Edited part receipt",`Receipt ${row[1]} quantity changed from ${row[4]} to ${quantityRaw}; PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
+  await cloudAudit("Edited part receipt",`Receipt ${row[1]} quantity changed from ${row[4]} to ${quantityRaw}; Material Number ${document.getElementById("er_material_number")?.value.trim()||"—"}; PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
   closeModal();render();toast("Receipt updated and inventory adjusted.");
  }catch(e){
   console.error("Part receipt edit failed",e);
