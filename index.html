@@ -1,3 +1,4 @@
+<!-- IY Maintain Parts Transfers follow-up: full in-transit editing, history hidden from review UI; backend audit retained. -->
 <!-- IY Maintain V7.01 Super Admin Settings alignment | IY Maintain V24.54: audit scope integrity prefers actual record scope and preserves valid site-only scope. -->
 <!-- V7.07 — Super Admin Settings option removed from navigation by user request. Settings code retained but no sidebar/mobile navigation entry. -->
 <!doctype html>
@@ -2825,13 +2826,13 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 .iy-transfer-pending-card{border:1px solid #dce6ef;background:#fff;border-radius:10px;padding:12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:5px}.iy-transfer-pending-card:hover{border-color:#8bb7ef;box-shadow:0 3px 14px rgba(18,68,118,.08)}
 .iy-transfer-pending-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.iy-transfer-pending-card>b{font-size:11px;color:#173650}.iy-transfer-pending-card>span{font-size:9px;color:#73879a}.iy-transfer-pending-card>em{font-style:normal;color:#075fff;font-size:9px;font-weight:800;margin-top:3px}
 .iy-transfer-empty-large{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 20px;border:1px dashed #cbd9e5;border-radius:12px;background:#fbfdff}.iy-transfer-empty-large>div{font-size:30px;color:#6d8aa8}.iy-transfer-empty-large h3{margin:9px 0 4px;color:#173650}.iy-transfer-empty-large p{max-width:520px;color:#8393a2;font-size:10px}
-.iy-transfer-table small{color:#8495a5;font-size:8px}.iy-transfer-table td{vertical-align:middle}
-.iy-transfer-review-header{display:flex;justify-content:space-between;align-items:center;background:#f3f7fb;border:1px solid #dce6ef;border-radius:10px;padding:11px 12px;margin-bottom:12px}.iy-transfer-review-header span:first-child{font-size:9px;color:#7d8fa1}.iy-transfer-review-header strong{display:block;color:#173650;font-size:13px;margin-top:2px}
-.iy-transfer-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.iy-transfer-review-grid>div{border:1px solid #e0e8ef;border-radius:9px;padding:9px;background:#fff}.iy-transfer-review-grid>div.full{grid-column:1/-1}.iy-transfer-review-grid label{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:#8495a5;margin-bottom:4px}.iy-transfer-review-grid strong{display:block;font-size:10px;color:#173650}.iy-transfer-review-grid span{display:block;font-size:8px;color:#8797a5;margin-top:2px}
-.iy-transfer-review-section{margin-top:13px;border-top:1px solid #e2e9ef;padding-top:12px}.iy-transfer-review-section-head{display:flex;justify-content:space-between}.iy-transfer-review-section-head strong{font-size:11px;color:#173650}.iy-transfer-review-section-head span{font-size:9px;color:#8192a2}
-.iy-transfer-review-approvals{margin-top:8px;border:1px solid #dfe7ee;border-radius:9px;overflow:hidden}.iy-transfer-review-approval{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 10px;border-bottom:1px solid #edf1f4}.iy-transfer-review-approval:last-child{border-bottom:0}.iy-transfer-review-approval strong{display:block;font-size:10px;color:#173650}.iy-transfer-review-approval small{display:block;font-size:8px;color:#8797a5;margin-top:2px}
-.iy-transfer-approval-status{font-size:8px;font-weight:800;white-space:nowrap}.iy-transfer-approval-status.approved{color:#16804f}.iy-transfer-approval-status.rejected{color:#b63c4a}.iy-transfer-approval-status.pending{color:#a36a12}.iy-transfer-approval-status.cancelled{color:#81909e}
-.iy-transfer-review-pending{margin-top:12px;padding:10px;border:1px solid #cfe0f4;background:#eef6ff;border-radius:9px}.iy-transfer-review-pending strong{display:block;font-size:10px;color:#075fff}.iy-transfer-review-pending span{display:block;font-size:9px;color:#66819c;margin-top:2px}
+.iy-transfer-table{min-width:1050px}.iy-transfer-table th{white-space:nowrap}.iy-transfer-table td{vertical-align:middle;padding-top:12px;padding-bottom:12px}.iy-transfer-table small{display:inline-block;color:#8495a5;font-size:9px;line-height:1.45;margin-top:3px}.iy-transfer-table .iy-transfer-log-ref{font-weight:800;color:#173b68;white-space:nowrap}.iy-transfer-log-dates{display:flex;flex-direction:column;gap:3px;min-width:128px}.iy-transfer-log-dates span{font-size:9px;line-height:1.35;color:#6e8298}.iy-transfer-log-dates b{font-weight:700;color:#47617e}.iy-transfer-log-route{display:flex;flex-direction:column;gap:5px;min-width:165px}.iy-transfer-log-route span{font-size:10px;line-height:1.35;color:#25415e}.iy-transfer-log-route em{font-style:normal;font-size:8px;text-transform:uppercase;color:#8a9aab;letter-spacing:.04em;margin-right:4px}.iy-transfer-log-request{min-width:105px}.iy-transfer-log-status{min-width:145px}.iy-transfer-log-status .status-pill{display:inline-flex}
+.iy-transfer-review-header{display:flex;justify-content:space-between;align-items:center;background:#f3f7fb;border:1px solid #dce6ef;border-radius:10px;padding:12px 14px;margin-bottom:14px}.iy-transfer-review-header span:first-child{font-size:12px;color:#60758b}.iy-transfer-review-header strong{display:block;color:#173650;font-size:15px;margin-top:3px}
+.iy-transfer-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.iy-transfer-review-grid>div{border:1px solid #e0e8ef;border-radius:9px;padding:12px;background:#fff}.iy-transfer-review-grid>div.full{grid-column:1/-1}.iy-transfer-review-grid label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#71869b;margin-bottom:5px}.iy-transfer-review-grid strong{display:block;font-size:14px;line-height:1.4;color:#173650}.iy-transfer-review-grid span{display:block;font-size:12px;line-height:1.4;color:#718296;margin-top:3px}
+.iy-transfer-review-section{margin-top:15px;border-top:1px solid #e2e9ef;padding-top:14px}.iy-transfer-review-section-head{display:flex;justify-content:space-between}.iy-transfer-review-section-head strong{font-size:14px;color:#173650}.iy-transfer-review-section-head span{font-size:12px;color:#718296}
+.iy-transfer-review-approvals{margin-top:9px;border:1px solid #dfe7ee;border-radius:9px;overflow:hidden}.iy-transfer-review-approval{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;border-bottom:1px solid #edf1f4}.iy-transfer-review-approval:last-child{border-bottom:0}.iy-transfer-review-approval strong{display:block;font-size:13px;color:#173650}.iy-transfer-review-approval small{display:block;font-size:11px;line-height:1.4;color:#718296;margin-top:3px}
+.iy-transfer-approval-status{font-size:11px;font-weight:800;white-space:nowrap}.iy-transfer-approval-status.approved{color:#16804f}.iy-transfer-approval-status.rejected{color:#b63c4a}.iy-transfer-approval-status.pending{color:#a36a12}.iy-transfer-approval-status.cancelled{color:#81909e}
+.iy-transfer-review-pending{margin-top:12px;padding:10px;border:1px solid #cfe0f4;background:#eef6ff;border-radius:9px}.iy-transfer-review-pending strong{display:block;font-size:13px;color:#075fff}.iy-transfer-review-pending span{display:block;font-size:12px;color:#66819c;margin-top:3px}
 .iy-transfer-approval-inbox{margin-bottom:16px;border:1px solid #d9e4ee;border-radius:12px;background:#fff;overflow:hidden}.iy-transfer-approval-inbox-head{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;background:#f6f9fc;border-bottom:1px solid #dfe7ee}.iy-transfer-approval-inbox-head strong{display:block;color:#173650;font-size:12px}.iy-transfer-approval-inbox-head span{font-size:9px;color:#8192a2}.iy-transfer-approval-inbox-head>span:last-child{font-size:11px;font-weight:800;color:#075fff;background:#e9f2ff;border-radius:20px;padding:4px 8px}
 .iy-transfer-approval-inbox-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #edf1f4}.iy-transfer-approval-inbox-card:last-child{border-bottom:0}.iy-transfer-approval-icon{width:32px;height:32px;border-radius:9px;background:#eef5fc;color:#075fff;display:flex;align-items:center;justify-content:center;font-weight:900}.iy-transfer-approval-main{flex:1;min-width:0}.iy-transfer-approval-main strong{display:block;color:#173650;font-size:10px}.iy-transfer-approval-main span,.iy-transfer-approval-main small,.iy-transfer-approval-main em{display:block;font-style:normal;font-size:8px;color:#7f90a0;margin-top:2px}
 @media(max-width:760px){.iy-transfer-pending-grid,.iy-transfer-review-grid{grid-template-columns:1fr}.iy-transfer-approval-inbox-card{align-items:flex-start;flex-wrap:wrap}.iy-transfer-approval-inbox-card .btn{margin-left:42px}}
@@ -2897,6 +2898,41 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 #modal.maintenance-editor-modal>.formgrid{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;padding-right:8px!important;}
 #modal.maintenance-editor-modal>.actions{flex:0 0 auto!important;}
 @media(max-width:720px){#modal.maintenance-editor-modal>.formgrid{padding-right:3px!important;}}
+</style>
+
+
+
+<style id="iy-parts-transfers-blue-theme">
+/* Approved, presentation-only blue theme for Parts Transfers. Workflow and database logic are unchanged. */
+.page-transfers .page-hero-v23{background:linear-gradient(112deg,#09265f 0%,#124aa8 52%,#1675f8 100%);box-shadow:0 12px 28px rgba(16,74,160,.18)}
+.page-transfers .page-hero-v23 .hero-kicker{color:#9bc8ff}
+.page-transfers .page-hero-v23 .hero-btn-v23{background:#fff!important;color:#075bd7!important;border:1px solid rgba(255,255,255,.65)!important;box-shadow:0 5px 14px rgba(4,32,89,.16)}
+.page-transfers .page-hero-v23 .hero-btn-v23:hover{background:#edf5ff!important;transform:translateY(-1px)}
+.page-transfers .iy-transfer-intro{background:linear-gradient(120deg,#eff6ff,#f8fbff);border-color:#c9ddfb;box-shadow:0 3px 10px rgba(23,85,165,.045)}
+.page-transfers .iy-transfer-intro strong{color:#12458f}
+.page-transfers .iy-transfer-table thead th{background:#f0f6ff!important;color:#355a86!important;border-bottom:1px solid #d3e3f8!important}
+.page-transfers .iy-transfer-table tbody tr:hover{background:#f5f9ff}
+.page-transfers .iy-transfer-table td{border-bottom-color:#e7eef8}
+.page-transfers .iy-transfer-table .btn.secondary,.page-transfers .iy-transfer-table button.btn.secondary{background:#edf4ff!important;border-color:#d1e2fb!important;color:#1557b7!important}
+.page-transfers .iy-transfer-table .btn.secondary:hover,.page-transfers .iy-transfer-table button.btn.secondary:hover{background:#dceaff!important}
+.page-transfers .iy-transfer-table .btn.primary,.page-transfers .iy-transfer-table button.btn.primary{background:linear-gradient(135deg,#1769e8,#0754d4)!important;border-color:#0754d4!important;color:#fff!important}
+#modal:has(.iy-transfer-review-header){border:1px solid #d7e6fb;box-shadow:0 24px 70px rgba(8,37,87,.28)}
+#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header){margin:-25px -25px 14px;padding:19px 25px;background:linear-gradient(112deg,#0b2d70 0%,#1054ba 55%,#2587ff 100%);color:#fff;border-radius:15px 15px 0 0}
+#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header) h2{color:#fff;margin:0;font-size:21px;letter-spacing:-.025em}
+#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header) .close{background:rgba(255,255,255,.94);color:#164a94;border:1px solid rgba(255,255,255,.65);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-header{background:linear-gradient(110deg,#edf5ff,#f7fbff);border-color:#c9ddfb;box-shadow:inset 3px 0 #2479f2}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-header strong{color:#123d7c}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-grid>div{border-color:#d9e7f8;box-shadow:0 2px 7px rgba(21,75,145,.035)}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-grid>div label{color:#6682a5}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-grid>div strong{color:#173b68}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-section{border-top-color:#d9e7f8}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-approvals{border-color:#d3e3f7}
+#modal:has(.iy-transfer-review-header) .iy-transfer-review-approval{background:#fbfdff;border-bottom-color:#e5eef9}
+#modal:has(.iy-transfer-review-header) .actions .btn.secondary{background:#edf4ff!important;border:1px solid #d4e4fb!important;color:#1555ad!important}
+#modal:has(.iy-transfer-review-header) .actions .btn.secondary:hover{background:#dceaff!important}
+#modal:has(.iy-transfer-review-header) .actions .btn.primary{background:linear-gradient(135deg,#1769e8,#0754d4)!important;border-color:#0754d4!important;color:#fff!important;box-shadow:0 4px 10px rgba(16,86,208,.18)}
+#modal:has(.iy-transfer-review-header) .actions .btn.danger{background:#fff1f2!important;border-color:#f3c8ce!important;color:#b42335!important}
+@media(max-width:600px){#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header){margin:-18px -18px 12px;padding:15px 18px}#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header) h2{font-size:18px}}
 </style>
 
 </head>
@@ -3298,6 +3334,7 @@ function render(){
  </div>`;
  if(currentPage==="users"&&canAccess("users"))setTimeout(renderUsersTable,0);
  if((currentPage==="transfers"||currentPage==="approvals")&&!window.__partsTransfersLoaded)setTimeout(loadPartsTransfersDataAndRefresh,0);
+ if(currentPage==="inventory"&&!window.__inventoryTransferRowsLoaded&&!window.__inventoryTransferRowsBusy)setTimeout(loadInventoryTransferHistoryAndRefresh,0);
 
  initMachinePage();}
 
@@ -5348,6 +5385,110 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  }
 }
 
+async function loadInventoryTransferHistoryAndRefresh(force=false){
+ if(!iyCloudReady||!iyCompany||!iyAuthUser||window.__inventoryTransferRowsBusy)return;
+ if(window.__inventoryTransferRowsLoaded&&!force)return;
+ window.__inventoryTransferRowsBusy=true;
+ window.__inventoryTransferRowsAvailable=false;
+ try{
+   const all=[];
+   const pageSize=500;
+   let offset=0;
+   while(true){
+     const {data,error}=await iySupabase
+       .from("parts_transfers")
+       .select("id,company_id,transfer_ref,part_id,quantity,from_site_id,from_department_id,to_site_id,to_department_id,reason,status,requested_by,requested_at,completed_at,rejected_at,updated_at,receiving_user_id,dispatched_at,received_at,received_by,received_quantity,accepted_quantity,receipt_note,discrepancy_note")
+       .eq("company_id",iyCompany.id)
+       .order("requested_at",{ascending:false})
+       .range(offset,offset+pageSize-1);
+     if(error)throw error;
+     const batch=data||[];
+     all.push(...batch);
+     if(batch.length<pageSize)break;
+     offset+=pageSize;
+   }
+   window.__inventoryTransferRows=all;
+   window.__inventoryTransferRowsAvailable=true;
+ }catch(e){
+   console.error("Inventory transfer history load failed",e);
+   window.__inventoryTransferRows=[];
+   window.__inventoryTransferRowsAvailable=false;
+ }finally{
+   window.__inventoryTransferRowsLoaded=true;
+   window.__inventoryTransferRowsBusy=false;
+   if(currentPage==="inventory")renderInventory();
+ }
+}
+function inventoryTransfersForRow(row){
+ if(!row||!window.__inventoryTransferRowsAvailable)return [];
+ const partId=String(row[10]||"");
+ const siteId=String(row[11]||"");
+ const departmentId=String(row[12]||"");
+ if(!partId||!siteId)return [];
+ return (window.__inventoryTransferRows||[]).filter(t=>{
+   if(String(t.part_id||"")!==partId)return false;
+   const outgoing=String(t.from_site_id||"")===siteId&&String(t.from_department_id||"")===departmentId;
+   const incoming=String(t.to_site_id||"")===siteId&&String(t.to_department_id||"")===departmentId;
+   return outgoing||incoming;
+ });
+}
+function inventoryTransferMoved(t){
+ // Reporting only: count transfers that have actually been dispatched or completed.
+ // Never count requests that are still awaiting approval, rejected, cancelled, or drafts.
+ const status=String(t?.status||"").toLowerCase().trim();
+ return ["in_transit","completed"].includes(status);
+}
+function inventoryTransferTotals(row){
+ if(!window.__inventoryTransferRowsAvailable)return {incoming:null,outgoing:null};
+ // Inventory row layout: part ID at [10], site ID at [11], department ID at [12].
+ const partId=String(row?.[10]||"").trim().toLowerCase();
+ const siteId=String(row?.[11]||"").trim().toLowerCase();
+ const departmentId=String(row?.[12]||"").trim().toLowerCase();
+ if(!partId||!siteId)return {incoming:0,outgoing:0};
+ let incoming=0,outgoing=0;
+ for(const t of (window.__inventoryTransferRows||[])){
+   if(String(t.company_id||"")!==String(iyCompany?.id||""))continue;
+   if(String(t.part_id||"").trim().toLowerCase()!==partId)continue;
+   if(!inventoryTransferMoved(t))continue;
+   const fromSite=String(t.from_site_id||"").trim().toLowerCase();
+   const fromDept=String(t.from_department_id||"").trim().toLowerCase();
+   const toSite=String(t.to_site_id||"").trim().toLowerCase();
+   const toDept=String(t.to_department_id||"").trim().toLowerCase();
+   if(fromSite===siteId&&fromDept===departmentId)outgoing+=num(t.quantity);
+   if(toSite===siteId&&toDept===departmentId)incoming+=num(t.quantity);
+ }
+ return {incoming,outgoing};
+}
+function inventoryTransferDate(value){
+ if(!value)return "—";
+ const d=new Date(value);
+ return Number.isNaN(d.getTime())?String(value):d.toLocaleString();
+}
+function openInventoryTransferHistory(encodedInventoryId,direction){
+ const inventoryId=decodeURIComponent(encodedInventoryId||"");
+ const row=viewInventoryRows().find(x=>String(x[9]||"")===inventoryId);
+ if(!row)return alert("Inventory record not found in the selected scope.");
+ if(!window.__inventoryTransferRowsAvailable){
+   openModal(`<div class="modalhead"><h2>Inventory Movement History</h2><button class="close" onclick="closeModal()">×</button></div><div class="empty-state"><b>Transfer history is unavailable</b><p>Refresh the Inventory page and try again. No inventory values have been changed.</p><button class="btn secondary" onclick="closeModal();loadInventoryTransferHistoryAndRefresh(true)">Retry</button></div>`);
+   return;
+ }
+ const siteId=String(row[11]||"");
+ const departmentId=String(row[12]||"");
+ const related=inventoryTransfersForRow(row).filter(t=>!direction||
+   (direction==="in"&&String(t.to_site_id||"")===siteId&&String(t.to_department_id||"")===departmentId)||
+   (direction==="out"&&String(t.from_site_id||"")===siteId&&String(t.from_department_id||"")===departmentId));
+ const title=direction==="in"?"Transferred In History":direction==="out"?"Transferred Out History":"Inventory Movement History";
+ const rows=related.sort((a,b)=>new Date(b.requested_at||0)-new Date(a.requested_at||0));
+ openModal(`<div class="modalhead"><div><h2>${title}</h2><div class="hint">${esc(row[0]||"")} · ${esc(row[1]||"")}</div></div><button class="close" onclick="closeModal()">×</button></div>
+ <div class="hint" style="margin-bottom:12px">${esc(transferScopeName(siteId,departmentId))}. Transfer quantities are informational and are not added to Current Stock again.</div>
+ <div class="tablewrap"><table class="table"><tr><th>Transfer / Date</th><th>Direction</th><th>Quantity</th><th>From</th><th>To</th><th>Status</th></tr>${rows.length?rows.map(t=>{
+   const outgoing=String(t.from_site_id||"")===siteId&&String(t.from_department_id||"")===departmentId;
+   const dir=outgoing?"Transferred Out":"Transferred In";
+   return `<tr><td><b>${esc(t.transfer_ref||"Transfer")}</b><div class="hint">${esc(inventoryTransferDate(t.requested_at))}</div></td><td>${dir}</td><td>${num(t.quantity)}</td><td>${esc(transferScopeName(t.from_site_id,t.from_department_id))}</td><td>${esc(transferScopeName(t.to_site_id,t.to_department_id))}</td><td><span class="${transferStatusClass(t.status)}">${esc(transferStatusLabel(t.status))}</span></td></tr>`;
+ }).join(""):`<tr><td colspan="6"><div class="empty-state">No transfer records found for this part and location.</div></td></tr>`}</table></div>
+ <div class="modalactions"><button class="btn secondary" onclick="closeModal()">Close</button></div>`);
+}
+
 function inventoryPage(){
  const m=invMetrics();
  const rows=viewInventoryRows();
@@ -5376,10 +5517,19 @@ function inventoryTable(q){
    const status=stockQty===0?"out":stockQty<=minQty?"low":"available";
    return (!q||text.includes(q)) && (!machine||String(x[2]||"").split(",").some(v=>v.trim().toLowerCase()===machine)) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
  });
- return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventoryById('${encodeURIComponent(x[9]||'')}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
+ return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Transferred In</th><th>Transferred Out</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>{const moved=inventoryTransferTotals(x);const id=encodeURIComponent(x[9]||"");return `<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${moved.incoming===null?'<span class="hint" title="Transfer history is loading or unavailable">—</span>':`<button class="btn secondary small" title="View transfers into this location" onclick="openInventoryTransferHistory('${id}','in')">${moved.incoming}</button>`}</td><td>${moved.outgoing===null?'<span class="hint" title="Transfer history is loading or unavailable">—</span>':`<button class="btn secondary small" title="View transfers out of this location" onclick="openInventoryTransferHistory('${id}','out')">${moved.outgoing}</button>`}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventoryById('${id}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`}).join("")}</table></div>`;
 }
 function statusBadge(x){return num(x[3])===0?'<span class="badge bad">OUT OF STOCK</span>':num(x[3])<=num(x[6])?'<span class="badge warn">LOW STOCK</span>':'<span class="badge ok">IN STOCK</span>'}
-function renderInventory(){document.getElementById("invTable").innerHTML=inventoryTable(document.getElementById("invSearch")?.value||"")}
+function renderInventory(){
+ const table=document.getElementById("invTable");
+ if(table)table.innerHTML=inventoryTable(document.getElementById("invSearch")?.value||"");
+ // Load the transfer ledger when needed. Do not force a refresh on every filter
+ // render; the loader itself rerenders Inventory after it finishes.
+ if(iyCloudReady&&iyCompany&&iyAuthUser&&
+    !window.__inventoryTransferRowsLoaded&&!window.__inventoryTransferRowsBusy){
+   Promise.resolve().then(()=>loadInventoryTransferHistoryAndRefresh(false));
+ }
+}
 function resetInventoryFilters(){
  const search=document.getElementById("invSearch");
  const machine=document.getElementById("invMachineFilter");
@@ -7271,14 +7421,45 @@ async function openApprovedReport(reportId){await openReportNotification(reportI
 
 function savedApprovalReportsList(kind){const rows=(reportApprovalReports||[]).filter(r=>r.report_kind===kind).slice(0,12);if(!rows.length)return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Reports shared for approval and their current signature status.</span></div></div><div class="saved-approval-empty">No saved approval reports yet.</div></section>`;return `<section class="saved-approval-card"><div class="saved-approval-head"><div><strong>Saved approval reports</strong><span>Open any saved report to view the exact snapshot and export its applied signatures.</span></div><span>${rows.length} recent</span></div><div class="saved-approval-list">${rows.map(r=>{const req=(reportApprovalRequests||[]).filter(x=>x.report_id===r.id),signed=req.filter(x=>x.status==='signed').length,pending=req.filter(x=>x.status==='pending').length,creator=iyUsersCache.find(u=>u.user_id===r.created_by);return `<button class="saved-approval-row" type="button" onclick="openReportNotification('${esc(r.id)}')"><span class="saved-approval-icon">▤</span><span class="saved-approval-main"><strong>${esc(r.title)}</strong><small>${creator?esc(creator.full_name||creator.email||'User'):'User'} · ${esc(new Date(r.created_at).toLocaleString('en-GB'))}</small></span><span class="saved-approval-status"><b>${signed} signed</b><small>${pending} pending</small></span><span class="saved-approval-open">Open ›</span></button>`}).join('')}</div></section>`;}
 function partsReportsPage(){return `<div class="panel">
- <div class="formgrid"><div class="field"><label>Report Type</label><select id="pr_type" class="select"><option>All Transactions</option><option>Parts Issued</option><option>Parts Received</option><option>Parts Orders</option></select></div><div class="field"><label>Technician</label><input id="pr_tech" class="input"></div><div class="field"><label>Machine</label><input id="pr_machine" class="input"></div><div class="field"><label>Part Number</label><input id="pr_part" class="input"></div><div class="field"><label>Date From</label><input id="pr_from" class="input" type="date"></div><div class="field"><label>Date To</label><input id="pr_to" class="input" type="date"></div></div>
+ <div class="formgrid"><div class="field"><label>Report Type</label><select id="pr_type" class="select" onchange="partsReportTypeChanged()"><option>All Transactions</option><option>Parts Issued</option><option>Parts Received</option><option>Parts Orders</option><option>Parts Transfers</option></select></div><div class="field" id="pr_tech_field"><label id="pr_tech_label">Technician</label><input id="pr_tech" class="input"></div><div class="field" id="pr_machine_field"><label>Machine</label><input id="pr_machine" class="input"></div><div class="field"><label>Part Number</label><input id="pr_part" class="input"></div><div class="field"><label>Date From</label><input id="pr_from" class="input" type="date"></div><div class="field"><label>Date To</label><input id="pr_to" class="input" type="date"></div></div>
  <div class="actions"><button class="btn primary" onclick="runPartsReport()">Generate Report</button></div><div id="prout" style="margin-top:22px"></div></div>`}
+function partsReportTypeChanged(){
+ const type=document.getElementById("pr_type")?.value||"All Transactions";
+ const transfer=type==="Parts Transfers";
+ const techField=document.getElementById("pr_tech_field"),machineField=document.getElementById("pr_machine_field"),techLabel=document.getElementById("pr_tech_label");
+ if(techField)techField.style.display=type==="Parts Orders"?"none":"";
+ if(machineField)machineField.style.display=transfer||type==="Parts Orders"?"none":"";
+ if(techLabel)techLabel.textContent=transfer?"Requestor / Receiver":"Technician";
+}
 function dateIn(v,from,to){const d=new Date(v);if(from&&d<new Date(from))return false;if(to&&d>new Date(to+"T23:59:59"))return false;return true}
-function runPartsReport(){
+async function runPartsReport(){
  if(!canGenerateReports())return toast("You do not have permission to generate reports.");
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
  let rows=[],partsUpdates=[];
- if(type==="Parts Orders"){
+ if(type==="Parts Transfers"){
+  try{
+   if(!window.__partsTransfersLoaded)await loadPartsTransfersData();
+   if(window.__partsTransfersUnavailable)throw new Error("Parts Transfers are unavailable in the current database schema.");
+   const partMap=new Map((window.__partsTransferParts||[]).map(p=>[String(p.id),p]));
+   const transferRows=Array.isArray(window.__partsTransfers)?window.__partsTransfers:[];
+   transferRows.forEach(t=>{
+    const p=partMap.get(String(t.part_id))||{};
+    const partNumber=String(p.part_number||"");
+    const description=String(p.description||"");
+    const fromLabel=transferScopeName(t.from_site_id,t.from_department_id);
+    const toLabel=transferScopeName(t.to_site_id,t.to_department_id);
+    const requester=transferRequesterName(t.requested_by);
+    const receiver=transferRequesterName(t.receiving_user_id);
+    const route=`${fromLabel} → ${toLabel}`;
+    const searchablePerson=`${requester} ${receiver}`.toLowerCase();
+    if(!dateIn(t.requested_at,from,to))return;
+    if(tech&&!searchablePerson.includes(tech))return;
+    if(machine&&!route.toLowerCase().includes(machine))return;
+    if(part&&!(partNumber.toLowerCase().includes(part)||description.toLowerCase().includes(part)))return;
+    rows.push(["TRANSFER",t.requested_at,partNumber,description,route,num(t.quantity),requester,t.reason||"",t.transfer_ref||"",transferStatusLabel(t.status),t.received_at||"",t.dispatched_at||"",fromLabel,toLabel,t.status||""]);
+   });
+  }catch(e){console.error("Parts Transfers report could not be loaded",e);toast(e?.message||"Parts Transfers report could not be loaded.");return;}
+ }else if(type==="Parts Orders"){
   viewUpdateRows().forEach(x=>{
    if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part)))partsUpdates.push(x);
   });
@@ -7293,7 +7474,11 @@ function runPartsReport(){
  partsUpdates.sort((a,b)=>new Date(b[0])-new Date(a[0]));
  window.__partsReportData={type,tech,machine,part,from,to,rows,partsUpdates};startFreshReportApproval("parts");
  const total=rows.reduce((a,x)=>a+num(x[5]),0),issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED");
- if(type==="Parts Orders"){
+ if(type==="Parts Transfers"){
+  const completed=rows.filter(x=>String(x[14]||"").toLowerCase()==="completed").length;
+  const inTransit=rows.filter(x=>String(x[14]||"").toLowerCase()==="in_transit").length;
+  document.getElementById("prout").innerHTML=`<div class="cards">${metric("TRANSFERS",rows.length,"Matching transfer records")}${metric("QUANTITY",total,"Units transferred / requested")}${metric("IN TRANSIT",inTransit,"Awaiting receipt")}${metric("COMPLETED",completed,"Receipt confirmed")}</div><div class="notice"><b>Parts Transfers</b> &nbsp; ${from||to?`period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${tech?`&nbsp; | &nbsp; Requestor / Receiver: ${esc(tech)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Transfer Ref</th><th>Transfer Date</th><th>Part Number</th><th>Description</th><th>Qty</th><th>From</th><th>To</th><th>Requested By</th><th>Reason</th><th>Status</th><th>Received At</th></tr>${rows.map(x=>`<tr><td><b>${esc(x[8])}</b></td><td>${inventoryTransferDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[5]}</td><td>${esc(x[12])}</td><td>${esc(x[13])}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td><td>${esc(x[9])}</td><td>${x[10]?inventoryTransferDate(x[10]):"Awaiting receipt"}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No Parts Transfers match the selected filters.</div>`}`;
+ }else if(type==="Parts Orders"){
   const suppliers=new Set(ordered.map(x=>String(x[6]||"").trim()).filter(Boolean)).size,machines=new Set(ordered.map(x=>String(x[4]||"").trim()).filter(Boolean)).size,updateQty=partsUpdates.reduce((a,x)=>a+num(x[4]),0);
   const updateSection=partsUpdates.length?`<div class="report-subsection-title">PARTS UPDATES</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Status</th><th>Onsite Date</th><th>Remarks</th></tr>${partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5]||"")}</b></td><td>${esc(x[6]||"")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>`:`<div class="report-subsection-title">PARTS UPDATES</div><div class="empty">No Parts Updates match the selected filters.</div>`;
   const orderSection=ordered.length?`<div class="report-subsection-title">PARTS ORDERS</div><div class="tablewrap"><table class="table"><tr><th>Order Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>PO / J-Ref</th><th>Supplier</th><th>Expected</th><th>Ordered</th><th>Remarks</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table></div>`:`<div class="report-subsection-title">PARTS ORDERS</div><div class="empty">No active Parts Orders match the selected filters.</div>`;
@@ -7301,7 +7486,7 @@ function runPartsReport(){
  }else{
   document.getElementById("prout").innerHTML=`<div class="cards">${metric("RECORDS",rows.length,"Matching transactions")}${metric("QUANTITY",total,"Units in selected transactions")}${metric("ISSUED",issued.length,"Issue transactions")}${metric("RECEIVED",received.length,"Receipt transactions")}</div><div class="notice"><b>${esc(type)}</b> &nbsp; ${from||to?`period: ${from?fmtDate(from):"All"} to ${to?fmtDate(to):"All"}`:"All dates"} ${tech?`&nbsp; | &nbsp; Technician: ${esc(tech)}`:""} ${machine?`&nbsp; | &nbsp; Machine: ${esc(machine)}`:""} ${part?`&nbsp; | &nbsp; Part: ${esc(part)}`:""}</div><div class="tablewrap"><table class="table"><tr><th>Type</th><th>Date</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Person / Supplier</th><th>${type==="Parts Received"?"PO / J-Ref":type==="Parts Issued"?"Work Order":"PO / J-Ref / Work Order"}</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table></div>${rows.length?"":`<div class="empty">No parts transactions match the selected filters.</div>`}`;
  }
- const tf=document.getElementById("pr_tech_field");if(tf)tf.style.display=type==="Parts Orders"?"none":"";
+ partsReportTypeChanged();
  toast("Parts report generated.");
 }
 function reportPreparedByName(){
@@ -7479,14 +7664,15 @@ async function refreshReportApprovalPreview(kind){
 function buildPartsReportHTML(snapshotOverride){
  const data=snapshotOverride?.data||window.__partsReportData;if(!data||!data.rows)return "";
  const ss=snapshotOverride?.settings||db.settings;const legacySnapshotSite=snapshotOverride&&ss.department?String(ss.department).split(" · ")[0].trim():"";const company=esc(ss.companyName||"iy"),system=esc(ss.systemName||"Computerized Machines Maintenance System"),prepared=esc(ss.preparedBy||reportPreparedByName()),siteName=esc(ss.siteName||legacySnapshotSite||reportActiveSiteName()),footer=esc(ss.reportFooter||""),logo=ss.logoData||"";
- const rows=data.rows,partsUpdates=Array.isArray(data.partsUpdates)?data.partsUpdates:[],issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),updateQty=partsUpdates.reduce((a,x)=>a+num(x[4]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders";
+ const rows=data.rows,partsUpdates=Array.isArray(data.partsUpdates)?data.partsUpdates:[],issued=rows.filter(x=>x[0]==="ISSUED"),received=rows.filter(x=>x[0]==="RECEIVED"),ordered=rows.filter(x=>x[0]==="ORDERED"),total=rows.reduce((a,x)=>a+num(x[5]),0),updateQty=partsUpdates.reduce((a,x)=>a+num(x[4]),0),period=data.from||data.to?`${data.from?fmtDate(data.from):"All"} - ${data.to?fmtDate(data.to):"All"}`:"All dates",reportType=data.type==="All Transactions"?"Parts Transactions":data.type,isOrders=data.type==="Parts Orders",isTransfers=data.type==="Parts Transfers";
  const logoHtml=logo?`<img class="r-logo" src="${logo}" alt="Company logo">`:``;
  const partsUpdateTable=partsUpdates.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>STATUS</th><th>ONSITE DATE</th><th>REMARKS</th><th>IMAGES</th></tr>${partsUpdates.map(x=>`<tr><td>${fmtDate(x[0])}</td><td><b>${esc(x[1])}</b></td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[4]}</td><td><b>${esc(x[5]||"")}</b></td><td>${esc(x[6]||"")}</td><td>${fmtDate(x[7])}</td><td>${esc(x[8]||"")}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td><td>${partsUpdateReportImageLinks(x,true)}</td></tr>`).join("")}</table>`:`<div class="empty">No Parts Updates match the selected filters.</div>`;
  const orderTable=ordered.length?`<table><tr><th>ORDER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PO / J-REF</th><th>SUPPLIER</th><th>EXPECTED</th><th>ORDERED</th><th>REMARKS</th></tr>${rows.map(x=>`<tr><td>${fmtDate(x[1])}</td><td><b>${esc(x[2])}</b></td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td><b>${esc(x[7])}</b></td><td>${esc(x[6])}</td><td>${fmtDate(x[8])}</td><td>${fmtDate(x[9])}</td><td>${esc(x[10]||"")}</td></tr>`).join("")}</table>`:`<div class="empty">No active Parts Orders match the selected filters.</div>`;
  const transactionTable=rows.length?`<table><tr><th>TYPE</th><th>DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>MACHINE</th><th>QTY</th><th>PERSON / SUPPLIER</th><th>${data.type==="Parts Received"?"PO / J-REF":data.type==="Parts Issued"?"WORK ORDER":"PO / J-REF / WORK ORDER"}</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${fmtDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${esc(x[4])}</td><td>${x[5]}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td></tr>`).join("")}</table>`:`<div class="empty">No parts transactions match the selected filters.</div>`;
- const kpis=isOrders?`${metricReportKpi("PARTS UPDATES",partsUpdates.length,"Replenishment requests")}${metricReportKpi("UPDATE QUANTITY",updateQty,"Units requested")}${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("ORDER QUANTITY",total,"Units on order")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
- const summary=isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Parts Updates & Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
- const content=isOrders?`<div class="r-section">PARTS UPDATES <small>${partsUpdates.length} update(s)</small></div>${partsUpdateTable}<div class="r-section">PARTS ORDERS <small>${ordered.length} order(s)</small></div>${orderTable}`:`<div class="r-section">PARTS TRANSACTIONS</div>${transactionTable}`;
+ const transferTable=rows.length?`<table><tr><th>TRANSFER REF</th><th>TRANSFER DATE</th><th>PART NUMBER</th><th>DESCRIPTION</th><th>QTY</th><th>FROM</th><th>TO</th><th>REQUESTED BY</th><th>REASON</th><th>STATUS</th><th>RECEIVED AT</th></tr>${rows.map(x=>`<tr><td><b>${esc(x[8])}</b></td><td>${inventoryTransferDate(x[1])}</td><td>${esc(x[2])}</td><td>${esc(x[3])}</td><td>${x[5]}</td><td>${esc(x[12])}</td><td>${esc(x[13])}</td><td>${esc(x[6])}</td><td>${esc(x[7])}</td><td>${esc(x[9])}</td><td>${x[10]?inventoryTransferDate(x[10]):"Awaiting receipt"}</td></tr>`).join("")}</table>`:`<div class="empty">No Parts Transfers match the selected filters.</div>`;
+ const kpis=isTransfers?`${metricReportKpi("TOTAL TRANSFERS",rows.length,"Matching transfer records")}${metricReportKpi("TOTAL QUANTITY",total,"Units transferred / requested")}${metricReportKpi("IN TRANSIT",rows.filter(x=>String(x[14]||"").toLowerCase()==="in_transit").length,"Awaiting receipt")}${metricReportKpi("COMPLETED",rows.filter(x=>String(x[14]||"").toLowerCase()==="completed").length,"Receipt confirmed")}`:isOrders?`${metricReportKpi("PARTS UPDATES",partsUpdates.length,"Replenishment requests")}${metricReportKpi("UPDATE QUANTITY",updateQty,"Units requested")}${metricReportKpi("ACTIVE ORDERS",ordered.length,"Awaiting receipt")}${metricReportKpi("ORDER QUANTITY",total,"Units on order")}`:`${metricReportKpi("TOTAL RECORDS",rows.length,"Matching transactions")}${metricReportKpi("TOTAL QUANTITY",total,"Units")}${metricReportKpi("PARTS ISSUED",issued.length,"Transactions")}${metricReportKpi("PARTS RECEIVED",received.length,"Transactions")}`;
+ const summary=isTransfers?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Parts Transfers</b></div><div class="parts-summary-box"><span>REQUESTOR / RECEIVER</span><b>${esc(data.tech||"All users")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:isOrders?`<div class="parts-summary"><div class="parts-summary-box"><span>REPORT</span><b>Parts Updates & Orders</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div><div class="parts-summary-box"><span>PART NUMBER</span><b>${esc(data.part||"All parts")}</b></div></div>`:`<div class="parts-summary"><div class="parts-summary-box"><span>FILTER</span><b>${esc(reportType)}</b></div><div class="parts-summary-box"><span>TECHNICIAN</span><b>${esc(data.tech||"All technicians")}</b></div><div class="parts-summary-box"><span>MACHINE</span><b>${esc(data.machine||"All machines")}</b></div></div>`;
+ const content=isTransfers?`<div class="r-section">PARTS TRANSFERS <small>${rows.length} transfer(s)</small></div>${transferTable}`:isOrders?`<div class="r-section">PARTS UPDATES <small>${partsUpdates.length} update(s)</small></div>${partsUpdateTable}<div class="r-section">PARTS ORDERS <small>${ordered.length} order(s)</small></div>${orderTable}`:`<div class="r-section">PARTS TRANSACTIONS</div>${transactionTable}`;
  return `<div class="report-paper parts-report-paper"><div class="r-head">${logoHtml}<h1 class="r-title">${company}</h1><div class="r-system">${system}</div><p class="r-sub">PARTS REPORT</p></div><div class="r-meta"><div><span>REPORT TYPE</span><b>${esc(reportType)}</b></div><div><span>REPORT PERIOD</span><b>${esc(period)}</b></div><div><span>PREPARED BY</span><b>${prepared}</b></div><div><span>SITE</span><b>${siteName}</b></div></div><div class="r-kpis">${kpis}</div>${summary}${content}${reportApprovalPanel("parts")}${buildReportApprovalSignatureHTML("parts", prepared)}<div class="r-footer">Generated by ${company} ${system}${footer&&footer!=="-"?" — "+footer:""}<br>Generated: ${new Date().toLocaleString("en-GB")}<br>This document is system generated.</div></div>`;
 }
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
@@ -7515,10 +7701,20 @@ window.__partsTransfersUnavailable=false;
 window.__partsTransferParts=[];
 window.__partsTransferApprovers=[];
 window.__partsTransferApproverLoadBusy=false;
+window.__partsTransferReceiverId="";
+window.__partsTransferReceivers=[];
+// Inventory-only transfer ledger. Kept separate from the transfer workflow cache so
+// inventory movement totals can cover the full history without changing transfer screens.
+window.__inventoryTransferRows=[];
+window.__inventoryTransferRowsLoaded=false;
+window.__inventoryTransferRowsBusy=false;
+window.__inventoryTransferRowsAvailable=false;
 
 function transferStatusLabel(status){
  const map={
    pending_approval:"Pending Approval",
+   approved_awaiting_dispatch:"Approved · Awaiting Dispatch",
+   in_transit:"In Transit · Awaiting Receipt",
    completed:"Completed",
    rejected:"Rejected",
    cancelled:"Cancelled"
@@ -7529,6 +7725,7 @@ function transferStatusClass(status){
  const s=String(status||"").toLowerCase();
  if(s==="completed")return "badge good";
  if(s==="rejected"||s==="cancelled")return "badge bad";
+ if(s==="in_transit")return "badge info";
  return "badge warn";
 }
 function pendingPartsTransferApprovalRows(){
@@ -7616,7 +7813,7 @@ async function loadPartsTransfersData(){
      try{await loadAdminLocationOptions();}catch(e){console.warn("Transfer location loading skipped",e?.message||e);}
    }
    const [tRes,aRes,pRes,sitesRes,deptsRes,membersRes]=await Promise.all([
-     iySupabase.from("parts_transfers").select("id,company_id,transfer_ref,part_id,quantity,from_site_id,from_department_id,to_site_id,to_department_id,reason,status,requested_by,requested_at,completed_at,rejected_at,updated_at").eq("company_id",iyCompany.id).order("requested_at",{ascending:false}).limit(500),
+     iySupabase.from("parts_transfers").select("id,company_id,transfer_ref,part_id,quantity,from_site_id,from_department_id,to_site_id,to_department_id,reason,status,requested_by,requested_at,completed_at,rejected_at,updated_at,receiving_user_id,dispatched_at,dispatched_by,received_at,received_by,received_quantity,accepted_quantity,receipt_note,discrepancy_note").eq("company_id",iyCompany.id).order("requested_at",{ascending:false}).limit(500),
      iySupabase.from("parts_transfer_approvals").select("id,company_id,transfer_id,approver_user_id,approver_role,status,requested_at,signed_at,signer_name,signer_role,signature_path,decision_note").eq("company_id",iyCompany.id).order("requested_at",{ascending:true}).limit(2500),
      iySupabase.from("parts").select("id,part_number,description,machine_model,supplier,minimum_stock").eq("company_id",iyCompany.id).order("part_number"),
      iySupabase.from("sites").select("id,name").eq("company_id",iyCompany.id),
@@ -7630,8 +7827,17 @@ async function loadPartsTransfersData(){
      window.__partsTransfersUnavailable=true;
    }
    window.__partsTransfers=(tRes.data||[]);
+   // Any fresh transfer-ledger read invalidates the inventory's separate full-history cache.
+   window.__inventoryTransferRowsLoaded=false;
    window.__partsTransferApprovals=(aRes.data||[]);
    window.__partsTransferParts=(pRes.data||[]);
+   // Transfer events are an additive audit timeline. Keep the core screen usable
+   // if an older database has not yet applied the receiving-confirmation migration.
+   try{
+     const evRes=await iySupabase.from("parts_transfer_events").select("id,company_id,transfer_id,actor_user_id,event_type,event_at,details").eq("company_id",iyCompany.id).order("event_at",{ascending:false}).limit(3000);
+     if(evRes.error)throw evRes.error;
+     window.__partsTransferEvents=evRes.data||[];
+   }catch(evErr){console.warn("Transfer event timeline is not available yet",evErr?.message||evErr);window.__partsTransferEvents=[];}
    // Approval users may have a restricted location picker; load company location labels
    // independently so both source and destination are readable in the review modal.
    if(!sitesRes.error&&Array.isArray(sitesRes.data)&&sitesRes.data.length){
@@ -7696,6 +7902,14 @@ async function loadPartsTransfersData(){
      });
      iyUsersCache=Array.from(userMap.values());
    }
+   try{
+     const {data:receiverLabels,error:receiverLabelsError}=await iySupabase.rpc("get_parts_transfer_receiver_labels",{p_company_id:iyCompany.id});
+     if(!receiverLabelsError&&Array.isArray(receiverLabels)){
+       const userMap=new Map((iyUsersCache||[]).map(x=>[String(x.user_id||x.id||""),x]));
+       receiverLabels.forEach(x=>{if(x.user_id)userMap.set(String(x.user_id),{...(userMap.get(String(x.user_id))||{}),...x});});
+       iyUsersCache=Array.from(userMap.values());
+     }
+   }catch(e){console.warn("Parts transfer receiver names could not be resolved",e?.message||e);}
    window.__partsTransfersLoaded=true;
  }catch(e){
    console.error("Parts Transfers load failed",e);
@@ -7852,6 +8066,74 @@ async function refreshPartsTransferApproverListFromCurrent(){
  window.__lastPartsTransferApproverUsers=window.__lastPartsTransferApproverUsers||[];
  await refreshPartsTransferApprovers();
 }
+async function refreshPartsTransferReceivers(){
+ const holder=document.getElementById("pt_receiver_holder");
+ if(!holder)return;
+ const {toSite,toDept}=transferSelectedScope();
+ if(!toSite||!toDept){holder.innerHTML=`<div class="iy-transfer-empty-users">Select the destination Site and Department to load eligible receivers.</div>`;return;}
+ holder.innerHTML=`<div class="iy-transfer-loading-users">Loading destination users…</div>`;
+ try{
+   const {data,error}=await iySupabase.rpc("get_parts_transfer_receivers",{p_company_id:iyCompany.id,p_to_site_id:toSite,p_to_department_id:toDept});
+   if(error)throw error;
+   window.__partsTransferReceivers=Array.isArray(data)?data:[];
+   const userMap=new Map((iyUsersCache||[]).map(x=>[String(x.user_id||x.id||""),x]));
+   window.__partsTransferReceivers.forEach(u=>{if(u.user_id)userMap.set(String(u.user_id),{...(userMap.get(String(u.user_id))||{}),...u});});
+   iyUsersCache=Array.from(userMap.values());
+   const selected=String(window.__partsTransferReceiverId||"");
+   if(selected&&!window.__partsTransferReceivers.some(u=>String(u.user_id)===selected))window.__partsTransferReceiverId="";
+   if(!window.__partsTransferReceivers.length){
+     holder.innerHTML=`<div class="iy-transfer-empty-users">No active users are assigned to this destination Site and Department. Add or activate a destination user before dispatch.</div>`;
+     return;
+   }
+   holder.innerHTML=`<select id="pt_receiver_user_id" class="select" required onchange="window.__partsTransferReceiverId=this.value"><option value="">Select receiving user…</option>${window.__partsTransferReceivers.map(u=>`<option value="${esc(u.user_id)}" ${String(u.user_id)===String(window.__partsTransferReceiverId||"")?"selected":""}>${esc(u.full_name||u.user_code||u.user_id)} · ${esc(roleLabel(u.role||""))}</option>`).join("")}</select><small class="iy-transfer-note">The selected user must confirm receipt after dispatch.</small>`;
+ }catch(e){
+   console.error("Parts transfer receiver list failed",e);
+   holder.innerHTML=`<div class="iy-transfer-empty-users">Destination users could not be loaded. ${esc(e?.message||"Please try again.")}</div>`;
+ }
+}
+function canDispatchPartsTransfer(t){
+ if(!t)return false;
+ const r=currentRole(),site=currentSiteId(),dept=currentDepartmentId();
+ return ["company_admin","super_admin","manager"].includes(r)
+   || (r==="site_supervisor"&&String(site)===String(t.from_site_id))
+   || (["department_supervisor","team_lead","parts_coordinator","technician"].includes(r)&&String(site)===String(t.from_site_id)&&String(dept)===String(t.from_department_id));
+}
+function canManagePartsTransferReceiver(t){
+ const legacyUnreceived=!!t && t.status==="completed" && !t.received_at && !t.received_by;
+ return !!t && (["approved_awaiting_dispatch","in_transit"].includes(t.status)||legacyUnreceived) && canEdit("transfers") && canDispatchPartsTransfer(t);
+}
+async function openPartsTransferReceiverAssignmentModal(transferId){
+ const transfer=(window.__partsTransfers||[]).find(x=>String(x.id)===String(transferId));
+ if(!transfer)return alert("Parts transfer could not be found.");
+ if(!canManagePartsTransferReceiver(transfer))return alert("You do not have permission to assign the receiver for this transfer.");
+ const legacyUnreceived=transfer.status==="completed"&&!transfer.received_at&&!transfer.received_by;
+ if(!["approved_awaiting_dispatch","in_transit"].includes(transfer.status)&&!legacyUnreceived)return alert("Receiver assignment is only available before dispatch, while in transit, or for legacy completed records with no receipt confirmation.");
+ window.__partsTransferReceiverAssignmentId=transfer.id;
+ window.__partsTransferReceiverId=String(transfer.receiving_user_id||"");
+ openModal(`<div class="modalhead"><h2>${transfer.receiving_user_id?"Change Receiving User":"Assign Receiving User"}</h2><button class="close" onclick="closeModal()">×</button></div>
+  <div class="iy-transfer-intro"><strong>${esc(transfer.transfer_ref)} · ${esc(transferStatusLabel(transfer.status))}</strong><span>${legacyUnreceived?"Legacy record: assigning a receiver will reopen receipt confirmation only. No stock will be deducted again and approval history will remain unchanged.":"Select an active user assigned to the destination Site and Department. This change does not alter approvals or move stock."}</span></div>
+  <div class="formgrid">
+   <div class="field full"><label>Destination</label><div class="iy-transfer-review-header"><div><span>Site and Department</span><strong>${esc(transferScopeName(transfer.to_site_id,transfer.to_department_id))}</strong></div></div></div>
+   <input type="hidden" id="from_site" value="${esc(transfer.from_site_id)}"><input type="hidden" id="from_department" value="${esc(transfer.from_department_id)}"><input type="hidden" id="to_site" value="${esc(transfer.to_site_id)}"><input type="hidden" id="to_department" value="${esc(transfer.to_department_id)}">
+   <div class="field full"><label>Receiving User <span class="iy-transfer-required">(required)</span></label><div id="pt_receiver_holder"><div class="iy-transfer-loading-users">Loading destination users…</div></div></div>
+  </div>
+  <div class="actions"><button class="btn secondary" onclick="openPartsTransferModal('${esc(transfer.id)}')">Cancel</button><button class="btn primary" onclick="savePartsTransferReceiverAssignment()">Save Receiver</button></div>`);
+ setTimeout(()=>refreshPartsTransferReceivers(),0);
+}
+async function savePartsTransferReceiverAssignment(){
+ const transferId=window.__partsTransferReceiverAssignmentId;
+ const receiverId=document.getElementById("pt_receiver_user_id")?.value||window.__partsTransferReceiverId||"";
+ if(!transferId)return alert("No transfer is selected.");
+ if(!receiverId)return alert("Select an active receiving user assigned to the destination Site and Department.");
+ try{
+  const {data,error}=await iySupabase.rpc("assign_parts_transfer_receiver",{p_transfer_id:transferId,p_receiver_user_id:receiverId});
+  if(error)throw error;
+  window.__partsTransferReceiverAssignmentId=null;
+  await loadPartsTransfersDataAndRefresh(true);
+  closeModal();
+  toast(`Receiving user assigned to ${data?.transfer_ref||"the transfer"}. No stock movement or approval changes were made.`);
+ }catch(e){console.error("Parts transfer receiver assignment failed",e);alert(e?.message||"The receiving user could not be assigned.");}
+}
 function transferFormLocationMarkup(prefix,mode,siteId,departmentId){
  const lockedSite=mode==="department"||mode==="site";
  const siteDisabled=lockedSite?"disabled":"";
@@ -7869,7 +8151,7 @@ function onPartsTransferLocationChange(prefix){
    if(mode==="department" && dept)dept.value=currentDepartmentId()||"";
    refreshPartsTransferPartAvailability();
  }
- if(prefix==="to"){}
+ if(prefix==="to")refreshPartsTransferReceivers();
  refreshPartsTransferApprovers();
 }
 function newPartsTransferDefaultScope(){
@@ -7888,6 +8170,7 @@ function openPartsTransferModal(transferId=null){
  if(!canEdit("transfers"))return alert("You do not have permission to create parts transfers.");
  if(!window.__partsTransfersLoaded)return loadPartsTransfersDataAndRefresh().then(()=>openPartsTransferModal(null));
  window.__partsTransferApprovers=[];
+ window.__partsTransferReceiverId="";
  const {mode,site,dept}=newPartsTransferDefaultScope();
  const toSite=iyCompanySites.find(s=>String(s.id)!==String(site))?.id||iyCompanySites[0]?.id||"";
  const toDept=iyCompanyDepartments.find(d=>String(d.site_id)===String(toSite))?.id||"";
@@ -7903,11 +8186,13 @@ function openPartsTransferModal(transferId=null){
   <div class="field"><label>From Department</label>${src.deptSelect}</div>
   <div class="field"><label>To Site</label>${dst.siteSelect}</div>
   <div class="field"><label>To Department</label>${dst.deptSelect}</div>
+  <div class="field full"><label>Receiving User <span class="iy-transfer-required">(required)</span></label><div id="pt_receiver_holder"><div class="iy-transfer-loading-users">Loading destination users…</div></div></div>
   <div class="field full"><label>Approvers <span class="iy-transfer-required">(select one or more)</span></label><div id="pt_approvers" class="iy-transfer-approvers"><div class="iy-transfer-loading-users">Loading eligible approvers…</div></div><small class="iy-transfer-note">Every selected approver must approve before stock is moved.</small></div>
  </div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="submitPartsTransfer()">Submit Transfer</button></div>`);
  setTimeout(async()=>{
    await refreshPartsTransferApprovers();
+   await refreshPartsTransferReceivers();
    lookupPartsTransferPart();
  },0);
 }
@@ -7936,11 +8221,76 @@ function openPartsTransferReviewModal(transfer){
   <div><label>From</label><strong>${esc(transferScopeName(transfer.from_site_id,transfer.from_department_id))}</strong></div>
   <div><label>To</label><strong>${esc(transferScopeName(transfer.to_site_id,transfer.to_department_id))}</strong></div>
   <div class="full"><label>Reason</label><strong>${esc(transfer.reason||"—")}</strong></div>
-  <div class="full"><label>Requested By</label><strong>${esc(transferRequesterName(transfer.requested_by))}</strong><span>${esc(new Date(transfer.requested_at).toLocaleString("en-GB"))}</span></div>
+  <div><label>Transfer Made</label><strong>${esc(transfer.requested_at?new Date(transfer.requested_at).toLocaleString("en-GB"):"Date/time unavailable")}</strong><span>Request created by ${esc(transferRequesterName(transfer.requested_by))}</span></div>
+  <div><label>Transfer Received</label><strong>${esc(transfer.received_at?new Date(transfer.received_at).toLocaleString("en-GB"):"Awaiting receipt")}</strong><span>${transfer.received_at?`Confirmed by ${esc(transferRequesterName(transfer.received_by))}`:"The receiving date and time will appear here after receipt is confirmed."}</span></div>
+  <div class="full"><label>Receiving User</label><strong>${esc(transfer.receiving_user_id?transferRequesterName(transfer.receiving_user_id):"Not assigned")}</strong><span>${transfer.status==="completed"?"Receipt has already been finalized; completed transfers cannot be reopened.":"Receipt can only be confirmed by this assigned user."}</span></div>
+  ${transfer.received_at?`<div class="full"><label>Receipt Details</label><strong>Physically received: ${esc(transfer.received_quantity??"—")} · Accepted into stock: ${esc(transfer.accepted_quantity??"—")}</strong>${transfer.receipt_note?`<span>Receipt notes: ${esc(transfer.receipt_note)}</span>`:""}${transfer.discrepancy_note?`<span>Discrepancy: ${esc(transfer.discrepancy_note)}</span>`:""}</div>`:""}
  </div>
+
  <div class="iy-transfer-review-section"><div class="iy-transfer-review-section-head"><div><strong>Approval Progress</strong><span>${esc(progress)} approved${approvals.length===1?"":" of "+approvals.length}</span></div></div><div class="iy-transfer-review-approvals">${approvalRows||`<div class="iy-transfer-empty-users">No approval records found.</div>`}</div></div>
  ${isPendingMine?`<div class="iy-transfer-review-pending"><strong>Your approval is required.</strong><span>You must use your account signature to approve this transfer.</span></div>`:""}
- <div class="actions">${isPendingMine?`<button class="btn danger" onclick="rejectPartsTransfer('${esc(transfer.id)}')">Reject</button><button class="btn primary" onclick="approvePartsTransfer('${esc(transfer.id)}')">Approve & Sign</button>`:`<button class="btn secondary" onclick="closeModal()">Close</button>`}</div>`);
+ <div class="actions">${(transfer.status==="pending_approval"&&String(transfer.requested_by)===String(iyAuthUser?.id)&&canEdit("transfers"))||(transfer.status==="in_transit"&&canManagePartsTransferReceiver(transfer))?`<button class="btn secondary" onclick="editPartsTransfer('${esc(transfer.id)}')">Edit Transfer</button>`:""}${canManagePartsTransferReceiver(transfer)?`<button class="btn secondary" onclick="openPartsTransferReceiverAssignmentModal('${esc(transfer.id)}')">${transfer.receiving_user_id?"Change Receiver":"Assign Receiver"}</button>`:""}${isPendingMine?`<button class="btn danger" onclick="rejectPartsTransfer('${esc(transfer.id)}')">Reject</button><button class="btn primary" onclick="approvePartsTransfer('${esc(transfer.id)}')">Approve & Sign</button>`:""}${transfer.status==="approved_awaiting_dispatch"&&canDispatchPartsTransfer(transfer)?`<button class="btn primary" onclick="dispatchPartsTransfer('${esc(transfer.id)}')">Dispatch Transfer</button>`:""}${transfer.status==="in_transit"&&String(transfer.receiving_user_id||"")===String(iyAuthUser?.id||"")?`<button class="btn primary" onclick="openPartsTransferReceiptModal('${esc(transfer.id)}')">Confirm Receipt</button>`:""}${!isPendingMine&&!(transfer.status==="approved_awaiting_dispatch"&&canDispatchPartsTransfer(transfer))&&!(transfer.status==="in_transit"&&String(transfer.receiving_user_id||"")===String(iyAuthUser?.id||""))&&!canManagePartsTransferReceiver(transfer)?`<button class="btn secondary" onclick="closeModal()">Close</button>`:""}</div>`);
+}
+async function editPartsTransfer(transferId){
+ const transfer=(window.__partsTransfers||[]).find(x=>String(x.id)===String(transferId));
+ if(!transfer)return alert("Parts transfer could not be found.");
+ const pendingEdit=transfer.status==="pending_approval";
+ const inTransitEdit=transfer.status==="in_transit"&&canManagePartsTransferReceiver(transfer);
+ if(!pendingEdit&&!inTransitEdit)return alert("Only pending requests or unreceived in-transit transfers can be edited.");
+ if(pendingEdit&&(String(transfer.requested_by)!==String(iyAuthUser?.id)||!canEdit("transfers")))return alert("Only the transfer requestor with transfer-edit permission can edit this request.");
+ if(inTransitEdit&&!canManagePartsTransferReceiver(transfer))return alert("You do not have permission to edit this in-transit transfer.");
+ window.__partsTransferEditingId=transfer.id;
+ window.__partsTransferEditMode=inTransitEdit?"in_transit":"pending_approval";
+ window.__partsTransferReceiverId=String(transfer.receiving_user_id||"");
+ const src=transferFormLocationMarkup("from","company",transfer.from_site_id,transfer.from_department_id);
+ const dst=transferFormLocationMarkup("to","company",transfer.to_site_id,transfer.to_department_id);
+ const part=transferPartInfo(transfer.part_id);
+ const oldApprovals=transferApprovalRows(transfer.id);
+ window.__partsTransferApprovers=oldApprovals.filter(a=>a.status==="pending").map(a=>a.approver_user_id);
+ const approvalFields=pendingEdit?`<div class="field full"><label>Approvers <span class="iy-transfer-required">(select one or more)</span></label><div id="pt_approvers" class="iy-transfer-approvers"><div class="iy-transfer-loading-users">Loading eligible approvers…</div></div><small class="iy-transfer-note">Editing a pending request follows the existing approval-reset rules.</small></div>`:"";
+ const intro=pendingEdit?"Editing this pending request follows the existing approval workflow.":"Update the part, quantity, locations, reason or receiver before receipt. Stock adjustments are applied atomically, the existing approval history is preserved, and the audit log records before/after values.";
+ openModal(`<div class="modalhead"><h2>Edit Parts Transfer</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="iy-transfer-intro"><strong>${esc(transfer.transfer_ref)} · ${esc(transferStatusLabel(transfer.status))}</strong><span>${intro}</span></div>
+ <div class="formgrid">
+  <div class="field full"><label>Part Number</label><input id="pt_part_number" class="input" type="text" autocomplete="off" value="${esc(part?.part_number||"")}" oninput="lookupPartsTransferPart()" onblur="lookupPartsTransferPart()"><input id="pt_part_id" type="hidden" value="${esc(transfer.part_id)}"><div id="pt_part_lookup" class="iy-transfer-part-lookup found"><div class="iy-transfer-part-found"><div><strong>${esc(part?.part_number||transfer.part_id)}</strong><span>${esc(part?.description||"")}</span></div></div></div></div>
+  <div class="field"><label>Quantity</label><input id="pt_qty" class="input" type="number" min="1" step="1" value="${esc(transfer.quantity)}" oninput="refreshPartsTransferPartAvailability()"></div>
+  <div class="field"><label>Reason</label><input id="pt_reason" class="input" value="${esc(transfer.reason||"")}" placeholder="e.g. Stock balancing"></div>
+  <div class="field"><label>From Site</label>${src.siteSelect}</div><div class="field"><label>From Department</label>${src.deptSelect}</div>
+  <div class="field"><label>To Site</label>${dst.siteSelect}</div><div class="field"><label>To Department</label>${dst.deptSelect}</div>
+  <div class="field full"><label>Receiving User <span class="iy-transfer-required">(required)</span></label><div id="pt_receiver_holder"><div class="iy-transfer-loading-users">Loading destination users…</div></div></div>
+  ${approvalFields}
+ </div>
+ <div class="actions"><button class="btn secondary" onclick="openPartsTransferModal('${esc(transfer.id)}')">Cancel</button><button class="btn primary" onclick="saveEditedPartsTransfer()">Save Changes</button></div>`);
+ setTimeout(async()=>{if(pendingEdit)await refreshPartsTransferApprovers();await refreshPartsTransferReceivers();lookupPartsTransferPart();},0);
+}
+async function saveEditedPartsTransfer(){
+ const transferId=window.__partsTransferEditingId;
+ const partId=document.getElementById("pt_part_id")?.value||"";
+ const qty=num(document.getElementById("pt_qty")?.value);
+ const reason=document.getElementById("pt_reason")?.value.trim()||"";
+ const {fromSite,fromDept,toSite,toDept}=transferSelectedScope();
+ const editMode=window.__partsTransferEditMode||"pending_approval";
+ const approvers=[...(window.__partsTransferApprovers||[])];
+ const receiverId=document.getElementById("pt_receiver_user_id")?.value||window.__partsTransferReceiverId||"";
+ if(!transferId)return alert("No transfer is selected for editing.");
+ if(!partId)return alert("Please select a valid part.");
+ if(qty<=0)return alert("Quantity must be greater than zero.");
+ if(!fromSite||!fromDept||!toSite||!toDept)return alert("Please select both source and destination Site and Department.");
+ if(fromSite===toSite&&fromDept===toDept)return alert("The source and destination must be different.");
+ if(!receiverId)return alert("Select an active receiving user assigned to the destination Site and Department.");
+ if(editMode==="pending_approval"&&!approvers.length)return alert("Select at least one approver.");
+ try{
+  let data,error;
+  if(editMode==="in_transit"){
+   ({data,error}=await iySupabase.rpc("edit_in_transit_parts_transfer",{p_transfer_id:transferId,p_part_id:partId,p_quantity:qty,p_from_site_id:fromSite,p_from_department_id:fromDept,p_to_site_id:toSite,p_to_department_id:toDept,p_reason:reason||null,p_receiver_user_id:receiverId}));
+  }else{
+   ({data,error}=await iySupabase.rpc("update_pending_parts_transfer",{p_transfer_id:transferId,p_company_id:iyCompany.id,p_part_id:partId,p_quantity:qty,p_from_site_id:fromSite,p_from_department_id:fromDept,p_to_site_id:toSite,p_to_department_id:toDept,p_reason:reason||null,p_approver_user_ids:approvers,p_receiver_user_id:receiverId}));
+  }
+  if(error)throw error;
+  window.__partsTransferEditingId=null;window.__partsTransferEditMode=null;
+  await loadPartsTransfersDataAndRefresh(true);closeModal();
+  toast(editMode==="in_transit"?`Transfer ${data?.transfer_ref||""} updated. Stock was reconciled once; approval history was preserved.`:`Transfer ${data?.transfer_ref||""} updated. Fresh approvals are required.`);
+ }catch(e){console.error("Parts transfer update failed",e);alert(e?.message||"The parts transfer could not be updated.");}
 }
 async function submitPartsTransfer(){
  if(!canEdit("transfers"))return alert("You do not have permission to create parts transfers.");
@@ -7950,6 +8300,7 @@ async function submitPartsTransfer(){
  const reason=document.getElementById("pt_reason")?.value.trim()||"";
  const {fromSite,fromDept,toSite,toDept}=transferSelectedScope();
  const approvers=[...(window.__partsTransferApprovers||[])];
+ const receiverId=document.getElementById("pt_receiver_user_id")?.value||window.__partsTransferReceiverId||"";
  if(!partNumber)return alert("Please enter a Part Number.");
  if(!partId){
    lookupPartsTransferPart();
@@ -7958,6 +8309,7 @@ async function submitPartsTransfer(){
  if(qty<=0)return alert("Quantity must be greater than zero.");
  if(!fromSite||!fromDept||!toSite||!toDept)return alert("Please select both source and destination Site and Department.");
  if(fromSite===toSite&&fromDept===toDept)return alert("The source and destination must be different.");
+ if(!receiverId)return alert("Select an active receiving user assigned to the destination Site and Department.");
  if(!approvers.length)return alert("Select at least one approver.");
  try{
    const {data,error}=await iySupabase.rpc("create_parts_transfer",{
@@ -7969,7 +8321,8 @@ async function submitPartsTransfer(){
      p_to_site_id:toSite,
      p_to_department_id:toDept,
      p_reason:reason||null,
-     p_approver_user_ids:approvers
+     p_approver_user_ids:approvers,
+     p_receiver_user_id:receiverId
    });
    if(error)throw error;
    await loadPartsTransfersDataAndRefresh(true);
@@ -7989,7 +8342,7 @@ async function approvePartsTransfer(transferId){
    if(error)throw error;
    await loadPartsTransfersDataAndRefresh(true);
    closeModal();
-   toast(data?.status==="completed"?"✓ Transfer approved and completed.":"✓ Your transfer approval has been recorded.");
+   toast(data?.status==="approved_awaiting_dispatch"?"✓ All approvals complete. The transfer is ready for dispatch.":"✓ Your transfer approval has been recorded.");
  }catch(e){
    console.error("Parts transfer approval failed",e);
    alert(e?.message||"The transfer approval could not be completed.");
@@ -8009,23 +8362,75 @@ async function rejectPartsTransfer(transferId){
    alert(e?.message||"The transfer rejection could not be completed.");
  }
 }
+async function dispatchPartsTransfer(transferId){
+ const t=(window.__partsTransfers||[]).find(x=>String(x.id)===String(transferId));
+ if(!t)return alert("Parts transfer could not be found.");
+ if(!canDispatchPartsTransfer(t))return alert("You do not have permission to dispatch from this source location.");
+ if(!t.receiving_user_id)return alert("Assign a receiver before dispatch.");
+ if(!confirm(`Dispatch ${t.transfer_ref}? The quantity will be deducted from source stock and tracked in transit until the receiver confirms receipt.`))return;
+ try{
+   const {data,error}=await iySupabase.rpc("dispatch_parts_transfer",{p_transfer_id:transferId});
+   if(error)throw error;
+   await loadPartsTransfersDataAndRefresh(true);closeModal();
+   toast(`Transfer ${data?.transfer_ref||t.transfer_ref} dispatched. Stock is now in transit.`);
+ }catch(e){console.error("Parts transfer dispatch failed",e);alert(e?.message||"The transfer could not be dispatched.");}
+}
+function openPartsTransferReceiptModal(transferId){
+ const t=(window.__partsTransfers||[]).find(x=>String(x.id)===String(transferId));
+ if(!t)return alert("Parts transfer could not be found.");
+ if(String(t.receiving_user_id||"")!==String(iyAuthUser?.id||""))return alert("Only the assigned receiving user can confirm receipt.");
+ if(t.status!=="in_transit")return alert("This transfer is not awaiting receipt confirmation.");
+ const part=transferPartInfo(t.part_id);
+ openModal(`<div class="modalhead"><h2>Confirm Parts Receipt</h2><button class="close" onclick="openPartsTransferModal('${esc(t.id)}')">×</button></div>
+ <div class="iy-transfer-intro"><strong>${esc(t.transfer_ref)} · ${esc(part?.part_number||t.part_id)} — ${esc(part?.description||"")}</strong><span>Dispatched quantity: ${esc(t.quantity)}. Enter the quantity physically received and the usable quantity accepted into stock.</span></div>
+ <div class="formgrid">
+  <div class="field"><label>Physical Quantity Received</label><input id="pt_received_qty" class="input" type="number" min="0" max="${esc(t.quantity)}" step="1" value="${esc(t.quantity)}" required></div>
+  <div class="field"><label>Accepted Into Stock</label><input id="pt_accepted_qty" class="input" type="number" min="0" max="${esc(t.quantity)}" step="1" value="${esc(t.quantity)}" required></div>
+  <div class="field full"><label>Receipt Notes</label><textarea id="pt_receipt_note" class="input" rows="2" placeholder="Optional receiving notes"></textarea></div>
+  <div class="field full"><label>Discrepancy Notes <span class="iy-transfer-required">(required for shortage or damaged/unusable parts)</span></label><textarea id="pt_discrepancy_note" class="input" rows="3" placeholder="Describe shortages, damage, or unusable items"></textarea></div>
+ </div>
+ <div class="actions"><button class="btn secondary" onclick="openPartsTransferModal('${esc(t.id)}')">Cancel</button><button class="btn primary" onclick="submitPartsTransferReceipt('${esc(t.id)}')">Confirm Receipt</button></div>`);
+}
+async function submitPartsTransferReceipt(transferId){
+ const received=num(document.getElementById("pt_received_qty")?.value);
+ const accepted=num(document.getElementById("pt_accepted_qty")?.value);
+ const note=document.getElementById("pt_receipt_note")?.value.trim()||"";
+ const discrepancy=document.getElementById("pt_discrepancy_note")?.value.trim()||"";
+ const t=(window.__partsTransfers||[]).find(x=>String(x.id)===String(transferId));
+ if(!t)return alert("Parts transfer could not be found.");
+ if(received<0||received>num(t.quantity))return alert("Physical quantity received must be between zero and the dispatched quantity.");
+ if(accepted<0||accepted>received)return alert("Accepted quantity must be between zero and the physical quantity received.");
+ if((received<num(t.quantity)||accepted<received)&&!discrepancy)return alert("Explain the shortage or damaged/unusable quantity in the discrepancy notes.");
+ try{
+   const {data,error}=await iySupabase.rpc("confirm_parts_transfer_receipt",{p_transfer_id:transferId,p_received_quantity:received,p_accepted_quantity:accepted,p_receipt_note:note||null,p_discrepancy_note:discrepancy||null});
+   if(error)throw error;
+   await loadPartsTransfersDataAndRefresh(true);closeModal();
+   toast(`Receipt confirmed for ${data?.transfer_ref||t.transfer_ref}. ${accepted} usable unit(s) added to destination stock.`);
+ }catch(e){console.error("Parts transfer receipt failed",e);alert(e?.message||"Receipt confirmation could not be saved.");}
+}
 function partsTransferRow(transfer){
  const part=transferPartInfo(transfer.part_id);
  const approvals=transferApprovalRows(transfer.id);
  const mine=approvals.find(x=>x.approver_user_id===iyAuthUser?.id);
+ const isReceiver=String(transfer.receiving_user_id||"")===String(iyAuthUser?.id||"");
  const action=mine?.status==="pending"
    ?`<button class="btn primary small" onclick="openPartsTransferModal('${esc(transfer.id)}')">Review & Approve</button>`
-   :`<button class="btn secondary small" onclick="openPartsTransferModal('${esc(transfer.id)}')">View</button>`;
+   :isReceiver&&transfer.status==="in_transit"
+     ?`<button class="btn primary small" onclick="openPartsTransferReceiptModal('${esc(transfer.id)}')">Confirm Receipt</button>`
+     :`<button class="btn secondary small" onclick="openPartsTransferModal('${esc(transfer.id)}')">View Details</button>`;
+ const dispatchAction=transfer.status==="approved_awaiting_dispatch"&&canDispatchPartsTransfer(transfer)?`<button class="btn primary small" onclick="dispatchPartsTransfer('${esc(transfer.id)}')">Dispatch</button>`:"";
+ const editAction=(transfer.status==="pending_approval"&&String(transfer.requested_by)===String(iyAuthUser?.id)&&canEdit("transfers"))||(transfer.status==="in_transit"&&canManagePartsTransferReceiver(transfer))?`<button class="btn secondary small" onclick="editPartsTransfer('${esc(transfer.id)}')">Edit</button>`:"";
+ const receiverAction=canManagePartsTransferReceiver(transfer)?`<button class="btn secondary small" onclick="openPartsTransferReceiverAssignmentModal('${esc(transfer.id)}')">${transfer.status==="completed"&&!transfer.received_at&&!transfer.received_by?"Edit Receiver":transfer.receiving_user_id?"Change Receiver":"Assign Receiver"}</button>`:"";
  const signed=approvals.filter(x=>x.status==="approved").length;
  return `<tr>
-  <td><b>${esc(transfer.transfer_ref)}</b></td>
-  <td><b>${esc(part?.part_number||transfer.part_id)}</b><br><small>${esc(part?.description||"")}</small></td>
-  <td>${esc(transfer.quantity)}</td>
-  <td>${esc(transferScopeName(transfer.from_site_id,transfer.from_department_id))}</td>
-  <td>${esc(transferScopeName(transfer.to_site_id,transfer.to_department_id))}</td>
-  <td><span class="${transferStatusClass(transfer.status)}">${esc(transferStatusLabel(transfer.status))}</span></td>
+  <td><div class="iy-transfer-log-ref">${esc(transfer.transfer_ref)}</div><div class="iy-transfer-log-dates"><span><b>Made:</b> ${esc(transfer.requested_at?new Date(transfer.requested_at).toLocaleString("en-GB"):"—")}</span><span><b>Received:</b> ${esc(transfer.received_at?new Date(transfer.received_at).toLocaleString("en-GB"):"Awaiting receipt")}</span></div></td>
+  <td><b>${esc(part?.part_number||transfer.part_id)}</b><br><small>${esc(part?.description||"Description unavailable")}</small>${part?.machine_model?`<br><small>Machine: ${esc(part.machine_model)}</small>`:""}</td>
+  <td><strong>${esc(transfer.quantity)}</strong></td>
+  <td><div class="iy-transfer-log-route"><span><em>From</em>${esc(transferScopeName(transfer.from_site_id,transfer.from_department_id))}</span><span><em>To</em>${esc(transferScopeName(transfer.to_site_id,transfer.to_department_id))}</span>${transfer.receiving_user_id?`<small>Receiver: ${esc(transferRequesterName(transfer.receiving_user_id))}</small>`:`<small>Receiver not assigned</small>`}</div></td>
+  <td class="iy-transfer-log-request">${esc(transferRequesterName(transfer.requested_by))}<br><small>${esc(transfer.reason||"No reason provided")}</small></td>
+  <td class="iy-transfer-log-status"><span class="${transferStatusClass(transfer.status)}">${esc(transferStatusLabel(transfer.status))}</span><div class="iy-transfer-log-dates"><span><b>Updated:</b> ${esc(transfer.updated_at?new Date(transfer.updated_at).toLocaleString("en-GB"):"—")}</span>${transfer.dispatched_at?`<span><b>Dispatched:</b> ${esc(new Date(transfer.dispatched_at).toLocaleString("en-GB"))}</span>`:""}${transfer.rejected_at?`<span><b>Rejected:</b> ${esc(new Date(transfer.rejected_at).toLocaleString("en-GB"))}</span>`:""}</div></td>
   <td>${approvals.length?`${signed}/${approvals.length}`:"—"}</td>
-  <td>${action}</td>
+  <td><div class="actions" style="gap:6px;flex-wrap:wrap">${action}${dispatchAction}${editAction}${receiverAction}</div></td>
  </tr>`;
 }
 function partsTransfersPage(){
@@ -8039,7 +8444,7 @@ function partsTransfersPage(){
   ${pendingMine.length?`<section class="iy-transfer-pending-section"><div class="iy-transfer-section-head"><div><h3>Pending My Approvals</h3><span>${pendingMine.length} transfer${pendingMine.length===1?"":"s"} waiting for your signature</span></div></div><div class="iy-transfer-pending-grid">${pendingMine.map(x=>{const t=x.transfer;const p=transferPartInfo(t.part_id);return `<button type="button" class="iy-transfer-pending-card" onclick="openPartsTransferModal('${esc(t.id)}')"><div class="iy-transfer-pending-top"><strong>${esc(t.transfer_ref)}</strong><span class="${transferStatusClass(t.status)}">${esc(transferStatusLabel(t.status))}</span></div><b>${esc(p?.part_number||t.part_id)} · ${esc(t.quantity)}</b><span>${esc(transferScopeName(t.from_site_id,t.from_department_id))} → ${esc(transferScopeName(t.to_site_id,t.to_department_id))}</span><em>Review & Approve →</em></button>`}).join("")}</div></section>`:""}
   <section class="iy-transfer-list-section">
    <div class="iy-transfer-section-head"><div><h3>Parts Transfers</h3><span>Controlled movement of spare parts between Sites and Departments.</span></div></div>
-   ${rows.length?`<div class="tablewrap"><table class="table iy-transfer-table"><tr><th>Transfer Ref</th><th>Part</th><th>Qty</th><th>From</th><th>To</th><th>Status</th><th>Approvals</th><th>Action</th></tr>${rows.map(partsTransferRow).join("")}</table></div>`:`<div class="iy-transfer-empty-large"><div>⇄</div><h3>No parts transfers yet</h3><p>Create a transfer when stock needs to move between locations. Inventory is only changed after all selected approvals are complete.</p><button class="btn primary" onclick="openPartsTransferModal()">+ New Transfer</button></div>`}
+   ${rows.length?`<div class="tablewrap"><table class="table iy-transfer-table"><tr><th>Transfer Timeline</th><th>Part Details</th><th>Qty</th><th>Transfer Route</th><th>Requested By / Reason</th><th>Status / Activity</th><th>Approvals</th><th>Actions</th></tr>${rows.map(partsTransferRow).join("")}</table></div>`:`<div class="iy-transfer-empty-large"><div>⇄</div><h3>No parts transfers yet</h3><p>Create a transfer when stock needs to move between locations. Source stock is deducted at dispatch and destination stock is updated after receipt confirmation.</p><button class="btn primary" onclick="openPartsTransferModal()">+ New Transfer</button></div>`}
   </section>
  </div>`;
 }
@@ -9821,7 +10226,7 @@ async function loadCloudData(){
  }catch(e){console.warn("Machine image storage is not configured or could not be listed.",e?.message||e)}
  const partsById={};(parts.data||[]).forEach(x=>partsById[x.id]=x);
  const resolvePartMachine=(p)=>p?.machine_model||machineModelFromPart(p||{},empty.machines)||"";
- empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id,x.site_id||null,x.department_id||null,p.material_number||""]});
+ empty.inventory=(inventory.data||[]).map(x=>{const p=x.parts||partsById[x.part_id]||{};return [p.part_number||"",p.description||"",resolvePartMachine(p),num(x.current_stock),num(x.total_received),num(x.total_issued),num(p.minimum_stock),p.location||"",p.remarks||"",x.id,p.id||x.part_id||null,x.site_id||null,x.department_id||null,p.material_number||""]});
  empty.receipts=(receipts.data||[]).map(x=>[x.received_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.supplier||"",x.reference||"",x.receiver_name||"",x.id,x.part_id,x.site_id||null,x.department_id||null,x.parts?.material_number||""]);
  empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||"",x.site_id||null,x.department_id||null]);
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
@@ -9831,6 +10236,9 @@ async function loadCloudData(){
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
+ // Inventory may have changed after a transfer, issue, receipt, or restore. Reload the
+ // dedicated transfer ledger the next time Inventory is rendered.
+ window.__inventoryTransferRowsLoaded=false;
  db=empty;iyCloudReady=true;
 }
 function machineModelFromPart(p,machines){if(p.machine_id){const m=machines.find(x=>x[9]===p.machine_id);if(m)return m[2]}return p.machine_model||p.model||""}
@@ -12010,4 +12418,11 @@ function superAdminPage(){
 .sa-page-ellipsis{padding:0 3px;color:#8ea0b1}
 @media(max-width:1250px){.sa-metrics-top{grid-template-columns:repeat(3,1fr)}.sa-dashboard-grid.sa-chart-grid,.sa-dashboard-grid.sa-data-pair,.sa-dashboard-grid.sa-history-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:850px){.sa-metrics-top{grid-template-columns:1fr 1fr}.sa-dashboard-grid.sa-chart-grid,.sa-dashboard-grid.sa-data-pair,.sa-dashboard-grid.sa-history-grid{grid-template-columns:1fr}.sa-pagination{flex-wrap:wrap}}
+</style>
+
+<style id="iy-transfer-receiving-confirmation-styles">
+#modal #pt_receiver_holder .select{width:100%;min-width:0}
+#modal textarea.input{min-height:74px;resize:vertical}
+#modal .iy-transfer-note{display:block;margin-top:7px;color:#71839a;font-size:11px;line-height:1.5}
+#modal .iy-transfer-review-grid>div.full{grid-column:1/-1}
 </style>
