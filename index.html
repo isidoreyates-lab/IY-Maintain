@@ -4835,6 +4835,29 @@ function machineSelectOptions(selected="", includeBlank=true){
  });
  return opts.join("");
 }
+function receiveMachineOptionsMarkup(selected=""){
+ const selectedModels=new Set(String(selected||"").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
+ const rows=viewMachineRows().filter(m=>String(m?.[2]||"").trim());
+ const seen=new Set();
+ const options=[];
+ rows.forEach(m=>{
+   const model=String(m?.[2]||"").trim();
+   const fleet=String(m?.[0]||"").trim();
+   const key=`${model}\u001f${fleet}`;
+   if(!model||seen.has(key))return;
+   seen.add(key);
+   options.push(`<label style="display:flex;align-items:center;gap:8px;min-width:0;padding:7px 8px;border:1px solid #edf2f7;border-radius:8px;background:#fff;cursor:pointer;font-size:12px"><input type="checkbox" name="r_machine_option" value="${esc(model)}" ${selectedModels.has(model.toLowerCase())?"checked":""} style="accent-color:#075bea;flex-shrink:0"><span style="overflow-wrap:anywhere">${esc(model)}${fleet?` — ${esc(fleet)}`:""}</span></label>`);
+ });
+ return options.length?options.join(""):`<div class="hint">No machines are available in the selected scope.</div>`;
+}
+function setReceiveMachineSelection(selected=""){
+ const wanted=new Set(String(selected||"").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
+ document.querySelectorAll('input[name="r_machine_option"]').forEach(el=>{el.checked=wanted.has(String(el.value||"").trim().toLowerCase());});
+}
+function getReceiveMachineSelection(){
+ const values=Array.from(document.querySelectorAll('input[name="r_machine_option"]:checked')).map(el=>String(el.value||"").trim()).filter(Boolean);
+ return values.filter((v,i,a)=>a.findIndex(x=>x.toLowerCase()===v.toLowerCase())===i);
+}
 function globalViewScopeMarkup(){
  if(!isDashboardScopeController())return "";
  const selectedSite=dashboardSiteId||"", selectedDept=dashboardDepartmentId||"";
@@ -5043,7 +5066,7 @@ function simpleIssueTable(rows){return `<div class="tablewrap"><table class="tab
 
 function issuePage(){
  const invRows=viewInventoryRows();
- const machines=[...new Set(invRows.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const machines=[...new Set(invRows.flatMap(x=>String(x[2]||"").split(",").map(v=>v.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b));
  const locations=[...new Set(invRows.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  return `<div class="panel issue-page-panel">
    <div class="issue-filter-head">
@@ -5070,7 +5093,7 @@ function issueResults(q){
    const stockQty=num(x[3]);
    const minQty=num(x[6]);
    const status=stockQty===0?"out":stockQty<=minQty?"low":"available";
-   return (!q||text.includes(q)) && (!machine||String(x[2]||"").trim().toLowerCase()===machine) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
+   return (!q||text.includes(q)) && (!machine||String(x[2]||"").split(",").some(v=>v.trim().toLowerCase()===machine)) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
  }).slice(0,100);
  if(!rows.length)return `<div class="issue-empty"><div class="issue-empty-icon">⌕</div><b>No parts match your filters</b><span>Try changing the search or clearing one of the filters.</span><button class="btn secondary small" onclick="resetIssueFilters()">Clear filters</button></div>`;
  return `<div class="issue-results-meta"><span>Showing <b>${rows.length}</b>${rows.length>=100?' of 100+':''} matching items</span></div><div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Material Number</th><th>Description</th><th>Machine</th><th>Stock</th><th>Min</th><th>Location</th><th>Action</th></tr>${rows.map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[13]||"—")}</td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td><span class="issue-stock-number ${num(x[3])===0?'bad':num(x[3])<=num(x[6])?'warn':'ok'}">${x[3]}</span></td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${canEdit("issue")?`<button class="btn primary small" onclick="issueModal('${encodeURIComponent(x[0])}')">Issue</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
@@ -5231,7 +5254,7 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
  <div class="field"><label>Material Number</label><input id="r_material_number" class="input" value="${esc(part?.[13]||"")}" placeholder="Material number"></div>
- <div class="field"><label>Machine</label><select id="r_machine" class="select">${machineSelectOptions(order?.[3]||part?.[2]||"")}</select></div>
+ <div class="field full"><label>Machines <span style="font-weight:400;color:#64748b">(select one or more)</span></label><div id="r_machine_options" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:150px;overflow-y:auto;border:1px solid #d8e3f0;border-radius:10px;background:#f8fbff;padding:8px">${receiveMachineOptionsMarkup(order?.[3]||part?.[2]||"")}</div><div class="hint">Choose every machine this part applies to. The selected machine models will be recorded together.</div></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
  <div class="field"><label>Invoice / J-Ref</label><input id="r_invoice" class="input" value="${esc(ref)}" placeholder="Invoice or J-Ref" ${order?"readonly":""}></div>
@@ -5255,7 +5278,7 @@ function autoFillReceivePart(){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
      document.getElementById("r_material_number").value=part[13]||"";
-     document.getElementById("r_machine").value=matchedOrder[3]||part[2]||"";
+     setReceiveMachineSelection(matchedOrder[3]||part[2]||"");
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
      if(hint)hint.textContent="Active order found by J-Ref. Part details and order reference have been filled automatically.";
@@ -5268,7 +5291,7 @@ function autoFillReceivePart(){
  }
  document.getElementById("r_desc").value=part[1]||"";
  document.getElementById("r_material_number").value=part[13]||"";
- document.getElementById("r_machine").value=part[2]||"";
+ setReceiveMachineSelection(part[2]||"");
  const order=(viewOrderRows()||[]).find(x=>norm(x[1])===norm(part[0]));
  if(order){
    document.getElementById("r_supplier").value=order[6]||"";
@@ -5285,7 +5308,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
  const materialNumber=document.getElementById("r_material_number")?.value.trim()||"";
- const machine=document.getElementById("r_machine").value.trim();
+ const machine=getReceiveMachineSelection().join(", ");
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
@@ -5328,7 +5351,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
 function inventoryPage(){
  const m=invMetrics();
  const rows=viewInventoryRows();
- const machines=[...new Set(rows.map(x=>String(x[2]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ const machines=[...new Set(rows.flatMap(x=>String(x[2]||"").split(",").map(v=>v.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b));
  const locations=[...new Set(rows.map(x=>String(x[7]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
  return `<div class="panel">
   <div class="issue-filters">
@@ -5351,7 +5374,7 @@ function inventoryTable(q){
    const stockQty=num(x[3]);
    const minQty=num(x[6]);
    const status=stockQty===0?"out":stockQty<=minQty?"low":"available";
-   return (!q||text.includes(q)) && (!machine||String(x[2]||"").trim().toLowerCase()===machine) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
+   return (!q||text.includes(q)) && (!machine||String(x[2]||"").split(",").some(v=>v.trim().toLowerCase()===machine)) && (!location||String(x[7]||"").trim().toLowerCase()===location) && (!stock||status===stock);
  });
  return `<div class="tablewrap"><table class="table"><tr><th>Part Number</th><th>Description</th><th>Machine</th><th>Current Stock</th><th>Received</th><th>Issued</th><th>Minimum</th><th>Location</th><th>Status</th><th></th></tr>${rows.map(x=>`<tr><td><b>${esc(x[0])}</b></td><td>${esc(x[1])}</td><td>${esc(x[2])}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[5]}</td><td>${x[6]}</td><td>${esc(x[7])}</td><td>${statusBadge(x)}</td><td>${canEdit("inventory")?`<button class="btn secondary small" onclick="editInventoryById('${encodeURIComponent(x[9]||'')}')">Edit</button>`:'<span class="hint">View only</span>'}</td></tr>`).join("")}</table></div>`;
 }
@@ -9726,7 +9749,7 @@ async function loadCloudData(){
  empty.issues=(issues.data||[]).map(x=>[x.issued_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.technician_name||"",x.work_order||"",x.remarks||"",x.id,x.part_id,x.machine_model||"",x.site_id||null,x.department_id||null]);
  empty.updates=(updates.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.status||"TO ORDER",x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
  empty.orders=(orders?.data||[]).map(x=>[x.order_date||x.created_at,x.parts?.part_number||"",x.parts?.description||"",x.machine_model||resolvePartMachine(x.parts||{}),num(x.quantity),x.po_reference||"",x.supplier||"",x.expected_date||"",x.ordered_at||x.created_at,x.onsite_date||"",x.remarks||"",x.id,x.part_id,x.site_id||null,x.department_id||null]);
- empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required?"Yes":"",x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null,x.downtime_start_at||null,x.return_to_service_at||null,x.downtime_hours??null,x.machine_hours_at_downtime??null,x.machine_hours_at_return??null,x.parts_used||""]);
+ empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required_details|| (x.parts_required?"Yes":""),x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null,x.downtime_start_at||null,x.return_to_service_at||null,x.downtime_hours??null,x.machine_hours_at_downtime??null,x.machine_hours_at_return??null,x.parts_used||""]);
  const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
@@ -9902,6 +9925,7 @@ async function cloudSaveMaintenance(row){
    service_status:row[10]||null,
    job_status:row[10]||null,
    parts_required:Boolean(String(row[11]||"").trim()),
+   parts_required_details:String(row[11]||"").trim()||null,
    parts_used:String(row[23]||"").trim()||null,
    technicians:row[12]||null,
    remarks:row[13]||null,
@@ -10403,39 +10427,185 @@ async function saveSettings(){
  try{if(iyCloudReady)await cloudSaveSettings();logActivity("Updated settings","Company, branding or report settings changed");await cloudAudit("Updated settings","Company, branding or report settings changed");save();render();toast("Settings saved.")}catch(e){alert(e?.message||"Settings could not be saved to the cloud.")}
 }
 
-function backup(){
+function iyBackupBase64(arrayBuffer){
+ const bytes=new Uint8Array(arrayBuffer);let binary="";const chunk=0x8000;
+ for(let i=0;i<bytes.length;i+=chunk)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+chunk,bytes.length)));
+ return btoa(binary);
+}
+function iyBackupMimeFromPath(path,fallback="application/octet-stream"){
+ const ext=String(path||"").split(".").pop().toLowerCase();
+ return ({jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",webp:"image/webp",svg:"image/svg+xml",pdf:"application/pdf"})[ext]||fallback;
+}
+async function iyFetchAllCompanyRows(table,orderColumn="id"){
+ const rows=[];const pageSize=500;let start=0;
+ while(true){
+   let q=iySupabase.from(table).select("*").eq("company_id",iyCompany.id);
+   if(orderColumn)q=q.order(orderColumn,{ascending:true});
+   const {data,error}=await q.range(start,start+pageSize-1);
+   if(error)throw new Error(`Could not include ${table} in the backup: ${error.message||error}`);
+   const batch=data||[];rows.push(...batch);
+   if(batch.length<pageSize)break;
+   start+=pageSize;
+ }
+ return rows;
+}
+async function iyListStorageTree(bucket,prefix){
+ const paths=[];
+ async function walk(folder){
+   let offset=0;
+   while(true){
+     const {data,error}=await iySupabase.storage.from(bucket).list(folder,{limit:1000,offset,sortBy:{column:"name",order:"asc"}});
+     if(error)throw new Error(`Could not list backup attachments in ${bucket}/${folder}: ${error.message||error}`);
+     const entries=data||[];
+     for(const entry of entries){
+       if(!entry?.name)continue;
+       const path=folder?`${folder}/${entry.name}`:entry.name;
+       const isFolder=entry.id==null&&entry.metadata==null;
+       if(isFolder)await walk(path);else paths.push(path);
+     }
+     if(entries.length<1000)break;
+     offset+=entries.length;
+   }
+ }
+ await walk(prefix);
+ return paths;
+}
+async function iyReadStorageAttachment(bucket,path){
+ const {data,error}=await iySupabase.storage.from(bucket).download(path);
+ if(error||!data)throw new Error(`Attachment ${bucket}/${path} could not be included: ${error?.message||"file unavailable"}`);
+ return {bucket,path,contentType:data.type||iyBackupMimeFromPath(path),base64:iyBackupBase64(await data.arrayBuffer())};
+}
+async function iyCollectCompanyBackupAttachments(data){
+ const attachments=[];const seen=new Set();
+ const add=(bucket,path)=>{if(path&&typeof path==="string")seen.add(`${bucket}\n${path}`)};
+ // These company-prefixed buckets hold machine photos, maintenance/Parts Update
+ // images, the company logo and report signature images.
+ for(const bucket of [IY_MACHINE_IMAGES_BUCKET,IY_COMPANY_ASSETS_BUCKET]){
+   for(const path of await iyListStorageTree(bucket,String(iyCompany.id)))add(bucket,path);
+ }
+ // Signature assets in the user-signature bucket are referenced by memberships
+ // and approval records; capture those exact paths without exporting unrelated users' files.
+ const companyPrefix=`${iyCompany.id}/`;
+ for(const path of (data.membershipSignaturePaths||[]))if(String(path).startsWith(companyPrefix))add(IY_SIGNATURE_BUCKET,path);
+ for(const row of (data.reportApprovalRequests||[]))if(String(row?.signature_path||"").startsWith(companyPrefix))add(IY_SIGNATURE_BUCKET,row.signature_path);
+ for(const key of seen){const [bucket,path]=key.split("\n");attachments.push(await iyReadStorageAttachment(bucket,path));}
+ return attachments;
+}
+function iyDecodeBackupBase64(base64){
+ const binary=atob(String(base64||""));const bytes=new Uint8Array(binary.length);
+ for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+ return bytes;
+}
+async function iyRestoreCompanyBackupAttachments(entries){
+ const allowed=new Set([IY_MACHINE_IMAGES_BUCKET,IY_COMPANY_ASSETS_BUCKET,IY_SIGNATURE_BUCKET]);
+ const result={restored:0,errors:[]};
+ for(const entry of (Array.isArray(entries)?entries:[])){
+   try{
+     const bucket=String(entry?.bucket||"");const path=String(entry?.path||"");
+     if(!allowed.has(bucket)||!path||path.startsWith("/")||path.split("/").includes(".."))throw new Error("Attachment path is not permitted.");
+     if((bucket===IY_MACHINE_IMAGES_BUCKET||bucket===IY_COMPANY_ASSETS_BUCKET)&&!path.startsWith(`${iyCompany.id}/`))throw new Error("Company attachment path does not match this workspace.");
+     if(bucket===IY_SIGNATURE_BUCKET){
+       const refs=new Set([...(dataSafeArray(window.__iyRestoreMembershipSignaturePaths)),...(dataSafeArray(window.__iyRestoreReportApprovalRequests).map(x=>x?.signature_path))].filter(Boolean));
+       if(!refs.has(path))throw new Error("Signature path is not referenced by this backup.");
+     }
+     const bytes=iyDecodeBackupBase64(entry.base64);
+     const blob=new Blob([bytes],{type:entry.contentType||iyBackupMimeFromPath(path)});
+     const {error}=await iySupabase.storage.from(bucket).upload(path,blob,{upsert:true,contentType:blob.type||iyBackupMimeFromPath(path),cacheControl:"3600"});
+     if(error)throw error;
+     result.restored++;
+   }catch(e){result.errors.push(`${entry?.bucket||"storage"}/${entry?.path||"unknown"}: ${e?.message||e}`);}
+ }
+ return result;
+}
+function dataSafeArray(v){return Array.isArray(v)?v:[]}
+let iyBackupRunning=false;
+async function backup(){
  if(!isCompanyAdmin() && !isManager())return alert("Only a Company Administrator or Manager can download a complete system backup.");
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
- logActivity("Downloaded complete cloud system backup","Full cloud workspace data exported to JSON");
- cloudAudit("Downloaded complete cloud system backup",`Complete company backup downloaded by ${iyMembership?.full_name||iyAuthUser.email||"authorized user"}.`);
- const now=new Date();
- const stamp=now.toISOString().replace(/[:.]/g,"-");
- const backup={
-  backupInfo:{
-   backupType:"Complete IY Maintain Company Backup",
-    backupSchemaVersion:2,
+ if(iyBackupRunning)return alert("A complete backup is already being prepared. Please wait.");
+ iyBackupRunning=true;
+ try{
+  toast("Preparing a complete cloud backup, including transfers and attachments…");
+  logActivity("Downloaded complete cloud system backup","Full cloud workspace data and referenced attachments exported to JSON");
+  await cloudAudit("Downloaded complete cloud system backup",`Complete company backup downloaded by ${iyMembership?.full_name||iyAuthUser.email||"authorized user"}.`);
+  const now=new Date();const stamp=now.toISOString().replace(/[:.]/g,"-");
+  const data=clone(db);
+  const [partsMaster,partsTransfers,partsTransferApprovals,reportApprovalReports,reportApprovalRequests,auditLogs,memberships]=await Promise.all([
+    iyFetchAllCompanyRows("parts"),
+    iyFetchAllCompanyRows("parts_transfers","requested_at"),
+    iyFetchAllCompanyRows("parts_transfer_approvals","requested_at"),
+    iyFetchAllCompanyRows("report_approval_reports","created_at"),
+    iyFetchAllCompanyRows("report_approval_requests","requested_at"),
+    iyFetchAllCompanyRows("audit_logs","created_at"),
+    iyFetchAllCompanyRows("memberships","created_at")
+  ]);
+  const partByNumber=new Map(partsMaster.map(x=>[String(x.part_number||"").trim().toLowerCase(),x]));
+  const partById=new Map(partsMaster.map(x=>[String(x.id||""),x]));
+  data.partsMaster=partsMaster;
+  data.partsTransfers=partsTransfers.map(t=>({...t,part_number:partById.get(String(t.part_id||""))?.part_number||null}));
+  data.partsTransferApprovals=partsTransferApprovals;
+  data.reportApprovalReports=reportApprovalReports;
+  data.reportApprovalRequests=reportApprovalRequests;
+  data.auditLogs=auditLogs;
+  data.membershipSignaturePaths=memberships.map(x=>x.signature_path).filter(path=>String(path||"").startsWith(`${iyCompany.id}/`));
+  // The material number belongs to the master part, so stamp the authoritative value
+  // into the legacy transaction arrays as well for older restore routines/report consumers.
+  (data.inventory||[]).forEach(row=>{const p=partByNumber.get(String(row?.[0]||"").trim().toLowerCase());if(row)row[13]=p?.material_number||"";});
+  (data.receipts||[]).forEach(row=>{const p=partByNumber.get(String(row?.[1]||"").trim().toLowerCase());if(row)row[12]=p?.material_number||"";});
+  const maintenanceById=new Map();
+  for(const row of await iyFetchAllCompanyRows("maintenance_records","job_date"))maintenanceById.set(String(row.id),row);
+  (data.maintenance||[]).forEach(row=>{
+    const record=maintenanceById.get(String(row?.[14]||""));
+    if(record){row[11]=record.parts_required_details||(record.parts_required?"Yes":"");row[23]=record.parts_used||"";row[18]=record.downtime_start_at||null;row[19]=record.return_to_service_at||null;row[20]=record.downtime_hours??null;row[21]=record.machine_hours_at_downtime??null;row[22]=record.machine_hours_at_return??null;}
+  });
+  data.settings=data.settings||{};
+  const {data:rawCompanySettings,error:rawCompanySettingsError}=await iySupabase.from("company_settings").select("logo_path").eq("company_id",iyCompany.id).maybeSingle();
+  if(rawCompanySettingsError)throw new Error(`Could not include company branding settings in the backup: ${rawCompanySettingsError.message||rawCompanySettingsError}`);
+  const storedLogoPath=String(rawCompanySettings?.logo_path||"");
+  data.settings.logo_path=assetPathFromStoredUrl(storedLogoPath,IY_COMPANY_ASSETS_BUCKET)||storedLogoPath;
+  // Never put expiring signed Storage URLs into the portable JSON. The actual
+  // files and their paths are included separately in storageAttachments.
+  if(data.user){data.user.avatarUrl="";data.user.signatureUrl="";}
+  for(const key of ["logoData","signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"])if(Object.prototype.hasOwnProperty.call(data.settings,key))data.settings[key]="";
+  data.storageAttachments=await iyCollectCompanyBackupAttachments(data);
+  const backup={
+   backupInfo:{
+    backupType:"Complete IY Maintain Company Backup",
+    backupSchemaVersion:3,
     scopeModel:"multi-site-department",
     scopeFields:["site_id","department_id"],
-   createdAt:now.toISOString(),
-   application:"iy Standalone Maintenance Management System",
-   companyId:iyCompany?.id||null,
-   companyName:iyCompany?.name||db.settings?.companyName||"",
-   version:(db.settings&&db.settings.version)||"Version 1.0",
-   includes:["Company settings and branding","User activity/audit log","Parts inventory with Site / Department scope","Parts issue transactions with Site / Department scope","Parts receipt transactions with Site / Department scope","Parts requisition/updates with Site / Department scope","Parts Orders with Site / Department scope","Maintenance entries and logs with Site / Department scope","Machines with Site / Department scope","Report configuration and signatures"]
-  },
-  data:clone(db)
- };
- const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="iy_Complete_Backup_"+stamp+".json";
- document.body.appendChild(a);
- a.click();
- a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),1000);
- toast("Complete system backup downloaded.");
+    createdAt:now.toISOString(),
+    application:"iy Standalone Maintenance Management System",
+    companyId:iyCompany.id,
+    companyName:iyCompany.name||db.settings?.companyName||"",
+    version:(db.settings&&db.settings.version)||"V24.47",
+    includes:[
+     "Company settings, branding and logo path",
+     "Full audit history without replacing users or memberships",
+     "Parts master including Material Numbers",
+     "Parts inventory with Site / Department scope",
+     "Parts issue and receipt transactions",
+     "Parts Updates and Parts Orders",
+     "Parts Transfers and all transfer approvals / signatures",
+     "Maintenance records including detailed Parts Required, Parts Used and reliability timing",
+     "Machine records and MTBF / MTTR targets",
+     "Report approval records, approval requests and signature paths",
+     "Company, maintenance and Parts Update images and referenced signature attachments"
+    ]
+   },
+   data
+  };
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download="iy_Complete_Backup_"+stamp+".json";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  toast(`Complete backup downloaded: ${partsMaster.length} parts, ${partsTransfers.length} transfers and ${data.storageAttachments.length} attachments.`);
+ }catch(e){
+  console.error("Complete backup failed",e);
+  alert(`Complete backup could not be created. No partial backup was downloaded.\n\n${e?.message||e}`);
+ }finally{iyBackupRunning=false;}
 }
+
 const IY_RESTORE_DB_NAME="iy_maintain_restore_v1";
 const IY_RESTORE_STORE="jobs";
 let iyRestoreRunning=false;
@@ -10465,7 +10635,7 @@ function showRestoreProgress(mode="active"){
  let el=document.getElementById("iy-restore-progress");
  if(!el){
   el=document.createElement("div");el.id="iy-restore-progress";el.className="restore-progress-overlay";
-  el.innerHTML='<div class="restore-progress-card"><div class="restore-progress-top"><div class="restore-progress-spinner" id="iy-restore-spinner"></div><div><div class="restore-progress-title" id="iy-restore-title">Restoring System Backup</div><div class="restore-progress-step" id="iy-restore-step">Preparing restore…</div></div></div><div class="restore-progress-track"><div class="restore-progress-fill" id="iy-restore-fill"></div></div><div class="restore-progress-meta"><span id="iy-restore-detail">Preparing the workspace.</span><strong id="iy-restore-percent">0%</strong></div><div class="restore-progress-stage-list" id="iy-restore-stage-list"><div data-stage="prepare">○ Preparing backup</div><div data-stage="clear">○ Clearing current data</div><div data-stage="machines">○ Restoring machines</div><div data-stage="parts">○ Restoring parts & inventory</div><div data-stage="receipts">○ Restoring receipt history</div><div data-stage="issues">○ Restoring issue history</div><div data-stage="updates">○ Restoring Parts Updates</div><div data-stage="orders">○ Restoring Parts Orders</div><div data-stage="maintenance">○ Restoring maintenance records</div><div data-stage="settings">○ Restoring company settings</div><div data-stage="finish">○ Finalizing restore</div></div><div class="restore-progress-detail" id="iy-restore-info">Do not close or refresh this page while the restore is running. Progress is checkpointed so an interrupted restore can be safely restarted.</div></div>';
+  el.innerHTML='<div class="restore-progress-card"><div class="restore-progress-top"><div class="restore-progress-spinner" id="iy-restore-spinner"></div><div><div class="restore-progress-title" id="iy-restore-title">Restoring System Backup</div><div class="restore-progress-step" id="iy-restore-step">Preparing restore…</div></div></div><div class="restore-progress-track"><div class="restore-progress-fill" id="iy-restore-fill"></div></div><div class="restore-progress-meta"><span id="iy-restore-detail">Preparing the workspace.</span><strong id="iy-restore-percent">0%</strong></div><div class="restore-progress-stage-list" id="iy-restore-stage-list"><div data-stage="prepare">○ Preparing backup</div><div data-stage="transaction">○ Restoring database records</div><div data-stage="database">○ Restoring Parts Transfers & approvals</div><div data-stage="attachments">○ Restoring images and signatures</div><div data-stage="settings">○ Refreshing the workspace</div><div data-stage="finish">○ Finalizing restore</div></div><div class="restore-progress-detail" id="iy-restore-info">Do not close or refresh this page while the restore is running. Progress is checkpointed so an interrupted restore can be safely restarted.</div></div>';
   document.body.appendChild(el);
  }
  el.style.display="flex";
@@ -10478,7 +10648,7 @@ function setRestoreProgress(percent,step,detail,info,stage){
  if(fill)fill.style.width=n+"%";if(pct)pct.textContent=n+"%";if(st)st.textContent=step||"Restoring…";if(det)det.textContent=detail||"";if(inf)inf.textContent=info||"Do not close or refresh this page while the restore is running.";
  const list=document.getElementById("iy-restore-stage-list");
  if(list&&stage){
-  const order=["prepare","clear","machines","parts","receipts","issues","updates","orders","maintenance","settings","finish"],idx=order.indexOf(stage);
+  const order=["prepare","transaction","database","attachments","settings","finish"],idx=order.indexOf(stage);
   list.querySelectorAll("[data-stage]").forEach(node=>{const i=order.indexOf(node.dataset.stage);node.classList.toggle("done",i<idx||(stage==="finish"&&i===idx));node.classList.toggle("current",i===idx&&stage!=="finish");const label=node.textContent.replace(/^[✓◉○]\s*/,"");node.textContent=(i<idx||(stage==="finish"&&i===idx)?"✓ ":i===idx?"◉ ":"○ ")+label;});
  }
 }
@@ -10493,7 +10663,7 @@ async function validateRestorePayload(payload){
  if(Number(info.backupSchemaVersion||0)<2)throw new Error("This backup uses an older backup format. Please create a fresh backup with the current IY Maintain version before restoring.");
  const data=payload?.data;
  if(!data||typeof data!=="object")throw new Error("Backup data is missing or invalid.");
- const arrays=["machines","inventory","receipts","issues","updates","orders","maintenance"];
+ const arrays=["machines","inventory","receipts","issues","updates","orders","maintenance","partsMaster","partsTransfers","partsTransferApprovals","reportApprovalReports","reportApprovalRequests","auditLogs","storageAttachments","membershipSignaturePaths"];
  for(const key of arrays)if(data[key]!=null&&!Array.isArray(data[key]))throw new Error(`Backup section '${key}' is invalid.`);
  const {data:sites,error:se}=await iySupabase.from("sites").select("id").eq("company_id",iyCompany.id);
  if(se)throw new Error(`Could not validate backup Sites: ${se.message||se}`);
@@ -10515,6 +10685,32 @@ async function validateRestorePayload(payload){
  (data.updates||[]).forEach((r,i)=>scopeCheck(r,`Parts Update ${i+1}`,13,14));
  (data.orders||[]).forEach((r,i)=>scopeCheck(r,`Parts Order ${i+1}`,13,14));
  (data.maintenance||[]).forEach((r,i)=>scopeCheck(r,`Maintenance record ${i+1}`,16,17));
+ const partNumbers=new Set([
+   ...(data.inventory||[]).map(r=>String(r?.[0]||"").trim().toLowerCase()),
+   ...(data.partsMaster||[]).map(r=>String(r?.part_number||"").trim().toLowerCase())
+ ].filter(Boolean));
+ const transferIds=new Set((data.partsTransfers||[]).map(t=>String(t?.id||"")));
+ for(const [i,t] of (data.partsTransfers||[]).entries()){
+   const pairs=[[t.from_site_id,t.from_department_id,"source"],[t.to_site_id,t.to_department_id,"destination"]];
+   for(const [site,dept,which] of pairs){
+     if(!site||!dept||!siteIds.has(String(site))||!deptMap.has(String(dept))||String(deptMap.get(String(dept)))!==String(site))throw new Error(`Parts transfer ${i+1} has an invalid ${which} Site / Department scope.`);
+   }
+   const partNumber=String(t.part_number||"").trim().toLowerCase();
+   if(!partNumber||!partNumbers.has(partNumber))throw new Error(`Parts transfer ${i+1} does not link to a part included in the backup.`);
+ }
+ for(const [i,a] of (data.partsTransferApprovals||[]).entries())if(!transferIds.has(String(a?.transfer_id||"")))throw new Error(`Transfer approval ${i+1} refers to a transfer that is missing from the backup.`);
+ const reportIds=new Set((data.reportApprovalReports||[]).map(r=>String(r?.id||"")));
+ for(const [i,a] of (data.reportApprovalRequests||[]).entries())if(!reportIds.has(String(a?.report_id||"")))throw new Error(`Report approval request ${i+1} refers to a report that is missing from the backup.`);
+ const companyPrefix=`${iyCompany.id}/`;
+ const memberSignatures=new Set(data.membershipSignaturePaths||[]);
+ const reportSignatures=new Set((data.reportApprovalRequests||[]).map(x=>x?.signature_path).filter(Boolean));
+ for(const [i,a] of (data.storageAttachments||[]).entries()){
+   const bucket=String(a?.bucket||"");const path=String(a?.path||"");
+   if(![IY_MACHINE_IMAGES_BUCKET,IY_COMPANY_ASSETS_BUCKET,IY_SIGNATURE_BUCKET].includes(bucket)||!path||path.startsWith("/")||path.split("/").includes(".."))throw new Error(`Backup attachment ${i+1} has an invalid storage path.`);
+   if((bucket===IY_MACHINE_IMAGES_BUCKET||bucket===IY_COMPANY_ASSETS_BUCKET)&&!path.startsWith(companyPrefix))throw new Error(`Backup attachment ${i+1} does not belong to this company workspace.`);
+   if(bucket===IY_SIGNATURE_BUCKET&&(!path.startsWith(companyPrefix)||(!memberSignatures.has(path)&&!reportSignatures.has(path))))throw new Error(`Backup signature attachment ${i+1} is not a company-scoped signature referenced by this backup.`);
+   if(typeof a.base64!=="string"||!a.base64)throw new Error(`Backup attachment ${i+1} has no file content.`);
+ }
  const fleetIds=new Set();
  for(const [i,r] of (data.machines||[]).entries()){
    const fleet=String(r?.[0]||"").trim();
@@ -10539,6 +10735,7 @@ async function runRestoreJob(payload,name,options={}){
    setRestoreProgress(percent,step,detail,info,stage);
    await restoreYield();
  };
+ let databaseCommitted=false;
 
  try{
    const counts={
@@ -10548,7 +10745,11 @@ async function runRestoreJob(payload,name,options={}){
      issues:Array.isArray(data.issues)?data.issues.length:0,
      updates:Array.isArray(data.updates)?data.updates.length:0,
      orders:Array.isArray(data.orders)?data.orders.length:0,
-     maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0
+     maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0,
+     partsTransfers:Array.isArray(data.partsTransfers)?data.partsTransfers.length:0,
+     partsTransferApprovals:Array.isArray(data.partsTransferApprovals)?data.partsTransferApprovals.length:0,
+     reportApprovalReports:Array.isArray(data.reportApprovalReports)?data.reportApprovalReports.length:0,
+     storageAttachments:Array.isArray(data.storageAttachments)?data.storageAttachments.length:0
    };
 
    await checkpoint(
@@ -10582,21 +10783,33 @@ async function runRestoreJob(payload,name,options={}){
    if(!result||result.success!==true){
      throw new Error("Atomic restore did not return a successful completion result.");
    }
+   databaseCommitted=true;
 
    await checkpoint(
      "database",
-     88,
-     "Database restore committed",
-     `Restored ${result.machines??counts.machines} machines, ${result.parts_inventory??counts.parts} parts/inventory records and transaction history.`,
-     "PostgreSQL has completed the restore as a single transaction."
+     82,
+     "Database records restored",
+     `Restored ${result.machines??counts.machines} machines, ${result.parts_inventory??counts.parts} inventory records, ${result.parts_transfers??counts.partsTransfers} transfers and ${result.parts_transfer_approvals??counts.partsTransferApprovals} transfer approvals.`,
+     "PostgreSQL has completed the database restore as a single transaction."
    );
+
+   let attachmentRestore={restored:0,errors:[]};
+   if(Array.isArray(data.storageAttachments)&&data.storageAttachments.length){
+     window.__iyRestoreMembershipSignaturePaths=data.membershipSignaturePaths||[];
+     window.__iyRestoreReportApprovalRequests=data.reportApprovalRequests||[];
+     await checkpoint("attachments",89,"Restoring images and signatures…",`Restoring ${data.storageAttachments.length} attachment(s).`,"Database records are already committed. Attachments are being copied to their original company-scoped storage paths.");
+     attachmentRestore=await iyRestoreCompanyBackupAttachments(data.storageAttachments);
+     delete window.__iyRestoreMembershipSignaturePaths;delete window.__iyRestoreReportApprovalRequests;
+   }
 
    await checkpoint(
      "settings",
      93,
      "Refreshing company workspace…",
      "Loading the restored company data.",
-     "The database transaction has completed successfully."
+     attachmentRestore.errors.length
+       ? `Database restored. ${attachmentRestore.restored} attachment(s) restored; ${attachmentRestore.errors.length} attachment(s) need attention.`
+       : `Database restored and ${attachmentRestore.restored} attachment(s) restored successfully.`
    );
 
    await cloudAudit(
@@ -10632,8 +10845,18 @@ async function runRestoreJob(payload,name,options={}){
    hideRestoreProgress();
    render();
 
-   toast("System backup restored successfully.");
-   alert("Restore completed successfully. The company backup was restored using an atomic PostgreSQL transaction. If any database operation had failed, PostgreSQL would have rolled the entire restore back. User accounts and passwords were not changed.");
+   if(attachmentRestore.errors.length){
+     toast(`Database restored; ${attachmentRestore.errors.length} attachment(s) could not be restored.`,9000);
+     alert(`Database restore completed successfully, but ${attachmentRestore.errors.length} attachment(s) could not be restored.
+
+Restored files: ${attachmentRestore.restored}
+Failed files: ${attachmentRestore.errors.slice(0,8).join("\n")}
+
+Your database changes were committed atomically. Please keep the backup JSON and review the failed attachment paths before deleting the backup file.`);
+   }else{
+     toast("System backup restored successfully.");
+     alert(`Restore completed successfully. The company backup was restored using an atomic PostgreSQL transaction. ${attachmentRestore.restored} attachment(s) were restored. User accounts, passwords and memberships were not changed.`);
+   }
 
  }catch(e){
    console.error("Backup restore failed",e);
@@ -10651,7 +10874,9 @@ async function runRestoreJob(payload,name,options={}){
    alert(
      `Restore stopped at ${Math.round(job.percent||0)}%.\n\n`+
      `Reason: ${job.error||"Unknown restore error"}\n\n`+
-     `No partial database restore should remain. PostgreSQL runs this restore as one transaction, so a failure automatically rolls the database back to the state it had before the restore began.\n\n`+
+     (databaseCommitted
+       ? `The database restore has already committed. A later refresh or attachment step failed, so do not assume the whole operation rolled back. The saved backup is retained for safe recovery.\n\n`
+       : `No partial database restore should remain. PostgreSQL runs the database restore as one transaction, so a database failure automatically rolls it back to the state it had before the restore began.\n\n`)+
      `The browser restore checkpoint remains saved for recovery diagnostics. Do not start another restore until the failure has been reviewed.`
    );
 
@@ -10660,7 +10885,7 @@ async function runRestoreJob(payload,name,options={}){
 }
 
 async function maybeResumeRestore(){
- if(iyRestoreResumePromptShown||!iyCloudReady||!iyCompany||!iyAuthUser||!isCompanyAdmin())return;
+ if(iyRestoreResumePromptShown||!iyCloudReady||!iyCompany||!iyAuthUser||(!isCompanyAdmin()&&!isManager()))return;
  const job=await iyGetRestoreJob(restoreJobKey());
  if(!job||job.status==="complete"||!job.payload)return;
  iyRestoreResumePromptShown=true;
@@ -10671,7 +10896,7 @@ async function maybeResumeRestore(){
 }
 
 async function restoreBackupFile(){
- if(!isCompanyAdmin())return alert("Only a Company Administrator can restore a system backup.");
+ if(!isCompanyAdmin()&&!isManager())return alert("Only a Company Administrator or Manager can restore a system backup.");
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
  if(iyRestoreRunning)return alert("A restore is already running. Please wait until it reaches 100%.");
  const existing=await iyGetRestoreJob(restoreJobKey());
@@ -10684,8 +10909,10 @@ async function restoreBackupFile(){
    const backupCompanyId=payload?.backupInfo?.companyId||data?.companyId||null;if(backupCompanyId&&String(backupCompanyId)!==String(iyCompany.id))throw new Error("This backup belongs to a different company workspace and cannot be restored here.");
    const name=payload?.backupInfo?.companyName||data?.settings?.companyName||"this workspace";
    await validateRestorePayload(payload);
-   const counts={machines:Array.isArray(data.machines)?data.machines.length:0,parts:Array.isArray(data.inventory)?data.inventory.length:0,receipts:Array.isArray(data.receipts)?data.receipts.length:0,issues:Array.isArray(data.issues)?data.issues.length:0,updates:Array.isArray(data.updates)?data.updates.length:0,orders:Array.isArray(data.orders)?data.orders.length:0,maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0};
-   const ok=confirm(`RESTORE SYSTEM BACKUP\n\nCompany: ${name}\nMachines: ${counts.machines}\nParts / inventory: ${counts.parts}\nReceipts: ${counts.receipts}\nIssues: ${counts.issues}\nParts updates: ${counts.updates}\nParts orders: ${counts.orders}\nMaintenance records: ${counts.maintenance}\n\nThis will REPLACE the current company records with the selected backup.\n\nUsers, passwords and Supabase authentication accounts will NOT be changed.\n\nContinue?`);if(!ok)return;
+   const counts={machines:Array.isArray(data.machines)?data.machines.length:0,parts:Array.isArray(data.inventory)?data.inventory.length:0,receipts:Array.isArray(data.receipts)?data.receipts.length:0,issues:Array.isArray(data.issues)?data.issues.length:0,updates:Array.isArray(data.updates)?data.updates.length:0,orders:Array.isArray(data.orders)?data.orders.length:0,maintenance:Array.isArray(data.maintenance)?data.maintenance.length:0,partsTransfers:Array.isArray(data.partsTransfers)?data.partsTransfers.length:0,partsTransferApprovals:Array.isArray(data.partsTransferApprovals)?data.partsTransferApprovals.length:0,attachments:Array.isArray(data.storageAttachments)?data.storageAttachments.length:0};
+   const legacyMissing=Number(payload?.backupInfo?.backupSchemaVersion||0)<3;
+   const legacyNote=legacyMissing?"\n\nWARNING: This older backup does not include the newer Parts Transfers, Materials Master snapshots, or bundled attachments. Current transfer / approval history will be replaced by the transfer data available in that backup.":"";
+   const ok=confirm(`RESTORE SYSTEM BACKUP\n\nCompany: ${name}\nMachines: ${counts.machines}\nParts / inventory: ${counts.parts}\nReceipts: ${counts.receipts}\nIssues: ${counts.issues}\nParts updates: ${counts.updates}\nParts orders: ${counts.orders}\nMaintenance records: ${counts.maintenance}\nParts transfers: ${counts.partsTransfers}\nTransfer approvals: ${counts.partsTransferApprovals}\nAttachments: ${counts.attachments}${legacyNote}\n\nThis will REPLACE the current company records with the selected backup.\n\nUsers, passwords and Supabase authentication accounts will NOT be changed.\n\nContinue?`);if(!ok)return;
    const second=prompt("For safety, type RESTORE to confirm the replacement of the current company data.");if(second!=="RESTORE")return alert("Restore cancelled. No data was changed.");
    await runRestoreJob(payload,name);
   }catch(e){console.error("Backup restore failed",e)}
@@ -10700,7 +10927,7 @@ function backupPage(){
     <div class="backup-copy">
      <div class="backup-eyebrow">BACKUP</div>
      <h3>Complete System Backup</h3>
-     <p>Download the company workspace data, including settings, branding, audit history, parts, transactions, maintenance records, machines, reports and scoped Site / Department assignments.</p>
+     <p>Download a complete company snapshot including Material Numbers, transfer requests and approvals, detailed maintenance records, report approvals, audit history and the associated company / maintenance images and signatures.</p>
      <div class="backup-meta"><span>JSON</span><span>Complete cloud snapshot</span><span>Downloadable</span></div>
     </div>
     <button class="btn primary backup-download" onclick="backup()">⇩ &nbsp; Download Complete Backup</button>
@@ -10710,7 +10937,7 @@ function backupPage(){
     <div class="backup-copy">
      <div class="backup-eyebrow">RESTORE</div>
      <h3>Restore System Backup</h3>
-     <p>Load a iy backup file and replace the current cloud workspace data with the saved version. This includes company settings, operational records, Parts Orders, maintenance history, audit history and report configuration. Auth user accounts, passwords and memberships are not included.</p>
+     <p>Restore a complete company backup, including Materials, Parts Transfers and approvals, detailed Parts Required / Parts Used, report approval history, and bundled images and signatures. User accounts, passwords and memberships are not changed.</p>
      <div class="backup-meta"><span>JSON backup only</span><span>Replaces current data</span><span>Confirmation required</span></div>
     </div>
     <button class="btn secondary backup-download restore-button" type="button" onclick="restoreBackupFile()">↥ &nbsp; Restore Backup</button>
