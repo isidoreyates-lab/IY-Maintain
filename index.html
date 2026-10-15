@@ -7557,18 +7557,25 @@ function transferRejectedCount(transferId){
  return (window.__partsTransferApprovals||[]).filter(x=>String(x.transfer_id)===String(transferId)&&x.status==="rejected").length;
 }
 function transferScopeName(siteId,departmentId){
- const s=iyCompanySites.find(x=>String(x.id)===String(siteId));
- const d=iyCompanyDepartments.find(x=>String(x.id)===String(departmentId));
+ const s=(iyCompanySites||[]).find(x=>String(x.id)===String(siteId));
+ const d=(iyCompanyDepartments||[]).find(x=>String(x.id)===String(departmentId));
  if(s&&d)return `${s.name} · ${d.name}`;
- if(s)return `${s.name} · —`;
+ if(s)return `${s.name} · ${d?.name||"—"}`;
+ if(d)return `${d.site_name||""}${d.site_name?" · ":""}${d.name}`;
  return "—";
 }
 function transferPartInfo(partId){
  return (window.__partsTransferParts||[]).find(x=>String(x.id)===String(partId))||null;
 }
 function transferRequesterName(userId){
- const u=(iyUsersCache||[]).find(x=>String(x.user_id)===String(userId));
- return u?.full_name||u?.email||userId||"User";
+ const id=String(userId||"");
+ const u=(iyUsersCache||[]).find(x=>String(x.user_id||"")===id||String(x.id||"")===id);
+ if(u?.full_name&&String(u.full_name).trim())return String(u.full_name).trim();
+ if(id&&id===String(iyAuthUser?.id||"")){
+   return iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||"Current user";
+ }
+ if(u?.email)return String(u.email).split("@")[0];
+ return "Requester details unavailable";
 }
 function transferRoleEligibleForRequester(role){
  return ["company_admin","super_admin","manager","site_supervisor","department_supervisor","team_lead","parts_coordinator","technician"].includes(String(role||"").toLowerCase());
@@ -7608,10 +7615,13 @@ async function loadPartsTransfersData(){
    if(!iyCompanySites.length||!iyCompanyDepartments.length){
      try{await loadAdminLocationOptions();}catch(e){console.warn("Transfer location loading skipped",e?.message||e);}
    }
-   const [tRes,aRes,pRes]=await Promise.all([
+   const [tRes,aRes,pRes,sitesRes,deptsRes,membersRes]=await Promise.all([
      iySupabase.from("parts_transfers").select("id,company_id,transfer_ref,part_id,quantity,from_site_id,from_department_id,to_site_id,to_department_id,reason,status,requested_by,requested_at,completed_at,rejected_at,updated_at").eq("company_id",iyCompany.id).order("requested_at",{ascending:false}).limit(500),
      iySupabase.from("parts_transfer_approvals").select("id,company_id,transfer_id,approver_user_id,approver_role,status,requested_at,signed_at,signer_name,signer_role,signature_path,decision_note").eq("company_id",iyCompany.id).order("requested_at",{ascending:true}).limit(2500),
-     iySupabase.from("parts").select("id,part_number,description,machine_model,supplier,minimum_stock").eq("company_id",iyCompany.id).order("part_number")
+     iySupabase.from("parts").select("id,part_number,description,machine_model,supplier,minimum_stock").eq("company_id",iyCompany.id).order("part_number"),
+     iySupabase.from("sites").select("id,name").eq("company_id",iyCompany.id),
+     iySupabase.from("departments").select("id,site_id,name").eq("company_id",iyCompany.id),
+     iySupabase.from("memberships").select("id,user_id,user_code,full_name,email,role,department,site_id,department_id,is_active").eq("company_id",iyCompany.id)
    ]);
    if(tRes.error&&tRes.error.code!=="PGRST205")throw tRes.error;
    if(aRes.error&&aRes.error.code!=="PGRST205")throw aRes.error;
@@ -7622,6 +7632,70 @@ async function loadPartsTransfersData(){
    window.__partsTransfers=(tRes.data||[]);
    window.__partsTransferApprovals=(aRes.data||[]);
    window.__partsTransferParts=(pRes.data||[]);
+   // Approval users may have a restricted location picker; load company location labels
+   // independently so both source and destination are readable in the review modal.
+   if(!sitesRes.error&&Array.isArray(sitesRes.data)&&sitesRes.data.length){
+     const siteMap=new Map((iyCompanySites||[]).map(x=>[String(x.id),x]));
+     sitesRes.data.forEach(x=>siteMap.set(String(x.id),{...(siteMap.get(String(x.id))||{}),...x}));
+     iyCompanySites=Array.from(siteMap.values());
+   }
+   if(!deptsRes.error&&Array.isArray(deptsRes.data)&&deptsRes.data.length){
+     const deptMap=new Map((iyCompanyDepartments||[]).map(x=>[String(x.id),x]));
+     deptsRes.data.forEach(x=>deptMap.set(String(x.id),{...(deptMap.get(String(x.id))||{}),...x}));
+     iyCompanyDepartments=Array.from(deptMap.values());
+   }
+   // Merge the location RPC as well: direct table reads can be restricted for
+   // approvers, and the RPC may still return location labels for this workspace.
+   try{
+     const loc=await loadAdminLocationOptions();
+     const siteMap=new Map((iyCompanySites||[]).map(x=>[String(x.id),x]));
+     (loc.sites||[]).forEach(x=>siteMap.set(String(x.id),{...(siteMap.get(String(x.id))||{}),...x}));
+     iyCompanySites=Array.from(siteMap.values());
+     const deptMap=new Map((iyCompanyDepartments||[]).map(x=>[String(x.id),x]));
+     (loc.departments||[]).forEach(x=>deptMap.set(String(x.id),{...(deptMap.get(String(x.id))||{}),...x}));
+     iyCompanyDepartments=Array.from(deptMap.values());
+   }catch(e){console.warn("Transfer location labels could not be expanded for this account",e?.message||e);}
+   // Resolve every transfer destination label through a company-scoped SECURITY DEFINER
+   // lookup. Direct table reads and the regular location picker can be restricted by RLS
+   // for approver accounts, which otherwise leaves the destination as a dash.
+   try{
+     const {data:transferLocations,error:transferLocationsError}=await iySupabase.rpc("get_company_transfer_locations",{p_company_id:iyCompany.id});
+     if(!transferLocationsError&&Array.isArray(transferLocations)){
+       const siteMap=new Map((iyCompanySites||[]).map(x=>[String(x.id),x]));
+       const deptMap=new Map((iyCompanyDepartments||[]).map(x=>[String(x.id),x]));
+       transferLocations.forEach(x=>{
+         if(x.site_id)siteMap.set(String(x.site_id),{...(siteMap.get(String(x.site_id))||{}),id:x.site_id,name:x.site_name});
+         if(x.department_id)deptMap.set(String(x.department_id),{...(deptMap.get(String(x.department_id))||{}),id:x.department_id,site_id:x.department_site_id,name:x.department_name});
+       });
+       iyCompanySites=Array.from(siteMap.values());
+       iyCompanyDepartments=Array.from(deptMap.values());
+     }else if(transferLocationsError){
+       console.warn("Company transfer location labels unavailable; apply the accompanying SQL update",transferLocationsError.message);
+     }
+   }catch(e){console.warn("Company transfer location labels unavailable; apply the accompanying SQL update",e?.message||e);}
+   // Resolve the requestor's real name through the existing company-wide approval-user
+   // RPC. Membership RLS can hide other users from an approver's direct table query.
+   try{
+     const {data:approvalUsers,error:approvalUsersError}=await iySupabase.rpc("get_company_approval_users",{p_company_id:iyCompany.id});
+     if(!approvalUsersError&&Array.isArray(approvalUsers)){
+       const userMap=new Map((iyUsersCache||[]).map(x=>[String(x.user_id||""),x]));
+       approvalUsers.forEach(x=>{
+         const key=String(x.user_id||"");
+         if(key)userMap.set(key,{...(userMap.get(key)||{}),...x});
+       });
+       iyUsersCache=Array.from(userMap.values());
+     }else if(approvalUsersError){
+       console.warn("Parts transfer requester names could not be resolved",approvalUsersError.message);
+     }
+   }catch(e){console.warn("Parts transfer requester names could not be resolved",e?.message||e);}
+   if(!membersRes.error&&Array.isArray(membersRes.data)&&membersRes.data.length){
+     const userMap=new Map((iyUsersCache||[]).map(x=>[String(x.user_id||""),x]));
+     membersRes.data.forEach(x=>{
+       const key=String(x.user_id||"");
+       if(key)userMap.set(key,{...(userMap.get(key)||{}),...x});
+     });
+     iyUsersCache=Array.from(userMap.values());
+   }
    window.__partsTransfersLoaded=true;
  }catch(e){
    console.error("Parts Transfers load failed",e);
@@ -7758,7 +7832,9 @@ async function refreshPartsTransferApprovers(){
      p_to_department_id:toDept
    });
    if(error)throw error;
-   renderPartsTransferApproverList(Array.isArray(data)?data:[]);
+   // Keep the loaded users available when the list is re-rendered after a checkbox click.
+   window.__lastPartsTransferApproverUsers=Array.isArray(data)?data:[];
+   renderPartsTransferApproverList(window.__lastPartsTransferApproverUsers);
  }catch(e){
    holder.innerHTML=`<div class="iy-transfer-empty-users">Approvers could not be loaded. ${esc(e?.message||"Please try again.")}</div>`;
  }finally{
@@ -7769,6 +7845,7 @@ function togglePartsTransferApprover(input){
  const set=new Set(window.__partsTransferApprovers||[]);
  if(input.checked)set.add(input.value);else set.delete(input.value);
  window.__partsTransferApprovers=[...set];
+ // Re-render from the same loaded list so the approver options stay visible.
  renderPartsTransferApproverList(window.__lastPartsTransferApproverUsers||[]);
 }
 async function refreshPartsTransferApproverListFromCurrent(){
