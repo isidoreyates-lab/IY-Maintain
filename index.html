@@ -5317,9 +5317,10 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
  <div class="formgrid">
  ${writeScopeSelectorMarkup()}
- <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
+ <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":""}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
  <div class="field"><label>Material Number</label><input id="r_material_number" class="input" value="${esc(part?.[13]||"")}" placeholder="Material number"></div>
+ <div class="field full"><label>Location</label><input id="r_location" class="input" value="${esc(part?.[7]||"")}" placeholder="Enter storage location"></div>
  <div class="field full"><label>Machines <span style="font-weight:400;color:#64748b">(select one or more)</span></label><div id="r_machine_options" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:150px;overflow-y:auto;border:1px solid #d8e3f0;border-radius:10px;background:#f8fbff;padding:8px">${receiveMachineOptionsMarkup(order?.[3]||part?.[2]||"")}</div><div class="hint">Choose every machine this part applies to. The selected machine models will be recorded together.</div></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
@@ -5344,6 +5345,7 @@ function autoFillReceivePart(){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
      document.getElementById("r_material_number").value=part[13]||"";
+     document.getElementById("r_location").value=part[7]||"";
      setReceiveMachineSelection(matchedOrder[3]||part[2]||"");
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
@@ -5357,6 +5359,7 @@ function autoFillReceivePart(){
  }
  document.getElementById("r_desc").value=part[1]||"";
  document.getElementById("r_material_number").value=part[13]||"";
+ document.getElementById("r_location").value=part[7]||"";
  setReceiveMachineSelection(part[2]||"");
  const order=(viewOrderRows()||[]).find(x=>norm(x[1])===norm(part[0]));
  if(order){
@@ -5374,6 +5377,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
  const materialNumber=document.getElementById("r_material_number")?.value.trim()||"";
+ const location=document.getElementById("r_location")?.value.trim()||"";
  const machine=getReceiveMachineSelection().join(", ");
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
@@ -5398,7 +5402,8 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_received_at:now,
      p_site_id:scope.siteId,
      p_department_id:scope.departmentId,
-     p_material_number:materialNumber||null
+     p_material_number:materialNumber||null,
+     p_location:location||null
    });
    if(error)throw error;
 
