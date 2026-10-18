@@ -1345,6 +1345,14 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:900px){.maintenance-entry-intro{grid-template-columns:1fr}}
 </style>
 <style>
+
+/* Preview-only pagination: keep maintenance rows inside each visible paper sheet. */
+#reportPreviewScroll .report-preview-continuation .r-head{min-height:70px;padding-bottom:12px;margin-bottom:12px}
+#reportPreviewScroll .report-preview-continuation .r-title{font-size:22px}
+#reportPreviewScroll .report-preview-continuation .r-section{margin-top:10px}
+#reportPreviewScroll .report-preview-continuation .r-meta,#reportPreviewScroll .report-preview-continuation .r-kpis{display:none}
+#reportPreviewScroll .report-preview-continuation .r-signatures{margin-top:18px}
+
 /* v10 — Report preview rebuilt as two clean A4 landscape pages. */
 .report-document{display:flex;flex-direction:column;gap:26px;align-items:center}
 .report-page{box-sizing:border-box;width:1123px;min-height:794px}
@@ -1395,9 +1403,30 @@ button,input,select,textarea{font-family:inherit}
  body.printing-maintenance-log-export .maintenance-log-export-table{font-size:7.2px!important}
  body.printing-maintenance-log-export .maintenance-log-export-table th{background:#123f68!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  body.printing-maintenance-report .report-document{display:block!important}
- body.printing-maintenance-report .report-page{width:297mm!important;min-height:210mm!important;height:210mm!important;margin:0!important;padding:11mm 14mm 8mm!important;transform:none!important;box-shadow:none!important;page-break-after:always!important;overflow:hidden!important}
- body.printing-maintenance-report .report-page:last-child{page-break-after:auto!important}
- body.printing-maintenance-report .report-page-parts{page-break-before:always!important}
+ /* Let report sections grow across as many printed pages as their rows require. */
+ /* Do not treat the maintenance activities section as one indivisible page. Let its table flow naturally across printed pages. */
+ body.printing-maintenance-report .report-page{display:block!important;box-sizing:border-box!important;width:297mm!important;min-height:0!important;height:auto!important;margin:0!important;padding:11mm 14mm 8mm!important;transform:none!important;box-shadow:none!important;page-break-after:auto!important;break-after:auto!important;overflow:visible!important}
+ /* Parts Updates is a distinct report section and begins after the maintenance table has fully flowed. */
+ body.printing-maintenance-report .report-page-parts{page-break-before:always!important;break-before:page!important}
+ /* Preserve preview page boundaries in the PDF export. */
+ body.printing-maintenance-report .report-preview-continuation{page-break-before:always!important;break-before:page!important}
+ body.printing-maintenance-report .report-page table,
+ body.printing-parts-report .report-paper table{display:table!important;width:100%!important;border-collapse:collapse!important;page-break-inside:auto!important;break-inside:auto!important}
+ body.printing-maintenance-report .report-page thead,
+ body.printing-parts-report .report-paper thead{display:table-header-group!important}
+ body.printing-maintenance-report .report-page tfoot,
+ body.printing-parts-report .report-paper tfoot{display:table-footer-group!important}
+ body.printing-maintenance-report .report-page tr,
+ body.printing-parts-report .report-paper tr{page-break-inside:avoid!important;break-inside:avoid!important}
+ body.printing-maintenance-report .report-page .r-head,
+ body.printing-maintenance-report .report-page .r-meta,
+ body.printing-maintenance-report .report-page .r-kpis,
+ body.printing-maintenance-report .report-page .r-section,
+ body.printing-parts-report .report-paper .r-head,
+ body.printing-parts-report .report-paper .r-meta,
+ body.printing-parts-report .report-paper .r-kpis,
+ body.printing-parts-report .report-paper .r-section{break-inside:avoid-page;page-break-inside:avoid}
+ body.printing-parts-report .report-paper{height:auto!important;overflow:visible!important;page-break-inside:auto!important;break-inside:auto!important}
 }
 </style>
 <style>
@@ -7606,9 +7635,9 @@ function reportApprovalPanel(kind){
  const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>{const target=users.find(u=>u.user_id===x.user_id)||iyUsersCache.find(u=>u.user_id===x.user_id)||{};return `<div class="approval-chip pending"><strong>⏳ ${esc(target.full_name||target.email||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`})].join("");
  const userCards=users.length?users.map(u=>{const checked=selectedUsers.includes(u.user_id);return `<label class="approval-user-option ${checked?"selected":""}"><input type="checkbox" value="${esc(u.user_id)}" ${checked?"checked":""} onchange="toggleApprovalUser('${kind}',this)"><span class="approval-user-check">${checked?"✓":""}</span><span class="approval-user-main"><strong>${esc(u.full_name||u.email||"User")}</strong><small>${esc(roleLabel(u.role))}${u.user_code?` · ${esc(u.user_code)}`:""}</small></span></label>`}).join(""):`<div class="approval-no-users"><span>No other active approval users are available.</span><button type="button" class="approval-refresh-users" onclick="refreshApprovalUsers('${kind}')">↻ Refresh users</button></div>`;
  const requestBox=isCreator&&!complete?`<div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Select one or more users. They will receive this report in My Approvals.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div>`:"";
- const ownerAction=isCreator&&!mySigned?`<button class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
- const pendingAction=mePending?`<button class="success approval-sign-now" onclick="signCurrentReport('${kind}')">✍ Sign & Submit Approval</button>`:"";
- const requestAction=isCreator&&!complete?`<button class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
+ const ownerAction=isCreator&&!mySigned?`<button type="button" class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
+ const pendingAction=mePending?`<button type="button" class="success approval-sign-now" onclick="signCurrentReport('${kind}')">✍ Sign & Submit Approval</button>`:"";
+ const requestAction=isCreator&&!complete?`<button type="button" class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
  return `<div class="report-approval-panel ${complete?'is-complete':''}"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL STATUS</div><div class="report-approval-note">${isCreator?"Your signature is optional. Exporting does not sign the report. Request other users only when their approval is required.":mePending?"This report is assigned to you. Sign & submit your approval using your account signature.":"Approval status is recorded against this exact saved report."}</div></div><span class="report-approval-status ${complete?'complete':''}">${esc(status)}</span></div><div class="report-approval-chain">${chips||`<div class="approval-empty-state">No signatures have been applied yet.</div>`}</div>${requestBox}<div class="report-approval-actions">${ownerAction}${pendingAction}${requestAction}</div></div>`;
 }
 function toggleApprovalUser(kind,input){window.__approvalSelections=window.__approvalSelections||{};const list=new Set(window.__approvalSelections[kind]||[]);if(input.checked)list.add(input.value);else list.delete(input.value);window.__approvalSelections[kind]=[...list];refreshReportApprovalPreview(kind);}
@@ -7683,7 +7712,16 @@ async function refreshReportApprovalPreview(kind){
    if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }else{
    const m=document.getElementById("reportPreviewScroll");
-   if(m){const st=approvalStateForKind("maintenance");const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};m.innerHTML=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));}
+   if(m){
+    const st=approvalStateForKind("maintenance");
+    const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};
+    const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));
+    // Keep the preview pagination after signature/request status refreshes.
+    // Refreshing the approval panel must not replace the paginated preview with one long page.
+    m.dataset.originalReportHtml=html;
+    m.innerHTML=html;
+    paginateMaintenanceReportPreview();
+   }
   }
  }catch(e){console.warn("Report preview branding refresh failed",e?.message||e);}
 }
@@ -10181,12 +10219,30 @@ function maintenanceReportImageLinks(row){
  return `<div class="r-maint-image-links">${images.map(x=>`<a class="r-maint-image-link" href="${esc(x.url)}" download="maintenance-${recordId}-image-${x.slot}.jpg" title="Download image ${x.slot}">IMG ${x.slot} ↓</a>`).join("")}</div>`;
 }
 
-async function prepareReportSnapshotForPreview(snapshot){
+async function prepareReportSnapshotForPreview(snapshot,options={}){
  const base=snapshot&&typeof snapshot==="object"?snapshot:{};const settings={...(base.settings||db.settings||{})};
- settings.logoData=await resolveReportLogoUrl(settings);
+ if(!options.logoAlreadyResolved)settings.logoData=await resolveReportLogoUrl(settings);
  if(Array.isArray(base?.data?.rows))await hydrateMaintenanceReportImages(base.data.rows);
  if(Array.isArray(base?.data?.partsUpdates))await hydratePartsUpdateReportImages(base.data.partsUpdates);
  return {...base,settings};
+}
+// Report-preview-only asset loader: resolve branding and signature assets concurrently
+// instead of serially waiting on each storage request. Other app asset loading is unchanged.
+async function loadMaintenanceReportPreviewAssets(settings){
+ if(!iyCompany)return;
+ const folder=String(iyCompany.id),persistedPath=String(settings?.logo_path||"").trim();
+ const candidates=[...new Set(persistedPath?[persistedPath,`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]:[`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`])];
+ const [logoResults,signatureResults]=await Promise.all([
+  Promise.all(candidates.map(async path=>({path,url:await assetSignedUrlOrEmpty(path)}))),
+  Promise.all(["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"].map(async key=>{
+   const results=await Promise.all(["png","jpg","jpeg","webp"].map(async ext=>({ext,url:await assetSignedUrlOrEmpty(`${folder}/signatures/${key}.${ext}`)})));
+   return {key,result:results.find(x=>x.url)||{url:""}};
+  }))
+ ]);
+ const logo=logoResults.find(x=>x.url);
+ settings.logo_path=logo?.path||"";
+ settings.logoData=logo?.url?`${logo.url}&v=${Date.now()}`:"";
+ for(const item of signatureResults)settings[item.key]=item.result.url?`${item.result.url}&v=${Date.now()}`:"";
 }
 async function loadProfileAvatar(){
  if(!iyAuthUser?.id)return "";
@@ -11541,25 +11597,53 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 }
 async function openReportPreview(){
- await ensureApprovalUsersLoaded();
- await loadCloudAssets(db.settings);
- const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings}));if(!html)return alert("Generate the report first.");
+ // Run approval-user loading and report-only branding preparation in parallel.
+ await Promise.all([ensureApprovalUsersLoaded(),loadMaintenanceReportPreviewAssets(db.settings)]);
+ const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings},{logoAlreadyResolved:true}));if(!html)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
+ document.getElementById("reportPreviewScroll").dataset.originalReportHtml=html;document.getElementById("reportPreviewScroll").innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");
 }
+function paginateMaintenanceReportPreview(){
+ const scroll=document.getElementById("reportPreviewScroll");if(!scroll||!scroll.dataset.originalReportHtml)return;
+ const doc=scroll.querySelector(".report-document"),first=doc?.querySelector(".report-page:not(.report-page-parts)"),parts=doc?.querySelector(".report-page-parts");
+ const table=first?.querySelector(".r-maint-report-table");if(!doc||!first||!parts||!table)return;
+ const body=table.tBodies[0];if(!body)return;
+ const rows=Array.from(body.rows);if(rows.length<=10)return;
+ const signatures=first.querySelector(".r-signatures"),footer=first.querySelector(".r-footer");
+ if(signatures)signatures.remove();if(footer)footer.remove();
+ const firstCount=11,otherCount=17;let remaining=rows.slice(firstCount);
+ body.replaceChildren(...rows.slice(0,firstCount));
+ let previous=first,idx=1;
+ while(remaining.length){
+  const page=first.cloneNode(true);page.classList.add("report-preview-continuation");page.classList.remove("report-page-parts");
+  const meta=page.querySelector(".r-meta");if(meta)meta.remove();const kpis=page.querySelector(".r-kpis");if(kpis)kpis.remove();
+  const head=page.querySelector(".r-head");if(head){const sub=head.querySelector(".r-sub");if(sub)sub.textContent="MAINTENANCE REPORT — CONTINUED";}
+  const section=page.querySelector(".r-section");if(section)section.innerHTML='MAINTENANCE ACTIVITIES <small>Continued</small>';
+  const t=page.querySelector(".r-maint-report-table"),tb=t?.tBodies[0];if(!tb)break;
+  const chunk=remaining.splice(0,otherCount);tb.replaceChildren(...chunk.map(r=>r.cloneNode(true)));
+  previous.after(page);previous=page;idx++;
+ }
+ const last=previous;
+ if(signatures)last.appendChild(signatures.cloneNode(true));if(footer)last.appendChild(footer.cloneNode(true));
+ doc.appendChild(parts);
+}
+
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").dataset.originalReportHtml=html;document.getElementById("reportPreviewScroll").innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
  if(!modal||!paper){return alert("Please generate and preview the report first.");}
+ const previewScroll=document.getElementById("reportPreviewScroll");
+ /* Print the already-paginated preview DOM. Rebuilding from original HTML here drops
+    continuation sheets and causes the exported PDF to differ from the preview. */
  document.body.classList.add("printing-maintenance-report");
  modal.classList.add("open");
  setTimeout(()=>{
    window.focus();
    window.print();
-   setTimeout(()=>document.body.classList.remove("printing-maintenance-report"),500);
+   setTimeout(()=>{document.body.classList.remove("printing-maintenance-report");},500);
  },120);
 }
 
