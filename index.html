@@ -3346,11 +3346,11 @@ function render(){
     </div>`:''}
     <div class="profile-wrap">
     <button class="profile-trigger" onclick="toggleProfileMenu(event)">
-      <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(db.user.name))}</div>
-      <div class="profile-copy"><b>${esc(db.user.name||"admin")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
+      <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User"))}</div>
+      <div class="profile-copy"><b>${esc(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
     </button>
     <div id="profileMenu" class="profile-menu ${profileOpen?"open":""}">
-      <div class="profile-menu-head"><strong>${esc(db.user.name||"admin")}</strong><span>${esc(db.user.email||"No email set")} · ${esc(db.user.userId||"ADMIN-001")}</span></div>
+      <div class="profile-menu-head"><strong>${esc(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User")}</strong><span>${esc(iyAuthUser?.email||iyMembership?.email||db.user.email||"No email set")} · ${esc(iyMembership?.user_code||db.user.userId||"—")}</span></div>
       <button class="profile-menu-item" onclick="openProfileEditor()"><span class="profile-menu-icon">✎</span>Edit profile</button>
       <button class="profile-menu-item" onclick="nav('settings')"><span class="profile-menu-icon">⚙</span>Settings</button>
       <button class="profile-menu-item" onclick="nav('activity')"><span class="profile-menu-icon">◷</span>User activity</button>
