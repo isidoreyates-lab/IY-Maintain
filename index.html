@@ -1345,14 +1345,6 @@ button,input,select,textarea{font-family:inherit}
 @media(max-width:900px){.maintenance-entry-intro{grid-template-columns:1fr}}
 </style>
 <style>
-
-/* Preview-only pagination: keep maintenance rows inside each visible paper sheet. */
-#reportPreviewScroll .report-preview-continuation .r-head{min-height:70px;padding-bottom:12px;margin-bottom:12px}
-#reportPreviewScroll .report-preview-continuation .r-title{font-size:22px}
-#reportPreviewScroll .report-preview-continuation .r-section{margin-top:10px}
-#reportPreviewScroll .report-preview-continuation .r-meta,#reportPreviewScroll .report-preview-continuation .r-kpis{display:none}
-#reportPreviewScroll .report-preview-continuation .r-signatures{margin-top:18px}
-
 /* v10 — Report preview rebuilt as two clean A4 landscape pages. */
 .report-document{display:flex;flex-direction:column;gap:26px;align-items:center}
 .report-page{box-sizing:border-box;width:1123px;min-height:794px}
@@ -1403,30 +1395,9 @@ button,input,select,textarea{font-family:inherit}
  body.printing-maintenance-log-export .maintenance-log-export-table{font-size:7.2px!important}
  body.printing-maintenance-log-export .maintenance-log-export-table th{background:#123f68!important;color:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  body.printing-maintenance-report .report-document{display:block!important}
- /* Let report sections grow across as many printed pages as their rows require. */
- /* Do not treat the maintenance activities section as one indivisible page. Let its table flow naturally across printed pages. */
- body.printing-maintenance-report .report-page{display:block!important;box-sizing:border-box!important;width:297mm!important;min-height:0!important;height:auto!important;margin:0!important;padding:11mm 14mm 8mm!important;transform:none!important;box-shadow:none!important;page-break-after:auto!important;break-after:auto!important;overflow:visible!important}
- /* Parts Updates is a distinct report section and begins after the maintenance table has fully flowed. */
- body.printing-maintenance-report .report-page-parts{page-break-before:always!important;break-before:page!important}
- /* Preserve preview page boundaries in the PDF export. */
- body.printing-maintenance-report .report-preview-continuation{page-break-before:always!important;break-before:page!important}
- body.printing-maintenance-report .report-page table,
- body.printing-parts-report .report-paper table{display:table!important;width:100%!important;border-collapse:collapse!important;page-break-inside:auto!important;break-inside:auto!important}
- body.printing-maintenance-report .report-page thead,
- body.printing-parts-report .report-paper thead{display:table-header-group!important}
- body.printing-maintenance-report .report-page tfoot,
- body.printing-parts-report .report-paper tfoot{display:table-footer-group!important}
- body.printing-maintenance-report .report-page tr,
- body.printing-parts-report .report-paper tr{page-break-inside:avoid!important;break-inside:avoid!important}
- body.printing-maintenance-report .report-page .r-head,
- body.printing-maintenance-report .report-page .r-meta,
- body.printing-maintenance-report .report-page .r-kpis,
- body.printing-maintenance-report .report-page .r-section,
- body.printing-parts-report .report-paper .r-head,
- body.printing-parts-report .report-paper .r-meta,
- body.printing-parts-report .report-paper .r-kpis,
- body.printing-parts-report .report-paper .r-section{break-inside:avoid-page;page-break-inside:avoid}
- body.printing-parts-report .report-paper{height:auto!important;overflow:visible!important;page-break-inside:auto!important;break-inside:auto!important}
+ body.printing-maintenance-report .report-page{width:297mm!important;min-height:210mm!important;height:210mm!important;margin:0!important;padding:11mm 14mm 8mm!important;transform:none!important;box-shadow:none!important;page-break-after:always!important;overflow:hidden!important}
+ body.printing-maintenance-report .report-page:last-child{page-break-after:auto!important}
+ body.printing-maintenance-report .report-page-parts{page-break-before:always!important}
 }
 </style>
 <style>
@@ -3346,11 +3317,11 @@ function render(){
     </div>`:''}
     <div class="profile-wrap">
     <button class="profile-trigger" onclick="toggleProfileMenu(event)">
-      <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User"))}</div>
-      <div class="profile-copy"><b>${esc(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
+      <div class="profile-avatar">${db.user.avatarUrl?`<img src="${esc(db.user.avatarUrl)}" alt="Profile photo">`:esc(initials(db.user.name))}</div>
+      <div class="profile-copy"><b>${esc(db.user.name||"admin")}</b><small>${esc(roleLabel(iyMembership?.role||db.user.role||"employee"))}</small></div>
     </button>
     <div id="profileMenu" class="profile-menu ${profileOpen?"open":""}">
-      <div class="profile-menu-head"><strong>${esc(iyMembership?.full_name||iyAuthUser?.user_metadata?.full_name||iyAuthUser?.user_metadata?.name||iyAuthUser?.email?.split("@")[0]||db.user.name||"User")}</strong><span>${esc(iyAuthUser?.email||iyMembership?.email||db.user.email||"No email set")} · ${esc(iyMembership?.user_code||db.user.userId||"—")}</span></div>
+      <div class="profile-menu-head"><strong>${esc(db.user.name||"admin")}</strong><span>${esc(db.user.email||"No email set")} · ${esc(db.user.userId||"ADMIN-001")}</span></div>
       <button class="profile-menu-item" onclick="openProfileEditor()"><span class="profile-menu-icon">✎</span>Edit profile</button>
       <button class="profile-menu-item" onclick="nav('settings')"><span class="profile-menu-icon">⚙</span>Settings</button>
       <button class="profile-menu-item" onclick="nav('activity')"><span class="profile-menu-icon">◷</span>User activity</button>
@@ -3365,7 +3336,9 @@ function render(){
  if((currentPage==="transfers"||currentPage==="approvals")&&!window.__partsTransfersLoaded)setTimeout(loadPartsTransfersDataAndRefresh,0);
  if(currentPage==="inventory"&&!window.__inventoryTransferRowsLoaded&&!window.__inventoryTransferRowsBusy)setTimeout(loadInventoryTransferHistoryAndRefresh,0);
 
- initMachinePage();}
+ initMachinePage();
+ if(currentPage==="receive")renderReceiveHistory(0);
+}
 
 function pageTitle(){
  const t={dashboard:"Dashboard",issue:"Search & Issue Parts",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",transfers:"Parts Transfers",superadmin:"Super Admin Control Center",superadmin_companies:"Companies",superadmin_billing:"Billing Activities",superadmin_settings:"Settings"};
@@ -5126,7 +5099,7 @@ function metric(a,b,c){const icons={"TOTAL PARTS":"⚙","TOTAL STOCK":"▣","LOW
 function empty(){return `<div class="empty">No records available.</div>`}
 function simpleReceiptTable(rows){
  const allowActions=canEdit("receive");
- return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part Number</th><th>Material Number</th><th>PO / J-Ref</th><th>Description</th><th>Machine</th><th>Qty</th>${allowActions?"<th>Actions</th>":""}</tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[12]||"—")}</td><td>${esc(r[6]||"—")}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td>${allowActions?`<td><div style="display:flex;gap:6px;white-space:nowrap"><button class="btn secondary small" onclick="editPartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Edit</button><button class="btn danger small" onclick="deletePartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Delete</button></div></td>`:""}</tr>`).join("")}</table></div>`;
+ return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part Number</th><th>Material Number</th><th>PO / J-Ref</th><th>Supplier</th><th>Description</th><th>Machine</th><th>Qty</th>${allowActions?"<th>Actions</th>":""}</tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[12]||"—")}</td><td>${esc(r[6]||"—")}</td><td>${esc(r[5]||"—")}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td>${allowActions?`<td><div style="display:flex;gap:6px;white-space:nowrap"><button class="btn secondary small" onclick="editPartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Edit</button><button class="btn danger small" onclick="deletePartReceipt('${encodeURIComponent(r[8]||"")}')" ${r[8]?"":"disabled"}>Delete</button></div></td>`:""}</tr>`).join("")}</table></div>`;
 }
 function simpleIssueTable(rows){return `<div class="tablewrap"><table class="table"><tr><th>Date</th><th>Part</th><th>Description</th><th>Machine</th><th>Qty</th></tr>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${r[4]}</td></tr>`).join("")}</table></div>`}
 
@@ -5228,25 +5201,71 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  }
 }
 
+let receiveHistoryPageIndex = 0;
+const RECEIVE_HISTORY_PAGE_SIZE = 20;
 function receivePage(){
- return `<div class="panel">${simpleReceiptTable(viewReceiptRows().slice(-20).reverse())}</div>`;
+ const rows=viewReceiptRows();
+ const machines=[...new Set(rows.flatMap(r=>String(r[3]||"").split(",").map(v=>v.trim()).filter(Boolean)))].sort((a,b)=>a.localeCompare(b));
+ return `<div class="panel receive-history-panel">
+  <div class="receive-history-head"><div><div class="receive-history-title">Receipt History</div><div class="receive-history-sub">Search and filter current and older receipt records.</div></div><span class="receive-history-count">${rows.length} RECORDS AVAILABLE</span></div>
+  <div class="receive-history-filters">
+   <div class="receive-history-field receive-history-search"><label>Search receipts</label><input id="receiveHistorySearch" class="input" placeholder="Part number, material number or description..." oninput="renderReceiveHistory(0)"></div>
+   <div class="receive-history-field"><label>From date</label><input id="receiveHistoryFrom" class="input" type="date" onchange="renderReceiveHistory(0)"></div>
+   <div class="receive-history-field"><label>To date</label><input id="receiveHistoryTo" class="input" type="date" onchange="renderReceiveHistory(0)"></div>
+   <div class="receive-history-field"><label>Machine</label><select id="receiveHistoryMachine" class="input" onchange="renderReceiveHistory(0)"><option value="">All machines</option>${machines.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("")}</select></div>
+   <div class="receive-history-field"><label>Supplier</label><input id="receiveHistorySupplier" class="input" placeholder="Any supplier" oninput="renderReceiveHistory(0)"></div>
+   <div class="receive-history-field"><label>PO / J-Ref / Invoice</label><input id="receiveHistoryReference" class="input" placeholder="Search reference" oninput="renderReceiveHistory(0)"></div>
+   <button class="receive-history-reset" type="button" onclick="resetReceiveHistoryFilters()">↻ Clear filters</button>
+  </div>
+  <div id="receiveHistoryResults"></div>
+ </div>`;
+}
+function renderReceiveHistory(nextPage){
+ if(Number.isInteger(nextPage))receiveHistoryPageIndex=Math.max(0,nextPage);
+ const host=document.getElementById("receiveHistoryResults");if(!host)return;
+ const search=(document.getElementById("receiveHistorySearch")?.value||"").trim().toLowerCase();
+ const from=document.getElementById("receiveHistoryFrom")?.value||"";
+ const to=document.getElementById("receiveHistoryTo")?.value||"";
+ const machine=(document.getElementById("receiveHistoryMachine")?.value||"").trim().toLowerCase();
+ const supplier=(document.getElementById("receiveHistorySupplier")?.value||"").trim().toLowerCase();
+ const reference=(document.getElementById("receiveHistoryReference")?.value||"").trim().toLowerCase();
+ const all=viewReceiptRows();
+ const rows=all.filter(r=>{
+  const date=String(r[0]||"").slice(0,10);
+  const searchable=[r[1],r[12],r[2]].join(" ").toLowerCase();
+  const machines=String(r[3]||"").split(",").map(v=>v.trim().toLowerCase());
+  return (!search||searchable.includes(search))&&(!from||date>=from)&&(!to||date<=to)&&(!machine||machines.includes(machine))&&(!supplier||String(r[5]||"").toLowerCase().includes(supplier))&&(!reference||String(r[6]||"").toLowerCase().includes(reference));
+ }).sort((a,b)=>String(b[0]||"").localeCompare(String(a[0]||"")));
+ const pages=Math.max(1,Math.ceil(rows.length/RECEIVE_HISTORY_PAGE_SIZE));
+ receiveHistoryPageIndex=Math.min(receiveHistoryPageIndex,pages-1);
+ const start=receiveHistoryPageIndex*RECEIVE_HISTORY_PAGE_SIZE;
+ const pageRows=rows.slice(start,start+RECEIVE_HISTORY_PAGE_SIZE);
+ host.innerHTML=`<div class="receive-history-meta">Showing <b>${rows.length?start+1:0}–${Math.min(start+RECEIVE_HISTORY_PAGE_SIZE,rows.length)}</b> of <b>${rows.length}</b> matching receipts <span>(${all.length} total in your current Site / Department view)</span></div>${pageRows.length?simpleReceiptTable(pageRows):`<div class="empty">No receipt records match these filters. Try a wider date range or clear the filters.</div>`}<div class="receive-history-pagination"><span>Page ${receiveHistoryPageIndex+1} of ${pages}</span><div><button class="btn secondary small" onclick="renderReceiveHistory(${receiveHistoryPageIndex-1})" ${receiveHistoryPageIndex===0?'disabled':''}>Previous</button><button class="btn secondary small" onclick="renderReceiveHistory(${receiveHistoryPageIndex+1})" ${receiveHistoryPageIndex>=pages-1?'disabled':''}>Next</button></div></div>`;
+}
+function resetReceiveHistoryFilters(){
+ ["receiveHistorySearch","receiveHistoryFrom","receiveHistoryTo","receiveHistoryMachine","receiveHistorySupplier","receiveHistoryReference"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+ renderReceiveHistory(0);
 }
 function editPartReceipt(encodedId){
  if(!canEdit("receive"))return alert("You do not have permission to edit received parts.");
  const id=decodeURIComponent(encodedId||"");
  const row=viewReceiptRows().find(r=>String(r[8]||"")===id);
  if(!row)return alert("Receipt not found in the selected Site / Department view.");
+ const inventoryPart=(viewInventoryRows()||[]).find(x=>String(x[0]||"").trim().toLowerCase()===String(row[1]||"").trim().toLowerCase());
+ const selectedMachines=String(row[3]||inventoryPart?.[2]||"");
+ const machineOptions=receiveMachineOptionsMarkup(selectedMachines).replaceAll('name="r_machine_option"','name="er_machine_option"');
  openModal(`<div class="modalhead"><h2>Edit Received Part</h2><button class="close" onclick="closeModal()">×</button></div>
- <div class="notice" style="margin-bottom:16px"><b>Inventory-linked edit:</b> Changing the quantity will adjust both Current Stock and Total Received automatically. Part Number and Description stay locked so the receipt remains linked to the correct inventory item.</div>
+ <div class="notice" style="margin-bottom:16px"><b>Inventory-linked edit:</b> This updates the existing receipt and linked part. Quantity changes adjust Current Stock and Total Received. Machine selections are synchronized across the part's receipt history.</div>
  <div class="formgrid">
   <div class="field"><label>Received Date &amp; Time</label><input id="er_received_at" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row[0]))}" required></div>
-  <div class="field"><label>Part Number</label><input class="input" value="${esc(row[1]||"")}" readonly></div>
-  <div class="field"><label>Material Number</label><input id="er_material_number" class="input" value="${esc(row[12]||"")}" placeholder="Material number"></div>
-  <div class="field"><label>Description</label><input class="input" value="${esc(row[2]||"")}" readonly></div>
-  <div class="field"><label>Machine</label><input id="er_machine" class="input" value="${esc(row[3]||"")}" placeholder="Machine model"></div>
+  <div class="field"><label>Part Number or J-Ref</label><input id="er_part_number" class="input" value="${esc(row[1]||"")}" required></div>
+  <div class="field"><label>Description</label><input id="er_description" class="input" value="${esc(row[2]||"")}" required></div>
+  <div class="field"><label>Material Number</label><input id="er_material_number" class="input" value="${esc(row[12]||inventoryPart?.[13]||"")}" placeholder="Material number"></div>
+  <div class="field full"><label>Location</label><input id="er_location" class="input" value="${esc(inventoryPart?.[7]||"")}" placeholder="Enter storage location"></div>
+  <div class="field full"><label>Machines <span style="font-weight:400;color:#64748b">(select one or more)</span></label><div id="er_machine_options" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:150px;overflow-y:auto;border:1px solid #d8e3f0;border-radius:10px;background:#f8fbff;padding:8px">${machineOptions}</div><div class="hint">Choose every machine this part applies to. The selected machine models will be recorded together.</div></div>
   <div class="field"><label>Quantity</label><input id="er_qty" class="input" type="number" min="1" step="1" value="${num(row[4])}" required></div>
   <div class="field"><label>Supplier</label><input id="er_supplier" class="input" value="${esc(row[5]||"")}" placeholder="Supplier"></div>
-  <div class="field"><label>PO / J-Ref / Invoice</label><input id="er_reference" class="input" value="${esc(row[6]||"")}" placeholder="PO / J-Ref / Invoice"></div>
+  <div class="field"><label>Invoice / J-Ref</label><input id="er_reference" class="input" value="${esc(row[6]||"")}" placeholder="Invoice or J-Ref"></div>
   <div class="field"><label>Received By</label><input id="er_receiver" class="input" value="${esc(row[7]||"")}" placeholder="Name of receiver"></div>
  </div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="savePartReceiptEdit('${encodeURIComponent(id)}')">Save Changes</button></div>`);
@@ -5258,7 +5277,11 @@ async function savePartReceiptEdit(encodedId){
  if(!row)return alert("Receipt not found in the selected Site / Department view.");
  const receivedAt=dateTimeLocalToISO(document.getElementById("er_received_at")?.value||"");
  const quantityRaw=Number(document.getElementById("er_qty")?.value);
+ const partNumber=document.getElementById("er_part_number")?.value.trim()||"";
+ const description=document.getElementById("er_description")?.value.trim()||"";
  if(!receivedAt)return alert("Enter a valid received date and time.");
+ if(!partNumber)return alert("Part Number is required.");
+ if(!description)return alert("Description is required.");
  if(!Number.isInteger(quantityRaw)||quantityRaw<=0)return alert("Quantity must be a whole number greater than zero.");
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
  try{
@@ -5266,15 +5289,18 @@ async function savePartReceiptEdit(encodedId){
    p_receipt_id:id,
    p_received_at:receivedAt,
    p_quantity:quantityRaw,
-   p_machine_model:document.getElementById("er_machine")?.value.trim()||null,
+   p_machine_model:Array.from(document.querySelectorAll('input[name="er_machine_option"]:checked')).map(el=>String(el.value||"").trim()).filter(Boolean).join(", ")||null,
    p_supplier:document.getElementById("er_supplier")?.value.trim()||null,
    p_reference:document.getElementById("er_reference")?.value.trim()||null,
    p_receiver_name:document.getElementById("er_receiver")?.value.trim()||null,
-   p_material_number:document.getElementById("er_material_number")?.value.trim()||null
+   p_material_number:document.getElementById("er_material_number")?.value.trim()||null,
+   p_part_number:document.getElementById("er_part_number")?.value.trim()||null,
+   p_description:document.getElementById("er_description")?.value.trim()||null,
+   p_location:document.getElementById("er_location")?.value.trim()||null
   });
   if(error)throw error;
   await loadCloudData();
-  await cloudAudit("Edited part receipt",`Receipt ${row[1]} quantity changed from ${row[4]} to ${quantityRaw}; Material Number ${document.getElementById("er_material_number")?.value.trim()||"—"}; PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
+  await cloudAudit("Edited part receipt",`Receipt ${row[1]} → ${partNumber}; quantity ${row[4]} → ${quantityRaw}; description updated; Material Number ${document.getElementById("er_material_number")?.value.trim()||"—"}; PO/J-Ref ${row[6]||"—"}.`,row[10],row[11]);
   closeModal();render();toast("Receipt updated and inventory adjusted.");
  }catch(e){
   console.error("Part receipt edit failed",e);
@@ -5317,10 +5343,9 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  ${order?`<div class="order-edit-note"><b>Active order:</b> ${esc(order[1])} · J-Ref ${esc(order[5])}. The receipt details have been filled from the order.</div>`:""}
  <div class="formgrid">
  ${writeScopeSelectorMarkup()}
- <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":""}</div></div>
+ <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
  <div class="field"><label>Material Number</label><input id="r_material_number" class="input" value="${esc(part?.[13]||"")}" placeholder="Material number"></div>
- <div class="field full"><label>Location</label><input id="r_location" class="input" value="${esc(part?.[7]||"")}" placeholder="Enter storage location"></div>
  <div class="field full"><label>Machines <span style="font-weight:400;color:#64748b">(select one or more)</span></label><div id="r_machine_options" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:150px;overflow-y:auto;border:1px solid #d8e3f0;border-radius:10px;background:#f8fbff;padding:8px">${receiveMachineOptionsMarkup(order?.[3]||part?.[2]||"")}</div><div class="hint">Choose every machine this part applies to. The selected machine models will be recorded together.</div></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
@@ -5345,7 +5370,6 @@ function autoFillReceivePart(){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
      document.getElementById("r_material_number").value=part[13]||"";
-     document.getElementById("r_location").value=part[7]||"";
      setReceiveMachineSelection(matchedOrder[3]||part[2]||"");
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
@@ -5359,7 +5383,6 @@ function autoFillReceivePart(){
  }
  document.getElementById("r_desc").value=part[1]||"";
  document.getElementById("r_material_number").value=part[13]||"";
- document.getElementById("r_location").value=part[7]||"";
  setReceiveMachineSelection(part[2]||"");
  const order=(viewOrderRows()||[]).find(x=>norm(x[1])===norm(part[0]));
  if(order){
@@ -5377,7 +5400,6 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
  const materialNumber=document.getElementById("r_material_number")?.value.trim()||"";
- const location=document.getElementById("r_location")?.value.trim()||"";
  const machine=getReceiveMachineSelection().join(", ");
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
@@ -5402,8 +5424,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_received_at:now,
      p_site_id:scope.siteId,
      p_department_id:scope.departmentId,
-     p_material_number:materialNumber||null,
-     p_location:location||null
+     p_material_number:materialNumber||null
    });
    if(error)throw error;
 
@@ -5579,12 +5600,19 @@ function editInventory(p){if(!canEdit("inventory"))return alert("You do not have
 function editInventoryById(id){if(!canEdit("inventory"))return alert("You do not have permission to edit inventory.");const x=viewInventoryRows().find(r=>String(r[9])===String(decodeURIComponent(id)));if(!x)return alert("Inventory record not found in the selected scope.");inventoryEditModal(x)}
 function inventoryEditModal(x){
  if(!x)return;
+ const readOnlyStyle='background:#f5f8fb;color:#34485d;cursor:default';
  openModal(`<div class="modalhead"><h2>Edit Inventory Part</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div style="border:1px solid var(--line);border-radius:11px;padding:15px;margin-bottom:16px;background:#fbfcfe">
+ <h3 style="margin:0 0 12px;font-size:14px">Part Details</h3>
+ <div class="notice" style="margin-bottom:12px;padding:10px 12px;font-size:11px">To edit the locked part details (Part Number, Material Number, Description or Machine Model), go to <b>Receive Parts</b> and use <b>Edit</b> on the relevant receipt.</div>
  <div class="formgrid">
- <div class="field"><label>Part Number</label><input id="i_pn" class="input" value="${esc(x?.[0]||"")}" ${x?"readonly":""}></div>
- <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}"></div>
- <div class="field"><label>Machine Model</label><select id="i_machine" class="select">${machineSelectOptions(x?.[2]||"")}</select></div>
- <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}"></div>
+ <div class="field"><label>Part Number</label><input id="i_pn" class="input" value="${esc(x?.[0]||"")}" readonly style="${readOnlyStyle}"></div>
+ <div class="field"><label>Material Number</label><input id="i_material" class="input" value="${esc(x?.[13]||"")}" readonly style="${readOnlyStyle}"></div>
+ <div class="field"><label>Description</label><input id="i_desc" class="input" value="${esc(x?.[1]||"")}" readonly style="${readOnlyStyle}"></div>
+ <div class="field"><label>Machine Model</label><input id="i_machine" class="input" value="${esc(x?.[2]||"")}" readonly style="${readOnlyStyle}"></div>
+ <div class="field"><label>Current Stock</label><input id="i_stock" class="input" type="number" value="${x?.[3]??0}" readonly style="${readOnlyStyle}"></div>
+ </div></div>
+ <div class="formgrid">
  <div class="field"><label>Minimum Stock</label><input id="i_min" class="input" type="number" value="${x?.[6]??db.settings.defaultMinimumStock}"></div>
  <div class="field"><label>Location</label><input id="i_loc" class="input" value="${esc(x?.[7]||"")}"></div>
  <div class="field full"><label>Remarks</label><textarea id="i_rem" class="textarea">${esc(x?.[8]||"")}</textarea></div></div>
@@ -5599,9 +5627,8 @@ async function saveInventory(old){if(!canEdit("inventory"))return alert("You do 
 async function saveInventoryRecord(x){
  const pn=document.getElementById("i_pn").value.trim();
  if(!pn)return alert("Part number is required.");
- x[1]=document.getElementById("i_desc").value.trim();
- x[2]=document.getElementById("i_machine").value.trim();
- x[3]=num(document.getElementById("i_stock").value);
+ // Part details and current stock are intentionally read-only in Inventory Edit.
+ // Only the approved inventory fields below may be changed here.
  x[6]=num(document.getElementById("i_min").value);
  x[7]=document.getElementById("i_loc").value.trim();
  x[8]=document.getElementById("i_rem").value.trim();
@@ -7400,9 +7427,9 @@ function userApprovedReportRows(){
    return req.some(x=>x.user_id===uid&&x.status==="signed");
  }).sort((a,b)=>new Date(b.updated_at||b.created_at||0)-new Date(a.updated_at||a.created_at||0));
 }
-function canDeleteApprovalLogs(){return !!iyCloudReady&&!!iyCompany&&!!iyAuthUser&&(["company_admin","super_admin"].includes(currentRole())||isSuperAdminRole());}
+function canDeleteApprovalLogs(){return !!iyCloudReady&&!!iyCompany&&!!iyAuthUser;}
 async function deleteApprovalLog(reportId){
- if(!canDeleteApprovalLogs()){toast("Only a company administrator can delete approval logs.");return;}
+ if(!canDeleteApprovalLogs()){toast("Sign in and select a company before deleting an approval record.");return;}
  const report=(reportApprovalReports||[]).find(x=>x.id===reportId&&x.company_id===iyCompany.id);
  if(!report){toast("Approval log not found. Refresh the list and try again.");return;}
  const requestCount=(reportApprovalRequests||[]).filter(x=>x.report_id===reportId).length;
@@ -7412,7 +7439,7 @@ async function deleteApprovalLog(reportId){
  buttons.forEach(b=>{b.disabled=true;b.dataset.oldText=b.textContent;b.textContent="Deleting…";});
  try{
   // Use the company-scoped SECURITY DEFINER RPC installed in Supabase.
-  // The database function verifies the caller's active admin membership.
+  // The database function must authorize an authenticated member of this company.
   const {error}=await iySupabase.rpc("delete_report_approval_log",{p_report_id:reportId});
   if(error)throw error;
   reportApprovalReports=(reportApprovalReports||[]).filter(x=>x.id!==reportId);
@@ -7421,7 +7448,7 @@ async function deleteApprovalLog(reportId){
   await loadApprovalInboxFast({renderPage:true,notice:false});
  }catch(e){
   console.error("Approval log deletion failed",e);
-  alert("The approval log could not be deleted. Check that the delete_report_approval_log database function was installed successfully and that your account has an active company_admin or super_admin membership for this company.\n\n"+(e?.message||"Unknown error"));
+  alert("The approval log could not be deleted. Run the supplied IY Maintain approval-delete SQL migration in your Supabase project, then try again.\n\n"+(e?.message||"Unknown error"));
  }finally{
   buttons.forEach(b=>{b.disabled=false;b.textContent=b.dataset.oldText||"Delete";delete b.dataset.oldText;});
  }
@@ -7430,7 +7457,7 @@ function approvalReportCard(r,mode="pending"){
  const req=approvalReportRequestSet(r.id),requested=approvalRequestedUsers(r.id),signed=requested.filter(x=>x.status==="signed").length,pending=requested.filter(x=>x.status==="pending").length;
  const creator=approvalCreator(r),mine=req.find(x=>x.user_id===iyAuthUser?.id),kind=r.report_kind==="parts"?"Parts":"Maintenance";
  const fullyApproved=isApprovalReportComplete(r.id),isCreator=r.created_by===iyAuthUser?.id;
- const action=mode==="pending"?`<button class="approval-inbox-action" type="button" onclick="openApprovalWorkItem('${esc(r.id)}')">Review & Sign <span>→</span></button>`:`<button class="approval-inbox-action approved" type="button" onclick="openApprovedReport('${esc(r.id)}')">View & Export <span>→</span></button>${canDeleteApprovalLogs()?`<button class="approval-inbox-action delete-approval-log" data-delete-approval="${esc(r.id)}" type="button" onclick="event.stopPropagation();deleteApprovalLog('${esc(r.id)}')">Delete Approval</button>`:""}`;
+ const action=mode==="pending"?`<button class="approval-inbox-action" type="button" onclick="openApprovalWorkItem('${esc(r.id)}')">Review & Sign <span>→</span></button>${canDeleteApprovalLogs()?`<button class="approval-inbox-action delete-approval-log" data-delete-approval="${esc(r.id)}" type="button" onclick="event.stopPropagation();deleteApprovalLog('${esc(r.id)}')">Delete Approval</button>`:""}`:`<button class="approval-inbox-action approved" type="button" onclick="openApprovedReport('${esc(r.id)}')">View & Export <span>→</span></button>${canDeleteApprovalLogs()?`<button class="approval-inbox-action delete-approval-log" data-delete-approval="${esc(r.id)}" type="button" onclick="event.stopPropagation();deleteApprovalLog('${esc(r.id)}')">Delete Approval</button>`:""}`;
  let state="YOUR SIGNATURE REQUIRED";
  if(mode==="approved") state=isCreator?(fullyApproved?"APPROVED":"PENDING APPROVAL"):(fullyApproved?"FULLY APPROVED":"SIGNED BY YOU");
  const description=mode==="approved"
@@ -7640,9 +7667,9 @@ function reportApprovalPanel(kind){
  const chips=[...requests.filter(x=>x.status==="signed").map(x=>`<div class="approval-chip signed"><strong>✓ ${esc(x.signer_name||"Signed")}</strong><span>${esc(roleLabel(x.signer_role||""))} · ${x.signed_at?esc(new Date(x.signed_at).toLocaleString("en-GB")):"Signed"}</span></div>`),...pending.map(x=>{const target=users.find(u=>u.user_id===x.user_id)||iyUsersCache.find(u=>u.user_id===x.user_id)||{};return `<div class="approval-chip pending"><strong>⏳ ${esc(target.full_name||target.email||x.user_id)}</strong><span>Awaiting signature · ${x.requested_at?esc(new Date(x.requested_at).toLocaleString("en-GB")):""}</span></div>`})].join("");
  const userCards=users.length?users.map(u=>{const checked=selectedUsers.includes(u.user_id);return `<label class="approval-user-option ${checked?"selected":""}"><input type="checkbox" value="${esc(u.user_id)}" ${checked?"checked":""} onchange="toggleApprovalUser('${kind}',this)"><span class="approval-user-check">${checked?"✓":""}</span><span class="approval-user-main"><strong>${esc(u.full_name||u.email||"User")}</strong><small>${esc(roleLabel(u.role))}${u.user_code?` · ${esc(u.user_code)}`:""}</small></span></label>`}).join(""):`<div class="approval-no-users"><span>No other active approval users are available.</span><button type="button" class="approval-refresh-users" onclick="refreshApprovalUsers('${kind}')">↻ Refresh users</button></div>`;
  const requestBox=isCreator&&!complete?`<div class="approval-request-box"><div class="approval-request-head"><div><strong>Request approval</strong><span>Select one or more users. They will receive this report in My Approvals.</span></div><span>${selectedUsers.length} selected</span></div><div class="approval-user-grid">${userCards}</div></div>`:"";
- const ownerAction=isCreator&&!mySigned?`<button type="button" class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
- const pendingAction=mePending?`<button type="button" class="success approval-sign-now" onclick="signCurrentReport('${kind}')">✍ Sign & Submit Approval</button>`:"";
- const requestAction=isCreator&&!complete?`<button type="button" class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
+ const ownerAction=isCreator&&!mySigned?`<button class="success approval-owner-sign" onclick="signOwnCurrentReport('${kind}')">✍ Sign with My Signature</button>`:mySigned?`<span class="approval-owner-signed">✓ Your signature has been applied</span>`:"";
+ const pendingAction=mePending?`<button class="success approval-sign-now" onclick="signCurrentReport('${kind}')">✍ Sign & Submit Approval</button>`:"";
+ const requestAction=isCreator&&!complete?`<button class="primary" onclick="requestReportApproval('${kind}')">Send for Approval${selectedUsers.length?` (${selectedUsers.length})`:""}</button>`:"";
  return `<div class="report-approval-panel ${complete?'is-complete':''}"><div class="report-approval-head"><div><div class="report-approval-title">REPORT APPROVAL STATUS</div><div class="report-approval-note">${isCreator?"Your signature is optional. Exporting does not sign the report. Request other users only when their approval is required.":mePending?"This report is assigned to you. Sign & submit your approval using your account signature.":"Approval status is recorded against this exact saved report."}</div></div><span class="report-approval-status ${complete?'complete':''}">${esc(status)}</span></div><div class="report-approval-chain">${chips||`<div class="approval-empty-state">No signatures have been applied yet.</div>`}</div>${requestBox}<div class="report-approval-actions">${ownerAction}${pendingAction}${requestAction}</div></div>`;
 }
 function toggleApprovalUser(kind,input){window.__approvalSelections=window.__approvalSelections||{};const list=new Set(window.__approvalSelections[kind]||[]);if(input.checked)list.add(input.value);else list.delete(input.value);window.__approvalSelections[kind]=[...list];refreshReportApprovalPreview(kind);}
@@ -7717,16 +7744,7 @@ async function refreshReportApprovalPreview(kind){
    if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }else{
    const m=document.getElementById("reportPreviewScroll");
-   if(m){
-    const st=approvalStateForKind("maintenance");
-    const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};
-    const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));
-    // Keep the preview pagination after signature/request status refreshes.
-    // Refreshing the approval panel must not replace the paginated preview with one long page.
-    m.dataset.originalReportHtml=html;
-    m.innerHTML=html;
-    paginateMaintenanceReportPreview();
-   }
+   if(m){const st=approvalStateForKind("maintenance");const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};m.innerHTML=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }
  }catch(e){console.warn("Report preview branding refresh failed",e?.message||e);}
 }
@@ -10224,30 +10242,12 @@ function maintenanceReportImageLinks(row){
  return `<div class="r-maint-image-links">${images.map(x=>`<a class="r-maint-image-link" href="${esc(x.url)}" download="maintenance-${recordId}-image-${x.slot}.jpg" title="Download image ${x.slot}">IMG ${x.slot} ↓</a>`).join("")}</div>`;
 }
 
-async function prepareReportSnapshotForPreview(snapshot,options={}){
+async function prepareReportSnapshotForPreview(snapshot){
  const base=snapshot&&typeof snapshot==="object"?snapshot:{};const settings={...(base.settings||db.settings||{})};
- if(!options.logoAlreadyResolved)settings.logoData=await resolveReportLogoUrl(settings);
+ settings.logoData=await resolveReportLogoUrl(settings);
  if(Array.isArray(base?.data?.rows))await hydrateMaintenanceReportImages(base.data.rows);
  if(Array.isArray(base?.data?.partsUpdates))await hydratePartsUpdateReportImages(base.data.partsUpdates);
  return {...base,settings};
-}
-// Report-preview-only asset loader: resolve branding and signature assets concurrently
-// instead of serially waiting on each storage request. Other app asset loading is unchanged.
-async function loadMaintenanceReportPreviewAssets(settings){
- if(!iyCompany)return;
- const folder=String(iyCompany.id),persistedPath=String(settings?.logo_path||"").trim();
- const candidates=[...new Set(persistedPath?[persistedPath,`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]:[`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`])];
- const [logoResults,signatureResults]=await Promise.all([
-  Promise.all(candidates.map(async path=>({path,url:await assetSignedUrlOrEmpty(path)}))),
-  Promise.all(["signaturePrepared","signatureTeamLead","signaturePartsCoordinator","signatureManager"].map(async key=>{
-   const results=await Promise.all(["png","jpg","jpeg","webp"].map(async ext=>({ext,url:await assetSignedUrlOrEmpty(`${folder}/signatures/${key}.${ext}`)})));
-   return {key,result:results.find(x=>x.url)||{url:""}};
-  }))
- ]);
- const logo=logoResults.find(x=>x.url);
- settings.logo_path=logo?.path||"";
- settings.logoData=logo?.url?`${logo.url}&v=${Date.now()}`:"";
- for(const item of signatureResults)settings[item.key]=item.result.url?`${item.result.url}&v=${Date.now()}`:"";
 }
 async function loadProfileAvatar(){
  if(!iyAuthUser?.id)return "";
@@ -10272,13 +10272,24 @@ async function migrateLegacyProfileAvatar(){
  }catch(e){console.warn("Legacy profile photo migration skipped",e?.message||e);}
 }
 
+async function loadAllPartReceiptRows(){
+ const all=[];const pageSize=1000;let offset=0;
+ while(true){
+  const {data,error}=await iySupabase.from("part_receipts").select("*,parts(part_number,description,machine_id,machine_model,material_number)").order("received_at").order("id").range(offset,offset+pageSize-1);
+  if(error)return {data:null,error};
+  const batch=data||[];all.push(...batch);
+  if(batch.length<pageSize)break;
+  offset+=pageSize;
+ }
+ return {data:all,error:null};
+}
 async function loadCloudData(){
  const empty=blankCloudDB();
  const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,memberships,notificationReadRows,notifications,approvalReports,approvalRequests]=await Promise.all([
   iySupabase.from("machines").select("*").order("fleet_id"),
   iySupabase.from("parts").select("*").order("part_number"),
   iySupabase.from("inventory").select("*,parts(part_number,description,machine_id,machine_model,supplier,location,minimum_stock,remarks,material_number)").order("updated_at",{ascending:false}),
-  iySupabase.from("part_receipts").select("*,parts(part_number,description,machine_id,machine_model,material_number)").order("received_at"),
+  loadAllPartReceiptRows(),
   iySupabase.from("part_issues").select("*,parts(part_number,description,machine_id,machine_model)").order("issued_at"),
   iySupabase.from("parts_updates").select("*,parts(part_number,description,machine_id,machine_model)").order("order_date"),
   iySupabase.from("parts_orders").select("*,parts(part_number,description,machine_id,machine_model)").order("ordered_at",{ascending:false}),
@@ -11602,53 +11613,25 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 }
 async function openReportPreview(){
- // Run approval-user loading and report-only branding preparation in parallel.
- await Promise.all([ensureApprovalUsersLoaded(),loadMaintenanceReportPreviewAssets(db.settings)]);
- const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings},{logoAlreadyResolved:true}));if(!html)return alert("Generate the report first.");
+ await ensureApprovalUsersLoaded();
+ await loadCloudAssets(db.settings);
+ const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings}));if(!html)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("reportPreviewScroll").dataset.originalReportHtml=html;document.getElementById("reportPreviewScroll").innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");
+ document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
 }
-function paginateMaintenanceReportPreview(){
- const scroll=document.getElementById("reportPreviewScroll");if(!scroll||!scroll.dataset.originalReportHtml)return;
- const doc=scroll.querySelector(".report-document"),first=doc?.querySelector(".report-page:not(.report-page-parts)"),parts=doc?.querySelector(".report-page-parts");
- const table=first?.querySelector(".r-maint-report-table");if(!doc||!first||!parts||!table)return;
- const body=table.tBodies[0];if(!body)return;
- const rows=Array.from(body.rows);if(rows.length<=10)return;
- const signatures=first.querySelector(".r-signatures"),footer=first.querySelector(".r-footer");
- if(signatures)signatures.remove();if(footer)footer.remove();
- const firstCount=11,otherCount=17;let remaining=rows.slice(firstCount);
- body.replaceChildren(...rows.slice(0,firstCount));
- let previous=first,idx=1;
- while(remaining.length){
-  const page=first.cloneNode(true);page.classList.add("report-preview-continuation");page.classList.remove("report-page-parts");
-  const meta=page.querySelector(".r-meta");if(meta)meta.remove();const kpis=page.querySelector(".r-kpis");if(kpis)kpis.remove();
-  const head=page.querySelector(".r-head");if(head){const sub=head.querySelector(".r-sub");if(sub)sub.textContent="MAINTENANCE REPORT — CONTINUED";}
-  const section=page.querySelector(".r-section");if(section)section.innerHTML='MAINTENANCE ACTIVITIES <small>Continued</small>';
-  const t=page.querySelector(".r-maint-report-table"),tb=t?.tBodies[0];if(!tb)break;
-  const chunk=remaining.splice(0,otherCount);tb.replaceChildren(...chunk.map(r=>r.cloneNode(true)));
-  previous.after(page);previous=page;idx++;
- }
- const last=previous;
- if(signatures)last.appendChild(signatures.cloneNode(true));if(footer)last.appendChild(footer.cloneNode(true));
- doc.appendChild(parts);
-}
-
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").dataset.originalReportHtml=html;document.getElementById("reportPreviewScroll").innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
  if(!modal||!paper){return alert("Please generate and preview the report first.");}
- const previewScroll=document.getElementById("reportPreviewScroll");
- /* Print the already-paginated preview DOM. Rebuilding from original HTML here drops
-    continuation sheets and causes the exported PDF to differ from the preview. */
  document.body.classList.add("printing-maintenance-report");
  modal.classList.add("open");
  setTimeout(()=>{
    window.focus();
    window.print();
-   setTimeout(()=>{document.body.classList.remove("printing-maintenance-report");},500);
+   setTimeout(()=>document.body.classList.remove("printing-maintenance-report"),500);
  },120);
 }
 
@@ -12470,6 +12453,25 @@ function superAdminPage(){
 .maintenance-page .attention-card.danger::before{background:#d23b3b}
 .maintenance-page .attention-card.warn::before{background:#d3911a}
 .maintenance-page .attention-card.ok::before{background:#18a66d}
+
+
+/* Receive Parts receipt-history filters and pagination */
+.receive-history-panel{padding:20px!important}
+.receive-history-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+.receive-history-title{font-size:17px;font-weight:800;color:#102a43}
+.receive-history-sub{font-size:12px;color:#718096;margin-top:4px}
+.receive-history-count{font-size:10px;font-weight:800;letter-spacing:.04em;color:#1769d2;background:#eef6ff;border:1px solid #d9eaff;padding:8px 10px;border-radius:999px;white-space:nowrap}
+.receive-history-filters{display:grid;grid-template-columns:minmax(220px,2fr) repeat(3,minmax(130px,1fr));gap:12px;align-items:end;padding:16px;border:1px solid #dfe8f2;border-radius:14px;background:linear-gradient(180deg,#fbfdff,#f7fafd);margin-bottom:14px}
+.receive-history-field label{display:block;font-size:10px;font-weight:800;letter-spacing:.03em;color:#496176;margin:0 0 7px 2px}
+.receive-history-field .input{width:100%;height:42px;box-sizing:border-box}
+.receive-history-search{grid-column:span 2}
+.receive-history-reset{height:42px;padding:0 14px;border:1px solid #d4e0ec;background:#fff;color:#1769d2;border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+.receive-history-reset:hover{background:#f3f8ff;border-color:#bcd4ef}
+.receive-history-meta{font-size:11px;color:#718096;margin:0 2px 10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.receive-history-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;margin-top:12px;border-top:1px solid #e2eaf2;font-size:12px;color:#64748b}
+.receive-history-pagination>div{display:flex;gap:8px}
+@media(max-width:900px){.receive-history-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.receive-history-search{grid-column:1/-1}}
+@media(max-width:560px){.receive-history-panel{padding:12px!important}.receive-history-head{align-items:flex-start}.receive-history-count{display:none}.receive-history-filters{grid-template-columns:1fr;padding:12px}.receive-history-search{grid-column:auto}.receive-history-field .input,.receive-history-reset{height:44px;width:100%}.receive-history-meta{display:block;line-height:1.7}.receive-history-pagination{align-items:flex-start;flex-direction:column}}
 
 /* V24.4 — Search & Issue Parts professional filters */
 .issue-page-panel{padding:20px!important}
