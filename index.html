@@ -5346,6 +5346,7 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  <div class="field full"><label>Part Number or J-Ref</label><input id="r_part" class="input" autocomplete="off" value="${esc(order?order[1]:"")}" placeholder="Enter part number or J-Ref" ${order?"readonly":""}><div class="hint" id="r_part_hint">${order?"Ordered part selected. Confirm the quantity and receiver, then save the receipt.":"Enter the part number or the J-Ref of an active order. Part details will fill automatically."}</div></div>
  <div class="field"><label>Description</label><input id="r_desc" class="input" value="${esc(order?.[2]||part?.[1]||"")}" placeholder="Part description"></div>
  <div class="field"><label>Material Number</label><input id="r_material_number" class="input" value="${esc(part?.[13]||"")}" placeholder="Material number"></div>
+ <div class="field full"><label>Location</label><input id="r_location" class="input" value="${esc(part?.[7]||"")}" placeholder="Enter storage location"></div>
  <div class="field full"><label>Machines <span style="font-weight:400;color:#64748b">(select one or more)</span></label><div id="r_machine_options" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:150px;overflow-y:auto;border:1px solid #d8e3f0;border-radius:10px;background:#f8fbff;padding:8px">${receiveMachineOptionsMarkup(order?.[3]||part?.[2]||"")}</div><div class="hint">Choose every machine this part applies to. The selected machine models will be recorded together.</div></div>
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
@@ -5370,6 +5371,7 @@ function autoFillReceivePart(){
      document.getElementById("r_part").value=part[0]||"";
      document.getElementById("r_desc").value=matchedOrder[2]||part[1]||"";
      document.getElementById("r_material_number").value=part[13]||"";
+     document.getElementById("r_location").value=part[7]||"";
      setReceiveMachineSelection(matchedOrder[3]||part[2]||"");
      document.getElementById("r_supplier").value=matchedOrder[6]||"";
      document.getElementById("r_invoice").value=matchedOrder[5]||"";
@@ -5383,6 +5385,7 @@ function autoFillReceivePart(){
  }
  document.getElementById("r_desc").value=part[1]||"";
  document.getElementById("r_material_number").value=part[13]||"";
+ document.getElementById("r_location").value=part[7]||"";
  setReceiveMachineSelection(part[2]||"");
  const order=(viewOrderRows()||[]).find(x=>norm(x[1])===norm(part[0]));
  if(order){
@@ -5400,6 +5403,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
  const materialNumber=document.getElementById("r_material_number")?.value.trim()||"";
+ const location=document.getElementById("r_location")?.value.trim()||"";
  const machine=getReceiveMachineSelection().join(", ");
  const qty=num(document.getElementById("r_qty").value);
  const supplier=document.getElementById("r_supplier").value.trim();
@@ -5424,7 +5428,8 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
      p_received_at:now,
      p_site_id:scope.siteId,
      p_department_id:scope.departmentId,
-     p_material_number:materialNumber||null
+     p_material_number:materialNumber||null,
+     p_location:location||null
    });
    if(error)throw error;
 
@@ -7744,7 +7749,15 @@ async function refreshReportApprovalPreview(kind){
    if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
   }else{
    const m=document.getElementById("reportPreviewScroll");
-   if(m){const st=approvalStateForKind("maintenance");const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};m.innerHTML=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));}
+   if(m){
+    const st=approvalStateForKind("maintenance");
+    const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};
+    const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));
+    /* Signing refreshes the preview from fresh HTML. Re-run the same pagination routine used when opening it. */
+    m.dataset.originalReportHtml=html;
+    m.innerHTML=html;
+    paginateMaintenanceReportPreview();
+   }
   }
  }catch(e){console.warn("Report preview branding refresh failed",e?.message||e);}
 }
@@ -11613,15 +11626,52 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 }
 async function openReportPreview(){
- await ensureApprovalUsersLoaded();
- await loadCloudAssets(db.settings);
- const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings}));if(!html)return alert("Generate the report first.");
+ if(!window.__maintenanceReportData)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
+ const scroll=document.getElementById("reportPreviewScroll");
+ const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.dataset.originalReportHtml="";
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing maintenance report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}
+ modal.classList.add("open");
+ try{
+  await ensureApprovalUsersLoaded("maintenance");
+  await loadCloudAssets(db.settings);
+  const prepared=await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings});
+  const html=buildMaintenanceReportHTML(prepared);if(!html)throw new Error("Generate the report first.");
+  if(modal.dataset.previewRequestId!==String(requestId))return;
+  /* Keep the approved pagination path for normal previews and post-signature refreshes. */
+  scroll.dataset.originalReportHtml=html;scroll.innerHTML=html;paginateMaintenanceReportPreview();
+ }catch(e){
+  if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The report preview could not be prepared. Please try again.</div>';console.error("Maintenance report preview failed",e);}
+ }
+}
+function paginateMaintenanceReportPreview(){
+ const scroll=document.getElementById("reportPreviewScroll");if(!scroll||!scroll.dataset.originalReportHtml)return;
+ const doc=scroll.querySelector(".report-document"),first=doc?.querySelector(".report-page:not(.report-page-parts)"),parts=doc?.querySelector(".report-page-parts");
+ const table=first?.querySelector(".r-maint-report-table");if(!doc||!first||!parts||!table)return;
+ const body=table.tBodies[0];if(!body)return;
+ const rows=Array.from(body.rows);if(rows.length<=10)return;
+ const signatures=first.querySelector(".r-signatures"),footer=first.querySelector(".r-footer");
+ if(signatures)signatures.remove();if(footer)footer.remove();
+ const firstCount=11,otherCount=17;let remaining=rows.slice(firstCount);
+ body.replaceChildren(...rows.slice(0,firstCount));
+ let previous=first;
+ while(remaining.length){
+  const page=first.cloneNode(true);page.classList.add("report-preview-continuation");page.classList.remove("report-page-parts");
+  const meta=page.querySelector(".r-meta");if(meta)meta.remove();const kpis=page.querySelector(".r-kpis");if(kpis)kpis.remove();
+  const head=page.querySelector(".r-head");if(head){const sub=head.querySelector(".r-sub");if(sub)sub.textContent="MAINTENANCE REPORT — CONTINUED";}
+  const section=page.querySelector(".r-section");if(section)section.innerHTML='MAINTENANCE ACTIVITIES <small>Continued</small>';
+  const t=page.querySelector(".r-maint-report-table"),tb=t?.tBodies[0];if(!tb)break;
+  const chunk=remaining.splice(0,otherCount);tb.replaceChildren(...chunk.map(r=>r.cloneNode(true)));
+  previous.after(page);previous=page;
+ }
+ if(signatures)previous.appendChild(signatures.cloneNode(true));if(footer)previous.appendChild(footer.cloneNode(true));
+ doc.appendChild(parts);
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}const scroll=document.getElementById("reportPreviewScroll");scroll.dataset.originalReportHtml=html;scroll.innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
