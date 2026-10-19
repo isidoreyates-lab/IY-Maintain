@@ -397,6 +397,7 @@ content{padding:28px 34px 50px}
 
 
 .parts-report-paper .r-kpis{grid-template-columns:repeat(4,1fr)}
+.parts-report-document{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%}.parts-report-document>.report-paper{flex:none;min-height:794px;box-sizing:border-box}.parts-report-document .report-paper{page-break-after:always;break-after:page}.parts-report-document .report-paper:last-child{page-break-after:auto;break-after:auto}
 .parts-report-paper .r-section{margin-top:22px}
 .parts-report-paper .parts-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
 .parts-report-paper .parts-summary-box{border:1px solid #cbd8e5;border-radius:7px;padding:10px 12px;background:#fff}
@@ -7746,7 +7747,7 @@ async function refreshReportApprovalPreview(kind){
  try{
   if(kind==="parts"){
    const m=document.getElementById("partsReportPreviewScroll");
-   if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
+   if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));paginatePartsReportPreview();}
   }else{
    const m=document.getElementById("reportPreviewScroll");
    if(m){
@@ -7778,14 +7779,86 @@ function buildPartsReportHTML(snapshotOverride){
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 async function openPartsReportPreview(){
  if(!window.__partsReportData||!document.getElementById("prout")?.innerHTML)return alert("Please generate the parts report first.");
- await ensureApprovalUsersLoaded();
- await loadCloudAssets(db.settings);
- const html=buildPartsReportHTML(await prepareReportSnapshotForPreview({data:window.__partsReportData,settings:db.settings}));let modal=document.getElementById("partsReportPreviewModal");
+ let modal=document.getElementById("partsReportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
+ const scroll=document.getElementById("partsReportPreviewScroll");
+ const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing parts report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}
+ modal.classList.add("open");
+ try{
+  await ensureApprovalUsersLoaded("parts");
+  await loadCloudAssets(db.settings);
+  const prepared=await prepareReportSnapshotForPreview({data:window.__partsReportData,settings:db.settings});
+  const html=buildPartsReportHTML(prepared);if(!html)throw new Error("Generate the parts report first.");
+  if(modal.dataset.previewRequestId!==String(requestId))return;
+  scroll.innerHTML=html;paginatePartsReportPreview();
+ }catch(e){
+  if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The parts report preview could not be prepared. Please try again.</div>';console.error("Parts report preview failed",e);}
+ }
 }
+function paginatePartsReportPreview(){
+ const scroll=document.getElementById("partsReportPreviewScroll");if(!scroll)return;
+ const original=scroll.querySelector(":scope > .report-paper.parts-report-paper");if(!original)return;
+ const doc=document.createElement("div");doc.className="report-document parts-report-document";
+ const approval=original.querySelector(".report-approval-panel"),signatures=original.querySelector(".r-signatures"),footer=original.querySelector(".r-footer");
+ const kids=Array.from(original.children);const summary=original.querySelector(".parts-summary");
+ const startIndex=summary?kids.indexOf(summary)+1:kids.findIndex(x=>x.classList.contains("r-section"));
+ const endIndex=approval?kids.indexOf(approval):(signatures?kids.indexOf(signatures):(footer?kids.indexOf(footer):kids.length));
+ const content=kids.slice(Math.max(0,startIndex),endIndex).filter(x=>!x.classList.contains("report-approval-panel")&&!x.classList.contains("r-signatures")&&!x.classList.contains("r-footer"));
+ const sections=[];let active=null;
+ for(const node of content){
+  if(node.classList?.contains("r-section")){active={heading:node.cloneNode(true),table:null,other:[]};sections.push(active);}
+  else if(node.tagName==="TABLE"){
+   if(!active){active={heading:null,table:null,other:[]};sections.push(active);}active.table=node.cloneNode(true);
+  }else if(active)active.other.push(node.cloneNode(true));
+ }
+ const pageCapacity=22;let pages=[];
+ function makePage(first){
+  const page=original.cloneNode(false);page.className="report-paper parts-report-paper";
+  for(const child of Array.from(original.children)){
+   if(child.classList?.contains("r-head")|| (first&&(child.classList?.contains("r-meta")||child.classList?.contains("r-kpis")||child.classList?.contains("parts-summary"))))page.appendChild(child.cloneNode(true));
+  }
+  if(!first){const sub=page.querySelector(".r-sub");if(sub)sub.textContent="PARTS REPORT — CONTINUED";}
+  return page;
+ }
+ let page=makePage(true),used=0;pages.push(page);
+ function newPage(){page=makePage(false);used=0;pages.push(page);}
+ for(const section of sections){
+  if(section.table){
+   const table=section.table;const rows=Array.from(table.rows);const header=rows.length?rows[0].cloneNode(true):null;const bodyRows=rows.slice(header?1:0);
+   if(!bodyRows.length){if(used>=pageCapacity)newPage();if(section.heading)page.appendChild(section.heading.cloneNode(true));page.appendChild(table.cloneNode(true));used+=1;continue;}
+   let offset=0,firstChunk=true;
+   while(offset<bodyRows.length){
+    if(used>=pageCapacity)newPage();
+    const take=Math.min(pageCapacity-used,bodyRows.length-offset);
+    if(take<=0){newPage();continue;}
+    const heading=section.heading?section.heading.cloneNode(true):null;
+    if(heading&&!firstChunk){const small=heading.querySelector("small");if(small)small.textContent="Continued";else heading.appendChild(document.createTextNode(" — CONTINUED"));}
+    if(heading)page.appendChild(heading);
+    const chunkTable=table.cloneNode(false);const tbody=document.createElement("tbody");if(header)tbody.appendChild(header.cloneNode(true));
+    bodyRows.slice(offset,offset+take).forEach(r=>tbody.appendChild(r.cloneNode(true)));chunkTable.appendChild(tbody);page.appendChild(chunkTable);
+    offset+=take;used+=take;firstChunk=false;
+    if(offset<bodyRows.length)newPage();
+   }
+  }else{
+   if(used>=pageCapacity)newPage();if(section.heading)page.appendChild(section.heading.cloneNode(true));section.other.forEach(x=>page.appendChild(x.cloneNode(true)));used+=1;
+  }
+ }
+ if(!pages.length){pages=[makePage(true)];page=pages[0];}
+ const last=pages[pages.length-1];[approval,signatures,footer].filter(Boolean).forEach(x=>last.appendChild(x.cloneNode(true)));
+ doc.append(...pages);scroll.replaceChildren(doc);
+} 
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
-async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("parts");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildPartsReportHTML(preparedSnapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openPartsReportPreviewFromSnapshot(snapshot){
+ let modal=document.getElementById("partsReportPreviewModal");
+ if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
+ const scroll=document.getElementById("partsReportPreviewScroll");const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing parts report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}modal.classList.add("open");
+ try{await ensureApprovalUsersLoaded("parts");await loadCloudAssets(db.settings);const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildPartsReportHTML(preparedSnapshot);if(modal.dataset.previewRequestId!==String(requestId))return;scroll.innerHTML=html;paginatePartsReportPreview();}
+ catch(e){if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The parts report preview could not be prepared. Please try again.</div>';console.error("Saved parts report preview failed",e);}}
+}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
 
