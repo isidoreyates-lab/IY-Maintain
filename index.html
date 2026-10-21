@@ -397,6 +397,7 @@ content{padding:28px 34px 50px}
 
 
 .parts-report-paper .r-kpis{grid-template-columns:repeat(4,1fr)}
+.parts-report-document{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%}.parts-report-document>.report-paper{flex:none;min-height:794px;box-sizing:border-box}.parts-report-document .report-paper{page-break-after:always;break-after:page}.parts-report-document .report-paper:last-child{page-break-after:auto;break-after:auto}
 .parts-report-paper .r-section{margin-top:22px}
 .parts-report-paper .parts-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
 .parts-report-paper .parts-summary-box{border:1px solid #cbd8e5;border-radius:7px;padding:10px 12px;background:#fff}
@@ -406,6 +407,9 @@ content{padding:28px 34px 50px}
 .parts-report-paper .r-signatures{margin-top:52px}
 @media print{
   @page{size:A4 landscape;margin:0}
+  html,body{margin:0!important;padding:0!important;width:100%!important;min-height:0!important;background:#fff!important}
+  body.printing-parts-report #partsReportPreviewModal,
+  body.printing-parts-report #partsReportPreviewModal *{box-sizing:border-box}
   body.printing-parts-report .report-paper,
   body.printing-parts-report .report-paper *{
     -webkit-print-color-adjust:exact!important;
@@ -418,7 +422,9 @@ content{padding:28px 34px 50px}
   body.printing-parts-report .report-preview-bar{display:none!important}
   body.printing-parts-report .report-approval-panel{display:none!important}
   body.printing-parts-report .report-preview-scroll{display:block!important;overflow:visible!important;padding:0!important}
-  body.printing-parts-report .report-paper{width:297mm!important;min-height:210mm!important;margin:0 auto!important;padding:11mm 14mm 8mm!important;box-shadow:none!important;transform:none!important}
+  body.printing-parts-report .report-document.parts-report-document{display:block!important;width:297mm!important;margin:0!important;padding:0!important;gap:0!important}
+  body.printing-parts-report .parts-report-document>.report-paper{display:block!important;box-sizing:border-box!important;width:297mm!important;height:210mm!important;min-height:0!important;max-height:210mm!important;min-width:0!important;margin:0!important;padding:11mm 14mm 8mm!important;box-shadow:none!important;transform:none!important;overflow:hidden!important;break-inside:avoid!important;page-break-inside:avoid!important;page-break-after:always!important;break-after:page!important}
+  body.printing-parts-report .parts-report-document>.report-paper:last-child{page-break-after:auto!important;break-after:auto!important}
 }
 @media print{
   @page{size:A4 landscape;margin:0}
@@ -3098,21 +3104,6 @@ function fmtDate(v){if(!v)return "";let d=new Date(v);if(isNaN(d))return String(
 function toast(s){const t=document.getElementById("toast");t.textContent=s;t.style.display="block";setTimeout(()=>t.style.display="none",2800)}
 function openModal(html){document.getElementById("modal").innerHTML=html;document.getElementById("modalBack").style.display="flex"}
 function closeModal(){const m=document.getElementById("modal");if(m)m.classList.remove("machine-profile-modal","maintenance-editor-modal");document.getElementById("modalBack").style.display="none"}
-function iySetSubmissionProgress(state,message){
- const modal=document.getElementById("modal");if(!modal)return;
- let status=modal.querySelector("#iySubmissionProgress");
- if(!status){status=document.createElement("div");status.id="iySubmissionProgress";status.setAttribute("role","status");status.setAttribute("aria-live","polite");status.style.cssText="display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid #d8e6f4;background:#f3f8ff;color:#174a7e";
-  const actions=modal.querySelector(".actions");if(actions)actions.parentNode.insertBefore(status,actions);else modal.appendChild(status);
- }
- status.style.borderColor=state==="error"?"#f2c5c5":state==="success"?"#b9e6cc":"#d8e6f4";
- status.style.background=state==="error"?"#fff5f5":state==="success"?"#f0fff5":"#f3f8ff";
- status.style.color=state==="error"?"#a52828":state==="success"?"#17663b":"#174a7e";
- status.innerHTML=(state==="loading"?'<span class="iy-submit-spinner" aria-hidden="true"></span>':state==="success"?'✓':'!')+'<span>'+String(message||"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span>';
- let style=document.getElementById("iySubmissionProgressStyle");if(!style){style=document.createElement("style");style.id="iySubmissionProgressStyle";style.textContent=".iy-submit-spinner{width:16px;height:16px;border:2px solid #b9d4f0;border-top-color:#075fff;border-radius:50%;display:inline-block;animation:iySubmitSpin .8s linear infinite;flex:none}@keyframes iySubmitSpin{to{transform:rotate(360deg)}}";document.head.appendChild(style)}
- const buttons=modal.querySelectorAll(".actions button");buttons.forEach(b=>{if(state==="loading"){if(!b.disabled)b.dataset.iyWasEnabled="1";b.disabled=true;if(b.classList.contains("primary"))b.dataset.iyOriginalText=b.textContent.trim()}else{if(b.dataset.iyWasEnabled==="1")b.disabled=false;delete b.dataset.iyWasEnabled;if(b.dataset.iyOriginalText){b.textContent=b.dataset.iyOriginalText;delete b.dataset.iyOriginalText}}});
- const primary=modal.querySelector(".actions button.primary");if(primary&&state==="loading")primary.textContent="Saving…";
-}
-
 function logActivity(action,details=""){
  const u=db.user||{name:"admin"};
  db.activityLog=db.activityLog||[];
@@ -5169,7 +5160,7 @@ function issueModal(p){if(!canEdit("issue"))return alert("You do not have permis
  <div class="field full"><label>Remarks</label><textarea id="f_rem" class="textarea"></textarea></div></div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssue('${encodeURIComponent(part[0])}')">Issue Part</button></div>`);
 }
-async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
+async function __iyOriginal_saveIssue(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
  const pn=decodeURIComponent(p);
  const part=db.inventory.find(x=>x[0]===pn);
  const qty=num(document.getElementById("f_qty").value);
@@ -5182,7 +5173,7 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
  const scope=effectiveWriteScope(part?.[11],part?.[12]);
 
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
- iySetSubmissionProgress("loading","Recording issue and refreshing stock… Please wait.");
+
  try{
    const {data,error}=await iySupabase.rpc("issue_part_transaction",{
      p_part_number:pn,
@@ -5212,7 +5203,6 @@ async function saveIssue(p){if(!canEdit("issue"))return alert("You do not have p
    }
  }catch(e){
    console.error("Issue transaction failed",e);
-   iySetSubmissionProgress("error",e?.message||"Part issue could not be saved. Your entries are still here; please retry.");
    alert(e?.message||"Part issue could not be saved to the cloud. No stock was changed.");
  }
 }
@@ -5415,7 +5405,7 @@ function autoFillReceivePart(){
  }
 }
 
-async function saveReceipt(){if(!canEdit("receive"))return alert("You do not have permission to receive parts.");
+async function __iyOriginal_saveReceipt(){if(!canEdit("receive"))return alert("You do not have permission to receive parts.");
  const pn=document.getElementById("r_part").value.trim();
  const desc=document.getElementById("r_desc").value.trim();
  const materialNumber=document.getElementById("r_material_number")?.value.trim()||"";
@@ -5431,7 +5421,7 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
 
  const now=new Date().toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
- iySetSubmissionProgress("loading","Saving receipt and updating inventory… Please wait.");
+
  try{
    const {data,error}=await iySupabase.rpc("receive_part_transaction_scoped",{
      p_part_number:pn,
@@ -5457,7 +5447,6 @@ async function saveReceipt(){if(!canEdit("receive"))return alert("You do not hav
    toast("Part received and inventory updated.");
  }catch(e){
    console.error("Receive transaction failed",e);
-   iySetSubmissionProgress("error",e?.message||"Receipt could not be saved. Your entries are still here; please review and retry.");
    alert(e?.message||"Receipt could not be saved to the cloud. No local changes were committed.");
  }
 }
@@ -5931,13 +5920,12 @@ async function deleteUpdateById(id,siteId,departmentId){
    toast("Parts update deleted.");
  }catch(e){console.error("Parts update delete failed",e);alert(e?.message||"Parts update could not be deleted from the cloud.");}
 }
-async function saveUpdate(index){
+async function __iyOriginal_saveUpdate(index){
  if(!canEdit("updates"))return alert("You do not have permission to save parts updates.");
  const row=[document.getElementById("u_date").value,document.getElementById("u_part").value.trim(),document.getElementById("u_desc").value.trim(),document.getElementById("u_machine").value.trim(),num(document.getElementById("u_qty").value),document.getElementById("u_po").value.trim(),document.getElementById("u_supplier").value.trim(),document.getElementById("u_expected").value,document.getElementById("u_status").value,document.getElementById("u_onsite").value,document.getElementById("u_rem").value.trim()];
  if(!row[1]||row[4]<=0)return alert("Part number and a valid quantity are required.");
  if(row[8]==="ORDERED" && !row[5])return alert("PO / J-Ref is required before an order can be marked Ordered.");
  if(!iyCloudReady||!iyCompany||!iyAuthUser)return alert("Secure cloud session is not ready. Please sign in again.");
- iySetSubmissionProgress("loading","Saving Parts Update and any attached images… Please wait.");
  try{
    const id=await cloudSaveUpdate(row,index);
    const imageErrors=await syncPartsUpdateImages(id);
@@ -5974,7 +5962,7 @@ async function saveUpdate(index){
    render();
    toast(index===null?"Parts update saved.":"Parts update updated.");
    if(imageErrors.length)setTimeout(()=>alert("The Parts Update was saved, but "+imageErrors.join(" and ")+" could not be saved. Please try the image again from Edit Parts Update."),120);
- }catch(e){console.error("Parts update save failed",e);iySetSubmissionProgress("error",e?.message||"Parts Update could not be saved. Your entries are still here; please retry.");alert(e?.message||"Parts update could not be saved to the cloud.")}
+ }catch(e){console.error("Parts update save failed",e);alert(e?.message||"Parts update could not be saved to the cloud.")}
 }
 
 
@@ -6586,7 +6574,7 @@ if(!window.__machineDetailWatcher){
   __machineDetailObserver.observe(document.body,{childList:true,subtree:true});
 }
 
-async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
+async function __iyOriginal_saveMaintenance(editId){if(!canEdit("maintenance"))return alert("You do not have permission to save maintenance records.");
  const machine=document.getElementById("m_machine").value;
   const mach=viewMachineRows().find(x=>String(x[2])===String(machine));
  const downAtValue=document.getElementById("m_down_at")?.value||"";
@@ -6629,8 +6617,7 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
  if(row[18] && row[19] && row[20]===null)return alert("Equipment Down At and Return to Service At must be valid times.");
  // Machine hour readings are operational readings only. They may be equal when the machine is not started during the repair, and they are optional.
  if(isReliabilityFailureJobType(row[7])&&!row[18])return alert("Failure / corrective Job Types require an Equipment Down At time so the event can be included in MTTR / MTBF calculations.");
- if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
- iySetSubmissionProgress("loading","Saving maintenance entry and refreshing the log… Please wait.");
+
  if(iyCloudReady){
    try{
      const id=await cloudSaveMaintenance(row);
@@ -6645,7 +6632,6 @@ async function saveMaintenance(editId){if(!canEdit("maintenance"))return alert("
      await cloudAudit(editId?"Updated maintenance entry":"Created maintenance entry",editId?"Maintenance record updated":"Maintenance record saved",mach[16]||null,mach[17]||null);
    }catch(e){
      console.error("Maintenance save failed:",e);
-     iySetSubmissionProgress("error",e?.message||"Maintenance record could not be saved. Your entries are still here; please retry.");
      return alert(e?.message||"Maintenance record could not be saved to the cloud. No local record was added.");
    }
  }
@@ -7766,10 +7752,18 @@ async function refreshReportApprovalPreview(kind){
  try{
   if(kind==="parts"){
    const m=document.getElementById("partsReportPreviewScroll");
-   if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));}
+   if(m){const st=approvalStateForKind("parts");const snapshot=st?.report?.snapshot||{data:window.__partsReportData||{},settings:db.settings};m.innerHTML=buildPartsReportHTML(await prepareReportSnapshotForPreview(snapshot));paginatePartsReportPreview();}
   }else{
    const m=document.getElementById("reportPreviewScroll");
-   if(m){const st=approvalStateForKind("maintenance");const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};m.innerHTML=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));}
+   if(m){
+    const st=approvalStateForKind("maintenance");
+    const snapshot=st?.report?.snapshot||{data:window.__maintenanceReportData||{},settings:db.settings};
+    const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview(snapshot));
+    /* Signing refreshes the preview from fresh HTML. Re-run the same pagination routine used when opening it. */
+    m.dataset.originalReportHtml=html;
+    m.innerHTML=html;
+    paginateMaintenanceReportPreview();
+   }
   }
  }catch(e){console.warn("Report preview branding refresh failed",e?.message||e);}
 }
@@ -7790,14 +7784,88 @@ function buildPartsReportHTML(snapshotOverride){
 function metricReportKpi(label,value,sub){return `<div class="r-kpi"><label>${esc(label)}</label><strong>${esc(value)}</strong><div style="font-size:7px;color:#66788b;margin-top:4px">${esc(sub)}</div></div>`}
 async function openPartsReportPreview(){
  if(!window.__partsReportData||!document.getElementById("prout")?.innerHTML)return alert("Please generate the parts report first.");
- await ensureApprovalUsersLoaded();
- await loadCloudAssets(db.settings);
- const html=buildPartsReportHTML(await prepareReportSnapshotForPreview({data:window.__partsReportData,settings:db.settings}));let modal=document.getElementById("partsReportPreviewModal");
+ let modal=document.getElementById("partsReportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");
+ const scroll=document.getElementById("partsReportPreviewScroll");
+ const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing parts report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}
+ modal.classList.add("open");
+ try{
+  await ensureApprovalUsersLoaded("parts");
+  await loadCloudAssets(db.settings);
+  const prepared=await prepareReportSnapshotForPreview({data:window.__partsReportData,settings:db.settings});
+  const html=buildPartsReportHTML(prepared);if(!html)throw new Error("Generate the parts report first.");
+  if(modal.dataset.previewRequestId!==String(requestId))return;
+  scroll.innerHTML=html;paginatePartsReportPreview();
+ }catch(e){
+  if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The parts report preview could not be prepared. Please try again.</div>';console.error("Parts report preview failed",e);}
+ }
 }
+function paginatePartsReportPreview(){
+ const scroll=document.getElementById("partsReportPreviewScroll");if(!scroll)return;
+ const original=scroll.querySelector(":scope > .report-paper.parts-report-paper");if(!original)return;
+ const doc=document.createElement("div");doc.className="report-document parts-report-document";
+ const approval=original.querySelector(".report-approval-panel"),signatures=original.querySelector(".r-signatures"),footer=original.querySelector(".r-footer");
+ const kids=Array.from(original.children);const summary=original.querySelector(".parts-summary");
+ const startIndex=summary?kids.indexOf(summary)+1:kids.findIndex(x=>x.classList.contains("r-section"));
+ const endIndex=approval?kids.indexOf(approval):(signatures?kids.indexOf(signatures):(footer?kids.indexOf(footer):kids.length));
+ const content=kids.slice(Math.max(0,startIndex),endIndex).filter(x=>!x.classList.contains("report-approval-panel")&&!x.classList.contains("r-signatures")&&!x.classList.contains("r-footer"));
+ const sections=[];let active=null;
+ for(const node of content){
+  if(node.classList?.contains("r-section")){active={heading:node.cloneNode(true),table:null,other:[]};sections.push(active);}
+  else if(node.tagName==="TABLE"){
+   if(!active){active={heading:null,table:null,other:[]};sections.push(active);}active.table=node.cloneNode(true);
+  }else if(active)active.other.push(node.cloneNode(true));
+ }
+ const firstPageCapacity=16,continuationPageCapacity=22;let pages=[];
+ function makePage(first){
+  const page=original.cloneNode(false);page.className="report-paper parts-report-paper";
+  for(const child of Array.from(original.children)){
+   if(child.classList?.contains("r-head")|| (first&&(child.classList?.contains("r-meta")||child.classList?.contains("r-kpis")||child.classList?.contains("parts-summary"))))page.appendChild(child.cloneNode(true));
+  }
+  if(!first){const sub=page.querySelector(".r-sub");if(sub)sub.textContent="PARTS REPORT — CONTINUED";}
+  return page;
+ }
+ let page=makePage(true),used=0;pages.push(page);
+ function newPage(){page=makePage(false);used=0;pages.push(page);}
+ for(const section of sections){
+  if(section.table){
+   const table=section.table;const rows=Array.from(table.rows);const header=rows.length?rows[0].cloneNode(true):null;const bodyRows=rows.slice(header?1:0);
+   if(!bodyRows.length){if(used>=pageCapacity)newPage();if(section.heading)page.appendChild(section.heading.cloneNode(true));page.appendChild(table.cloneNode(true));used+=1;continue;}
+   let offset=0,firstChunk=true;
+   while(offset<bodyRows.length){
+    const pageCapacity=pages.length===1?firstPageCapacity:continuationPageCapacity;
+    if(used>=pageCapacity){newPage();continue;}
+    const take=Math.min(pageCapacity-used,bodyRows.length-offset);
+    if(take<=0){newPage();continue;}
+    const heading=section.heading?section.heading.cloneNode(true):null;
+    if(heading&&!firstChunk){const small=heading.querySelector("small");if(small)small.textContent="Continued";else heading.appendChild(document.createTextNode(" — CONTINUED"));}
+    if(heading)page.appendChild(heading);
+    const chunkTable=table.cloneNode(false);const tbody=document.createElement("tbody");if(header)tbody.appendChild(header.cloneNode(true));
+    bodyRows.slice(offset,offset+take).forEach(r=>tbody.appendChild(r.cloneNode(true)));chunkTable.appendChild(tbody);page.appendChild(chunkTable);
+    offset+=take;used+=take;firstChunk=false;
+    if(offset<bodyRows.length)newPage();
+   }
+  }else{
+   const pageCapacity=pages.length===1?firstPageCapacity:continuationPageCapacity;
+   if(used>=pageCapacity)newPage();if(section.heading)page.appendChild(section.heading.cloneNode(true));section.other.forEach(x=>page.appendChild(x.cloneNode(true)));used+=1;
+  }
+ }
+ if(!pages.length){pages=[makePage(true)];page=pages[0];}
+ const last=pages[pages.length-1];[approval,signatures,footer].filter(Boolean).forEach(x=>last.appendChild(x.cloneNode(true)));
+ doc.append(...pages);scroll.replaceChildren(doc);
+} 
 function closePartsReportPreview(){const m=document.getElementById("partsReportPreviewModal");if(m)m.classList.remove("open")}
-async function openPartsReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("parts");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildPartsReportHTML(preparedSnapshot);let modal=document.getElementById("partsReportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("partsReportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openPartsReportPreviewFromSnapshot(snapshot){
+ let modal=document.getElementById("partsReportPreviewModal");
+ if(!modal){modal=document.createElement("div");modal.id="partsReportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Parts Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closePartsReportPreview()">Close</button><button class="report-pdf" onclick="exportPartsReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="partsReportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
+ const scroll=document.getElementById("partsReportPreviewScroll");const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing parts report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}modal.classList.add("open");
+ try{await ensureApprovalUsersLoaded("parts");await loadCloudAssets(db.settings);const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildPartsReportHTML(preparedSnapshot);if(modal.dataset.previewRequestId!==String(requestId))return;scroll.innerHTML=html;paginatePartsReportPreview();}
+ catch(e){if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The parts report preview could not be prepared. Please try again.</div>';console.error("Saved parts report preview failed",e);}}
+}
 function exportPartsReportPDF(){const modal=document.getElementById("partsReportPreviewModal"),paper=document.querySelector("#partsReportPreviewScroll .report-paper");if(!modal||!paper)return alert("Please generate and preview the parts report first.");document.body.classList.add("printing-parts-report");modal.classList.add("open");setTimeout(()=>{window.focus();window.print();setTimeout(()=>document.body.classList.remove("printing-parts-report"),500)},120)}
 
 
@@ -10215,7 +10283,9 @@ async function assetSignedUrlOrEmpty(path){
 async function loadCloudAssets(settings){
  if(!iyCompany)return;
  const folder=String(iyCompany.id);
- const persistedPath=String(settings?.logo_path||"").trim();
+ // Company branding is persisted on the company record by the protected logo RPC;
+ // company_settings may not contain the same logo_path. Prefer either saved path.
+ const persistedPath=String(settings?.logo_path||iyCompany?.logo_path||iyCompany?.company_logo_path||"").trim();
  const candidates=persistedPath?[persistedPath,`${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`]:[
    `${folder}/logo.png`,`${folder}/logo.jpg`,`${folder}/logo.jpeg`,`${folder}/logo.webp`,`${folder}/logo.svg`
  ];
@@ -10309,6 +10379,9 @@ async function loadAllPartReceiptRows(){
  return {data:all,error:null};
 }
 async function loadCloudData(){
+ // Preserve the authenticated profile across operational in-app refreshes.
+ // A fresh cloud snapshot must not revert the header to the standalone default user.
+ const previousUser=db?.user||{};
  const empty=blankCloudDB();
  const [machines,parts,inventory,receipts,issues,updates,orders,maintenance,settings,activity,memberships,notificationReadRows,notifications,approvalReports,approvalRequests]=await Promise.all([
   iySupabase.from("machines").select("*").order("fleet_id"),
@@ -10357,6 +10430,21 @@ async function loadCloudData(){
  empty.maintenance=(maintenance.data||[]).map(x=>[x.service_ref,x.job_date,x.machines?.machine_model||"",x.machines?.machine_serial_number||"",x.machines?.fleet_id||"",num(x.machine_hours),num(x.next_service_hours),x.job_type||"",x.fault_problem||x.job_description||"",x.work_performed||"",x.job_status||x.service_status||"",x.parts_required_details|| (x.parts_required?"Yes":""),x.technicians||"",x.remarks||"",x.id,x.machine_id,x.site_id||x.machines?.site_id||null,x.department_id||x.machines?.department_id||null,x.downtime_start_at||null,x.return_to_service_at||null,x.downtime_hours??null,x.machine_hours_at_downtime??null,x.machine_hours_at_return??null,x.parts_used||""]);
  const cs=settings.data||{};Object.assign(empty.settings,{companyName:iyCompany?.name||"iy",companyAddress:iyCompany?.address||"",telephone:iyCompany?.telephone||"",email:iyCompany?.email||"",website:iyCompany?.website||"",storeManager:cs.store_manager||"",preparedBy:cs.prepared_by||"",department:cs.department||"",defaultMinimumStock:num(cs.default_minimum_stock)||3,reportFooter:cs.report_footer||"",systemName:"Computerized Machines Maintenance System",version:"V24.47",developer:"IY Digital Innovations"});
  await loadCloudAssets(empty.settings);
+ const refreshedMembership=iyMembership||{};
+ empty.user={
+   ...previousUser,
+   name:String(refreshedMembership.full_name||iyAuthUser?.user_metadata?.full_name||previousUser.name||iyAuthUser?.email?.split("@")[0]||"User"),
+   email:iyAuthUser?.email||previousUser.email||"",
+   role:refreshedMembership.role||previousUser.role||"employee",
+   userId:refreshedMembership.user_code||previousUser.userId||"—",
+   siteId:refreshedMembership.site_id||previousUser.siteId||null,
+   departmentId:refreshedMembership.department_id||previousUser.departmentId||null,
+   siteName:iySite?.name||previousUser.siteName||"",
+   departmentName:iyDepartment?.name||previousUser.departmentName||"",
+   scopeLabel:workspaceScopeLabel(),
+   avatarUrl:previousUser.avatarUrl||"",
+   signatureUrl:previousUser.signatureUrl||""
+ };
  const membershipByUserId=new Map((memberships.data||[]).map(m=>[m.user_id,m]));
  empty.activityLog=(activity.data||[]).map(x=>{const m=membershipByUserId.get(x.user_id);return {time:x.created_at,user:m?.full_name||((x.user_id===iyAuthUser?.id)?(iyMembership?.full_name||"User"):"User"),userId:m?.user_code||((x.user_id===iyAuthUser?.id)?(iyMembership?.user_code||"—"):x.user_id||"—"),action:x.action,details:x.details||""}});
  // Inventory may have changed after a transfer, issue, receipt, or restore. Reload the
@@ -11638,15 +11726,52 @@ function buildMaintenanceReportHTML(snapshotOverride){
  </div>`;
 }
 async function openReportPreview(){
- await ensureApprovalUsersLoaded();
- await loadCloudAssets(db.settings);
- const html=buildMaintenanceReportHTML(await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings}));if(!html)return alert("Generate the report first.");
+ if(!window.__maintenanceReportData)return alert("Generate the report first.");
  let modal=document.getElementById("reportPreviewModal");
  if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}
- document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");
+ const scroll=document.getElementById("reportPreviewScroll");
+ const requestId=(Number(modal.dataset.previewRequestId)||0)+1;modal.dataset.previewRequestId=String(requestId);
+ scroll.dataset.originalReportHtml="";
+ scroll.innerHTML='<div style="min-height:65vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#31506b;font:600 15px Arial,sans-serif"><div style="width:30px;height:30px;border:3px solid #d7e4f0;border-top-color:#1267a9;border-radius:50%;animation:iyReportPreviewSpin .8s linear infinite"></div><div>Preparing maintenance report…</div></div>';
+ if(!document.getElementById("iyReportPreviewSpinStyle")){const style=document.createElement("style");style.id="iyReportPreviewSpinStyle";style.textContent='@keyframes iyReportPreviewSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style)}
+ modal.classList.add("open");
+ try{
+  await ensureApprovalUsersLoaded("maintenance");
+  await loadCloudAssets(db.settings);
+  const prepared=await prepareReportSnapshotForPreview({data:window.__maintenanceReportData,settings:db.settings});
+  const html=buildMaintenanceReportHTML(prepared);if(!html)throw new Error("Generate the report first.");
+  if(modal.dataset.previewRequestId!==String(requestId))return;
+  /* Keep the approved pagination path for normal previews and post-signature refreshes. */
+  scroll.dataset.originalReportHtml=html;scroll.innerHTML=html;paginateMaintenanceReportPreview();
+ }catch(e){
+  if(modal.dataset.previewRequestId===String(requestId)){scroll.innerHTML='<div style="padding:40px;text-align:center;color:#b42318">The report preview could not be prepared. Please try again.</div>';console.error("Maintenance report preview failed",e);}
+ }
+}
+function paginateMaintenanceReportPreview(){
+ const scroll=document.getElementById("reportPreviewScroll");if(!scroll||!scroll.dataset.originalReportHtml)return;
+ const doc=scroll.querySelector(".report-document"),first=doc?.querySelector(".report-page:not(.report-page-parts)"),parts=doc?.querySelector(".report-page-parts");
+ const table=first?.querySelector(".r-maint-report-table");if(!doc||!first||!parts||!table)return;
+ const body=table.tBodies[0];if(!body)return;
+ const rows=Array.from(body.rows);if(rows.length<=10)return;
+ const signatures=first.querySelector(".r-signatures"),footer=first.querySelector(".r-footer");
+ if(signatures)signatures.remove();if(footer)footer.remove();
+ const firstCount=11,otherCount=17;let remaining=rows.slice(firstCount);
+ body.replaceChildren(...rows.slice(0,firstCount));
+ let previous=first;
+ while(remaining.length){
+  const page=first.cloneNode(true);page.classList.add("report-preview-continuation");page.classList.remove("report-page-parts");
+  const meta=page.querySelector(".r-meta");if(meta)meta.remove();const kpis=page.querySelector(".r-kpis");if(kpis)kpis.remove();
+  const head=page.querySelector(".r-head");if(head){const sub=head.querySelector(".r-sub");if(sub)sub.textContent="MAINTENANCE REPORT — CONTINUED";}
+  const section=page.querySelector(".r-section");if(section)section.innerHTML='MAINTENANCE ACTIVITIES <small>Continued</small>';
+  const t=page.querySelector(".r-maint-report-table"),tb=t?.tBodies[0];if(!tb)break;
+  const chunk=remaining.splice(0,otherCount);tb.replaceChildren(...chunk.map(r=>r.cloneNode(true)));
+  previous.after(page);previous=page;
+ }
+ if(signatures)previous.appendChild(signatures.cloneNode(true));if(footer)previous.appendChild(footer.cloneNode(true));
+ doc.appendChild(parts);
 }
 function closeReportPreview(){const m=document.getElementById("reportPreviewModal");if(m)m.classList.remove("open")}
-async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}document.getElementById("reportPreviewScroll").innerHTML=html;modal.classList.add("open");}
+async function openReportPreviewFromSnapshot(snapshot){await ensureApprovalUsersLoaded("maintenance");const preparedSnapshot=await prepareReportSnapshotForPreview(snapshot);const html=buildMaintenanceReportHTML(preparedSnapshot);let modal=document.getElementById("reportPreviewModal");if(!modal){modal=document.createElement("div");modal.id="reportPreviewModal";modal.className="report-preview-modal";modal.innerHTML=`<div class="report-preview-shell"><div class="report-preview-bar"><div class="report-preview-title">Maintenance Report Preview</div><div class="report-preview-actions"><button class="report-close" onclick="closeReportPreview()">Close</button><button class="report-pdf" onclick="exportMaintenanceReportPDF()">Export / Save as PDF</button></div></div><div class="report-preview-scroll" id="reportPreviewScroll"></div></div>`;document.body.appendChild(modal)}const scroll=document.getElementById("reportPreviewScroll");scroll.dataset.originalReportHtml=html;scroll.innerHTML=html;paginateMaintenanceReportPreview();modal.classList.add("open");}
 function exportMaintenanceReportPDF(){
  const modal=document.getElementById("reportPreviewModal");
  const paper=document.querySelector("#reportPreviewScroll .report-paper");
@@ -11676,6 +11801,44 @@ async function initiyAuth(){
  });
 }
 initiyAuth();
+
+/* Scoped submit progress for Receive Parts, Issue Parts, Parts Updates and Maintenance Log. */
+function iyShowSubmitProgress(label){
+ const modal=document.getElementById('modal');
+ if(!modal)return null;
+ const actions=modal.querySelector('.actions');
+ if(!actions)return null;
+ let status=modal.querySelector('#iySubmitProgressStatus');
+ if(!status){
+   status=document.createElement('div');
+   status.id='iySubmitProgressStatus';
+   status.setAttribute('role','status');
+   status.setAttribute('aria-live','polite');
+   status.style.cssText='display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:11px 13px;border:1px solid #bfdbfe;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:13px;font-weight:600;';
+   status.innerHTML='<span class="iy-submit-spinner" aria-hidden="true" style="width:15px;height:15px;flex:0 0 15px;border:2px solid #93c5fd;border-top-color:#1d4ed8;border-radius:50%;animation:iySubmitSpin .75s linear infinite"></span><span></span>';
+   actions.parentNode.insertBefore(status,actions);
+ }
+ const text=status.querySelector('span:last-child'); if(text)text.textContent=label;
+ const buttons=[...actions.querySelectorAll('button')];
+ const saved=buttons.map(b=>({b,disabled:b.disabled,text:b.textContent}));
+ buttons.forEach(b=>{b.disabled=true;b.setAttribute('aria-disabled','true');});
+ const submit=buttons.find(b=>b.classList.contains('primary'));
+ if(submit)submit.textContent='Processing…';
+ return {modal,status,saved};
+}
+function iyFinishSubmitProgress(state){
+ if(!state)return;
+ state.saved.forEach(({b,disabled,text})=>{if(b.isConnected){b.disabled=disabled;b.removeAttribute('aria-disabled');b.textContent=text;}});
+ if(state.status?.isConnected)state.status.remove();
+}
+if(!document.getElementById('iySubmitProgressStyle')){
+ const style=document.createElement('style');style.id='iySubmitProgressStyle';style.textContent='@keyframes iySubmitSpin{to{transform:rotate(360deg)}}';document.head.appendChild(style);
+}
+async function saveIssue(p){const state=iyShowSubmitProgress('Saving issue and refreshing stock…');try{return await __iyOriginal_saveIssue(p)}finally{iyFinishSubmitProgress(state)}}
+async function saveReceipt(){const state=iyShowSubmitProgress('Saving receipt and refreshing inventory…');try{return await __iyOriginal_saveReceipt()}finally{iyFinishSubmitProgress(state)}}
+async function saveUpdate(index){const state=iyShowSubmitProgress('Saving Parts Update and refreshing records…');try{return await __iyOriginal_saveUpdate(index)}finally{iyFinishSubmitProgress(state)}}
+async function saveMaintenance(editId){const state=iyShowSubmitProgress('Saving maintenance record and refreshing the log…');try{return await __iyOriginal_saveMaintenance(editId)}finally{iyFinishSubmitProgress(state)}}
+
 </script>
 
 
@@ -12303,6 +12466,32 @@ function superAdminPage(){
  '</div>';
 }
 </script>
+
+<style id="iy-report-print-blank-page-fix">
+/* Scoped print correction: prevent trailing/forced blank sheets in both report exports. */
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body.printing-parts-report .parts-report-document > .report-paper {
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    overflow: visible !important; break-inside: avoid !important; page-break-inside: avoid !important;
+  }
+  body.printing-parts-report .parts-report-document > .report-paper:last-of-type {
+    page-break-after: auto !important; break-after: auto !important;
+  }
+  body.printing-maintenance-report .report-page {
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    overflow: visible !important; break-inside: avoid !important; page-break-inside: avoid !important;
+    page-break-after: always !important; break-after: page !important;
+  }
+  body.printing-maintenance-report .report-page:last-of-type {
+    page-break-after: auto !important; break-after: auto !important;
+  }
+  body.printing-maintenance-report .report-page-parts {
+    page-break-before: auto !important; break-before: auto !important;
+    page-break-after: auto !important; break-after: auto !important;
+  }
+}
+</style>
 </body>
 
 <style id="iy-super-admin-professional-dashboard">
@@ -12567,4 +12756,86 @@ function superAdminPage(){
 #modal textarea.input{min-height:74px;resize:vertical}
 #modal .iy-transfer-note{display:block;margin-top:7px;color:#71839a;font-size:11px;line-height:1.5}
 #modal .iy-transfer-review-grid>div.full{grid-column:1/-1}
+
+
+/* Responsive-only optimization layer — preserves existing application logic and desktop styling. */
+@media (max-width: 1024px) {
+  html, body { max-width:100%; overflow-x:hidden; }
+  .app, .main, .content, main, section, .page, .page-content { min-width:0; }
+  .main { box-sizing:border-box; }
+  .content { box-sizing:border-box; }
+  .cards, .grid2, .two-col, .backup-grid, .settings-grid, .modern-settings-grid,
+  .machine-profile-layout, .parts-main-grid, .parts-transactions-grid { min-width:0; }
+  input, select, textarea, button { max-width:100%; }
+  .table-wrap, .table-responsive, .table-container, .data-table-wrap, .report-table-wrap,
+  .activity-table-wrap, .inventory-table-wrap { max-width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { max-width:100%; }
+  .modal, .modal-content, #modal, .dialog, .profile-modal { box-sizing:border-box; }
+}
+@media (min-width:701px) and (max-width:1024px) {
+  .sidebar { width:210px; }
+  .main { margin-left:210px; width:calc(100% - 210px); }
+  .content { padding:20px 18px 32px; }
+  .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .grid2, .two-col { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .top { gap:12px; min-width:0; }
+  .top > * { min-width:0; }
+  .top input[type="search"], .top .global-search { min-width:120px; max-width:42vw; }
+  .backup-card { align-items:flex-start; flex-wrap:wrap; }
+  .backup-meta { flex-wrap:wrap; gap:8px 14px; }
+  .report-preview-modal, .report-preview-dialog { width:calc(100vw - 32px); max-width:calc(100vw - 32px); }
+}
+@media (max-width:700px) {
+  html, body { width:100%; max-width:100%; overflow-x:hidden; }
+  .app { display:block; width:100%; min-width:0; }
+  .sidebar { display:none !important; }
+  .mobileNav { display:block !important; }
+  .main { margin:0 !important; width:100% !important; max-width:100%; min-width:0; }
+  .top { min-height:58px; height:auto; padding:10px 12px !important; gap:8px; flex-wrap:wrap; }
+  .top h1, .top .page-title { font-size:17px; line-height:1.25; }
+  .top input[type="search"], .top .global-search { width:100%; max-width:none; min-width:0; order:3; }
+  .content { padding:14px 12px 28px !important; width:100%; max-width:100%; min-width:0; box-sizing:border-box; }
+  .hero, .page-hero, .report-hero, .dashboard-hero { padding:18px 16px; border-radius:14px; gap:14px; flex-wrap:wrap; }
+  .hero h1, .page-hero h1, .report-hero h1, .dashboard-hero h1 { font-size:21px; line-height:1.2; }
+  .cards, .grid2, .two-col, .settings-grid, .modern-settings-grid, .backup-grid,
+  .machine-profile-layout, .parts-main-grid, .parts-transactions-grid,
+  .signature-settings-grid, .profile-modal-grid { grid-template-columns:minmax(0,1fr) !important; }
+  .cards > *, .grid2 > *, .two-col > *, .settings-grid > *, .backup-grid > * { min-width:0; }
+  .formgrid, .form-grid, .modern-form-grid { grid-template-columns:minmax(0,1fr) !important; }
+  .formgrid > *, .form-grid > *, .modern-form-grid > * { min-width:0; }
+  .form-actions, .actions, .toolbar, .filter-row { flex-wrap:wrap; gap:8px; }
+  .form-actions button, .actions button { max-width:100%; }
+  .table-wrap, .table-responsive, .table-container, .data-table-wrap, .report-table-wrap,
+  .activity-table-wrap, .inventory-table-wrap { width:100%; max-width:100%; overflow-x:auto !important; -webkit-overflow-scrolling:touch; }
+  table { min-width:640px; }
+  .modal, .modal-content, #modal, .dialog, .profile-modal,
+  .report-preview-modal, .report-preview-dialog { width:calc(100vw - 16px) !important; max-width:calc(100vw - 16px) !important; max-height:calc(100dvh - 16px); margin:8px auto; box-sizing:border-box; }
+  .modal-body, .modal-content, .dialog-body { min-width:0; overflow:auto; }
+  .report-preview-scroll { max-width:100%; overflow:auto; -webkit-overflow-scrolling:touch; }
+  .report-preview-bar { gap:8px; padding:8px 10px; }
+  .report-preview-actions { display:flex; gap:6px; flex-wrap:wrap; }
+  .report-preview-actions button { font-size:12px; padding:8px 10px; }
+  .report-paper { transform-origin:top left; }
+  .backup-page { padding:14px !important; }
+  .backup-card { padding:16px; gap:14px; flex-direction:column; align-items:stretch; }
+  .backup-download { align-self:flex-start; }
+  .machine-profile-sidebar { grid-template-columns:minmax(0,1fr) !important; }
+  .machine-profile-kpis, .machine-service-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  .profile-menu { right:8px !important; width:min(300px,calc(100vw - 16px)) !important; }
+  .view-scope-panel { max-width:calc(100vw - 16px); }
+  .settings-nav-strip { max-width:100%; overflow-x:auto; }
+  .report-approval-actions { grid-template-columns:minmax(0,1fr) !important; }
+  .report-approval-actions button, .report-approval-actions .select { width:100%; }
+  .saved-approval-row { min-width:0; }
+  img, video, canvas, iframe { max-width:100%; }
+}
+@media (max-width:420px) {
+  .content { padding:10px 8px 22px !important; }
+  .top { padding:8px !important; }
+  .hero, .page-hero, .report-hero, .dashboard-hero { padding:14px 12px; }
+  .hero h1, .page-hero h1, .report-hero h1, .dashboard-hero h1 { font-size:19px; }
+  .machine-profile-kpis, .machine-service-grid { grid-template-columns:minmax(0,1fr) !important; }
+  .signature-settings-grid { padding:12px !important; }
+  .report-preview-title { font-size:13px; }
+}
 </style>
