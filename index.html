@@ -7533,7 +7533,9 @@ function dateIn(v,from,to){const d=new Date(v);if(from&&d<new Date(from))return 
 async function runPartsReport(){
  if(!canGenerateReports())return toast("You do not have permission to generate reports.");
  const type=document.getElementById("pr_type").value,tech=document.getElementById("pr_tech").value.trim().toLowerCase(),machine=document.getElementById("pr_machine").value.trim().toLowerCase(),part=document.getElementById("pr_part").value.trim().toLowerCase(),jrefs=(document.getElementById("pr_jref")?.value||"").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean),from=document.getElementById("pr_from").value,to=document.getElementById("pr_to").value;
- const matchesJRef=value=>!jrefs.length||jrefs.some(ref=>String(value??"").toLowerCase().includes(ref));
+ const normalizeJRef=value=>String(value??"").toLowerCase().replace(/[\s\-_/]+/g,"");
+ const matchesJRef=value=>!jrefs.length||jrefs.some(ref=>normalizeJRef(value).includes(normalizeJRef(ref))); 
+ const rowMatchesJRef=row=>!jrefs.length||jrefs.some(ref=>normalizeJRef((Array.isArray(row)?row:[row]).map(v=>String(v??"")).join(" ")).includes(normalizeJRef(ref)));
  let rows=[],partsUpdates=[];
  if(type==="Parts Transfers"){
   try{
@@ -7555,19 +7557,20 @@ async function runPartsReport(){
     if(tech&&!searchablePerson.includes(tech))return;
     if(machine&&!route.toLowerCase().includes(machine))return;
     if(part&&!(partNumber.toLowerCase().includes(part)||description.toLowerCase().includes(part)))return;
+    if(!rowMatchesJRef([t.transfer_ref,t.reason,t.part_id,partNumber,description]))return;
     rows.push(["TRANSFER",t.requested_at,partNumber,description,route,num(t.quantity),requester,t.reason||"",t.transfer_ref||"",transferStatusLabel(t.status),t.received_at||"",t.dispatched_at||"",fromLabel,toLabel,t.status||""]);
    });
   }catch(e){console.error("Parts Transfers report could not be loaded",e);toast(e?.message||"Parts Transfers report could not be loaded.");return;}
  }else if(type==="Parts Orders"){
   viewUpdateRows().forEach(x=>{
-   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part))&&matchesJRef(x[5]))partsUpdates.push(x);
+   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part))&&rowMatchesJRef(x))partsUpdates.push(x);
   });
   viewOrderRows().forEach(x=>{
-   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part))&&matchesJRef(x[5]))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);
+   if(dateIn(x[0],from,to)&&(!machine||String(x[3]||"").toLowerCase().includes(machine))&&(!part||String(x[1]||"").toLowerCase().includes(part))&&rowMatchesJRef(x))rows.push(["ORDERED",x[0],x[1],x[2],x[3],x[4],x[6],x[5],x[7],x[8],x[10]]);
   });
  }else{
-  if(type!=="Parts Received")viewIssueRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!tech||String(x[5]).toLowerCase().includes(tech))&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part))&&matchesJRef(x[7]))rows.push(["ISSUED",...x])});
-  if(type!=="Parts Issued")viewReceiptRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part))&&matchesJRef(x[7]))rows.push(["RECEIVED",...x])});
+  if(type!=="Parts Received")viewIssueRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!tech||String(x[5]).toLowerCase().includes(tech))&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part))&&rowMatchesJRef(x))rows.push(["ISSUED",...x])});
+  if(type!=="Parts Issued")viewReceiptRows().forEach(x=>{if(dateIn(x[0],from,to)&&(!machine||String(x[3]).toLowerCase().includes(machine))&&(!part||String(x[1]).toLowerCase().includes(part))&&rowMatchesJRef(x))rows.push(["RECEIVED",...x])});
  }
  rows.sort((a,b)=>new Date(b[1])-new Date(a[1]));
  partsUpdates.sort((a,b)=>new Date(b[0])-new Date(a[0]));
