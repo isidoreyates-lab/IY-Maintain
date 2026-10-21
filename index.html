@@ -5357,7 +5357,8 @@ function receiveModal(orderId=null){if(!canEdit("receive"))return alert("Parts r
  <div class="field"><label>Quantity</label><input id="r_qty" class="input" type="number" min="1" value="${order?.[4]??1}"></div>
  <div class="field"><label>Supplier</label><input id="r_supplier" class="input" value="${esc(order?.[6]||"")}" placeholder="Supplier"></div>
  <div class="field"><label>Invoice / J-Ref</label><input id="r_invoice" class="input" value="${esc(ref)}" placeholder="Invoice or J-Ref" ${order?"readonly":""}></div>
- <div class="field full"><label>Received By</label><input id="r_by" class="input" value="${esc(db.user?.name||"")}" placeholder="Name of receiver"></div></div>
+ <div class="field"><label>Date Received</label><input id="r_received_date" class="input" type="date" value="${new Date().toISOString().slice(0,10)}" required></div>
+ <div class="field"><label>Received By</label><input id="r_by" class="input" value="${esc(db.user?.name||"")}" placeholder="Name of receiver"></div></div>
  <div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveReceipt()">Save Receipt</button></div>`);
  const input=document.getElementById("r_part");
  if(input&&!order){input.addEventListener("input",autoFillReceivePart);input.addEventListener("change",autoFillReceivePart);input.addEventListener("blur",autoFillReceivePart);setTimeout(()=>input.focus(),50);}
@@ -5415,11 +5416,14 @@ async function __iyOriginal_saveReceipt(){if(!canEdit("receive"))return alert("Y
  const supplier=document.getElementById("r_supplier").value.trim();
  const reference=document.getElementById("r_invoice").value.trim();
  const receiver=document.getElementById("r_by").value.trim();
+ const receivedDate=document.getElementById("r_received_date")?.value||"";
  if(!pn||qty<=0)return alert("Part number and a valid quantity are required.");
+ if(!receivedDate)return alert("Please select the date received.");
  let scope;
  try{scope=effectiveWriteScope();}catch(e){return alert(e?.message||"Select the Site and Department for this receipt.");}
 
- const now=new Date().toISOString();
+ // Preserve the selected calendar date when stored as a timestamp.
+ const now=new Date(receivedDate+"T12:00:00").toISOString();
  if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
 
  try{
