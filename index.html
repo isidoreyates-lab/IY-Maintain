@@ -5221,7 +5221,14 @@ async function saveIssueLogEdit(encodedId){
  try{
   // Keep quantity unchanged through this direct update; quantity changes need an atomic stock transaction.
   if(qty!==num(row[4]))return alert("Quantity cannot be changed from this editor yet because stock adjustment must be performed atomically. Keep the existing quantity and edit the other fields.");
-  const {error}=await iySupabase.from("part_issues").update({issued_at:issuedAt,technician_name:technician,work_order:document.getElementById("eil_wo")?.value.trim()||null,remarks:document.getElementById("eil_remarks")?.value.trim()||null,machine_model:machine||null}).eq("id",id).eq("company_id",iyCompany.id).eq("site_id",row[11]).eq("department_id",row[12]);
+  const {error}=await iySupabase.rpc("update_part_issue_transaction_scoped",{
+   p_issue_id:id,
+   p_issued_at:issuedAt,
+   p_machine_model:machine||null,
+   p_technician_name:technician,
+   p_work_order:document.getElementById("eil_wo")?.value.trim()||null,
+   p_remarks:document.getElementById("eil_remarks")?.value.trim()||null
+  });
   if(error)throw error;
   await loadCloudData(); await cloudAudit("Edited parts issue",`Updated issue ${row[1]} for ${technician}; quantity ${row[4]} unchanged.`,row[11],row[12]);
   closeModal();render();toast("Issue log updated successfully.");
