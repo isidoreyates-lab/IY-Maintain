@@ -2941,6 +2941,126 @@ input,select,textarea,table,th,td,label,p,span,div{font-family:inherit;}
 @media(max-width:600px){#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header){margin:-18px -18px 12px;padding:15px 18px}#modal:has(.iy-transfer-review-header) .modalhead:has(+ .iy-transfer-review-header) h2{font-size:18px}}
 </style>
 
+
+<style id="iy-mobile-dialog-visibility-fix-v1">
+/* Narrowly scoped mobile dialog fix: keep complete forms usable above the fixed mobile navigation. */
+@media (max-width:700px){
+  :root{--iy-mobile-nav-clearance:calc(86px + env(safe-area-inset-bottom));}
+  .modalback,
+  .modal-backdrop,
+  .dialog-backdrop,
+  .overlay.modal-overlay,
+  #modal.modalback,
+  #modal.modal-backdrop{
+    box-sizing:border-box!important;
+    align-items:flex-start!important;
+    justify-content:center!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:calc(12px + env(safe-area-inset-top)) 10px calc(var(--iy-mobile-nav-clearance) + 12px)!important;
+  }
+  .modal,
+  #modal,
+  .dialog,
+  .profile-modal,
+  .modal-content,
+  .modal-dialog,
+  .report-preview-modal,
+  .report-preview-dialog{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:560px!important;
+    max-height:calc(100dvh - env(safe-area-inset-top) - var(--iy-mobile-nav-clearance) - 24px)!important;
+    margin:0 auto!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:16px!important;
+    padding-bottom:calc(16px + env(safe-area-inset-bottom))!important;
+    border-radius:15px!important;
+  }
+  /* Keep the action row visible when the dialog's form content is scrolled. */
+  .modal .actions,
+  #modal .actions,
+  .dialog .actions,
+  .modal .modal-actions,
+  #modal .modal-actions,
+  .modal .form-actions,
+  #modal .form-actions,
+  .modal .dialog-actions,
+  #modal .dialog-actions{
+    position:sticky!important;
+    bottom:calc(-16px - env(safe-area-inset-bottom))!important;
+    z-index:5!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    justify-content:flex-end!important;
+    gap:8px!important;
+    margin:16px -16px calc(-16px - env(safe-area-inset-bottom))!important;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom))!important;
+    background:rgba(255,255,255,.98)!important;
+    border-top:1px solid #e5ebf2!important;
+    box-shadow:0 -5px 14px rgba(20,40,70,.06)!important;
+  }
+  .modal .actions button,
+  #modal .actions button,
+  .dialog .actions button,
+  .modal .modal-actions button,
+  #modal .modal-actions button,
+  .modal .form-actions button,
+  #modal .form-actions button,
+  .modal .dialog-actions button,
+  #modal .dialog-actions button{
+    min-height:44px!important;
+    max-width:100%!important;
+    white-space:normal!important;
+  }
+  .modal input,.modal select,.modal textarea,
+  #modal input,#modal select,#modal textarea,
+  .dialog input,.dialog select,.dialog textarea{
+    box-sizing:border-box!important;
+    min-width:0!important;
+    max-width:100%!important;
+    font-size:16px!important;
+  }
+  .modal .formgrid,.modal .grid2,#modal .formgrid,#modal .grid2,
+  .dialog .formgrid,.dialog .grid2{grid-template-columns:minmax(0,1fr)!important;}
+  .modal img,#modal img,.dialog img{max-width:100%!important;height:auto;}
+}
+@media (max-width:380px){
+  .modal,#modal,.dialog,.profile-modal,.modal-content,.modal-dialog{padding:12px!important;}
+  .modal .actions,#modal .actions,.dialog .actions,
+  .modal .modal-actions,#modal .modal-actions,
+  .modal .form-actions,#modal .form-actions,
+  .modal .dialog-actions,#modal .dialog-actions{margin-left:-12px!important;margin-right:-12px!important;padding-left:12px!important;padding-right:12px!important;}
+}
+</style>
+
+<style id="iy-professional-navigation-icons">
+.navicon,.mnl-icon,.mn-icon{display:inline-flex;align-items:center;justify-content:center}.iy-nav-svg{display:block;flex:0 0 auto;width:18px;height:18px;stroke:currentColor}.navbtn.active .iy-nav-svg{stroke-width:2}.mobile-nav-link .iy-nav-svg{width:19px;height:19px}.mobile-nav-item .iy-nav-svg{width:20px;height:20px}
+</style>
+
+<style id="iy-issue-logs-mobile-layout-fix">
+/* Issue Logs mobile layout: match the stacked, full-width controls used by Receive Parts. */
+@media(max-width:700px){
+  .issue-logs-panel{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;overflow:hidden!important;padding:14px!important}
+  .issue-logs-panel .issue-filter-head{min-width:0!important;flex-wrap:wrap!important;gap:8px!important}
+  .issue-logs-panel .issue-filter-sub{line-height:1.5!important}
+  .issue-logs-panel .issue-logs-filters{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;padding:12px!important;gap:12px!important}
+  .issue-logs-panel .issue-logs-filters>*{grid-column:1/-1!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+  .issue-logs-panel .issue-filter-field{min-width:0!important;width:100%!important}
+  .issue-logs-panel .issue-filter-field .input{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+  .issue-logs-panel #issueLogsResults{width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important}
+  .issue-logs-panel .issue-results-meta{line-height:1.6!important;overflow-wrap:anywhere!important}
+  .issue-logs-panel .tablewrap{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior-x:contain!important}
+  .issue-logs-panel .tablewrap .table{width:max-content!important;min-width:980px!important;max-width:none!important;table-layout:auto!important}
+  .issue-logs-panel .tablewrap .table th,.issue-logs-panel .tablewrap .table td{white-space:normal!important;overflow-wrap:anywhere!important;vertical-align:top!important}
+  .issue-logs-panel .tablewrap .table th:last-child,.issue-logs-panel .tablewrap .table td:last-child{white-space:nowrap!important}
+}
+</style>
+
 </head>
 
 <style>
@@ -3127,14 +3247,44 @@ function nav(page){
 }
 function pageTitleFor(page){const t={dashboard:"Dashboard",issue:"Search & Issue Parts",issue_logs:"Issue Logs",receive:"Receive Parts",inventory:"Inventory",updates:"Parts Updates",orders:"Parts Orders",mdashboard:"Maintenance Dashboard",mlog:"Maintenance Log",machines:"Machines",preports:"Parts Reports",mreports:"Maintenance Reports",settings:"Settings",users:"Users & Roles",activity:"User Activity",backup:"Backup Data",approvals:"My Approvals",approvedreports:"Approved Reports",pricing:"Pricing",subscription:"Subscription",billing:"Billing",superadmin:"Super Admin Control Center",superadmin_companies:"Companies",superadmin_billing:"Billing Activities",superadmin_settings:"Settings"};return t[page]||"Dashboard"}
 function canAccessCommercialPricing(){return ["company_admin","super_admin"].includes(currentRole())}
+function professionalNavIcon(id, fallback=""){
+ const paths={
+ dashboard:'<path d="m3 10 9-7 9 7"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/>',
+ issue:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/><path d="M8 11h6"/>',
+ issue_logs:'<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>',
+ receive:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/>',
+ inventory:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+ updates:'<path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/>',
+ orders:'<path d="M7 3h10l3 3v15H4V3h3Z"/><path d="M8 11h8M8 15h8M8 7h4"/>',
+ transfers:'<path d="M4 7h15l-3-3"/><path d="m19 7-3 3"/><path d="M20 17H5l3 3"/><path d="m5 17 3-3"/>',
+ mdashboard:'<path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3h8v4h-8zM3 17h8v4H3z"/>',
+ mlog:'<path d="M8 4h11v17H5V7z"/><path d="M8 3v5H3M9 12h6M9 16h6"/>',
+ machines:'<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M9 20v-6h6v6M8 10h.01M16 10h.01"/>',
+ preports:'<path d="M4 19V5M4 19h17"/><path d="m7 15 4-5 3 2 5-7"/>',
+ mreports:'<path d="M4 19V5M4 19h17"/><path d="M7 15h3v-4H7zM13 12h3V7h-3z"/>',
+ approvals:'<path d="m5 12 4 4L19 6"/><path d="M21 12a9 9 0 1 1-3-6.7"/>',
+ users:'<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+ activity:'<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+ backup:'<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/>',
+ approvedreports:'<path d="M4 4h16v16H4z"/><path d="m8 12 3 3 5-6"/>',
+ pricing:'<circle cx="12" cy="12" r="9"/><path d="M16 8.5c-.8-.8-1.8-1.2-3.2-1.2-1.7 0-2.8.8-2.8 2s1.1 1.8 3 2.2 3 1 3 2.5-1.3 2.5-3.2 2.5c-1.4 0-2.7-.5-3.6-1.5M12 5v14"/>',
+ subscription:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+ billing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h4M7 9h.01"/>',
+ superadmin:'<path d="m12 3 2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8L12 3Z"/>',
+ superadmin_companies:'<path d="M3 21V7l9-4 9 4v14"/><path d="M8 21v-5h8v5M7 10h.01M12 10h.01M17 10h.01"/>',
+ superadmin_billing:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h4"/>'
+ };
+ const d=paths[id]||'<circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/>';
+ return `<svg class="iy-nav-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+}
 function commercialNavButton(id,label,icon){
  if(!canAccessCommercialPricing()) return "";
- return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`;
+ return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${professionalNavIcon(id)}</span><span>${label}</span></button>`;
 }
-function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${icon}</span><span>${label}</span></button>`}
-function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${icon}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
+function navButton(id,label,icon){if(!canAccess(id))return "";return `<button class="navbtn ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="navicon">${professionalNavIcon(id)}</span><span>${label}</span></button>`}
+function mobileNavLink(id,label,icon){if(!canAccess(id))return "";return `<button class="mobile-nav-link ${currentPage===id?'active':''}" onclick="nav('${id}')"><span class="mnl-icon">${professionalNavIcon(id)}</span><span class="mnl-label">${label}</span><span class="mnl-arrow">›</span></button>`}
 function toggleMobileMenu(){mobileMenuOpen=!mobileMenuOpen;globalSearchOpen=false;profileOpen=false;notificationOpen=false;render()}
-function mobileBottomItem(id,label,icon){if(!canAccess(id))return "";const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${icon}</span><span>${label}</span></button>`}
+function mobileBottomItem(id,label,icon){if(!canAccess(id))return "";const active=currentPage===id;return `<button class="mobile-nav-item ${active?'active':''}" onclick="nav('${id}')"><span class="mn-icon">${professionalNavIcon(id)}</span><span>${label}</span></button>`}
 function navSuperAdminBilling(){nav('superadmin_billing')}
 function renderMobileNavigation(){
  const menu=mobileMenuOpen?`<div class="mobile-nav-backdrop" onclick="toggleMobileMenu()"></div><div class="mobile-nav-sheet">
@@ -3246,10 +3396,10 @@ function render(){
    ${isSuperAdmin()?`
    ${navButton("dashboard","Dashboard","⌂")}
    <div class="group">ADMINISTRATION</div>
-   <button class="navbtn ${currentPage==='superadmin_companies'?'active':''}" onclick="nav('superadmin_companies')"><span class="navicon">◆</span><span>Companies</span></button>
+   <button class="navbtn ${currentPage==='superadmin_companies'?'active':''}" onclick="nav('superadmin_companies')"><span class="navicon">${professionalNavIcon("superadmin_companies")}</span><span>Companies</span></button>
    ${navButton("users","Users","♙")}
    <div class="group">BILLING</div>
-   <button class="navbtn ${currentPage==='superadmin_billing'?'active':''}" onclick="nav('superadmin_billing')"><span class="navicon">▣</span><span>Billing Activities</span></button>
+   <button class="navbtn ${currentPage==='superadmin_billing'?'active':''}" onclick="nav('superadmin_billing')"><span class="navicon">${professionalNavIcon("superadmin_billing")}</span><span>Billing Activities</span></button>
    <div class="sa-sidebar-spacer" aria-hidden="true"></div>
    <div class="sa-sidebar-role-card" aria-label="Super Admin role">
     <div class="sa-sidebar-role-icon" aria-hidden="true">♛</div>
@@ -5156,9 +5306,9 @@ function issueLogsPage(){
  const machineRows=viewMachineRows().filter(m=>String(m?.[2]||"").trim());
  const machineOptions=[...new Set(machineRows.map(m=>String(m[2]||"").trim()))].sort((a,b)=>a.localeCompare(b));
  const technicians=[...new Set(scoped.map(r=>String(r[5]||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
- return `<div class="panel">
+ return `<div class="panel issue-logs-panel">
   <div class="issue-filter-head"><div><div class="issue-filter-title">Parts Issue Log</div><div class="issue-filter-sub">Search previous issue transactions in your current authorised site and department.</div></div><span class="issue-filter-badge">${scoped.length} ISSUE RECORDS</span></div>
-  <div class="issue-filters" style="grid-template-columns:minmax(220px,2fr) repeat(4,minmax(140px,1fr));">
+  <div class="issue-filters issue-logs-filters" style="grid-template-columns:minmax(220px,2fr) repeat(4,minmax(140px,1fr));">
    <div class="issue-filter-field"><label>Search</label><input id="il_search" class="input" placeholder="Part, work order, technician, remarks…" oninput="renderIssueLogs()"></div>
    <div class="issue-filter-field"><label>Machine</label><select id="il_machine" class="input" onchange="renderIssueLogs()"><option value="">All machines</option>${machineOptions.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join("")}</select></div>
    <div class="issue-filter-field"><label>Technician</label><select id="il_tech" class="input" onchange="renderIssueLogs()"><option value="">All technicians</option>${technicians.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join("")}</select></div>
