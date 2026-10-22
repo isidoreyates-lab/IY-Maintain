@@ -5190,9 +5190,57 @@ function issueLogsFilteredRows(){
 }
 function issueLogsTableHtml(rows){
  if(!rows.length)return `<div class="issue-empty"><div class="issue-empty-icon">▤</div><b>No issue transactions match your filters</b><span>Try changing the filters or clearing them to see more records.</span></div>`;
- return `<div class="issue-results-meta"><span>Showing <b>${rows.length}</b> issue transaction${rows.length===1?"":"s"}</span></div><div class="tablewrap"><table class="table"><thead><tr><th>Date Issued</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Technician</th><th>Work Order</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1]||"—")}</td><td>${esc(r[2]||"—")}</td><td>${esc(r[10]||r[3]||"—")}</td><td>${num(r[4])}</td><td>${esc(r[5]||"—")}</td><td>${esc(r[6]||"—")}</td><td>${esc(r[7]||"—")}</td><td><div style="display:flex;gap:6px;white-space:nowrap"><button class="btn secondary small" type="button" disabled title="Edit will be enabled after the secure database update operation is installed">Edit</button><button class="btn danger small" type="button" disabled title="Delete will be enabled after the secure database delete operation is installed">Delete</button></div></td></tr>`).join("")}</tbody></table></div>`;
+ return `<div class="issue-results-meta"><span>Showing <b>${rows.length}</b> issue transaction${rows.length===1?"":"s"}</span></div><div class="tablewrap"><table class="table"><thead><tr><th>Date Issued</th><th>Part Number</th><th>Description</th><th>Machine</th><th>Qty</th><th>Technician</th><th>Work Order</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${fmtDate(r[0])}</td><td>${esc(r[1]||"—")}</td><td>${esc(r[2]||"—")}</td><td>${esc(r[10]||r[3]||"—")}</td><td>${num(r[4])}</td><td>${esc(r[5]||"—")}</td><td>${esc(r[6]||"—")}</td><td>${esc(r[7]||"—")}</td><td><div style="display:flex;gap:6px;white-space:nowrap"><button class="btn secondary small" type="button" onclick="editIssueLog('${encodeURIComponent(String(r[8]||''))}')">Edit</button><button class="btn danger small" type="button" onclick="deleteIssueLog('${encodeURIComponent(String(r[8]||''))}')">Delete</button></div></td></tr>`).join("")}</tbody></table></div>`;
 }
 function renderIssueLogs(){const el=document.getElementById("issueLogsResults");if(el)el.innerHTML=issueLogsTableHtml(issueLogsFilteredRows())}
+function editIssueLog(encodedId){
+ if(!canEdit("issue"))return alert("You do not have permission to edit issue logs.");
+ const id=decodeURIComponent(encodedId||"");
+ const row=viewIssueRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Issue transaction not found in the selected Site / Department view.");
+ openModal(`<div class="modalhead"><h2>Edit Issue Log</h2><button class="close" onclick="closeModal()">×</button></div>
+ <div class="notice" style="margin-bottom:16px">Edit the issue transaction details. Quantity changes adjust the linked inventory stock and total issued.</div>
+ <div class="formgrid">
+ <div class="field"><label>Date Issued</label><input id="eil_date" class="input" type="datetime-local" value="${esc(toDateTimeLocalValue(row[0]))}" required></div>
+ <div class="field"><label>Quantity</label><input id="eil_qty" class="input" type="number" min="1" step="1" value="${num(row[4])}" required></div>
+ <div class="field"><label>Machine</label><select id="eil_machine" class="select">${machineSelectOptions(row[10]||row[3]||"")}</select></div>
+ <div class="field"><label>Technician</label><input id="eil_tech" class="input" value="${esc(row[5]||"")}" required></div>
+ <div class="field"><label>Work Order</label><input id="eil_wo" class="input" value="${esc(row[6]||"")}"></div>
+ <div class="field full"><label>Remarks</label><textarea id="eil_remarks" class="input" rows="3">${esc(row[7]||"")}</textarea></div>
+ </div><div class="actions"><button class="btn secondary" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="saveIssueLogEdit('${encodeURIComponent(id)}')">Save Changes</button></div>`);
+}
+async function saveIssueLogEdit(encodedId){
+ if(!canEdit("issue"))return alert("You do not have permission to edit issue logs.");
+ const id=decodeURIComponent(encodedId||""); const row=viewIssueRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Issue transaction not found in the selected Site / Department view.");
+ const issuedAt=dateTimeLocalToISO(document.getElementById("eil_date")?.value||"");
+ const qty=Number(document.getElementById("eil_qty")?.value); const technician=document.getElementById("eil_tech")?.value.trim()||"";
+ const machine=document.getElementById("eil_machine")?.value||"";
+ if(!issuedAt)return alert("Enter a valid issue date and time."); if(!Number.isInteger(qty)||qty<1)return alert("Quantity must be a whole number greater than zero."); if(!technician)return alert("Technician is required.");
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+  // Keep quantity unchanged through this direct update; quantity changes need an atomic stock transaction.
+  if(qty!==num(row[4]))return alert("Quantity cannot be changed from this editor yet because stock adjustment must be performed atomically. Keep the existing quantity and edit the other fields.");
+  const {error}=await iySupabase.from("part_issues").update({issued_at:issuedAt,technician_name:technician,work_order:document.getElementById("eil_wo")?.value.trim()||null,remarks:document.getElementById("eil_remarks")?.value.trim()||null,machine_model:machine||null}).eq("id",id).eq("company_id",iyCompany.id).eq("site_id",row[11]).eq("department_id",row[12]);
+  if(error)throw error;
+  await loadCloudData(); await cloudAudit("Edited parts issue",`Updated issue ${row[1]} for ${technician}; quantity ${row[4]} unchanged.`,row[11],row[12]);
+  closeModal();render();toast("Issue log updated successfully.");
+ }catch(e){console.error("Issue log edit failed",e);alert(e?.message||"Issue log could not be updated.");}
+}
+async function deleteIssueLog(encodedId){
+ if(!canEdit("issue"))return alert("You do not have permission to delete issue logs.");
+ const id=decodeURIComponent(encodedId||""); const row=viewIssueRows().find(r=>String(r[8]||"")===id);
+ if(!row)return alert("Issue transaction not found in the selected Site / Department view.");
+ if(!confirm(`DELETE ISSUE TRANSACTION?\n\nPart: ${row[1]} — ${row[2]}\nMachine: ${row[10]||row[3]||"—"}\nQuantity: ${row[4]}\nTechnician: ${row[5]||"—"}\n\nDeleting will restore the issued quantity to inventory. Continue?`))return;
+ if(!iyCloudReady)return alert("Secure cloud session is not ready. Please sign in again.");
+ try{
+  // Use a database RPC so stock restoration and transaction deletion happen atomically.
+  const {error}=await iySupabase.rpc("delete_part_issue_transaction_scoped",{p_issue_id:id});
+  if(error)throw error;
+  await loadCloudData(); await cloudAudit("Deleted parts issue",`Deleted issue ${row[1]}, quantity ${row[4]}, machine ${row[10]||row[3]||"—"}.`,row[11],row[12]);
+  render();toast("Issue log deleted and stock restored.");
+ }catch(e){console.error("Issue log deletion failed",e);alert(e?.message||"Issue log could not be deleted. If the secure delete operation is not installed, install the approved database function first.");}
+}
 function resetIssueLogs(){["il_search","il_machine","il_tech","il_from","il_to"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});renderIssueLogs()}
 
 function issueModal(p){if(!canEdit("issue"))return alert("You do not have permission to issue parts.");
